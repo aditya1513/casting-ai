@@ -23,7 +23,7 @@ class ApiClient {
   private defaultHeaders: Record<string, string>
 
   constructor() {
-    this.baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
+    this.baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5002/api'
     this.timeout = parseInt(process.env.NEXT_PUBLIC_API_TIMEOUT || '30000')
     this.defaultHeaders = {
       'Content-Type': 'application/json',
@@ -237,3 +237,160 @@ export const apiClient = new ApiClient()
 
 // Export type definitions
 export type { ApiResponse, ApiRequestConfig }
+
+// Talent API Types
+export interface Talent {
+  id: string
+  name: string
+  email: string
+  phone?: string
+  profileImage?: string
+  images?: string[]
+  bio?: string
+  location: string
+  languages: string[]
+  skills: string[]
+  experience: 'beginner' | 'intermediate' | 'expert'
+  ageRange?: string
+  gender?: 'male' | 'female' | 'other'
+  height?: number
+  weight?: number
+  rating: number
+  reviewCount: number
+  verified: boolean
+  availability: 'available' | 'busy' | 'not_available'
+  achievements?: string[]
+  workExperience?: WorkExperience[]
+  physicalAttributes?: PhysicalAttributes
+  mediaGallery?: MediaItem[]
+  createdAt: string
+  updatedAt: string
+}
+
+export interface WorkExperience {
+  id: string
+  title: string
+  company: string
+  role: string
+  startDate: string
+  endDate?: string
+  description?: string
+  current: boolean
+}
+
+export interface PhysicalAttributes {
+  eyeColor?: string
+  hairColor?: string
+  bodyType?: string
+  ethnicity?: string
+  skinTone?: string
+}
+
+export interface MediaItem {
+  id: string
+  type: 'photo' | 'video' | 'audio'
+  url: string
+  thumbnail?: string
+  title?: string
+  description?: string
+}
+
+export interface TalentSearchParams {
+  query?: string
+  ageMin?: number
+  ageMax?: number
+  gender?: string
+  location?: string
+  languages?: string[]
+  skills?: string[]
+  experience?: string
+  availability?: string
+  rating?: number
+  verified?: boolean
+  sortBy?: 'relevance' | 'rating' | 'experience' | 'recent'
+  page?: number
+  limit?: number
+}
+
+export interface TalentSearchResponse {
+  talents: Talent[]
+  total: number
+  page: number
+  limit: number
+  totalPages: number
+}
+
+export interface SavedSearch {
+  id: string
+  name: string
+  params: TalentSearchParams
+  createdAt: string
+}
+
+// Talent API Methods
+export class TalentAPI {
+  private client: ApiClient
+
+  constructor() {
+    this.client = apiClient
+  }
+
+  async searchTalents(params: TalentSearchParams): Promise<ApiResponse<TalentSearchResponse>> {
+    const queryParams: Record<string, any> = {}
+    
+    if (params.query) queryParams.query = params.query
+    if (params.ageMin) queryParams.ageMin = params.ageMin
+    if (params.ageMax) queryParams.ageMax = params.ageMax
+    if (params.gender) queryParams.gender = params.gender
+    if (params.location) queryParams.location = params.location
+    if (params.languages?.length) queryParams.languages = params.languages.join(',')
+    if (params.skills?.length) queryParams.skills = params.skills.join(',')
+    if (params.experience) queryParams.experience = params.experience
+    if (params.availability) queryParams.availability = params.availability
+    if (params.rating !== undefined) queryParams.rating = params.rating
+    if (params.verified !== undefined) queryParams.verified = params.verified
+    if (params.sortBy) queryParams.sortBy = params.sortBy
+    if (params.page) queryParams.page = params.page
+    if (params.limit) queryParams.limit = params.limit
+
+    return this.client.get<TalentSearchResponse>('/api/talents/search', queryParams)
+  }
+
+  async getTalentById(id: string): Promise<ApiResponse<Talent>> {
+    return this.client.get<Talent>(`/api/talents/${id}`)
+  }
+
+  async getSimilarTalents(id: string, limit: number = 6): Promise<ApiResponse<Talent[]>> {
+    return this.client.get<Talent[]>(`/api/talents/${id}/similar`, { limit })
+  }
+
+  async bookmarkTalent(id: string): Promise<ApiResponse<{ bookmarked: boolean }>> {
+    return this.client.post(`/api/talents/${id}/bookmark`)
+  }
+
+  async unbookmarkTalent(id: string): Promise<ApiResponse<{ bookmarked: boolean }>> {
+    return this.client.delete(`/api/talents/${id}/bookmark`)
+  }
+
+  async getBookmarkedTalents(): Promise<ApiResponse<Talent[]>> {
+    return this.client.get<Talent[]>('/api/talents/bookmarked')
+  }
+
+  async saveSearch(name: string, params: TalentSearchParams): Promise<ApiResponse<SavedSearch>> {
+    return this.client.post<SavedSearch>('/api/talents/searches', { name, params })
+  }
+
+  async getSavedSearches(): Promise<ApiResponse<SavedSearch[]>> {
+    return this.client.get<SavedSearch[]>('/api/talents/searches')
+  }
+
+  async deleteSavedSearch(id: string): Promise<ApiResponse<void>> {
+    return this.client.delete(`/api/talents/searches/${id}`)
+  }
+
+  async getAutocompleteSuggestions(query: string): Promise<ApiResponse<string[]>> {
+    return this.client.get<string[]>('/api/talents/autocomplete', { query })
+  }
+}
+
+export const talentAPI = new TalentAPI()

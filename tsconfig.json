@@ -49,11 +49,11 @@
     }
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "coverage", "*.config.js"],
+  "exclude": ["node_modules", "dist", "coverage", "*.config.js", "src/monitoring.disabled/**/*", "**/*.disabled"],
   "ts-node": {
     "require": ["tsconfig-paths/register"],
     "files": true,
-    "transpileOnly": false,
+    "transpileOnly": true,
     "compilerOptions": {
       "typeRoots": ["./node_modules/@types", "./src/types"],
       "types": ["node", "jest"]

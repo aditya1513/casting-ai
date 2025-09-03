@@ -1134,6 +1134,383 @@ export class EmailService {
       text: `Hello ${name}, here are your backup codes: ${backupCodes.join(', ')}`,
     });
   }
+
+  /**
+   * ===============================
+   * AUDITION EMAIL METHODS
+   * ===============================
+   */
+
+  /**
+   * Send audition confirmation email
+   */
+  async sendAuditionConfirmationEmail(data: {
+    to: string;
+    talentName: string;
+    projectTitle: string;
+    characterName?: string;
+    auditionDate: Date;
+    location: string;
+    confirmationCode: string;
+    meetingLink?: string;
+    specialInstructions?: string;
+    venueAddress?: string;
+    contactPerson?: string;
+    contactPhone?: string;
+  }): Promise<void> {
+    const { generateAuditionConfirmationEmail } = await import('../templates/audition-emails');
+    const emailContent = generateAuditionConfirmationEmail(data);
+
+    await this.sendEmail({
+      to: data.to,
+      subject: `Audition Confirmed: ${data.projectTitle}${data.characterName ? ` - ${data.characterName}` : ''}`,
+      html: emailContent.html,
+      text: emailContent.text,
+      attachments: emailContent.attachments,
+      priority: 'high',
+      categories: ['audition', 'confirmation'],
+      metadata: {
+        projectTitle: data.projectTitle,
+        auditionDate: data.auditionDate.toISOString(),
+        confirmationCode: data.confirmationCode,
+      },
+    });
+  }
+
+  /**
+   * Send audition reminder email
+   */
+  async sendAuditionReminderEmail(data: {
+    to: string;
+    talentName: string;
+    projectTitle: string;
+    characterName?: string;
+    auditionDate: Date;
+    location: string;
+    confirmationCode: string;
+    meetingLink?: string;
+    reminderType: '24h' | '2h' | '30m';
+  }): Promise<void> {
+    const { generateAuditionReminderEmail } = await import('../templates/audition-emails');
+    const emailContent = generateAuditionReminderEmail(data);
+
+    const reminderSubjects = {
+      '24h': '🕐 Audition Tomorrow',
+      '2h': '⏰ Audition in 2 Hours',
+      '30m': '🚨 Audition Starting Soon'
+    };
+
+    await this.sendEmail({
+      to: data.to,
+      subject: `${reminderSubjects[data.reminderType]}: ${data.projectTitle}`,
+      html: emailContent.html,
+      text: emailContent.text,
+      priority: data.reminderType === '30m' ? 'high' : 'normal',
+      categories: ['audition', 'reminder', data.reminderType],
+      metadata: {
+        projectTitle: data.projectTitle,
+        auditionDate: data.auditionDate.toISOString(),
+        reminderType: data.reminderType,
+        confirmationCode: data.confirmationCode,
+      },
+    });
+  }
+
+  /**
+   * Send audition reschedule email
+   */
+  async sendAuditionRescheduleEmail(data: {
+    to: string;
+    talentName: string;
+    projectTitle: string;
+    characterName?: string;
+    oldDate: Date;
+    newDate: Date;
+    location: string;
+    confirmationCode: string;
+    reason?: string;
+    meetingLink?: string;
+  }): Promise<void> {
+    const { generateAuditionRescheduleEmail } = await import('../templates/audition-emails');
+    const emailContent = generateAuditionRescheduleEmail(data);
+
+    await this.sendEmail({
+      to: data.to,
+      subject: `Audition Rescheduled: ${data.projectTitle}${data.characterName ? ` - ${data.characterName}` : ''}`,
+      html: emailContent.html,
+      text: emailContent.text,
+      attachments: emailContent.attachments,
+      priority: 'high',
+      categories: ['audition', 'reschedule'],
+      metadata: {
+        projectTitle: data.projectTitle,
+        oldDate: data.oldDate.toISOString(),
+        newDate: data.newDate.toISOString(),
+        confirmationCode: data.confirmationCode,
+        reason: data.reason,
+      },
+    });
+  }
+
+  /**
+   * Send audition cancellation email
+   */
+  async sendAuditionCancellationEmail(data: {
+    to: string;
+    talentName: string;
+    projectTitle: string;
+    characterName?: string;
+    auditionDate: Date;
+    reason?: string;
+    contactPerson?: string;
+    contactPhone?: string;
+  }): Promise<void> {
+    const { generateAuditionCancellationEmail } = await import('../templates/audition-emails');
+    const emailContent = generateAuditionCancellationEmail(data);
+
+    await this.sendEmail({
+      to: data.to,
+      subject: `Audition Cancelled: ${data.projectTitle}${data.characterName ? ` - ${data.characterName}` : ''}`,
+      html: emailContent.html,
+      text: emailContent.text,
+      priority: 'high',
+      categories: ['audition', 'cancellation'],
+      metadata: {
+        projectTitle: data.projectTitle,
+        auditionDate: data.auditionDate.toISOString(),
+        reason: data.reason,
+      },
+    });
+  }
+
+  /**
+   * Send waitlist notification email
+   */
+  async sendWaitlistNotificationEmail(data: {
+    to: string;
+    talentName: string;
+    projectTitle: string;
+    characterName?: string;
+    auditionDate: Date;
+    position: number;
+    estimatedWaitTime?: string;
+  }): Promise<void> {
+    const subject = `Added to Waitlist: ${data.projectTitle}${data.characterName ? ` - ${data.characterName}` : ''}`;
+    
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <title>${subject}</title>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+          .content { background: white; padding: 30px; border: 1px solid #e0e0e0; border-radius: 0 0 10px 10px; }
+          .waitlist-position { background: #fff3e0; border: 2px solid #ff9800; border-radius: 8px; padding: 20px; text-align: center; margin: 20px 0; }
+          .position-number { font-size: 48px; font-weight: bold; color: #ff9800; margin: 0; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>🎬 CastMatch</h1>
+            <p>Waitlist Notification</p>
+          </div>
+          <div class="content">
+            <h2>Hello ${data.talentName},</h2>
+            
+            <p>You've been added to the waitlist for the audition:</p>
+            
+            <h3>${data.projectTitle}${data.characterName ? ` - ${data.characterName}` : ''}</h3>
+            <p><strong>Audition Date:</strong> ${new Date(data.auditionDate).toLocaleDateString('en-US', { 
+              weekday: 'long', 
+              year: 'numeric', 
+              month: 'long', 
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
+            })}</p>
+            
+            <div class="waitlist-position">
+              <p class="position-number">#${data.position}</p>
+              <p style="margin: 10px 0 0 0;"><strong>Your Position on Waitlist</strong></p>
+              ${data.estimatedWaitTime ? `<p>Estimated wait time: ${data.estimatedWaitTime}</p>` : ''}
+            </div>
+            
+            <p>We'll notify you immediately if a spot becomes available. Please keep this time slot free in your schedule.</p>
+            
+            <p>Thank you for your patience and continued interest!</p>
+          </div>
+          <div style="text-align: center; padding: 20px; background: #f8f9fa; color: #666; font-size: 12px;">
+            <p>© ${new Date().getFullYear()} CastMatch. All rights reserved.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    const text = `
+      CastMatch - Waitlist Notification
+      
+      Hello ${data.talentName},
+      
+      You've been added to the waitlist for:
+      ${data.projectTitle}${data.characterName ? ` - ${data.characterName}` : ''}
+      
+      Audition Date: ${new Date(data.auditionDate).toLocaleDateString()}
+      Your Position: #${data.position}
+      ${data.estimatedWaitTime ? `Estimated wait: ${data.estimatedWaitTime}` : ''}
+      
+      We'll notify you if a spot becomes available.
+      Please keep this time slot free.
+      
+      Thank you!
+      CastMatch Team
+    `;
+
+    await this.sendEmail({
+      to: data.to,
+      subject,
+      html,
+      text,
+      categories: ['audition', 'waitlist'],
+      metadata: {
+        projectTitle: data.projectTitle,
+        auditionDate: data.auditionDate.toISOString(),
+        waitlistPosition: data.position,
+      },
+    });
+  }
+
+  /**
+   * Send waitlist confirmation (when moved from waitlist to confirmed)
+   */
+  async sendWaitlistConfirmationEmail(data: {
+    to: string;
+    talentName: string;
+    projectTitle: string;
+    characterName?: string;
+    auditionDate: Date;
+    location: string;
+    confirmationCode: string;
+    meetingLink?: string;
+  }): Promise<void> {
+    // Reuse the confirmation email template
+    await this.sendAuditionConfirmationEmail({
+      ...data,
+      specialInstructions: '🎉 Great news! A spot opened up and you\'ve been moved from the waitlist to confirmed. Please arrive on time for your audition.',
+    });
+  }
+
+  /**
+   * Send bulk audition announcement email
+   */
+  async sendAuditionAnnouncementEmail(data: {
+    recipients: string[];
+    projectTitle: string;
+    description: string;
+    castingDirector: string;
+    auditionDates: Date[];
+    applicationDeadline: Date;
+    requirements: string[];
+    applyUrl: string;
+  }): Promise<void> {
+    const subject = `New Audition Opportunity: ${data.projectTitle}`;
+    
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <title>${subject}</title>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+          .content { background: white; padding: 30px; border: 1px solid #e0e0e0; border-radius: 0 0 10px 10px; }
+          .button { display: inline-block; padding: 14px 28px; background: #667eea; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; text-align: center; }
+          .requirements { background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; }
+          .deadline { background: #fff3e0; border: 2px solid #ff9800; border-radius: 8px; padding: 15px; text-align: center; margin: 20px 0; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>🎬 CastMatch</h1>
+            <p>New Audition Opportunity</p>
+          </div>
+          <div class="content">
+            <h2>${data.projectTitle}</h2>
+            
+            <p>${data.description}</p>
+            
+            <p><strong>Casting Director:</strong> ${data.castingDirector}</p>
+            
+            <div class="deadline">
+              <h3 style="margin-top: 0; color: #e65100;">⏰ Application Deadline</h3>
+              <p style="font-size: 18px; font-weight: bold; margin: 0;">
+                ${new Date(data.applicationDeadline).toLocaleDateString('en-US', { 
+                  weekday: 'long', 
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric'
+                })}
+              </p>
+            </div>
+            
+            <h3>📅 Audition Dates:</h3>
+            <ul>
+              ${data.auditionDates.map(date => 
+                `<li>${new Date(date).toLocaleDateString('en-US', { 
+                  weekday: 'long', 
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric'
+                })}</li>`
+              ).join('')}
+            </ul>
+            
+            <div class="requirements">
+              <h3 style="margin-top: 0;">📋 Requirements:</h3>
+              <ul>
+                ${data.requirements.map(req => `<li>${req}</li>`).join('')}
+              </ul>
+            </div>
+            
+            <div style="text-align: center; margin: 40px 0;">
+              <a href="${data.applyUrl}" class="button">Apply Now</a>
+            </div>
+            
+            <p>Don't miss this exciting opportunity! Apply before the deadline.</p>
+            
+            <p>Best of luck!</p>
+          </div>
+          <div style="text-align: center; padding: 20px; background: #f8f9fa; color: #666; font-size: 12px;">
+            <p>© ${new Date().getFullYear()} CastMatch. All rights reserved.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    // Send to all recipients (could be batched for large lists)
+    for (const recipient of data.recipients) {
+      await this.sendEmail({
+        to: recipient,
+        subject,
+        html,
+        text: `New audition opportunity: ${data.projectTitle}. Apply by ${new Date(data.applicationDeadline).toLocaleDateString()}. Visit: ${data.applyUrl}`,
+        categories: ['audition', 'announcement', 'opportunity'],
+        metadata: {
+          projectTitle: data.projectTitle,
+          applicationDeadline: data.applicationDeadline.toISOString(),
+          castingDirector: data.castingDirector,
+        },
+      });
+    }
+  }
 }
 
 export const emailService = new EmailService();

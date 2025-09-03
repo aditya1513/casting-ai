@@ -4,7 +4,7 @@
  */
 
 import express from 'express';
-import { authMiddleware } from '../middleware/auth.middleware';
+import authMiddleware from '../middleware/auth.middleware';
 import { validate } from '../middleware/validate';
 import { notificationService, NotificationType, NotificationChannel, NotificationPriority } from '../services/notification.service';
 import { pushNotificationService } from '../services/push-notification.service';
@@ -58,7 +58,7 @@ const sendNotificationSchema = z.object({
  * Get user notifications
  * GET /api/notifications
  */
-router.get('/', authMiddleware, async (req, res) => {
+router.get('/', authMiddleware.requireAuth, async (req, res) => {
   try {
     const userId = req.user.id;
     const {
@@ -95,7 +95,7 @@ router.get('/', authMiddleware, async (req, res) => {
  * Mark notification as read
  * PATCH /api/notifications/:id/read
  */
-router.patch('/:id/read', authMiddleware, async (req, res) => {
+router.patch('/:id/read', authMiddleware.requireAuth, async (req, res) => {
   try {
     const userId = req.user.id;
     const { id } = req.params;
@@ -124,7 +124,7 @@ router.patch('/:id/read', authMiddleware, async (req, res) => {
  * Mark all notifications as read
  * PATCH /api/notifications/read-all
  */
-router.patch('/read-all', authMiddleware, async (req, res) => {
+router.patch('/read-all', authMiddleware.requireAuth, async (req, res) => {
   try {
     const userId = req.user.id;
 
@@ -148,7 +148,7 @@ router.patch('/read-all', authMiddleware, async (req, res) => {
  * Get notification preferences
  * GET /api/notifications/preferences
  */
-router.get('/preferences', authMiddleware, async (req, res) => {
+router.get('/preferences', authMiddleware.requireAuth, async (req, res) => {
   try {
     const userId = req.user.id;
     
@@ -194,7 +194,7 @@ router.get('/preferences', authMiddleware, async (req, res) => {
  * PUT /api/notifications/preferences
  */
 router.put('/preferences', 
-  authMiddleware, 
+  authMiddleware.requireAuth, 
   validate(notificationPreferencesSchema),
   async (req, res) => {
     try {
@@ -228,7 +228,7 @@ router.put('/preferences',
  * POST /api/notifications/push/subscribe
  */
 router.post('/push/subscribe',
-  authMiddleware,
+  authMiddleware.requireAuth,
   validate(pushSubscriptionSchema),
   async (req, res) => {
     try {
@@ -259,7 +259,7 @@ router.post('/push/subscribe',
  * Unsubscribe from push notifications
  * POST /api/notifications/push/unsubscribe
  */
-router.post('/push/unsubscribe', authMiddleware, async (req, res) => {
+router.post('/push/unsubscribe', authMiddleware.requireAuth, async (req, res) => {
   try {
     const userId = req.user.id;
     const { endpoint } = req.body;
@@ -325,7 +325,7 @@ router.get('/push/vapid-key', (req, res) => {
  * Send test notification (admin only)
  * POST /api/notifications/test
  */
-router.post('/test', authMiddleware, async (req, res) => {
+router.post('/test', authMiddleware.requireAuth, async (req, res) => {
   try {
     const userId = req.user.id;
 
@@ -361,7 +361,7 @@ router.post('/test', authMiddleware, async (req, res) => {
  * POST /api/notifications/workflow
  */
 router.post('/workflow',
-  authMiddleware,
+  authMiddleware.requireAuth,
   async (req, res) => {
     try {
       const { userId, workflowType, data } = req.body;

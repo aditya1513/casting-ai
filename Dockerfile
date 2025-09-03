@@ -14,7 +14,7 @@ COPY package*.json ./
 COPY tsconfig.json ./
 
 # Install dependencies
-RUN npm ci --only=production && \
+RUN npm ci --only=production --legacy-peer-deps && \
     npm cache clean --force
 
 # Copy Prisma schema
@@ -27,7 +27,7 @@ RUN npx prisma generate
 COPY src ./src
 
 # Build TypeScript
-RUN npm install --only=development && \
+RUN npm install --only=development --legacy-peer-deps && \
     npm run build
 
 # Stage 2: Production stage
@@ -47,7 +47,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install production dependencies only
-RUN npm ci --only=production && \
+RUN npm ci --only=production --legacy-peer-deps && \
     npm cache clean --force
 
 # Copy built application from builder stage

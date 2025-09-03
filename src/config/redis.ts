@@ -10,8 +10,8 @@ import { logger } from '../utils/logger';
 /**
  * Initialize Redis client with retry strategy
  */
-export const redis = new Redis(config.redis.url, {
-  password: config.redis.password,
+// Only include password if it's set and not empty
+const redisOptions: any = {
   retryStrategy: (times: number) => {
     const delay = Math.min(times * 50, 2000);
     return delay;
@@ -19,7 +19,14 @@ export const redis = new Redis(config.redis.url, {
   maxRetriesPerRequest: 3,
   enableReadyCheck: true,
   lazyConnect: false,
-});
+};
+
+// Only add password if it's provided and Redis requires it
+if (config.redis.password && config.redis.password !== '') {
+  redisOptions.password = config.redis.password;
+}
+
+export const redis = new Redis(config.redis.url, redisOptions);
 
 // Event handlers
 redis.on('connect', () => {
@@ -196,6 +203,11 @@ export const CacheKeys = {
   actor: (id: string) => `actor:${id}`,
   actorProfile: (userId: string) => `actor:profile:${userId}`,
   actorMedia: (actorId: string) => `actor:media:${actorId}`,
+  
+  // Talent related
+  talent: (id: string) => `talent:${id}`,
+  talentProfile: (userId: string) => `talent:profile:${userId}`,
+  talentMedia: (talentId: string) => `talent:media:${talentId}`,
   
   // Project related
   project: (id: string) => `project:${id}`,

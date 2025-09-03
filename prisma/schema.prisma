@@ -215,6 +215,10 @@ model User {
   passwordResets  PasswordReset[]
   auditLogs       AuditLog[]
   loginSessions   LoginSession[]
+  savedSearches   SavedSearch[]
+  talentBookmarks TalentBookmark[]
+  profileViews    ProfileView[]
+  calendarIntegrations CalendarIntegration[]
 
   @@index([email])
   @@index([phone])
@@ -434,6 +438,8 @@ model Talent {
 
   // AI and Search Features
   // embedding          Unsupported("vector(1536)")? // Vector embedding for AI matching (OpenAI ada-002 dimension) - Temporarily disabled
+  embeddingId        String?  @unique // Reference to vector in Pinecone
+  embeddingUpdatedAt DateTime? // Last time embedding was updated
   searchTags         String[] // Optimized search tags
   aiGeneratedSummary String?                      @db.Text // AI-generated profile summary
   lastAiAnalysis     DateTime?
@@ -448,12 +454,13 @@ model Talent {
   responseTime   Int   @default(0) // Average in hours
 
   // System Fields
-  isActive         Boolean   @default(true)
-  isPremium        Boolean   @default(false)
-  premiumExpiresAt DateTime?
-  lastActiveAt     DateTime  @default(now())
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
+  isActive          Boolean   @default(true)
+  isPremium         Boolean   @default(false)
+  premiumExpiresAt  DateTime?
+  lastActiveAt      DateTime  @default(now())
+  profileViewsCount Int       @default(0)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 
   // Relations
   user                User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -468,8 +475,10 @@ model Talent {
   achievements        Achievement[]
   preferredCharacters PreferredCharacter[]
   blockedProjects     BlockedProject[]
-  savedSearches       SavedSearch[]
   talentNotes         TalentNote[]
+  talentBookmarks     TalentBookmark[]
+  profileViews        ProfileView[]
+  auditionBookings    AuditionBooking[]
 
   @@index([userId])
   @@index([currentCity, currentState])
@@ -788,6 +797,7 @@ model Project {
   teamMembers     ProjectTeam[]
   documents       ProjectDocument[]
   updates         ProjectUpdate[]
+  auditionSlots   AuditionSlot[]
 
   @@index([status])
   @@index([type])
@@ -891,6 +901,7 @@ model Character {
   auditionScripts     AuditionScript[]
   characterReferences CharacterReference[]
   Audition            Audition[]
+  auditionSlots       AuditionSlot[]
 
   @@index([projectId])
   @@index([status])
@@ -991,6 +1002,7 @@ model Application {
   project        Project              @relation(fields: [projectId], references: [id], onDelete: Cascade)
   audition       Audition?
   communications ApplicationMessage[]
+  auditionBooking AuditionBooking?
 
   @@unique([actorId, roleId])
   @@unique([talentId, characterId])
@@ -1434,17 +1446,228 @@ model BlockedProject {
 
 // Saved Searches
 model SavedSearch {
-  id             String    @id @default(uuid())
-  talentId       String
-  name           String
-  searchCriteria Json // Stored search parameters
-  frequency      String? // Daily, weekly, instant
-  lastRun        DateTime?
-  createdAt      DateTime  @default(now())
+  id            String    @id @default(uuid())
+  userId        String
+  name          String
+  criteria      Json // Stored search parameters
+  receiveAlerts Boolean   @default(false)
+  lastRun       DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("saved_searches")
+}
+
+// Talent Bookmarks
+model TalentBookmark {
+  id        String   @id @default(uuid())
+  userId    String
+  talentId  String
+  createdAt DateTime @default(now())
+
+  // Relations
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  talent Talent @relation(fields: [talentId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, talentId])
+  @@index([userId])
+  @@index([talentId])
+  @@map("talent_bookmarks")
+}
+
+// Profile Views Analytics
+model ProfileView {
+  id       String   @id @default(uuid())
+  talentId String
+  viewerId String
+  viewedAt DateTime @default(now())
 
   // Relations
   talent Talent @relation(fields: [talentId], references: [id], onDelete: Cascade)
+  viewer User   @relation(fields: [viewerId], references: [id], onDelete: Cascade)
 
   @@index([talentId])
-  @@map("saved_searches")
+  @@index([viewerId])
+  @@index([viewedAt])
+  @@map("profile_views")
+}
+
+// Audition Scheduling - Time Slots
+model AuditionSlot {
+  id              String   @id @default(uuid())
+  projectId       String
+  characterId     String?
+  
+  // Scheduling Details
+  date            DateTime @db.Date
+  startTime       DateTime
+  endTime         DateTime
+  duration        Int      // in minutes
+  timeZone        String   @default("Asia/Kolkata")
+  
+  // Location Information
+  location        String
+  locationType    String   // physical, virtual, hybrid
+  venueAddress    String?  @db.Text
+  roomNumber      String?
+  meetingLink     String?  // For virtual auditions
+  meetingPassword String?  // Encrypted
+  
+  // Capacity Management
+  maxParticipants Int      @default(1)
+  bookedCount     Int      @default(0)
+  isAvailable     Boolean  @default(true)
+  
+  // Recurrence Settings
+  isRecurring     Boolean  @default(false)
+  recurrenceRule  String?  // RRULE format for recurring slots
+  recurrenceId    String?  // Group ID for recurring slots
+  
+  // Additional Settings
+  bufferTime      Int      @default(15) // Minutes between auditions
+  setupTime       Int      @default(0)  // Setup time needed
+  notes           String?  @db.Text
+  requirements    String[] // Special requirements
+  
+  // Calendar Integration
+  googleEventId   String?
+  outlookEventId  String?
+  icsData         String?  @db.Text // ICS format for calendar invites
+  
+  // System Fields
+  isActive        Boolean  @default(true)
+  createdBy       String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relations
+  project         Project            @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  character       Character?         @relation(fields: [characterId], references: [id])
+  bookings        AuditionBooking[]
+  
+  @@index([projectId])
+  @@index([date, startTime])
+  @@index([isAvailable])
+  @@index([recurrenceId])
+  @@map("audition_slots")
+}
+
+// Audition Bookings
+model AuditionBooking {
+  id              String   @id @default(uuid())
+  slotId          String
+  talentId        String
+  applicationId   String?  @unique
+  
+  // Booking Status
+  status          String   @default("confirmed") // confirmed, tentative, cancelled, completed, no_show
+  priority        String?  // high, medium, low
+  
+  // Confirmation Details
+  confirmationCode String  @unique
+  confirmedAt     DateTime?
+  confirmationSent Boolean @default(false)
+  
+  // Check-in Details
+  checkedIn       Boolean  @default(false)
+  checkedInAt     DateTime?
+  checkInCode     String?
+  
+  // Notes and Special Instructions
+  talentNotes     String?  @db.Text
+  internalNotes   String?  @db.Text
+  specialRequests String?  @db.Text
+  
+  // Reminders
+  remindersSent   Json?    // Track which reminders were sent
+  lastReminderAt  DateTime?
+  
+  // Rescheduling History
+  rescheduledFrom String?  // Previous booking ID
+  rescheduledAt   DateTime?
+  rescheduleCount Int      @default(0)
+  rescheduleReason String?
+  
+  // Cancellation Details
+  cancelledAt     DateTime?
+  cancelledBy     String?
+  cancellationReason String?
+  
+  // Waitlist Management
+  isWaitlisted    Boolean  @default(false)
+  waitlistPosition Int?
+  waitlistNotified Boolean @default(false)
+  
+  // Calendar Events
+  googleEventId   String?
+  outlookEventId  String?
+  calendarSynced  Boolean  @default(false)
+  
+  // System Fields
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relations
+  slot            AuditionSlot     @relation(fields: [slotId], references: [id], onDelete: Cascade)
+  talent          Talent           @relation(fields: [talentId], references: [id], onDelete: Cascade)
+  application     Application?     @relation(fields: [applicationId], references: [id])
+  
+  @@index([slotId])
+  @@index([talentId])
+  @@index([status])
+  @@index([confirmationCode])
+  @@map("audition_bookings")
+}
+
+// Calendar Integration Settings
+model CalendarIntegration {
+  id              String   @id @default(uuid())
+  userId          String
+  
+  // Provider Information
+  provider        String   // google, outlook, apple
+  accountEmail    String
+  accountName     String?
+  
+  // OAuth Tokens
+  accessToken     String   @db.Text // Encrypted
+  refreshToken    String?  @db.Text // Encrypted
+  tokenExpiry     DateTime?
+  scope           String[] // Permissions granted
+  
+  // Sync Settings
+  syncEnabled     Boolean  @default(true)
+  syncDirection   String   @default("bidirectional") // bidirectional, to_external, from_external
+  syncFrequency   Int      @default(15) // Minutes between syncs
+  lastSyncAt      DateTime?
+  lastSyncStatus  String?
+  lastSyncError   String?
+  
+  // Calendar Settings
+  primaryCalendarId String?
+  calendarList    Json?    // List of available calendars
+  defaultReminders Json?    // Default reminder settings
+  
+  // Preferences
+  autoAcceptInvites Boolean @default(false)
+  blockConflicts  Boolean  @default(true)
+  includePrivate  Boolean  @default(false)
+  colorCode       String?  // Color for events
+  
+  // System Fields
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relations
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, provider])
+  @@index([userId])
+  @@index([provider])
+  @@map("calendar_integrations")
 }

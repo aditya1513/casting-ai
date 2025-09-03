@@ -50,6 +50,7 @@ const envSchema = z.object({
   AWS_S3_BUCKET: z.string().optional(),
   
   // AI/ML Service Configuration
+  OPENAI_API_KEY: z.string().optional(),
   ANTHROPIC_API_KEY: z.string().optional(),
   PINECONE_API_KEY: z.string().optional(),
   PINECONE_ENVIRONMENT: z.string().optional(),
@@ -150,10 +151,26 @@ export const config = {
   
   // AI/ML Configuration
   ai: {
+    openaiApiKey: env.OPENAI_API_KEY,
     anthropicApiKey: env.ANTHROPIC_API_KEY,
     pineconeApiKey: env.PINECONE_API_KEY,
     pineconeEnvironment: env.PINECONE_ENVIRONMENT,
     pineconeProjectId: env.PINECONE_PROJECT_ID,
+  },
+  
+  // Separate configs for services
+  openai: {
+    apiKey: env.OPENAI_API_KEY,
+  },
+  
+  anthropic: {
+    apiKey: env.ANTHROPIC_API_KEY,
+  },
+  
+  pinecone: {
+    apiKey: env.PINECONE_API_KEY!,
+    environment: env.PINECONE_ENVIRONMENT,
+    projectId: env.PINECONE_PROJECT_ID,
   },
   
   // Legacy placeholder - can be removed if not needed

@@ -211,10 +211,11 @@ export const csrfProtection = csrf({
     maxAge: CSRF_TOKEN_EXPIRY * 1000,
   },
   ignoreMethods: ['GET', 'HEAD', 'OPTIONS'],
-  value: (req: Request) => {
+  value: (req: any) => {
     return req.get(CSRF_HEADER_NAME) || 
-           req.body[CSRF_BODY_NAME] || 
-           req.query[CSRF_BODY_NAME];
+           req.body?.[CSRF_BODY_NAME] || 
+           req.query?.[CSRF_BODY_NAME] || 
+           '';
   },
 });
 

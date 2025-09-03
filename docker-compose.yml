@@ -12,7 +12,7 @@ services:
       POSTGRES_DB: castmatch_db
       # Remove host auth method to use password authentication properly
       POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=en_US.utf8"
-      # Use trust authentication for local connections 
+      # Use trust authentication for local development (no password required)
       POSTGRES_HOST_AUTH_METHOD: trust
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -44,31 +44,32 @@ services:
     networks:
       - castmatch-network
 
-  # Application (commented out by default - use for production)
-  # app:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   container_name: castmatch-backend
-  #   restart: unless-stopped
-  #   ports:
-  #     - "5000:5000"
-  #   depends_on:
-  #     postgres:
-  #       condition: service_healthy
-  #     redis:
-  #       condition: service_healthy
-  #   environment:
-  #     NODE_ENV: production
-  #     DATABASE_URL: postgresql://postgres:castmatch123@postgres:5432/castmatch_db
-  #     REDIS_URL: redis://:castmatch_redis_password@redis:6379
-  #     JWT_SECRET: ${JWT_SECRET}
-  #     CORS_ORIGINS: ${CORS_ORIGINS}
-  #   volumes:
-  #     - ./logs:/app/logs
-  #     - ./uploads:/app/uploads
-  #   networks:
-  #     - castmatch-network
+  # Application (for development testing)
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: castmatch-backend
+    restart: unless-stopped
+    ports:
+      - "5003:5002"  # Changed port to avoid conflict
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      NODE_ENV: development
+      PORT: 5002
+      DATABASE_URL: postgresql://postgres:castmatch123@postgres:5432/castmatch_db
+      REDIS_URL: redis://:castmatch_redis_password@redis:6379
+      JWT_SECRET: u3776dZsWJYU3EnvuNDcmOjfKWaIcuWGU+F6WaW+7GQMC9kkCH3Hd3hZlQBWwDZCJi87ZEJ1ckbLsfOEoSVBpw==
+      CORS_ORIGINS: http://localhost:3000,http://localhost:3001
+    volumes:
+      - ./logs:/app/logs
+      - ./uploads:/app/uploads
+    networks:
+      - castmatch-network
 
   # PgAdmin (optional - for database management)
   pgadmin:
