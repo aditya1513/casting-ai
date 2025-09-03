@@ -1,0 +1,120 @@
+{
+    "endpoint": "/health",
+    "method": "GET",
+    "status": "FAIL",
+    "response_time_ms": ,
+    "description": "Basic health check",
+    "expected": "200",
+    "actual": "",
+    "timestamp": "2025-09-03T02:36:50.3NZ"
+}
+{
+    "endpoint": "/health/live",
+    "method": "GET",
+    "status": "FAIL",
+    "response_time_ms": ,
+    "description": "Liveness probe",
+    "expected": "200",
+    "actual": "",
+    "timestamp": "2025-09-03T02:36:50.3NZ"
+}
+{
+    "endpoint": "/health/ready",
+    "method": "GET",
+    "status": "FAIL",
+    "response_time_ms": ,
+    "description": "Readiness check",
+    "expected": "503",
+    "actual": "",
+    "timestamp": "2025-09-03T02:36:51.3NZ"
+}
+{
+    "endpoint": "/auth/register",
+    "method": "POST",
+    "status": "FAIL",
+    "response_time_ms": ,
+    "description": "Valid payload structure",
+    "expected": "500 or 429",
+    "actual": "",
+    "timestamp": "2025-09-03T02:36:51.3NZ"
+}
+{
+    "endpoint": "/auth/register",
+    "method": "POST",
+    "status": "FAIL",
+    "response_time_ms": ,
+    "description": "Invalid email validation",
+    "expected": "400/422",
+    "actual": "",
+    "timestamp": "2025-09-03T02:36:53.3NZ"
+}
+{
+    "endpoint": "/auth/register",
+    "method": "POST",
+    "status": "FAIL",
+    "response_time_ms": ,
+    "description": "Weak password validation",
+    "expected": "400/422",
+    "actual": "",
+    "timestamp": "2025-09-03T02:36:55.3NZ"
+}
+{
+    "endpoint": "/auth/register",
+    "method": "POST",
+    "status": "FAIL",
+    "response_time_ms": ,
+    "description": "Missing fields validation",
+    "expected": "400/422",
+    "actual": "",
+    "timestamp": "2025-09-03T02:36:57.3NZ"
+}
+{
+    "endpoint": "/auth/login",
+    "method": "POST",
+    "status": "FAIL",
+    "response_time_ms": ,
+    "description": "Login endpoint validation",
+    "expected": "400/401/500",
+    "actual": "",
+    "timestamp": "2025-09-03T02:36:59.3NZ"
+}
+{
+    "endpoint": "/nonexistent-endpoint",
+    "method": "GET",
+    "status": "FAIL",
+    "response_time_ms": ,
+    "description": "404 route handling",
+    "expected": "404",
+    "actual": "",
+    "timestamp": "2025-09-03T02:37:01.3NZ"
+}
+{
+    "endpoint": "/health",
+    "method": "DELETE",
+    "status": "FAIL",
+    "response_time_ms": ,
+    "description": "Invalid method handling",
+    "expected": "404/405",
+    "actual": "",
+    "timestamp": "2025-09-03T02:37:01.3NZ"
+}
+{
+    "endpoint": "/auth/login",
+    "method": "POST",
+    "status": "FAIL",
+    "response_time_ms": ,
+    "description": "Malformed JSON handling",
+    "expected": "400",
+    "actual": "",
+    "timestamp": "2025-09-03T02:37:01.3NZ"
+}
+{
+    "endpoint": "/auth/register",
+    "method": "POST",
+    "status": "FAIL",
+    "response_time_ms": ,
+    "description": "Large payload handling",
+    "expected": "400/413/422",
+    "actual": "",
+    "timestamp": "2025-09-03T02:37:03.3NZ"
+}

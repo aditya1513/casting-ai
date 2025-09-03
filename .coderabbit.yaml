@@ -1,0 +1,46 @@
+# CodeRabbit Configuration
+# Documentation: https://docs.coderabbit.ai/
+
+reviews:
+  # Enable automatic code reviews on pull requests
+  auto_review:
+    enabled: true
+    
+  # Review new commits in existing PRs
+  review_status:
+    enabled: true
+    
+  # High-level summary of the PR
+  high_level_summary:
+    enabled: true
+    
+  # Poem about the PR (fun feature)
+  poem:
+    enabled: false
+    
+  # Review effort estimate
+  review_effort:
+    enabled: true
+    
+  # Enable path filters
+  path_filters:
+    excluded:
+      - "**/*.md"
+      - "**/*.json"
+      - "**/package-lock.json"
+      - "**/yarn.lock"
+      
+  # Language-specific settings
+  language_settings:
+    javascript:
+      enabled: true
+    typescript:
+      enabled: true
+    python:
+      enabled: true
+      
+# Chat settings
+chat:
+  # Enable chat responses on PR comments
+  auto_reply:
+    enabled: true
