@@ -44,8 +44,8 @@
   "author": "CastMatch Team",
   "license": "MIT",
   "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=9.0.0"
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
@@ -107,7 +107,7 @@
     "passport-jwt": "^4.0.1",
     "pg": "^8.16.3",
     "playwright": "^1.55.0",
-    "posthog-node": "^5.8.1",
+    "posthog-node": "^3.6.3",
     "prom-client": "^15.1.3",
     "qrcode": "^1.5.4",
     "rate-limit-redis": "^4.2.2",
@@ -123,7 +123,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@faker-js/faker": "^10.0.0",
+    "@faker-js/faker": "^8.4.1",
     "@types/bcryptjs": "^2.4.6",
     "@types/compression": "^1.7.5",
     "@types/cors": "^2.8.17",
