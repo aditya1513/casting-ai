@@ -1,0 +1,41 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+# CodeRabbit Configuration
+# Documentation: https://docs.coderabbit.ai/
+
+# Review settings
+reviews:
+  # Enable automatic code reviews on pull requests
+  auto_review: true
+  
+  # Review new commits in existing PRs
+  review_status: true
+  
+  # High-level summary of the PR
+  high_level_summary: true
+  
+  # Poem about the PR (fun feature)
+  poem: false
+  
+  # Review effort estimate
+  review_effort: true
+  
+  # Enable path filters - excluding certain files
+  path_filters:
+    - "!**/*.md"
+    - "!**/*.json"
+    - "!**/package-lock.json"
+    - "!**/yarn.lock"
+    - "!**/node_modules/**"
+    - "!**/.env*"
+      
+# Language-specific settings
+language_settings:
+  javascript_and_typescript:
+    enable_eslint: true
+  python:
+    enable_pylint: true
+      
+# Chat settings
+chat:
+  # Enable chat responses on PR comments
+  auto_reply: true
