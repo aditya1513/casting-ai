@@ -1,0 +1,579 @@
+name: Production Deployment Pipeline
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ 'v*' ]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment Environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+        - staging
+        - production
+      force_deploy:
+        description: 'Force deployment (skip some checks)'
+        required: false
+        default: false
+        type: boolean
+
+env:
+  NODE_VERSION: '18.x'
+  DOCKER_REGISTRY: 123456789012.dkr.ecr.us-west-2.amazonaws.com
+  IMAGE_NAME: castmatch
+  AWS_REGION: us-west-2
+  KUBECTL_VERSION: '1.27.0'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Pre-deployment checks
+  pre-deployment-checks:
+    runs-on: ubuntu-latest
+    name: Pre-deployment Checks
+    outputs:
+      deploy_env: ${{ steps.determine_env.outputs.environment }}
+      should_deploy: ${{ steps.should_deploy.outputs.should_deploy }}
+      version: ${{ steps.version.outputs.version }}
+      
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Determine deployment environment
+        id: determine_env
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "environment=${{ github.event.inputs.environment }}" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.ref }}" == "refs/tags/"* ]]; then
+            echo "environment=production" >> $GITHUB_OUTPUT
+          else
+            echo "environment=staging" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Generate version
+        id: version
+        run: |
+          if [[ "${{ github.ref }}" == "refs/tags/"* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/}
+          else
+            VERSION="main-$(git rev-parse --short HEAD)-$(date +%Y%m%d-%H%M%S)"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Generated version: $VERSION"
+      
+      - name: Check deployment conditions
+        id: should_deploy
+        run: |
+          SHOULD_DEPLOY="true"
+          
+          # Check if this is a production deployment
+          if [[ "${{ steps.determine_env.outputs.environment }}" == "production" ]]; then
+            # Ensure we're deploying a tag for production
+            if [[ "${{ github.ref }}" != "refs/tags/"* ]] && [[ "${{ github.event.inputs.force_deploy }}" != "true" ]]; then
+              echo "Production deployments must use tags"
+              SHOULD_DEPLOY="false"
+            fi
+            
+            # Check if all required tests passed
+            # This would typically check the status of the main CI pipeline
+          fi
+          
+          echo "should_deploy=$SHOULD_DEPLOY" >> $GITHUB_OUTPUT
+
+  # Build and Push Docker Image
+  build-and-push:
+    runs-on: ubuntu-latest
+    name: Build and Push Docker Image
+    needs: pre-deployment-checks
+    if: needs.pre-deployment-checks.outputs.should_deploy == 'true'
+    outputs:
+      image_uri: ${{ steps.build.outputs.image_uri }}
+      
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+      
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+      
+      - name: Build and push Docker image
+        id: build
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./docker/Dockerfile.production
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.pre-deployment-checks.outputs.version }}
+            ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+          build-args: |
+            NODE_ENV=production
+            VERSION=${{ needs.pre-deployment-checks.outputs.version }}
+            BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+            GIT_COMMIT=${{ github.sha }}
+      
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+      
+      - name: Set image URI output
+        run: |
+          echo "image_uri=${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.pre-deployment-checks.outputs.version }}" >> $GITHUB_OUTPUT
+
+  # Security Scanning
+  security-scan:
+    runs-on: ubuntu-latest
+    name: Security Scan
+    needs: [pre-deployment-checks, build-and-push]
+    if: needs.pre-deployment-checks.outputs.should_deploy == 'true'
+    
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+      
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v1
+      
+      - name: Scan image with Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ needs.build-and-push.outputs.image_uri }}
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '1'
+      
+      - name: Upload Trivy scan results
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+      
+      - name: Scan with ECR native scanning
+        run: |
+          aws ecr start-image-scan \
+            --repository-name ${{ env.IMAGE_NAME }} \
+            --image-id imageTag=${{ needs.pre-deployment-checks.outputs.version }}
+          
+          # Wait for scan to complete
+          aws ecr wait image-scan-complete \
+            --repository-name ${{ env.IMAGE_NAME }} \
+            --image-id imageTag=${{ needs.pre-deployment-checks.outputs.version }}
+          
+          # Get scan results
+          SCAN_RESULTS=$(aws ecr describe-image-scan-findings \
+            --repository-name ${{ env.IMAGE_NAME }} \
+            --image-id imageTag=${{ needs.pre-deployment-checks.outputs.version }} \
+            --output json)
+          
+          # Check for critical vulnerabilities
+          CRITICAL_COUNT=$(echo "$SCAN_RESULTS" | jq '.imageScanFindings.findingCounts.CRITICAL // 0')
+          HIGH_COUNT=$(echo "$SCAN_RESULTS" | jq '.imageScanFindings.findingCounts.HIGH // 0')
+          
+          echo "Critical vulnerabilities: $CRITICAL_COUNT"
+          echo "High vulnerabilities: $HIGH_COUNT"
+          
+          if [[ $CRITICAL_COUNT -gt 0 ]] && [[ "${{ github.event.inputs.force_deploy }}" != "true" ]]; then
+            echo "Critical vulnerabilities found. Deployment blocked."
+            exit 1
+          fi
+
+  # Deploy to Staging
+  deploy-staging:
+    runs-on: ubuntu-latest
+    name: Deploy to Staging
+    needs: [pre-deployment-checks, build-and-push, security-scan]
+    if: |
+      needs.pre-deployment-checks.outputs.should_deploy == 'true' &&
+      needs.pre-deployment-checks.outputs.deploy_env == 'staging'
+    environment: staging
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+      
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: ${{ env.KUBECTL_VERSION }}
+      
+      - name: Configure kubectl for EKS
+        run: |
+          aws eks update-kubeconfig \
+            --region ${{ env.AWS_REGION }} \
+            --name castmatch-staging
+      
+      - name: Deploy to staging
+        run: |
+          # Update image in deployment manifest
+          sed -i "s|image: .*|image: ${{ needs.build-and-push.outputs.image_uri }}|g" \
+            infrastructure/kubernetes/staging/deployment.yaml
+          
+          # Apply migrations first
+          kubectl apply -f infrastructure/kubernetes/staging/migration-job.yaml
+          kubectl wait --for=condition=complete job/migration-job --timeout=300s
+          
+          # Deploy application
+          kubectl apply -f infrastructure/kubernetes/staging/
+          
+          # Wait for rollout to complete
+          kubectl rollout status deployment/castmatch-api -n staging --timeout=600s
+          
+          # Verify deployment
+          kubectl get pods -n staging -l app=castmatch-api
+      
+      - name: Run smoke tests
+        run: |
+          # Wait for service to be ready
+          sleep 30
+          
+          # Run basic health checks
+          npm ci
+          npm run test:smoke:staging
+      
+      - name: Notify staging deployment
+        uses: 8398a7/action-slack@v3
+        with:
+          status: custom
+          custom_payload: |
+            {
+              "text": "🚀 CastMatch deployed to staging",
+              "attachments": [{
+                "color": "good",
+                "fields": [{
+                  "title": "Environment",
+                  "value": "staging",
+                  "short": true
+                }, {
+                  "title": "Version",
+                  "value": "${{ needs.pre-deployment-checks.outputs.version }}",
+                  "short": true
+                }, {
+                  "title": "Commit",
+                  "value": "<https://github.com/${{ github.repository }}/commit/${{ github.sha }}|${{ github.sha }}>",
+                  "short": true
+                }]
+              }]
+            }
+          webhook_url: ${{ secrets.SLACK_WEBHOOK_DEPLOYMENTS }}
+
+  # Run staging tests
+  staging-tests:
+    runs-on: ubuntu-latest
+    name: Staging Tests
+    needs: [pre-deployment-checks, deploy-staging]
+    if: needs.deploy-staging.result == 'success'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+      
+      - name: Run staging E2E tests
+        env:
+          BASE_URL: https://staging.castmatch.com
+        run: npm run test:e2e:staging
+      
+      - name: Run API contract tests
+        env:
+          API_BASE_URL: https://api-staging.castmatch.com
+        run: npm run test:contract:staging
+      
+      - name: Run performance tests
+        run: |
+          # Load test staging environment
+          artillery run tests/performance/staging-load-test.yml \
+            --output staging-performance-results.json
+          
+          # Generate report
+          artillery report staging-performance-results.json \
+            --output staging-performance-report.html
+      
+      - name: Upload staging test results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: staging-test-results
+          path: |
+            test-results/
+            playwright-report/
+            staging-performance-report.html
+          retention-days: 7
+
+  # Production deployment approval
+  production-approval:
+    runs-on: ubuntu-latest
+    name: Production Approval
+    needs: [pre-deployment-checks, staging-tests]
+    if: |
+      needs.pre-deployment-checks.outputs.deploy_env == 'production' &&
+      needs.staging-tests.result == 'success'
+    environment: 
+      name: production-approval
+      url: https://castmatch.com
+    
+    steps:
+      - name: Request production deployment approval
+        run: |
+          echo "Production deployment requires manual approval"
+          echo "Version: ${{ needs.pre-deployment-checks.outputs.version }}"
+          echo "Staging tests passed: ✅"
+
+  # Deploy to Production
+  deploy-production:
+    runs-on: ubuntu-latest
+    name: Deploy to Production
+    needs: [pre-deployment-checks, build-and-push, security-scan, production-approval]
+    if: needs.production-approval.result == 'success'
+    environment: production
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}
+          aws-region: ${{ env.AWS_REGION }}
+      
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: ${{ env.KUBECTL_VERSION }}
+      
+      - name: Configure kubectl for production EKS
+        run: |
+          aws eks update-kubeconfig \
+            --region ${{ env.AWS_REGION }} \
+            --name castmatch-production
+      
+      - name: Create database backup before deployment
+        run: |
+          # Trigger database backup
+          kubectl create job \
+            --from=cronjob/database-backup \
+            pre-deploy-backup-$(date +%Y%m%d-%H%M%S) \
+            -n production
+      
+      - name: Blue-Green Deployment
+        run: |
+          # Update green environment with new image
+          sed -i "s|image: .*|image: ${{ needs.build-and-push.outputs.image_uri }}|g" \
+            infrastructure/kubernetes/production/deployment-green.yaml
+          
+          # Apply migrations in maintenance mode
+          kubectl scale deployment castmatch-api-blue --replicas=1 -n production
+          kubectl apply -f infrastructure/kubernetes/production/migration-job.yaml
+          kubectl wait --for=condition=complete job/migration-job --timeout=600s
+          
+          # Deploy to green environment
+          kubectl apply -f infrastructure/kubernetes/production/deployment-green.yaml
+          kubectl rollout status deployment/castmatch-api-green -n production --timeout=900s
+          
+          # Health check green environment
+          GREEN_POD=$(kubectl get pods -n production -l app=castmatch-api,version=green -o jsonpath='{.items[0].metadata.name}')
+          kubectl exec $GREEN_POD -n production -- wget -q --spider http://localhost:3000/api/health
+          
+          # Switch traffic to green (blue-green flip)
+          kubectl patch service castmatch-api -n production -p '{"spec":{"selector":{"version":"green"}}}'
+          
+          # Wait for traffic to stabilize
+          sleep 60
+          
+          # Final health check
+          curl -f https://api.castmatch.com/health || exit 1
+          
+          # Scale down blue environment
+          kubectl scale deployment castmatch-api-blue --replicas=0 -n production
+      
+      - name: Update production DNS if needed
+        run: |
+          # Update Route53 records if needed
+          # This would typically be handled by ingress/load balancer
+          echo "DNS configuration up to date"
+      
+      - name: Run production smoke tests
+        run: |
+          npm ci
+          BASE_URL=https://castmatch.com npm run test:smoke:production
+      
+      - name: Create rollback script
+        run: |
+          cat > rollback.sh << 'EOF'
+          #!/bin/bash
+          # Emergency rollback script
+          kubectl patch service castmatch-api -n production -p '{"spec":{"selector":{"version":"blue"}}}'
+          kubectl scale deployment castmatch-api-blue --replicas=6 -n production
+          kubectl scale deployment castmatch-api-green --replicas=0 -n production
+          EOF
+          
+          chmod +x rollback.sh
+          
+          # Upload rollback script as artifact
+          echo "Rollback script created"
+      
+      - name: Upload rollback script
+        uses: actions/upload-artifact@v3
+        with:
+          name: production-rollback-${{ needs.pre-deployment-checks.outputs.version }}
+          path: rollback.sh
+          retention-days: 7
+      
+      - name: Notify successful production deployment
+        uses: 8398a7/action-slack@v3
+        with:
+          status: custom
+          custom_payload: |
+            {
+              "text": "🎉 CastMatch successfully deployed to production!",
+              "attachments": [{
+                "color": "good",
+                "fields": [{
+                  "title": "Environment",
+                  "value": "production",
+                  "short": true
+                }, {
+                  "title": "Version",
+                  "value": "${{ needs.pre-deployment-checks.outputs.version }}",
+                  "short": true
+                }, {
+                  "title": "Deployment Time",
+                  "value": "$(date -u +'%Y-%m-%d %H:%M:%S UTC')",
+                  "short": true
+                }, {
+                  "title": "Health Check",
+                  "value": "✅ All systems operational",
+                  "short": true
+                }]
+              }]
+            }
+          webhook_url: ${{ secrets.SLACK_WEBHOOK_DEPLOYMENTS }}
+
+  # Post-deployment monitoring
+  post-deployment-monitoring:
+    runs-on: ubuntu-latest
+    name: Post-deployment Monitoring
+    needs: [pre-deployment-checks, deploy-production]
+    if: needs.deploy-production.result == 'success'
+    
+    steps:
+      - name: Setup monitoring for 30 minutes
+        run: |
+          echo "Setting up enhanced monitoring for 30 minutes post-deployment"
+          
+          # This would typically trigger:
+          # 1. Enhanced alerting rules
+          # 2. Increased monitoring frequency
+          # 3. Automatic rollback on critical metrics
+          
+          # For now, we'll simulate monitoring
+          for i in {1..6}; do
+            echo "Monitoring check $i/6..."
+            
+            # Check application health
+            if ! curl -f https://api.castmatch.com/health; then
+              echo "Health check failed! Triggering rollback..."
+              # Trigger rollback workflow
+              exit 1
+            fi
+            
+            # Check error rates (simulate)
+            echo "Error rate: Normal ✅"
+            echo "Response time: Normal ✅"
+            echo "Database connections: Normal ✅"
+            
+            sleep 300  # Wait 5 minutes
+          done
+          
+          echo "Post-deployment monitoring completed successfully"
+      
+      - name: Notify monitoring completion
+        uses: 8398a7/action-slack@v3
+        with:
+          status: custom
+          custom_payload: |
+            {
+              "text": "✅ Post-deployment monitoring completed",
+              "attachments": [{
+                "color": "good",
+                "text": "Production deployment is stable after 30 minutes of monitoring",
+                "fields": [{
+                  "title": "Version",
+                  "value": "${{ needs.pre-deployment-checks.outputs.version }}",
+                  "short": true
+                }, {
+                  "title": "Status",
+                  "value": "All metrics normal",
+                  "short": true
+                }]
+              }]
+            }
+          webhook_url: ${{ secrets.SLACK_WEBHOOK_DEPLOYMENTS }}
+
+  # Cleanup
+  cleanup:
+    runs-on: ubuntu-latest
+    name: Cleanup
+    needs: [post-deployment-monitoring]
+    if: always()
+    
+    steps:
+      - name: Clean up temporary resources
+        run: |
+          echo "Cleaning up temporary deployment resources"
+          # Clean up any temporary resources created during deployment

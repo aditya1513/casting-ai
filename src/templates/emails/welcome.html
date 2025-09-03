@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to CastMatch</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 36px;
+            font-weight: 700;
+        }
+        .header p {
+            margin: 0;
+            font-size: 18px;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .greeting {
+            font-size: 24px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        .welcome-message {
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+        .cta-button {
+            display: inline-block;
+            padding: 15px 35px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        .features {
+            background: #f8f9ff;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 30px 0;
+        }
+        .features h3 {
+            color: #667eea;
+            margin-top: 0;
+            font-size: 20px;
+        }
+        .features ul {
+            list-style: none;
+            padding: 0;
+        }
+        .features li {
+            padding: 8px 0;
+            position: relative;
+            padding-left: 25px;
+        }
+        .features li:before {
+            content: "✓";
+            color: #667eea;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+        .getting-started {
+            background: #fff7e6;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid #ff9f43;
+            margin: 30px 0;
+        }
+        .getting-started h3 {
+            color: #d35400;
+            margin-top: 0;
+        }
+        .getting-started ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .verification-notice {
+            background: #e8f5e8;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #27ae60;
+            margin: 30px 0;
+            text-align: center;
+        }
+        .footer {
+            background: #34495e;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .footer p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+        .social-links {
+            margin: 20px 0;
+        }
+        .social-links a {
+            display: inline-block;
+            margin: 0 10px;
+            color: #ecf0f1;
+            text-decoration: none;
+        }
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+            }
+            .header,
+            .content {
+                padding: 20px;
+            }
+            .header h1 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Welcome to CastMatch!</h1>
+            <p>Your journey in Mumbai's OTT industry starts here</p>
+        </div>
+        
+        <div class="content">
+            <div class="greeting">Hello {{firstName}},</div>
+            
+            <p class="welcome-message">
+                Welcome to CastMatch, the AI-powered casting platform that's revolutionizing how talent connects with opportunities in Mumbai's thriving OTT industry!
+            </p>
+
+            {{#verificationRequired}}
+            <div class="verification-notice">
+                <h3>📧 Verify Your Email</h3>
+                <p>Please verify your email address to unlock all features and start connecting with industry professionals.</p>
+                <div style="margin: 20px 0;">
+                    <a href="{{verificationUrl}}" class="cta-button">Verify Email Address</a>
+                </div>
+            </div>
+            {{/verificationRequired}}
+
+            <div class="features">
+                <h3>🚀 As a {{role}}, you can:</h3>
+                <ul>
+                    {{#isActor}}
+                    <li>Create a stunning professional portfolio</li>
+                    <li>Apply for exclusive casting calls</li>
+                    <li>Get AI-powered role recommendations</li>
+                    <li>Track your audition progress</li>
+                    <li>Connect directly with casting directors</li>
+                    {{/isActor}}
+                    {{#isCastingDirector}}
+                    <li>Post casting calls and find perfect matches</li>
+                    <li>Use AI to discover hidden talent</li>
+                    <li>Manage auditions and callbacks efficiently</li>
+                    <li>Collaborate with production teams</li>
+                    <li>Access detailed talent analytics</li>
+                    {{/isCastingDirector}}
+                    {{#isProducer}}
+                    <li>Oversee casting for multiple projects</li>
+                    <li>Access comprehensive talent insights</li>
+                    <li>Manage production budgets and schedules</li>
+                    <li>Connect with verified industry professionals</li>
+                    <li>Monitor project progress in real-time</li>
+                    {{/isProducer}}
+                </ul>
+            </div>
+
+            <div class="getting-started">
+                <h3>🎯 Get Started in 4 Simple Steps:</h3>
+                <ol>
+                    <li>Complete your profile with professional details</li>
+                    <li>Upload high-quality photos and showreels</li>
+                    <li>Set your availability and preferences</li>
+                    <li>Start exploring opportunities and connections!</li>
+                </ol>
+            </div>
+
+            <div style="text-align: center; margin: 40px 0;">
+                <a href="{{dashboardUrl}}" class="cta-button">
+                    🚀 Launch Your Dashboard
+                </a>
+            </div>
+
+            <div style="background: #f1f2f6; padding: 20px; border-radius: 10px; margin: 30px 0;">
+                <h3 style="color: #2f3640; margin-top: 0;">💡 Pro Tips:</h3>
+                <ul style="margin: 0; padding-left: 20px; color: #57606f;">
+                    <li>Complete profiles get 5x more visibility</li>
+                    <li>Upload multiple photos to showcase your range</li>
+                    <li>Keep your availability updated for better opportunities</li>
+                    <li>Respond quickly to casting invitations</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="social-links">
+                <a href="{{facebookUrl}}">Facebook</a>
+                <a href="{{twitterUrl}}">Twitter</a>
+                <a href="{{instagramUrl}}">Instagram</a>
+                <a href="{{linkedinUrl}}">LinkedIn</a>
+            </div>
+            <p>© {{currentYear}} CastMatch. All rights reserved.</p>
+            <p>Mumbai's Premier AI-Powered Casting Platform</p>
+            <p>Need help? Contact us at <a href="mailto:support@castmatch.com" style="color: #ecf0f1;">support@castmatch.com</a></p>
+        </div>
+    </div>
+</body>
+</html>

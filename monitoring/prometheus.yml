@@ -1,0 +1,253 @@
+# Prometheus Configuration for CastMatch Production
+# Version: 2.45.0
+# Last Updated: 2025-09-02
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    environment: 'production'
+    cluster: 'castmatch-prod'
+    region: 'us-west-2'
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - alertmanager:9093
+      timeout: 10s
+      api_version: v2
+
+# Load rules once and periodically evaluate them
+rule_files:
+  - "/etc/prometheus/rules/*.yml"
+  - "/etc/prometheus/alerts/*.yml"
+
+# Scrape configurations
+scrape_configs:
+  # Prometheus self-monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+    metrics_path: '/metrics'
+
+  # Node Exporter - System metrics
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets:
+          - 'node-exporter-1:9100'
+          - 'node-exporter-2:9100'
+          - 'node-exporter-3:9100'
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+        regex: '([^:]+):.*'
+        replacement: '${1}'
+
+  # PostgreSQL Exporter
+  - job_name: 'postgresql'
+    static_configs:
+      - targets:
+          - 'postgres-exporter:9187'
+    params:
+      db: ['castmatch_production']
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: postgres-exporter:9187
+
+  # PgBouncer Exporter
+  - job_name: 'pgbouncer'
+    static_configs:
+      - targets:
+          - 'pgbouncer-exporter:9127'
+
+  # Redis Exporter
+  - job_name: 'redis'
+    static_configs:
+      - targets:
+          - 'redis-exporter:9121'
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: redis_addr
+        regex: '([^:]+):.*'
+        replacement: '${1}:6379'
+
+  # Application Metrics (Next.js/Node.js)
+  - job_name: 'castmatch-api'
+    kubernetes_sd_configs:
+      - role: pod
+        namespaces:
+          names:
+            - production
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+        action: keep
+        regex: true
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+        action: replace
+        target_label: __metrics_path__
+        regex: (.+)
+      - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+        action: replace
+        regex: ([^:]+)(?::\d+)?;(\d+)
+        replacement: $1:$2
+        target_label: __address__
+      - action: labelmap
+        regex: __meta_kubernetes_pod_label_(.+)
+      - source_labels: [__meta_kubernetes_namespace]
+        action: replace
+        target_label: kubernetes_namespace
+      - source_labels: [__meta_kubernetes_pod_name]
+        action: replace
+        target_label: kubernetes_pod_name
+
+  # NGINX Ingress Controller
+  - job_name: 'nginx-ingress'
+    kubernetes_sd_configs:
+      - role: pod
+        namespaces:
+          names:
+            - ingress-nginx
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_pod_container_port_number]
+        action: keep
+        regex: "10254"
+
+  # AWS CloudWatch Exporter
+  - job_name: 'cloudwatch'
+    static_configs:
+      - targets: ['cloudwatch-exporter:9106']
+    metrics_path: '/metrics'
+    params:
+      region: ['us-west-2']
+      metrics:
+        - aws_namespace: 'AWS/RDS'
+          aws_dimensions: ['DBInstanceIdentifier']
+          aws_metric_name: 'CPUUtilization'
+          aws_statistics: ['Average', 'Maximum']
+        - aws_namespace: 'AWS/RDS'
+          aws_dimensions: ['DBInstanceIdentifier']
+          aws_metric_name: 'DatabaseConnections'
+          aws_statistics: ['Average', 'Maximum']
+        - aws_namespace: 'AWS/RDS'
+          aws_dimensions: ['DBInstanceIdentifier']
+          aws_metric_name: 'FreeableMemory'
+          aws_statistics: ['Average', 'Minimum']
+        - aws_namespace: 'AWS/ElastiCache'
+          aws_dimensions: ['CacheClusterId']
+          aws_metric_name: 'CPUUtilization'
+          aws_statistics: ['Average', 'Maximum']
+        - aws_namespace: 'AWS/ElastiCache'
+          aws_dimensions: ['CacheClusterId']
+          aws_metric_name: 'CacheHits'
+          aws_statistics: ['Sum']
+        - aws_namespace: 'AWS/ElastiCache'
+          aws_dimensions: ['CacheClusterId']
+          aws_metric_name: 'CacheMisses'
+          aws_statistics: ['Sum']
+
+  # Blackbox Exporter - Endpoint monitoring
+  - job_name: 'blackbox-http'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+          - https://castmatch.com
+          - https://api.castmatch.com/health
+          - https://app.castmatch.com
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-exporter:9115
+
+  # SSL Certificate Monitoring
+  - job_name: 'ssl-cert-check'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+          - https://castmatch.com
+          - https://api.castmatch.com
+          - https://app.castmatch.com
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: ssl-exporter:9219
+
+  # Grafana Metrics
+  - job_name: 'grafana'
+    static_configs:
+      - targets: ['grafana:3000']
+
+  # Alertmanager Metrics
+  - job_name: 'alertmanager'
+    static_configs:
+      - targets: ['alertmanager:9093']
+
+  # Push Gateway for batch jobs
+  - job_name: 'pushgateway'
+    honor_labels: true
+    static_configs:
+      - targets: ['pushgateway:9091']
+
+# Service Discovery for ECS
+  - job_name: 'ecs-service-discovery'
+    ec2_sd_configs:
+      - region: us-west-2
+        port: 9100
+        filters:
+          - name: tag:Environment
+            values: [production]
+          - name: tag:Monitoring
+            values: [enabled]
+    relabel_configs:
+      - source_labels: [__meta_ec2_tag_Name]
+        target_label: instance
+      - source_labels: [__meta_ec2_tag_Service]
+        target_label: service
+      - source_labels: [__meta_ec2_instance_id]
+        target_label: instance_id
+      - source_labels: [__meta_ec2_availability_zone]
+        target_label: availability_zone
+
+# Remote write configuration for long-term storage
+remote_write:
+  - url: "https://prometheus-storage.castmatch.com/api/v1/write"
+    queue_config:
+      capacity: 10000
+      max_shards: 200
+      min_shards: 1
+      max_samples_per_send: 5000
+      batch_send_deadline: 5s
+      min_backoff: 30ms
+      max_backoff: 100ms
+    metadata_config:
+      send: true
+      send_interval: 1m
+
+# Remote read configuration
+remote_read:
+  - url: "https://prometheus-storage.castmatch.com/api/v1/read"
+    read_recent: true
+
+# Storage configuration
+storage:
+  tsdb:
+    path: /prometheus/data
+    retention:
+      time: 30d
+      size: 50GB
+    wal_compression: true

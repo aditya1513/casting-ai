@@ -1,0 +1,297 @@
+config:
+  # Target API endpoint
+  target: 'http://localhost:3000'
+  
+  # Load testing phases
+  phases:
+    # Warm-up phase
+    - duration: 60
+      arrivalRate: 5
+      name: "Warm-up"
+    
+    # Ramp-up phase
+    - duration: 300
+      arrivalRate: 5
+      rampTo: 50
+      name: "Ramp-up load"
+    
+    # Sustained load
+    - duration: 600
+      arrivalRate: 50
+      name: "Sustained load"
+    
+    # Peak load
+    - duration: 180
+      arrivalRate: 100
+      name: "Peak load"
+    
+    # Cool-down
+    - duration: 120
+      arrivalRate: 100
+      rampTo: 10
+      name: "Cool-down"
+
+  # Default headers
+  defaults:
+    headers:
+      Content-Type: 'application/json'
+      User-Agent: 'Artillery Load Test'
+
+  # Payload data
+  payload:
+    path: './test-data.csv'
+    fields:
+      - 'email'
+      - 'password'
+      - 'firstName'
+      - 'lastName'
+    order: 'sequence'
+    skipHeader: true
+
+  # Plugins
+  plugins:
+    metrics-by-endpoint:
+      # Group metrics by endpoint
+      useOnlyRequestNames: true
+    
+    # Performance expectations
+    expect:
+      outputFormat: 'silent'
+
+  # Variables
+  variables:
+    # Authentication endpoints
+    loginEndpoint: '/api/auth/login'
+    registerEndpoint: '/api/auth/register'
+    meEndpoint: '/api/auth/me'
+    refreshEndpoint: '/api/auth/refresh-token'
+    logoutEndpoint: '/api/auth/logout'
+    
+    # Profile endpoints
+    profileEndpoint: '/api/profile'
+    
+    # Test user credentials
+    testEmail: 'loadtest@example.com'
+    testPassword: 'LoadTest123!'
+
+  # Environment-specific settings
+  environments:
+    local:
+      target: 'http://localhost:3000'
+      phases:
+        - duration: 60
+          arrivalRate: 10
+    
+    staging:
+      target: 'https://staging.castmatch.com'
+      phases:
+        - duration: 300
+          arrivalRate: 25
+    
+    production:
+      target: 'https://api.castmatch.com'
+      phases:
+        - duration: 600
+          arrivalRate: 50
+
+# Test scenarios
+scenarios:
+  # Authentication flow load test
+  - name: "Authentication Flow"
+    weight: 40
+    flow:
+      # User registration
+      - post:
+          url: "{{ registerEndpoint }}"
+          name: "Register User"
+          json:
+            email: "{{ $randomString() }}@loadtest.com"
+            password: "{{ testPassword }}"
+            confirmPassword: "{{ testPassword }}"
+            firstName: "Load"
+            lastName: "Test"
+            role: "ACTOR"
+            acceptTerms: true
+          expect:
+            - statusCode: [201, 409]  # Success or conflict (user exists)
+          capture:
+            - json: "$.data.tokens.accessToken"
+              as: "accessToken"
+            - json: "$.data.tokens.refreshToken"
+              as: "refreshToken"
+
+      # User login
+      - post:
+          url: "{{ loginEndpoint }}"
+          name: "Login User"
+          json:
+            email: "{{ testEmail }}"
+            password: "{{ testPassword }}"
+          expect:
+            - statusCode: [200, 401]
+          capture:
+            - json: "$.data.tokens.accessToken"
+              as: "loginToken"
+            - json: "$.data.tokens.refreshToken"
+              as: "loginRefreshToken"
+
+      # Get current user (authenticated request)
+      - get:
+          url: "{{ meEndpoint }}"
+          name: "Get Current User"
+          headers:
+            Authorization: "Bearer {{ loginToken }}"
+          expect:
+            - statusCode: [200, 401]
+
+      # Token refresh
+      - post:
+          url: "{{ refreshEndpoint }}"
+          name: "Refresh Token"
+          json:
+            refreshToken: "{{ loginRefreshToken }}"
+          expect:
+            - statusCode: [200, 401]
+          capture:
+            - json: "$.accessToken"
+              as: "newAccessToken"
+
+      # Logout
+      - post:
+          url: "{{ logoutEndpoint }}"
+          name: "Logout User"
+          headers:
+            Authorization: "Bearer {{ newAccessToken }}"
+          expect:
+            - statusCode: [200, 401]
+
+  # Profile management load test
+  - name: "Profile Management"
+    weight: 30
+    flow:
+      # Login first
+      - post:
+          url: "{{ loginEndpoint }}"
+          name: "Login for Profile Test"
+          json:
+            email: "{{ testEmail }}"
+            password: "{{ testPassword }}"
+          capture:
+            - json: "$.data.tokens.accessToken"
+              as: "profileToken"
+
+      # Get profile
+      - get:
+          url: "{{ profileEndpoint }}"
+          name: "Get Profile"
+          headers:
+            Authorization: "Bearer {{ profileToken }}"
+          expect:
+            - statusCode: [200, 401, 404]
+
+      # Update profile
+      - put:
+          url: "{{ profileEndpoint }}"
+          name: "Update Profile"
+          headers:
+            Authorization: "Bearer {{ profileToken }}"
+          json:
+            bio: "Updated bio during load test at {{ $timestamp }}"
+            city: "Mumbai"
+            languages: ["English", "Hindi"]
+            skills: ["Acting"]
+          expect:
+            - statusCode: [200, 401, 400]
+
+  # Read-only operations (search, browse)
+  - name: "Read Operations"
+    weight: 20
+    flow:
+      # Login
+      - post:
+          url: "{{ loginEndpoint }}"
+          name: "Login for Read Test"
+          json:
+            email: "{{ testEmail }}"
+            password: "{{ testPassword }}"
+          capture:
+            - json: "$.data.tokens.accessToken"
+              as: "readToken"
+
+      # Browse actors (if endpoint exists)
+      - get:
+          url: "/api/actors"
+          name: "Browse Actors"
+          headers:
+            Authorization: "Bearer {{ readToken }}"
+          expect:
+            - statusCode: [200, 401, 404]
+
+      # Search functionality (if endpoint exists)
+      - get:
+          url: "/api/search?q=actor&type=actor"
+          name: "Search Actors"
+          headers:
+            Authorization: "Bearer {{ readToken }}"
+          expect:
+            - statusCode: [200, 401, 404]
+
+  # Error scenarios and edge cases
+  - name: "Error Scenarios"
+    weight: 10
+    flow:
+      # Invalid login attempts
+      - post:
+          url: "{{ loginEndpoint }}"
+          name: "Invalid Login"
+          json:
+            email: "invalid@example.com"
+            password: "wrongpassword"
+          expect:
+            - statusCode: [401, 400]
+
+      # Malformed requests
+      - post:
+          url: "{{ registerEndpoint }}"
+          name: "Malformed Registration"
+          json:
+            email: "not-an-email"
+            password: "weak"
+          expect:
+            - statusCode: [400]
+
+      # Unauthorized requests
+      - get:
+          url: "{{ meEndpoint }}"
+          name: "Unauthorized Request"
+          headers:
+            Authorization: "Bearer invalid-token"
+          expect:
+            - statusCode: [401]
+
+# Performance expectations
+expect:
+  # Overall performance criteria
+  - statusCode: 200
+    max: 95  # 95% of requests should return 200
+  - statusCode: 401
+    max: 5   # Up to 5% can be auth errors
+  - statusCode: 400
+    max: 2   # Up to 2% can be bad requests
+  
+  # Response time expectations
+  - responsetime:
+      max: 1000  # 95% of requests under 1 second
+      percentile: 95
+  - responsetime:
+      max: 2000  # 99% of requests under 2 seconds
+      percentile: 99
+
+  # Throughput expectations
+  - rate:
+      min: 40  # At least 40 requests per second
+
+# Reporting
+reportFormat: 
+  - json
+  - html

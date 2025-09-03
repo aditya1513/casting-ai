@@ -1,0 +1,36 @@
+VERIFY YOUR CASTMATCH EMAIL
+One click away from joining CastMatch!
+
+Hello {{firstName}},
+
+Thank you for joining CastMatch! To complete your registration and unlock all the amazing features waiting for you, please verify your email address.
+
+VERIFY YOUR EMAIL: {{verificationUrl}}
+
+WHAT HAPPENS AFTER VERIFICATION?
+✅ Full Profile Access: Complete your professional portfolio
+✅ Apply to Castings: Browse and apply for exclusive opportunities  
+✅ AI Recommendations: Get personalized role suggestions
+✅ Direct Messaging: Connect with casting directors and producers
+✅ Audition Tracking: Monitor your application progress
+✅ Industry Insights: Access market trends and analytics
+
+⏰ VERIFY WITHIN 24 HOURS
+This verification link expires in 24 hours for security reasons. 
+Don't miss out on opportunities - verify now!
+
+WHY DO WE VERIFY EMAILS?
+• Ensures you receive important casting notifications
+• Protects your account from unauthorized access  
+• Helps maintain quality within our community
+• Enables password reset functionality
+
+HAVING TROUBLE?
+If you're unable to verify your email:
+1. Check your spam/junk folder
+2. Ensure this email address is correct: {{email}}
+3. Contact support at support@castmatch.com
+
+© {{currentYear}} CastMatch. All rights reserved.
+Mumbai's Premier AI-Powered Casting Platform
+Support: support@castmatch.com

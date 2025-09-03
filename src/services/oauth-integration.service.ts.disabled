@@ -1,0 +1,583 @@
+/**
+ * OAuth Integration Service
+ * Comprehensive OAuth integration service with automated token management,
+ * monitoring, and workflow orchestration for the CastMatch platform
+ */
+
+import { AuthProvider } from '@prisma/client';
+import { oauthService } from '../config/oauth.config';
+import { logger } from '../utils/logger';
+import { prisma } from '../config/database';
+import { EventEmitter } from 'events';
+import cron from 'node-cron';
+import Redis from 'ioredis';
+
+// Redis client for caching and coordination
+const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379', {
+  password: process.env.REDIS_PASSWORD,
+  maxRetriesPerRequest: 3,
+  lazyConnect: true,
+});
+
+interface TokenRefreshJob {
+  userId: string;
+  provider: AuthProvider;
+  priority: 'high' | 'medium' | 'low';
+  scheduledAt: Date;
+  retryCount?: number;
+}
+
+interface IntegrationMetrics {
+  provider: AuthProvider;
+  totalUsers: number;
+  activeTokens: number;
+  expiredTokens: number;
+  failedRefreshes: number;
+  successfulRefreshes: number;
+  lastRefreshAttempt: Date;
+}
+
+export class OAuthIntegrationService extends EventEmitter {
+  private refreshQueue: TokenRefreshJob[] = [];
+  private isProcessingQueue = false;
+  private metricsCache: Map<AuthProvider, IntegrationMetrics> = new Map();
+
+  constructor() {
+    super();
+    this.initializeAutomation();
+    this.startMetricsCollection();
+  }
+
+  /**
+   * Initialize automated token refresh and monitoring
+   */
+  private initializeAutomation(): void {
+    // Schedule token refresh check every 15 minutes
+    cron.schedule('*/15 * * * *', async () => {
+      await this.checkAndRefreshExpiredTokens();
+    }, {
+      timezone: 'UTC'
+    });
+
+    // Schedule metrics collection every hour
+    cron.schedule('0 * * * *', async () => {
+      await this.collectIntegrationMetrics();
+    }, {
+      timezone: 'UTC'
+    });
+
+    // Schedule cleanup every day at 2 AM
+    cron.schedule('0 2 * * *', async () => {
+      await this.cleanupExpiredSessions();
+    }, {
+      timezone: 'UTC'
+    });
+
+    logger.info('OAuth automation initialized', {
+      tokenRefreshSchedule: 'Every 15 minutes',
+      metricsSchedule: 'Every hour',
+      cleanupSchedule: 'Daily at 2 AM'
+    });
+  }
+
+  /**
+   * Check and refresh expired tokens
+   */
+  private async checkAndRefreshExpiredTokens(): Promise<void> {
+    try {
+      const providers = oauthService.getConfiguredProviders();
+      
+      for (const provider of providers) {
+        await this.queueTokenRefreshForProvider(provider);
+      }
+
+      if (this.refreshQueue.length > 0 && !this.isProcessingQueue) {
+        this.processRefreshQueue();
+      }
+
+    } catch (error) {
+      logger.error('Error checking expired tokens', error);
+      this.emit('error', { type: 'token_check_failed', error });
+    }
+  }
+
+  /**
+   * Queue token refresh for a specific provider
+   */
+  private async queueTokenRefreshForProvider(provider: AuthProvider): Promise<void> {
+    try {
+      // Find tokens that will expire within 1 hour
+      const expiringTokens = await prisma.socialAccount.findMany({
+        where: {
+          provider,
+          isLinked: true,
+          tokenExpiry: {
+            gte: new Date(),
+            lte: new Date(Date.now() + 60 * 60 * 1000) // 1 hour from now
+          }
+        },
+        select: {
+          userId: true,
+          tokenExpiry: true,
+          lastUsed: true
+        }
+      });
+
+      for (const token of expiringTokens) {
+        // Determine priority based on last usage
+        const lastUsedHours = token.lastUsed ? 
+          (Date.now() - token.lastUsed.getTime()) / (1000 * 60 * 60) : 
+          Infinity;
+
+        let priority: 'high' | 'medium' | 'low' = 'low';
+        if (lastUsedHours < 1) priority = 'high';
+        else if (lastUsedHours < 24) priority = 'medium';
+
+        const job: TokenRefreshJob = {
+          userId: token.userId,
+          provider,
+          priority,
+          scheduledAt: new Date(),
+          retryCount: 0
+        };
+
+        // Avoid duplicate jobs
+        const existingJob = this.refreshQueue.find(
+          j => j.userId === token.userId && j.provider === provider
+        );
+
+        if (!existingJob) {
+          this.refreshQueue.push(job);
+        }
+      }
+
+      // Sort queue by priority
+      this.refreshQueue.sort((a, b) => {
+        const priorityOrder = { high: 0, medium: 1, low: 2 };
+        return priorityOrder[a.priority] - priorityOrder[b.priority];
+      });
+
+      logger.info('Token refresh queued', {
+        provider,
+        queuedTokens: expiringTokens.length,
+        totalQueueSize: this.refreshQueue.length
+      });
+
+    } catch (error) {
+      logger.error('Error queuing token refresh', { error, provider });
+    }
+  }
+
+  /**
+   * Process the token refresh queue
+   */
+  private async processRefreshQueue(): Promise<void> {
+    if (this.isProcessingQueue || this.refreshQueue.length === 0) {
+      return;
+    }
+
+    this.isProcessingQueue = true;
+    logger.info('Started processing token refresh queue', { 
+      queueSize: this.refreshQueue.length 
+    });
+
+    while (this.refreshQueue.length > 0) {
+      const job = this.refreshQueue.shift()!;
+      
+      try {
+        await this.processRefreshJob(job);
+        
+        // Brief pause to avoid overwhelming OAuth providers
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+      } catch (error) {
+        await this.handleRefreshJobFailure(job, error);
+      }
+    }
+
+    this.isProcessingQueue = false;
+    logger.info('Finished processing token refresh queue');
+  }
+
+  /**
+   * Process a single token refresh job
+   */
+  private async processRefreshJob(job: TokenRefreshJob): Promise<void> {
+    try {
+      const success = await oauthService.autoRefreshToken(job.userId, job.provider);
+      
+      if (success) {
+        logger.info('Token refresh successful', { 
+          userId: job.userId, 
+          provider: job.provider,
+          priority: job.priority
+        });
+        
+        this.emit('token_refreshed', {
+          userId: job.userId,
+          provider: job.provider,
+          success: true
+        });
+
+        // Update metrics
+        await this.incrementMetric(job.provider, 'successfulRefreshes');
+        
+      } else {
+        throw new Error('Token refresh returned false');
+      }
+
+    } catch (error) {
+      logger.error('Token refresh failed', { 
+        error, 
+        userId: job.userId, 
+        provider: job.provider 
+      });
+      
+      this.emit('token_refresh_failed', {
+        userId: job.userId,
+        provider: job.provider,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+
+      // Update metrics
+      await this.incrementMetric(job.provider, 'failedRefreshes');
+      
+      throw error;
+    }
+  }
+
+  /**
+   * Handle refresh job failure with retry logic
+   */
+  private async handleRefreshJobFailure(job: TokenRefreshJob, error: any): Promise<void> {
+    const maxRetries = 3;
+    const retryCount = (job.retryCount || 0) + 1;
+
+    if (retryCount <= maxRetries) {
+      // Exponential backoff for retries
+      const delay = Math.pow(2, retryCount) * 60000; // Start with 2 minutes
+      
+      setTimeout(() => {
+        this.refreshQueue.unshift({
+          ...job,
+          retryCount,
+          scheduledAt: new Date(Date.now() + delay)
+        });
+      }, delay);
+
+      logger.warn('Token refresh job scheduled for retry', {
+        userId: job.userId,
+        provider: job.provider,
+        retryCount,
+        delay: `${delay / 1000}s`
+      });
+
+    } else {
+      logger.error('Token refresh job failed after max retries', {
+        userId: job.userId,
+        provider: job.provider,
+        maxRetries,
+        finalError: error
+      });
+
+      // Mark token as potentially invalid
+      await this.handleTokenInvalidation(job.userId, job.provider);
+    }
+  }
+
+  /**
+   * Handle token invalidation
+   */
+  private async handleTokenInvalidation(userId: string, provider: AuthProvider): Promise<void> {
+    try {
+      await prisma.socialAccount.updateMany({
+        where: {
+          userId,
+          provider,
+        },
+        data: {
+          tokenExpiry: new Date(), // Mark as expired
+          metadata: {
+            invalidationReason: 'refresh_failed',
+            invalidatedAt: new Date().toISOString()
+          }
+        }
+      });
+
+      this.emit('token_invalidated', { userId, provider });
+      logger.warn('Token marked as invalid due to refresh failures', { userId, provider });
+
+    } catch (error) {
+      logger.error('Error handling token invalidation', { error, userId, provider });
+    }
+  }
+
+  /**
+   * Collect integration metrics
+   */
+  private async collectIntegrationMetrics(): Promise<void> {
+    try {
+      const providers = oauthService.getConfiguredProviders();
+
+      for (const provider of providers) {
+        const metrics = await this.calculateProviderMetrics(provider);
+        this.metricsCache.set(provider, metrics);
+        
+        // Store metrics in Redis for monitoring dashboards
+        await redis.setex(
+          `oauth_metrics:${provider}`,
+          3600, // 1 hour TTL
+          JSON.stringify(metrics)
+        );
+      }
+
+      logger.info('Integration metrics collected', {
+        providers: providers.length,
+        timestamp: new Date().toISOString()
+      });
+
+    } catch (error) {
+      logger.error('Error collecting integration metrics', error);
+    }
+  }
+
+  /**
+   * Calculate metrics for a specific provider
+   */
+  private async calculateProviderMetrics(provider: AuthProvider): Promise<IntegrationMetrics> {
+    try {
+      const [totalUsers, activeTokens, expiredTokens] = await Promise.all([
+        prisma.socialAccount.count({
+          where: { provider }
+        }),
+        prisma.socialAccount.count({
+          where: {
+            provider,
+            isLinked: true,
+            tokenExpiry: {
+              gt: new Date()
+            }
+          }
+        }),
+        prisma.socialAccount.count({
+          where: {
+            provider,
+            tokenExpiry: {
+              lte: new Date()
+            }
+          }
+        })
+      ]);
+
+      // Get cached counters for refreshes
+      const successfulRefreshes = await this.getMetricCount(provider, 'successfulRefreshes');
+      const failedRefreshes = await this.getMetricCount(provider, 'failedRefreshes');
+
+      return {
+        provider,
+        totalUsers,
+        activeTokens,
+        expiredTokens,
+        failedRefreshes,
+        successfulRefreshes,
+        lastRefreshAttempt: new Date()
+      };
+
+    } catch (error) {
+      logger.error('Error calculating provider metrics', { error, provider });
+      throw error;
+    }
+  }
+
+  /**
+   * Get metric count from Redis
+   */
+  private async getMetricCount(provider: AuthProvider, metric: string): Promise<number> {
+    const key = `oauth_metric:${provider}:${metric}`;
+    const count = await redis.get(key);
+    return count ? parseInt(count) : 0;
+  }
+
+  /**
+   * Increment metric count in Redis
+   */
+  private async incrementMetric(provider: AuthProvider, metric: string): Promise<void> {
+    const key = `oauth_metric:${provider}:${metric}`;
+    await redis.incr(key);
+    await redis.expire(key, 24 * 60 * 60); // 24 hours TTL
+  }
+
+  /**
+   * Start metrics collection
+   */
+  private startMetricsCollection(): void {
+    this.on('token_refreshed', (event) => {
+      logger.info('OAuth token refreshed successfully', event);
+    });
+
+    this.on('token_refresh_failed', (event) => {
+      logger.error('OAuth token refresh failed', event);
+    });
+
+    this.on('token_invalidated', (event) => {
+      logger.warn('OAuth token invalidated', event);
+    });
+
+    this.on('error', (event) => {
+      logger.error('OAuth integration error', event);
+    });
+  }
+
+  /**
+   * Clean up expired sessions and tokens
+   */
+  private async cleanupExpiredSessions(): Promise<void> {
+    try {
+      // Clean up expired OAuth sessions
+      const oauthSessionKeys = await redis.keys('oauth_session:*');
+      const expiredSessions = [];
+
+      for (const key of oauthSessionKeys) {
+        const ttl = await redis.ttl(key);
+        if (ttl <= 0) {
+          expiredSessions.push(key);
+        }
+      }
+
+      if (expiredSessions.length > 0) {
+        await redis.del(...expiredSessions);
+        logger.info('Cleaned up expired OAuth sessions', { count: expiredSessions.length });
+      }
+
+      // Clean up expired social accounts
+      const deletedAccounts = await prisma.socialAccount.deleteMany({
+        where: {
+          isLinked: false,
+          tokenExpiry: {
+            lt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) // 7 days ago
+          }
+        }
+      });
+
+      if (deletedAccounts.count > 0) {
+        logger.info('Cleaned up expired social accounts', { count: deletedAccounts.count });
+      }
+
+    } catch (error) {
+      logger.error('Error during cleanup', error);
+    }
+  }
+
+  /**
+   * Public API methods
+   */
+
+  /**
+   * Get integration metrics for monitoring
+   */
+  public getMetrics(provider?: AuthProvider): IntegrationMetrics | Map<AuthProvider, IntegrationMetrics> {
+    if (provider) {
+      return this.metricsCache.get(provider) || this.getDefaultMetrics(provider);
+    }
+    return this.metricsCache;
+  }
+
+  /**
+   * Force token refresh for a user and provider
+   */
+  public async forceTokenRefresh(userId: string, provider: AuthProvider): Promise<boolean> {
+    try {
+      const success = await oauthService.autoRefreshToken(userId, provider);
+      
+      if (success) {
+        this.emit('token_refreshed', { userId, provider, forced: true });
+      }
+      
+      return success;
+    } catch (error) {
+      this.emit('token_refresh_failed', { userId, provider, error, forced: true });
+      return false;
+    }
+  }
+
+  /**
+   * Get queue status
+   */
+  public getQueueStatus(): {
+    queueSize: number;
+    isProcessing: boolean;
+    priorityBreakdown: Record<string, number>;
+  } {
+    const priorityBreakdown = this.refreshQueue.reduce((acc, job) => {
+      acc[job.priority] = (acc[job.priority] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    return {
+      queueSize: this.refreshQueue.length,
+      isProcessing: this.isProcessingQueue,
+      priorityBreakdown
+    };
+  }
+
+  /**
+   * Health check for OAuth integrations
+   */
+  public async healthCheck(): Promise<{
+    status: 'healthy' | 'degraded' | 'unhealthy';
+    providers: Record<AuthProvider, {
+      configured: boolean;
+      reachable: boolean;
+      tokenRefreshRate: number;
+    }>;
+  }> {
+    const providers = oauthService.getConfiguredProviders();
+    const results: any = {};
+    let overallStatus: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
+
+    for (const provider of providers) {
+      const metrics = this.metricsCache.get(provider);
+      const configured = oauthService.isProviderConfigured(provider);
+      
+      // Simple reachability check based on recent success rates
+      const totalAttempts = (metrics?.successfulRefreshes || 0) + (metrics?.failedRefreshes || 0);
+      const successRate = totalAttempts > 0 ? 
+        (metrics?.successfulRefreshes || 0) / totalAttempts : 1;
+
+      results[provider] = {
+        configured,
+        reachable: successRate > 0.7, // 70% success rate threshold
+        tokenRefreshRate: successRate
+      };
+
+      if (!configured || successRate < 0.5) {
+        overallStatus = 'unhealthy';
+      } else if (successRate < 0.8) {
+        overallStatus = 'degraded';
+      }
+    }
+
+    return {
+      status: overallStatus,
+      providers: results
+    };
+  }
+
+  /**
+   * Get default metrics structure
+   */
+  private getDefaultMetrics(provider: AuthProvider): IntegrationMetrics {
+    return {
+      provider,
+      totalUsers: 0,
+      activeTokens: 0,
+      expiredTokens: 0,
+      failedRefreshes: 0,
+      successfulRefreshes: 0,
+      lastRefreshAttempt: new Date()
+    };
+  }
+}
+
+// Export singleton instance
+export const oauthIntegrationService = new OAuthIntegrationService();

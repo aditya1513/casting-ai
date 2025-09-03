@@ -1,0 +1,260 @@
+/**
+ * Social Authentication Routes
+ * OAuth and social login endpoints
+ */
+
+import { Router } from 'express';
+import { SocialAuthController } from '../controllers/social-auth.controller';
+import { validate } from '../middleware/validate';
+import { authenticate } from '../middleware/auth.middleware';
+import { authRateLimiter } from '../middleware/rateLimiter';
+import { csrfProtection } from '../middleware/csrfProtection';
+import { z } from 'zod';
+import rateLimit from 'express-rate-limit';
+
+const router = Router();
+const socialAuthController = new SocialAuthController();
+
+// Rate limiting for OAuth endpoints - more restrictive than general auth
+const oauthRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // limit each IP to 10 requests per windowMs
+  message: {
+    error: 'Too many OAuth attempts from this IP, please try again later.',
+    statusCode: 429
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: (req) => {
+    // Skip rate limiting for local development
+    return process.env.NODE_ENV === 'development' && req.ip === '127.0.0.1';
+  }
+});
+
+// Validation schemas
+const baseOAuthSchema = z.object({
+  access_token: z.string().optional(),
+  code: z.string().optional(),
+  state: z.string().optional(),
+  redirect_uri: z.string().url().optional()
+}).refine(
+  (data) => data.access_token || data.code,
+  { message: "Either access_token or code is required" }
+);
+
+const googleAuthSchema = baseOAuthSchema.extend({
+  scope: z.string().optional() // For Google Calendar scopes
+});
+
+const githubAuthSchema = baseOAuthSchema;
+
+const linkedinAuthSchema = baseOAuthSchema;
+
+const linkSocialSchema = z.object({
+  provider: z.enum(['GOOGLE', 'GITHUB', 'LINKEDIN']),
+  access_token: z.string(),
+  provider_account_id: z.string(),
+  state: z.string().optional()
+});
+
+const unlinkSocialSchema = z.object({
+  provider: z.enum(['GOOGLE', 'GITHUB', 'LINKEDIN'])
+});
+
+// OAuth state validation schema with enhanced security
+const oauthCallbackSchema = z.object({
+  code: z.string().min(1).max(512),
+  state: z.string().regex(/^[A-Za-z0-9\-_]{32,}$/),
+  error: z.string().optional(),
+  error_description: z.string().optional()
+});
+
+// OAuth authorization schema
+const oauthAuthorizeSchema = z.object({
+  redirect_uri: z.string().url().optional(),
+  scope: z.string().optional(),
+  response_type: z.literal('code').default('code'),
+  access_type: z.enum(['online', 'offline']).optional()
+});
+
+/**
+ * @route   POST /api/auth/google
+ * @desc    Google OAuth authentication
+ * @access  Public
+ */
+router.post(
+  '/google',
+  oauthRateLimiter,
+  csrfProtection,
+  validate(googleAuthSchema),
+  socialAuthController.googleCallback
+);
+
+/**
+ * @route   GET /api/auth/google/callback
+ * @desc    Google OAuth callback
+ * @access  Public
+ */
+router.get(
+  '/google/callback',
+  oauthRateLimiter,
+  validate(oauthCallbackSchema),
+  socialAuthController.googleOAuthCallback
+);
+
+/**
+ * @route   POST /api/auth/github
+ * @desc    GitHub OAuth authentication
+ * @access  Public
+ */
+router.post(
+  '/github',
+  oauthRateLimiter,
+  csrfProtection,
+  validate(githubAuthSchema),
+  socialAuthController.githubCallback
+);
+
+/**
+ * @route   GET /api/auth/github/callback
+ * @desc    GitHub OAuth callback
+ * @access  Public
+ */
+router.get(
+  '/github/callback',
+  oauthRateLimiter,
+  validate(oauthCallbackSchema),
+  socialAuthController.githubOAuthCallback
+);
+
+/**
+ * @route   POST /api/auth/linkedin
+ * @desc    LinkedIn OAuth authentication
+ * @access  Public
+ */
+router.post(
+  '/linkedin',
+  oauthRateLimiter,
+  csrfProtection,
+  validate(linkedinAuthSchema),
+  socialAuthController.linkedinCallback
+);
+
+/**
+ * @route   GET /api/auth/linkedin/callback
+ * @desc    LinkedIn OAuth callback
+ * @access  Public
+ */
+router.get(
+  '/linkedin/callback',
+  oauthRateLimiter,
+  validate(oauthCallbackSchema),
+  socialAuthController.linkedinOAuthCallback
+);
+
+/**
+ * @route   POST /api/auth/link-social
+ * @desc    Link social account to existing user
+ * @access  Private
+ */
+router.post(
+  '/link-social',
+  authRateLimiter,
+  authenticate,
+  csrfProtection,
+  validate(linkSocialSchema),
+  socialAuthController.linkSocial
+);
+
+/**
+ * @route   DELETE /api/auth/unlink-social
+ * @desc    Unlink social account
+ * @access  Private
+ */
+router.delete(
+  '/unlink-social',
+  authRateLimiter,
+  authenticate,
+  csrfProtection,
+  validate(unlinkSocialSchema),
+  socialAuthController.unlinkSocial
+);
+
+/**
+ * @route   GET /api/auth/oauth/authorize/:provider
+ * @desc    Initialize OAuth authorization flow
+ * @access  Public
+ */
+router.get(
+  '/oauth/authorize/:provider',
+  oauthRateLimiter,
+  validate(oauthAuthorizeSchema),
+  socialAuthController.initializeOAuth
+);
+
+/**
+ * @route   GET /api/auth/oauth/session/:sessionToken
+ * @desc    Get OAuth session result
+ * @access  Public
+ */
+router.get(
+  '/oauth/session/:sessionToken',
+  oauthRateLimiter,
+  socialAuthController.getOAuthSession
+);
+
+/**
+ * @route   POST /api/auth/refresh-token
+ * @desc    Refresh OAuth access token
+ * @access  Private
+ */
+router.post(
+  '/refresh-token',
+  authRateLimiter,
+  authenticate,
+  validate(z.object({
+    provider: z.enum(['GOOGLE', 'GITHUB', 'LINKEDIN'])
+  })),
+  socialAuthController.refreshToken
+);
+
+/**
+ * @route   GET /api/auth/social-accounts
+ * @desc    Get user's linked social accounts
+ * @access  Private
+ */
+router.get(
+  '/social-accounts',
+  authenticate,
+  socialAuthController.getSocialAccounts
+);
+
+/**
+ * @route   POST /api/auth/revoke-token
+ * @desc    Revoke OAuth access token
+ * @access  Private
+ */
+router.post(
+  '/revoke-token',
+  authRateLimiter,
+  authenticate,
+  csrfProtection,
+  validate(z.object({
+    provider: z.enum(['GOOGLE', 'GITHUB', 'LINKEDIN'])
+  })),
+  socialAuthController.revokeToken
+);
+
+// Export router with enhanced security
+export default router;
+
+// Export validation schemas for use in other modules
+export {
+  googleAuthSchema,
+  githubAuthSchema,
+  linkedinAuthSchema,
+  linkSocialSchema,
+  unlinkSocialSchema,
+  oauthCallbackSchema,
+  oauthAuthorizeSchema
+};
