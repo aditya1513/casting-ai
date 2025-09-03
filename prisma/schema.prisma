@@ -433,7 +433,7 @@ model Talent {
   verificationNotes   String?
 
   // AI and Search Features
-  embedding          Unsupported("vector(1536)")? // Vector embedding for AI matching (OpenAI ada-002 dimension)
+  // embedding          Unsupported("vector(1536)")? // Vector embedding for AI matching (OpenAI ada-002 dimension) - Temporarily disabled
   searchTags         String[] // Optimized search tags
   aiGeneratedSummary String?                      @db.Text // AI-generated profile summary
   lastAiAnalysis     DateTime?
@@ -757,7 +757,7 @@ model Project {
   openToNewcomers Boolean @default(true)
 
   // AI and Search
-  embedding          Unsupported("vector(1536)")? // Vector for AI matching
+  // embedding          Unsupported("vector(1536)")? // Vector for AI matching - Temporarily disabled
   searchKeywords     String[] // SEO optimization
   aiSuggestedTalents Json? // AI recommendations
 
@@ -878,7 +878,7 @@ model Character {
   backupTalentIds     String[]
 
   // AI Features
-  embedding          Unsupported("vector(1536)")? // For AI matching
+  // embedding          Unsupported("vector(1536)")? // For AI matching - Temporarily disabled
   idealProfileTraits Json? // AI-generated ideal traits
 
   // System Fields
