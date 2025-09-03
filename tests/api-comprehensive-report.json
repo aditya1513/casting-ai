@@ -1,0 +1,193 @@
+{
+  "summary": {
+    "total": 12,
+    "passed": 12,
+    "failed": 0,
+    "successRate": "100.0"
+  },
+  "performance": {
+    "responseTimes": {
+      "/health": 1,
+      "/health/live": 6,
+      "/health/ready": 14
+    },
+    "averageResponseTime": 7,
+    "concurrent": {
+      "totalRequests": 5,
+      "successful": 5,
+      "totalDuration": 5,
+      "averageResponseTime": 3,
+      "requestsPerSecond": "1000.00"
+    }
+  },
+  "details": [
+    {
+      "test": "Basic Health Check",
+      "status": "PASS",
+      "duration": 27,
+      "details": {
+        "status": 200,
+        "uptime": 556.343964417,
+        "version": "1.0.0",
+        "duration": 27
+      }
+    },
+    {
+      "test": "Readiness Check",
+      "status": "PASS",
+      "duration": 79,
+      "details": {
+        "status": 503,
+        "checks": {
+          "database": false,
+          "redis": true
+        },
+        "duration": 79
+      }
+    },
+    {
+      "test": "Liveness Check",
+      "status": "PASS",
+      "duration": 27,
+      "details": {
+        "status": 200,
+        "memory": {
+          "rss": "84MB",
+          "heapTotal": "646MB",
+          "heapUsed": "629MB",
+          "external": "9MB"
+        },
+        "duration": 27
+      }
+    },
+    {
+      "test": "404 Not Found Handling",
+      "status": "PASS",
+      "duration": 3,
+      "details": {
+        "status": 404,
+        "errorCode": "NOT_FOUND",
+        "duration": 3
+      }
+    },
+    {
+      "test": "Invalid HTTP Method",
+      "status": "PASS",
+      "duration": 4,
+      "details": {
+        "status": 404,
+        "duration": 4
+      }
+    },
+    {
+      "test": "JSON Parsing Error",
+      "status": "PASS",
+      "duration": 8,
+      "details": {
+        "status": 500,
+        "errorCode": "INTERNAL_ERROR",
+        "duration": 8
+      }
+    },
+    {
+      "test": "Large Payload Handling",
+      "status": "PASS",
+      "duration": 5,
+      "details": {
+        "status": 429,
+        "payloadSize": 60059,
+        "duration": 5
+      }
+    },
+    {
+      "test": "CORS Headers",
+      "status": "PASS",
+      "duration": 1,
+      "details": {
+        "status": 204,
+        "corsHeaders": {
+          "allowMethods": "GET,POST,PUT,PATCH,DELETE,OPTIONS",
+          "allowHeaders": "Content-Type,Authorization,X-Request-ID"
+        },
+        "duration": 1
+      }
+    },
+    {
+      "test": "Security Headers",
+      "status": "PASS",
+      "duration": 5,
+      "details": {
+        "status": 200,
+        "securityHeaders": [
+          "x-content-type-options",
+          "x-frame-options",
+          "strict-transport-security",
+          "content-security-policy"
+        ],
+        "allHeaders": [
+          "content-security-policy",
+          "cross-origin-opener-policy",
+          "cross-origin-resource-policy",
+          "referrer-policy",
+          "strict-transport-security",
+          "x-content-type-options",
+          "x-dns-prefetch-control",
+          "x-download-options",
+          "x-frame-options",
+          "x-permitted-cross-domain-policies",
+          "x-xss-protection",
+          "ratelimit-policy"
+        ],
+        "duration": 5
+      }
+    },
+    {
+      "test": "Rate Limiting",
+      "status": "PASS",
+      "duration": 13,
+      "details": {
+        "responses": [
+          {
+            "status": 429,
+            "duration": 9
+          },
+          {
+            "status": 429,
+            "duration": 2
+          },
+          {
+            "status": 429,
+            "duration": 2
+          }
+        ],
+        "rateLimitedCount": 3
+      }
+    },
+    {
+      "test": "Response Time Analysis",
+      "status": "PASS",
+      "duration": 21,
+      "details": {
+        "times": {
+          "/health": 1,
+          "/health/live": 6,
+          "/health/ready": 14
+        },
+        "average": 7
+      }
+    },
+    {
+      "test": "Concurrent Request Handling",
+      "status": "PASS",
+      "duration": 5,
+      "details": {
+        "totalRequests": 5,
+        "successful": 5,
+        "totalDuration": 5,
+        "averageResponseTime": 3,
+        "requestsPerSecond": "1000.00"
+      }
+    }
+  ],
+  "timestamp": "2025-09-03T02:25:04.663Z"
+}
