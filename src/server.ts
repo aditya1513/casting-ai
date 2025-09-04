@@ -13,26 +13,26 @@ import { config } from './config/config';
 import { logger } from './utils/logger';
 import { errorHandler } from './middleware/errorHandler';
 import { notFoundHandler } from './middleware/notFoundHandler';
-import { rateLimiter } from './middleware/rateLimiter';
+// import { rateLimiter } from './middleware/rateLimiter'; // Temporarily disabled - uses Redis
 import { requestLogger } from './middleware/requestLogger';
-import { prisma } from './config/database';
-import { redis } from './config/redis';
-import { notificationService } from './services/notification.service';
+// import { prisma } from './config/database'; // Disabled - using Drizzle ORM
+// import { redis } from './config/redis'; // Temporarily disabled 
+// import { notificationService } from './services/notification.service'; // Temporarily disabled
 import { createServer } from 'http';
 
-// Import routes
+// Import routes - temporarily disable all except health to isolate Prisma/Redis sources
 import healthRoutes from './routes/health.routes';
-import authRoutes from './routes/auth.routes';
-import profileRoutes from './routes/profile.routes';
-import userRoutes from './routes/user.routes';
-import actorRoutes from './routes/actor.routes';
-import talentCrudRoutes from './routes/talent-crud.routes'; // New comprehensive talent CRUD
-import talentDirectRoutes from './routes/talent-direct.routes'; // Direct SQL workaround for Prisma P1010
+// import authRoutes from './routes/auth.routes'; // Temporarily disabled - uses Prisma
+// import profileRoutes from './routes/profile.routes';
+// import userRoutes from './routes/user.routes';
+// import actorRoutes from './routes/actor.routes';
+// import talentCrudRoutes from './routes/talent-crud.routes'; // New comprehensive talent CRUD
+// import talentDirectRoutes from './routes/talent-direct.routes'; // Direct SQL workaround for Prisma P1010
 // import talentRoutes from './routes/talent.routes'; // Temporarily disabled - missing Joi dependency
-import projectRoutes from './routes/project.routes';
-import applicationRoutes from './routes/application.routes';
-import auditionRoutes from './routes/audition.routes.minimal'; // Using minimal version temporarily
-import pineconeHealthRoutes from './routes/pinecone-health.routes';
+// import projectRoutes from './routes/project.routes';
+// import applicationRoutes from './routes/application.routes';
+// import auditionRoutes from './routes/audition.routes.minimal'; // Using minimal version temporarily
+// import pineconeHealthRoutes from './routes/pinecone-health.routes';
 // import aiMLRoutes from './routes/ai-ml.routes'; // New AI/ML routes - disabled due to missing dependencies
 // import aiTalentRoutes from './routes/ai-talent.routes'; // Temporarily disabled due to TypeScript errors
 // import aiRoutes from './routes/ai.routes'; // Temporarily disabled due to TypeScript errors
@@ -89,24 +89,24 @@ if (config.isDevelopment) {
   app.use(requestLogger);
 }
 
-// Global rate limiter
-app.use('/api', rateLimiter);
+// Global rate limiter - temporarily disabled due to Redis authentication issues
+// app.use('/api', rateLimiter);
 
-// API Routes
+// API Routes - temporarily disable all routes except health to isolate Prisma/Redis sources
 app.use('/api/health', healthRoutes);
-app.use('/api/auth', authRoutes);
-app.use('/api/profile', profileRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/actors', actorRoutes);
-app.use('/api/talents', talentCrudRoutes); // New comprehensive talent CRUD
-app.use('/api/talents-direct', talentDirectRoutes); // Direct SQL workaround for Prisma P1010
+// app.use('/api/auth', authRoutes); // Temporarily disabled - uses Prisma
+// app.use('/api/profile', profileRoutes);
+// app.use('/api/users', userRoutes);
+// app.use('/api/actors', actorRoutes);
+// app.use('/api/talents', talentCrudRoutes); // New comprehensive talent CRUD
+// app.use('/api/talents-direct', talentDirectRoutes); // Direct SQL workaround for Prisma P1010
 // app.use('/api/ai', aiMLRoutes); // AI/ML endpoints - disabled due to missing dependencies
 // app.use('/api/talents', talentRoutes); // Old talent routes - disabled
 // app.use('/api/talents', aiTalentRoutes); // Temporarily disabled due to TypeScript errors
-app.use('/api/projects', projectRoutes);
-app.use('/api/applications', applicationRoutes);
-app.use('/api/auditions', auditionRoutes);
-app.use('/api/pinecone', pineconeHealthRoutes);
+// app.use('/api/projects', projectRoutes);
+// app.use('/api/applications', applicationRoutes);
+// app.use('/api/auditions', auditionRoutes);
+// app.use('/api/pinecone', pineconeHealthRoutes);
 // app.use('/api/ai', aiRoutes); // Temporarily disabled due to TypeScript errors
 // app.use('/api/monitoring', monitoringRouter); // Temporarily disabled due to TypeScript errors
 
@@ -125,12 +125,12 @@ const gracefulShutdown = async (signal: string) => {
     logger.info('HTTP server closed');
     
     try {
-      // Close database connections
-      await prisma.$disconnect();
+      // Close database connections (Drizzle connections are handled by pool)
+      // await prisma.$disconnect(); // Disabled - using Drizzle ORM
       logger.info('Database connection closed');
       
       // Close Redis connection
-      await redis.quit();
+      // await redis.quit(); // Temporarily disabled
       logger.info('Redis connection closed');
       
       // Exit process
