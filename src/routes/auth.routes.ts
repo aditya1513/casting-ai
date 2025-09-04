@@ -4,7 +4,9 @@
  */
 
 import { Router } from 'express';
+import type { Router as ExpressRouter } from 'express';
 import { AuthController } from '../controllers/auth.controller';
+import { oauthController } from '../controllers/oauth.controller';
 import { validate } from '../middleware/validate';
 import { authenticate } from '../middleware/auth.middleware';
 import { authRateLimiter } from '../middleware/rateLimiter';
@@ -18,7 +20,7 @@ import {
   verifyEmailSchema,
 } from '../validators/auth.validator';
 
-const router = Router();
+const router: ExpressRouter = Router();
 const authController = new AuthController();
 
 /**
@@ -72,24 +74,24 @@ router.post(
  * @desc    Request password reset
  * @access  Public
  */
-router.post(
-  '/forgot-password',
-  authRateLimiter,
-  validate(forgotPasswordSchema),
-  authController.forgotPassword
-);
+// router.post(
+//   '/forgot-password',
+//   authRateLimiter,
+//   validate(forgotPasswordSchema),
+//   authController.forgotPassword
+// );
 
 /**
  * @route   POST /api/auth/reset-password
  * @desc    Reset password with token
  * @access  Public
  */
-router.post(
-  '/reset-password',
-  authRateLimiter,
-  validate(resetPasswordSchema),
-  authController.resetPassword
-);
+// router.post(
+//   '/reset-password',
+//   authRateLimiter,
+//   validate(resetPasswordSchema),
+//   authController.resetPassword
+// );
 
 // Social auth routes removed for MVP
 
@@ -98,22 +100,32 @@ router.post(
  * @desc    Change password for authenticated user
  * @access  Private
  */
-router.post(
-  '/change-password',
-  authenticate,
-  validate(changePasswordSchema),
-  authController.changePassword
+// router.post(
+//   '/change-password',
+//   authenticate,
+//   validate(changePasswordSchema),
+//   authController.changePassword
+// );
+
+/**
+ * @route   GET /api/auth/verify-email
+ * @desc    Verify email address with token
+ * @access  Public
+ */
+router.get(
+  '/verify-email',
+  authController.verifyEmail
 );
 
 /**
- * @route   POST /api/auth/verify-email
- * @desc    Verify email address
+ * @route   POST /api/auth/resend-verification
+ * @desc    Resend verification email
  * @access  Public
  */
 router.post(
-  '/verify-email',
-  validate(verifyEmailSchema),
-  authController.verifyEmail
+  '/resend-verification',
+  authRateLimiter,
+  authController.resendVerificationEmail
 );
 
 /**
@@ -124,7 +136,51 @@ router.post(
 router.get(
   '/me',
   authenticate,
-  authController.getCurrentUser
+  authController.me
 );
+
+// OAuth 2.0 Routes
+
+/**
+ * @route   GET /api/auth/google
+ * @desc    Initiate Google OAuth flow
+ * @access  Public
+ */
+router.get('/google', oauthController.googleAuth);
+
+/**
+ * @route   GET /api/auth/google/callback
+ * @desc    Handle Google OAuth callback
+ * @access  Public
+ */
+router.get('/google/callback', oauthController.googleCallback);
+
+/**
+ * @route   GET /api/auth/github
+ * @desc    Initiate GitHub OAuth flow
+ * @access  Public
+ */
+router.get('/github', oauthController.githubAuth);
+
+/**
+ * @route   GET /api/auth/github/callback
+ * @desc    Handle GitHub OAuth callback
+ * @access  Public
+ */
+router.get('/github/callback', oauthController.githubCallback);
+
+/**
+ * @route   POST /api/auth/link/:provider
+ * @desc    Link social account to existing user
+ * @access  Private
+ */
+router.post('/link/:provider', authenticate, oauthController.linkSocialAccount);
+
+/**
+ * @route   DELETE /api/auth/unlink/:provider
+ * @desc    Unlink social account from user
+ * @access  Private
+ */
+router.delete('/unlink/:provider', authenticate, oauthController.unlinkSocialAccount);
 
 export default router;

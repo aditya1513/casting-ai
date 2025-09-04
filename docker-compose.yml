@@ -61,7 +61,7 @@ services:
     environment:
       NODE_ENV: development
       PORT: 5002
-      DATABASE_URL: postgresql://postgres:castmatch123@postgres:5432/castmatch_db
+      DATABASE_URL: postgresql://castmatch_user:castmatch_pass@postgres:5432/castmatch_db?schema=public
       REDIS_URL: redis://:castmatch_redis_password@redis:6379
       JWT_SECRET: u3776dZsWJYU3EnvuNDcmOjfKWaIcuWGU+F6WaW+7GQMC9kkCH3Hd3hZlQBWwDZCJi87ZEJ1ckbLsfOEoSVBpw==
       CORS_ORIGINS: http://localhost:3000,http://localhost:3001

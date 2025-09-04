@@ -3,7 +3,7 @@
  * Main entry point for the Express application
  */
 
-import express from 'express';
+import express, { Express } from 'express';
 import 'express-async-errors';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -26,17 +26,20 @@ import authRoutes from './routes/auth.routes';
 import profileRoutes from './routes/profile.routes';
 import userRoutes from './routes/user.routes';
 import actorRoutes from './routes/actor.routes';
+import talentCrudRoutes from './routes/talent-crud.routes'; // New comprehensive talent CRUD
+import talentDirectRoutes from './routes/talent-direct.routes'; // Direct SQL workaround for Prisma P1010
 // import talentRoutes from './routes/talent.routes'; // Temporarily disabled - missing Joi dependency
 import projectRoutes from './routes/project.routes';
 import applicationRoutes from './routes/application.routes';
 import auditionRoutes from './routes/audition.routes.minimal'; // Using minimal version temporarily
 import pineconeHealthRoutes from './routes/pinecone-health.routes';
+// import aiMLRoutes from './routes/ai-ml.routes'; // New AI/ML routes - disabled due to missing dependencies
 // import aiTalentRoutes from './routes/ai-talent.routes'; // Temporarily disabled due to TypeScript errors
 // import aiRoutes from './routes/ai.routes'; // Temporarily disabled due to TypeScript errors
 // import { monitoringRouter } from './routes/monitoring'; // Temporarily disabled due to TypeScript errors
 
 // Initialize Express app
-const app = express(); // Restart trigger 2
+const app: Express = express(); // Restart trigger 2
 
 // Trust proxy - important for production deployments behind reverse proxies
 app.set('trust proxy', 1);
@@ -95,7 +98,10 @@ app.use('/api/auth', authRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/actors', actorRoutes);
-// app.use('/api/talents', talentRoutes); // Temporarily disabled
+app.use('/api/talents', talentCrudRoutes); // New comprehensive talent CRUD
+app.use('/api/talents-direct', talentDirectRoutes); // Direct SQL workaround for Prisma P1010
+// app.use('/api/ai', aiMLRoutes); // AI/ML endpoints - disabled due to missing dependencies
+// app.use('/api/talents', talentRoutes); // Old talent routes - disabled
 // app.use('/api/talents', aiTalentRoutes); // Temporarily disabled due to TypeScript errors
 app.use('/api/projects', projectRoutes);
 app.use('/api/applications', applicationRoutes);

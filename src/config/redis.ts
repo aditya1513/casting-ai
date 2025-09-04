@@ -235,6 +235,9 @@ export const CacheKeys = {
   userSocket: (userId: string, socketId: string) => `ws:user:${userId}:${socketId}`,
   userPresence: (userId: string) => `ws:presence:${userId}`,
   roomSubscription: (roomId: string, userId: string) => `ws:room:${roomId}:${userId}`,
+  
+  // OAuth related
+  oauthState: (state: string) => `oauth:state:${state}`,
 } as const;
 
 // Export redis as redisClient for backward compatibility

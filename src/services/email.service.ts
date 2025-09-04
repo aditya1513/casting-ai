@@ -620,6 +620,93 @@ export class EmailService {
   }
 
   /**
+   * Send email verification
+   */
+  async sendVerificationEmail(data: { to: string; name: string; verificationLink: string }): Promise<void> {
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Verify Your Email</title>
+        <style>
+          body { font-family: 'Arial', sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+          .content { background: white; padding: 30px; border: 1px solid #e0e0e0; border-radius: 0 0 10px 10px; }
+          .button { display: inline-block; padding: 15px 40px; background: #667eea; color: white; text-decoration: none; border-radius: 5px; margin: 20px 0; font-weight: bold; }
+          .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
+          .warning { background: #fff3cd; border: 1px solid #ffc107; padding: 10px; border-radius: 5px; margin: 20px 0; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>CastMatch</h1>
+            <p>Verify Your Email Address</p>
+          </div>
+          <div class="content">
+            <h2>Welcome ${data.name}!</h2>
+            
+            <p>Thank you for joining CastMatch, Mumbai's premier AI-powered casting platform for the OTT industry.</p>
+            
+            <p>Please verify your email address to activate your account and start exploring opportunities:</p>
+            
+            <div style="text-align: center;">
+              <a href="${data.verificationLink}" class="button">Verify Email Address</a>
+            </div>
+            
+            <p style="color: #666; font-size: 14px;">Or copy and paste this link into your browser:</p>
+            <p style="background: #f5f5f5; padding: 10px; border-radius: 5px; font-size: 12px; word-break: break-all;">
+              ${data.verificationLink}
+            </p>
+            
+            <div class="warning">
+              <strong>Important:</strong> This verification link will expire in 24 hours.
+            </div>
+            
+            <p>If you didn't create an account with CastMatch, please ignore this email.</p>
+          </div>
+          <div class="footer">
+            <p>© ${new Date().getFullYear()} CastMatch. All rights reserved.</p>
+            <p>This is an automated email. Please do not reply.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    const text = `
+      Welcome to CastMatch, ${data.name}!
+
+      Thank you for joining Mumbai's premier AI-powered casting platform for the OTT industry.
+
+      Please verify your email address by clicking the link below:
+      ${data.verificationLink}
+
+      This link will expire in 24 hours.
+
+      If you didn't create an account with CastMatch, please ignore this email.
+
+      Best regards,
+      The CastMatch Team
+    `;
+
+    await this.sendEmail({
+      to: data.to,
+      subject: 'Verify Your Email - CastMatch',
+      html,
+      text,
+      priority: 'high',
+      metadata: {
+        type: 'verification',
+        userId: data.to
+      }
+    });
+  }
+
+  /**
    * Send password reset email
    */
   async sendPasswordResetEmail(data: PasswordResetEmailData): Promise<void> {

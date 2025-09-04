@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx:*)",
+      "Bash(node:*)",
+      "mcp__byterover-mcp__byterover-retrieve-knowledge",
+      "mcp__byterover-mcp__byterover-store-knowledge",
+      "Bash(npm install)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

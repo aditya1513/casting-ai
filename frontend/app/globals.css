@@ -41,6 +41,92 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+  /* Mumbai Design System - Color Tokens */
+  --color-base-black: oklch(0% 0 0);
+  --color-base-white: oklch(100% 0 0);
+  --color-base-transparent: transparent;
+  
+  /* Gray Scale */
+  --color-gray-50: oklch(98% 0 0);
+  --color-gray-100: oklch(95% 0 0);
+  --color-gray-200: oklch(90% 0 0);
+  --color-gray-300: oklch(85% 0 0);
+  --color-gray-400: oklch(70% 0 0);
+  --color-gray-500: oklch(55% 0 0);
+  --color-gray-600: oklch(40% 0 0);
+  --color-gray-700: oklch(25% 0 0);
+  --color-gray-800: oklch(15% 0 0);
+  --color-gray-900: oklch(10% 0 0);
+  --color-gray-950: oklch(5% 0 0);
+  
+  /* Mumbai Saffron */
+  --color-mumbai-saffron-50: oklch(97% 0.05 65);
+  --color-mumbai-saffron-100: oklch(94% 0.08 65);
+  --color-mumbai-saffron-200: oklch(87% 0.12 65);
+  --color-mumbai-saffron-300: oklch(78% 0.15 65);
+  --color-mumbai-saffron-400: oklch(68% 0.18 65);
+  --color-mumbai-saffron-500: oklch(58% 0.21 65);
+  --color-mumbai-saffron-600: oklch(48% 0.19 65);
+  --color-mumbai-saffron-700: oklch(38% 0.17 65);
+  --color-mumbai-saffron-800: oklch(28% 0.14 65);
+  --color-mumbai-saffron-900: oklch(18% 0.11 65);
+  
+  /* Mumbai Crimson */
+  --color-mumbai-crimson-50: oklch(96% 0.06 25);
+  --color-mumbai-crimson-100: oklch(92% 0.10 25);
+  --color-mumbai-crimson-200: oklch(84% 0.15 25);
+  --color-mumbai-crimson-300: oklch(74% 0.20 25);
+  --color-mumbai-crimson-400: oklch(64% 0.25 25);
+  --color-mumbai-crimson-500: oklch(54% 0.28 25);
+  --color-mumbai-crimson-600: oklch(44% 0.25 25);
+  --color-mumbai-crimson-700: oklch(34% 0.22 25);
+  --color-mumbai-crimson-800: oklch(24% 0.18 25);
+  --color-mumbai-crimson-900: oklch(14% 0.14 25);
+  
+  /* Mumbai Gold */
+  --color-mumbai-gold-50: oklch(97% 0.04 85);
+  --color-mumbai-gold-100: oklch(94% 0.07 85);
+  --color-mumbai-gold-200: oklch(88% 0.11 85);
+  --color-mumbai-gold-300: oklch(80% 0.15 85);
+  --color-mumbai-gold-400: oklch(70% 0.19 85);
+  --color-mumbai-gold-500: oklch(60% 0.22 85);
+  --color-mumbai-gold-600: oklch(50% 0.20 85);
+  --color-mumbai-gold-700: oklch(40% 0.18 85);
+  --color-mumbai-gold-800: oklch(30% 0.15 85);
+  --color-mumbai-gold-900: oklch(20% 0.12 85);
+  
+  /* Electric Blue */
+  --color-neon-electric-blue-50: oklch(95% 0.08 220);
+  --color-neon-electric-blue-100: oklch(90% 0.12 220);
+  --color-neon-electric-blue-200: oklch(82% 0.18 220);
+  --color-neon-electric-blue-300: oklch(74% 0.22 220);
+  --color-neon-electric-blue-400: oklch(66% 0.26 220);
+  --color-neon-electric-blue-500: oklch(58% 0.30 220);
+  --color-neon-electric-blue-600: oklch(50% 0.27 220);
+  --color-neon-electric-blue-700: oklch(42% 0.24 220);
+  --color-neon-electric-blue-800: oklch(34% 0.20 220);
+  --color-neon-electric-blue-900: oklch(26% 0.16 220);
+  
+  /* Neon Magenta */
+  --color-neon-magenta-50: oklch(96% 0.07 350);
+  --color-neon-magenta-100: oklch(91% 0.11 350);
+  --color-neon-magenta-200: oklch(83% 0.17 350);
+  --color-neon-magenta-300: oklch(75% 0.23 350);
+  --color-neon-magenta-400: oklch(67% 0.28 350);
+  --color-neon-magenta-500: oklch(59% 0.33 350);
+  --color-neon-magenta-600: oklch(51% 0.30 350);
+  --color-neon-magenta-700: oklch(43% 0.26 350);
+  --color-neon-magenta-800: oklch(35% 0.22 350);
+  --color-neon-magenta-900: oklch(27% 0.18 350);
+  
+  /* Glassmorphism */
+  --color-glassmorphism-backdrop-light: oklch(100% 0 0 / 0.1);
+  --color-glassmorphism-backdrop-medium: oklch(100% 0 0 / 0.2);
+  --color-glassmorphism-backdrop-heavy: oklch(100% 0 0 / 0.3);
+  --color-glassmorphism-border-subtle: oklch(100% 0 0 / 0.1);
+  --color-glassmorphism-border-default: oklch(100% 0 0 / 0.2);
+  --color-glassmorphism-border-strong: oklch(100% 0 0 / 0.3);
 }
 
 :root {
@@ -110,6 +196,32 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+
+  /* Mumbai Design System - Dark Mode Semantic Colors */
+  --color-semantic-dark-mode-background-primary: var(--color-base-black);
+  --color-semantic-dark-mode-background-secondary: var(--color-gray-900);
+  --color-semantic-dark-mode-background-tertiary: var(--color-gray-800);
+  --color-semantic-dark-mode-background-elevated: var(--color-gray-700);
+  --color-semantic-dark-mode-background-overlay: oklch(0% 0 0 / 0.8);
+  
+  --color-semantic-dark-mode-text-primary: var(--color-base-white);
+  --color-semantic-dark-mode-text-secondary: var(--color-gray-300);
+  --color-semantic-dark-mode-text-tertiary: var(--color-gray-500);
+  --color-semantic-dark-mode-text-inverse: var(--color-base-black);
+  --color-semantic-dark-mode-text-disabled: var(--color-gray-600);
+  
+  --color-semantic-dark-mode-border-subtle: var(--color-gray-800);
+  --color-semantic-dark-mode-border-default: var(--color-gray-700);
+  --color-semantic-dark-mode-border-strong: var(--color-gray-600);
+  --color-semantic-dark-mode-border-focus: var(--color-neon-electric-blue-500);
+  
+  --color-semantic-dark-mode-accent-primary: var(--color-mumbai-saffron-400);
+  --color-semantic-dark-mode-accent-secondary: var(--color-neon-electric-blue-500);
+  --color-semantic-dark-mode-accent-tertiary: var(--color-mumbai-gold-500);
+  --color-semantic-dark-mode-accent-danger: var(--color-mumbai-crimson-500);
+  --color-semantic-dark-mode-accent-warning: var(--color-mumbai-gold-400);
+  --color-semantic-dark-mode-accent-success: oklch(70% 0.15 140);
+  --color-semantic-dark-mode-accent-info: var(--color-neon-electric-blue-400);
 }
 
 @layer base {
@@ -119,4 +231,545 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Mumbai Typography System */
+  
+  /* Font Weights */
+  .font-thin { font-weight: 100; }
+  .font-light { font-weight: 300; }
+  .font-regular { font-weight: 400; }
+  .font-medium { font-weight: 500; }
+  .font-semibold { font-weight: 600; }
+  .font-bold { font-weight: 700; }
+  .font-extrabold { font-weight: 800; }
+  .font-black { font-weight: 900; }
+
+  /* Display Typography */
+  .text-display-2xl {
+    font-size: 4.5rem; /* 72px */
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.05em;
+    color: var(--color-semantic-dark-mode-text-primary);
+  }
+
+  .text-display-xl {
+    font-size: 3.75rem; /* 60px */
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.05em;
+    color: var(--color-semantic-dark-mode-text-primary);
+  }
+
+  .text-display-lg {
+    font-size: 3rem; /* 48px */
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.025em;
+    color: var(--color-semantic-dark-mode-text-primary);
+  }
+
+  /* Heading Typography */
+  .text-heading-xl {
+    font-size: 2.25rem; /* 36px */
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.025em;
+    color: var(--color-semantic-dark-mode-text-primary);
+  }
+
+  .text-heading-lg {
+    font-size: 1.875rem; /* 30px */
+    font-weight: 600;
+    line-height: 1.375;
+    letter-spacing: -0.025em;
+    color: var(--color-semantic-dark-mode-text-primary);
+  }
+
+  .text-heading-md {
+    font-size: 1.5rem; /* 24px */
+    font-weight: 600;
+    line-height: 1.375;
+    letter-spacing: 0;
+    color: var(--color-semantic-dark-mode-text-primary);
+  }
+
+  .text-heading-sm {
+    font-size: 1.25rem; /* 20px */
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: 0;
+    color: var(--color-semantic-dark-mode-text-primary);
+  }
+
+  /* Body Typography */
+  .text-body-lg {
+    font-size: 1.125rem; /* 18px */
+    font-weight: 400;
+    line-height: 1.625;
+    letter-spacing: 0;
+    color: var(--color-semantic-dark-mode-text-secondary);
+  }
+
+  .text-body-md {
+    font-size: 1rem; /* 16px */
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: 0;
+    color: var(--color-semantic-dark-mode-text-secondary);
+  }
+
+  .text-body-sm {
+    font-size: 0.875rem; /* 14px */
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: 0;
+    color: var(--color-semantic-dark-mode-text-secondary);
+  }
+
+  /* Caption Typography */
+  .text-caption-lg {
+    font-size: 0.875rem; /* 14px */
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: 0.025em;
+    color: var(--color-semantic-dark-mode-text-tertiary);
+    text-transform: uppercase;
+  }
+
+  .text-caption-md {
+    font-size: 0.75rem; /* 12px */
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: 0.05em;
+    color: var(--color-semantic-dark-mode-text-tertiary);
+  }
+
+  /* Mumbai Accent Colors */
+  .text-saffron { color: var(--color-mumbai-saffron-400); }
+  .text-gold { color: var(--color-mumbai-gold-500); }
+  .text-crimson { color: var(--color-mumbai-crimson-500); }
+
+  /* Line Height Utilities */
+  .leading-none { line-height: 1; }
+  .leading-tight { line-height: 1.25; }
+  .leading-snug { line-height: 1.375; }
+  .leading-normal { line-height: 1.5; }
+  .leading-relaxed { line-height: 1.625; }
+  .leading-loose { line-height: 2; }
+
+  /* Letter Spacing Utilities */
+  .tracking-tighter { letter-spacing: -0.05em; }
+  .tracking-tight { letter-spacing: -0.025em; }
+  .tracking-normal { letter-spacing: 0; }
+  .tracking-wide { letter-spacing: 0.025em; }
+  .tracking-wider { letter-spacing: 0.05em; }
+  .tracking-widest { letter-spacing: 0.1em; }
+
+  /* Component-specific Typography */
+  .talent-name {
+    font-size: 1.125rem; /* 18px */
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--color-semantic-dark-mode-text-primary);
+  }
+
+  .talent-details {
+    font-size: 0.875rem; /* 14px */
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--color-semantic-dark-mode-text-secondary);
+  }
+
+  .talent-tags {
+    font-size: 0.75rem; /* 12px */
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: 0.025em;
+    color: var(--color-semantic-dark-mode-text-tertiary);
+    text-transform: uppercase;
+  }
+
+  /* Mobile Responsive Typography */
+  @media (max-width: 768px) {
+    .text-display-2xl { font-size: 3rem; } /* 48px */
+    .text-display-xl { font-size: 2.25rem; } /* 36px */
+    .text-display-lg { font-size: 1.875rem; } /* 30px */
+    .text-heading-xl { font-size: 1.875rem; } /* 30px */
+    .text-heading-lg { font-size: 1.5rem; } /* 24px */
+  }
+
+  /* High Contrast Mode Support */
+  @media (prefers-contrast: high) {
+    .text-heading-xl,
+    .text-heading-lg,
+    .text-heading-md,
+    .text-heading-sm {
+      color: var(--color-base-white);
+    }
+  }
+
+  /* Reduced Motion Support */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* Performance Optimizations */
+  .text-display-2xl,
+  .text-display-xl,
+  .text-display-lg {
+    font-display: swap;
+    will-change: auto;
+  }
+
+  /* ================================================
+     TALENT CARD COMPONENT STYLES
+     ================================================ */
+
+  /* Base TalentCard Styles */
+  .talent-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px; /* 1.5 base units */
+    padding: 16px; /* 2 base units */
+    background: var(--color-semantic-dark-mode-background-tertiary);
+    border: 1px solid var(--color-semantic-dark-mode-border-subtle);
+    border-radius: 12px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* OLED Optimization */
+    backdrop-filter: blur(20px);
+    background: linear-gradient(
+      135deg,
+      var(--color-glassmorphism-backdrop-light),
+      var(--color-glassmorphism-backdrop-medium)
+    );
+    
+    /* Elevation System */
+    box-shadow: 
+      0 1px 3px oklch(0% 0 0 / 0.1),
+      0 1px 2px oklch(0% 0 0 / 0.06);
+    
+    /* Performance Optimization */
+    contain: layout style;
+    will-change: transform;
+    transform: translateZ(0);
+  }
+
+  /* Hover State (Desktop only) */
+  @media (hover: hover) {
+    .talent-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        0 10px 25px oklch(0% 0 0 / 0.15),
+        0 4px 10px oklch(0% 0 0 / 0.1);
+      border-color: var(--color-semantic-dark-mode-accent-primary);
+      
+      /* Mumbai Sunset Glow */
+      background: linear-gradient(
+        135deg,
+        var(--color-glassmorphism-backdrop-medium),
+        var(--color-glassmorphism-backdrop-light)
+      );
+    }
+  }
+
+  /* Focus State (Accessibility) */
+  .talent-card:focus,
+  .talent-card:focus-within {
+    outline: 2px solid var(--color-semantic-dark-mode-border-focus);
+    outline-offset: 2px;
+    border-color: var(--color-semantic-dark-mode-border-focus);
+  }
+
+  .talent-card:focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  /* Loading State (Skeleton) */
+  .talent-card--loading {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .talent-card--loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--color-glassmorphism-backdrop-light),
+      transparent
+    );
+    animation: skeleton-loading 2s infinite;
+  }
+
+  @keyframes skeleton-loading {
+    0% { left: -100%; }
+    100% { left: 100%; }
+  }
+
+  /* Header Section */
+  .talent-card__header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .talent-card__info {
+    flex: 1;
+    min-width: 0; /* Prevent text overflow */
+  }
+
+  .talent-card__name {
+    margin: 0 0 4px 0;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--color-semantic-dark-mode-text-primary);
+  }
+
+  .talent-card__details {
+    margin: 0;
+    font-size: 14px;
+    color: var(--color-semantic-dark-mode-text-secondary);
+  }
+
+  /* Experience Tags */
+  .talent-card__experience {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .talent-card__tag {
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--color-mumbai-saffron-400);
+    background: var(--color-mumbai-saffron-900);
+    border: 1px solid var(--color-mumbai-saffron-800);
+    border-radius: 4px;
+    letter-spacing: 0.025em;
+    text-transform: uppercase;
+  }
+
+  /* Rating Section */
+  .talent-card__rating {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .rating-stars {
+    font-size: 16px;
+    color: var(--color-mumbai-gold-500);
+    letter-spacing: -1px;
+  }
+
+  .rating-text {
+    font-size: 14px;
+    color: var(--color-semantic-dark-mode-text-tertiary);
+  }
+
+  /* Action Buttons */
+  .talent-card__actions {
+    display: flex;
+    gap: 8px;
+    margin-top: auto; /* Push to bottom in flex container */
+  }
+
+  .button {
+    flex: 1;
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease-out;
+    min-height: 44px; /* Accessibility: minimum touch target */
+  }
+
+  .button--primary {
+    background: var(--color-semantic-dark-mode-accent-primary);
+    color: var(--color-semantic-dark-mode-text-inverse);
+  }
+
+  .button--primary:hover {
+    background: var(--color-mumbai-saffron-300);
+    transform: translateY(-1px);
+  }
+
+  .button--primary-active {
+    background: var(--color-mumbai-gold-500);
+    color: var(--color-semantic-dark-mode-text-inverse);
+  }
+
+  .button--secondary {
+    background: transparent;
+    color: var(--color-semantic-dark-mode-text-secondary);
+    border: 1px solid var(--color-semantic-dark-mode-border-default);
+  }
+
+  .button--secondary:hover {
+    background: var(--color-semantic-dark-mode-background-elevated);
+    border-color: var(--color-semantic-dark-mode-border-strong);
+    color: var(--color-semantic-dark-mode-text-primary);
+  }
+
+  /* Desktop Responsive Styles */
+  @media (min-width: 1024px) {
+    .talent-card--desktop {
+      flex-direction: row;
+      align-items: center;
+      padding: 20px;
+      min-height: 140px;
+    }
+    
+    .talent-card__content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin: 0 20px;
+    }
+    
+    .talent-card__meta {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      align-items: flex-end;
+    }
+    
+    .talent-card__actions {
+      flex-direction: row;
+      justify-content: flex-end;
+    }
+    
+    .button {
+      flex: 0 0 auto;
+      min-width: 120px;
+    }
+  }
+
+  /* Featured Cards (Mumbai Spotlight) */
+  .talent-card--featured {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .talent-card--featured::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(
+      90deg,
+      var(--color-neon-electric-blue-500),
+      var(--color-neon-magenta-500)
+    );
+  }
+
+  /* Premium Cards (Bollywood Spotlight) */
+  .talent-card--premium {
+    background: radial-gradient(
+      circle at 30% 30%,
+      var(--color-mumbai-gold-900),
+      var(--color-semantic-dark-mode-background-tertiary)
+    );
+  }
+
+  /* Compact Size */
+  .talent-card--compact {
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .talent-card--compact .talent-card__name {
+    font-size: 16px;
+  }
+
+  .talent-card--compact .talent-card__tag {
+    padding: 2px 6px;
+    font-size: 10px;
+  }
+
+  /* Expanded Size */
+  .talent-card--expanded {
+    padding: 24px;
+    gap: 16px;
+  }
+
+  .talent-card--expanded .talent-card__name {
+    font-size: 20px;
+  }
+
+  /* High Contrast Mode */
+  @media (prefers-contrast: high) {
+    .talent-card {
+      border-width: 2px;
+      border-color: var(--color-semantic-dark-mode-text-primary);
+    }
+    
+    .talent-card__name {
+      color: var(--color-base-white);
+    }
+  }
+
+  /* Reduced Motion Support */
+  @media (prefers-reduced-motion: reduce) {
+    .talent-card,
+    .button {
+      transition: none;
+      animation: none;
+    }
+    
+    .talent-card:hover {
+      transform: none;
+    }
+  }
+
+  /* Screen Reader Only Content */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* Avatar Styles */
+  .avatar-motion {
+    position: relative;
+  }
+
+  .avatar-motion img {
+    border-radius: 50%;
+    border: 2px solid var(--color-mumbai-gold-500);
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  /* Size variations */
+  .w-16 { width: 4rem; }
+  .h-16 { height: 4rem; }
+  .w-20 { width: 5rem; }
+  .h-20 { height: 5rem; }
+  .w-24 { width: 6rem; }
+  .h-24 { height: 6rem; }
 }

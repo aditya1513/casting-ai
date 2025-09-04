@@ -1,0 +1,486 @@
+/**
+ * CastMatch Mathematical Grid System
+ * Layout Grid Systems Engineer - Mathematical precision for casting dashboard layouts
+ * 
+ * Foundation: 8px baseline grid with golden ratio proportions
+ * Columns: 12/16/24 column structures with mathematical harmony
+ * Breakpoints: Progressive enhancement for casting director workflows
+ */
+
+/* =============================================================================
+   MATHEMATICAL FOUNDATION - 8px Baseline Grid System
+   ============================================================================= */
+
+:root {
+  /* Base Unit: 8px - Foundation of all measurements */
+  --grid-base-unit: 8px;
+  
+  /* Mathematical Spacing Scale */
+  --space-0-5: calc(var(--grid-base-unit) * 0.5); /* 4px */
+  --space-1: var(--grid-base-unit);                /* 8px */
+  --space-1-5: calc(var(--grid-base-unit) * 1.5); /* 12px */
+  --space-2: calc(var(--grid-base-unit) * 2);     /* 16px */
+  --space-3: calc(var(--grid-base-unit) * 3);     /* 24px */
+  --space-4: calc(var(--grid-base-unit) * 4);     /* 32px */
+  --space-6: calc(var(--grid-base-unit) * 6);     /* 48px */
+  --space-8: calc(var(--grid-base-unit) * 8);     /* 64px */
+  --space-12: calc(var(--grid-base-unit) * 12);   /* 96px */
+  --space-16: calc(var(--grid-base-unit) * 16);   /* 128px */
+  
+  /* Golden Ratio Proportions (1.618) */
+  --golden-ratio: 1.618;
+  --space-golden-sm: calc(var(--space-2) * var(--golden-ratio)); /* ~26px */
+  --space-golden-md: calc(var(--space-4) * var(--golden-ratio)); /* ~52px */
+  --space-golden-lg: calc(var(--space-6) * var(--golden-ratio)); /* ~78px */
+  
+  /* Modular Scale (1.25) for harmonious sizing */
+  --modular-scale: 1.25;
+  --scale-1: calc(var(--space-2) * 1);                    /* 16px */
+  --scale-2: calc(var(--space-2) * var(--modular-scale)); /* 20px */
+  --scale-3: calc(var(--scale-2) * var(--modular-scale)); /* 25px */
+  --scale-4: calc(var(--scale-3) * var(--modular-scale)); /* 31px */
+  --scale-5: calc(var(--scale-4) * var(--modular-scale)); /* 39px */
+  
+  /* Responsive Container Sizes */
+  --container-xs: 320px;   /* Mobile S */
+  --container-sm: 640px;   /* Mobile L */
+  --container-md: 768px;   /* Tablet */
+  --container-lg: 1024px;  /* Desktop S */
+  --container-xl: 1280px;  /* Desktop M */
+  --container-2xl: 1536px; /* Desktop L */
+  --container-3xl: 1920px; /* Desktop XL */
+  
+  /* Grid Column Counts */
+  --grid-columns-mobile: 4;
+  --grid-columns-tablet: 8;
+  --grid-columns-desktop: 12;
+  --grid-columns-wide: 16;
+  --grid-columns-cinema: 24;
+  
+  /* Gutter Sizes - Progressive enhancement */
+  --gutter-mobile: var(--space-2);   /* 16px */
+  --gutter-tablet: var(--space-3);   /* 24px */
+  --gutter-desktop: var(--space-4);  /* 32px */
+  --gutter-wide: var(--space-6);     /* 48px */
+  
+  /* Margin Sizes */
+  --margin-mobile: var(--space-2);   /* 16px */
+  --margin-tablet: var(--space-4);   /* 32px */
+  --margin-desktop: var(--space-6);  /* 48px */
+  --margin-wide: var(--space-8);     /* 64px */
+}
+
+/* =============================================================================
+   CASTING DASHBOARD SPECIFIC VARIABLES
+   ============================================================================= */
+
+:root {
+  /* Talent Card Dimensions - Based on golden ratio */
+  --talent-card-width-mobile: calc(var(--container-xs) - var(--margin-mobile) * 2);
+  --talent-card-width-tablet: calc((var(--container-md) - var(--margin-tablet) * 2 - var(--gutter-tablet)) / 2);
+  --talent-card-width-desktop: calc((var(--container-lg) - var(--margin-desktop) * 2 - var(--gutter-desktop) * 2) / 3);
+  --talent-card-height: calc(var(--talent-card-width-desktop) * var(--golden-ratio)); /* Golden ratio proportion */
+  
+  /* Dashboard Layout Dimensions */
+  --dashboard-sidebar-width: calc(var(--space-8) * 4); /* 256px */
+  --dashboard-header-height: calc(var(--space-8) * 1);  /* 64px */
+  --dashboard-content-padding: var(--space-4);          /* 32px */
+  
+  /* Project Card Dimensions */
+  --project-card-height: calc(var(--space-8) * 2);     /* 128px */
+  --stats-card-height: calc(var(--space-8) * 1.5);     /* 96px */
+}
+
+/* =============================================================================
+   BASE GRID CONTAINER SYSTEM
+   ============================================================================= */
+
+.casting-container {
+  width: 100%;
+  max-width: var(--container-2xl);
+  margin: 0 auto;
+  padding-left: var(--margin-mobile);
+  padding-right: var(--margin-mobile);
+}
+
+/* Progressive Container Enhancement */
+@container (min-width: 640px) {
+  .casting-container {
+    padding-left: var(--margin-tablet);
+    padding-right: var(--margin-tablet);
+  }
+}
+
+@container (min-width: 1024px) {
+  .casting-container {
+    padding-left: var(--margin-desktop);
+    padding-right: var(--margin-desktop);
+  }
+}
+
+@container (min-width: 1536px) {
+  .casting-container {
+    padding-left: var(--margin-wide);
+    padding-right: var(--margin-wide);
+  }
+}
+
+/* =============================================================================
+   MATHEMATICAL GRID LAYOUTS
+   ============================================================================= */
+
+/* Primary Grid System - CSS Grid with mathematical precision */
+.casting-grid {
+  display: grid;
+  gap: var(--gutter-mobile);
+  grid-template-columns: repeat(var(--grid-columns-mobile), 1fr);
+}
+
+@media (min-width: 768px) {
+  .casting-grid {
+    gap: var(--gutter-tablet);
+    grid-template-columns: repeat(var(--grid-columns-tablet), 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .casting-grid {
+    gap: var(--gutter-desktop);
+    grid-template-columns: repeat(var(--grid-columns-desktop), 1fr);
+  }
+}
+
+@media (min-width: 1536px) {
+  .casting-grid {
+    gap: var(--gutter-wide);
+    grid-template-columns: repeat(var(--grid-columns-wide), 1fr);
+  }
+}
+
+/* =============================================================================
+   TALENT PROFILE CARD GRID
+   ============================================================================= */
+
+.talent-grid {
+  display: grid;
+  gap: var(--gutter-mobile);
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  align-items: start;
+}
+
+@media (min-width: 768px) {
+  .talent-grid {
+    gap: var(--gutter-tablet);
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .talent-grid {
+    gap: var(--gutter-desktop);
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  }
+}
+
+/* Talent Card Styling with Golden Ratio */
+.talent-card {
+  aspect-ratio: 1 / var(--golden-ratio);
+  min-height: calc(var(--space-8) * 6); /* 384px minimum */
+  container-type: inline-size;
+  position: relative;
+  overflow: hidden;
+}
+
+.talent-card-content {
+  height: 100%;
+  display: grid;
+  grid-template-rows: 1fr auto auto;
+  gap: var(--space-2);
+  padding: var(--space-3);
+}
+
+/* =============================================================================
+   DASHBOARD LAYOUT GRIDS
+   ============================================================================= */
+
+/* Dashboard Main Layout */
+.dashboard-layout {
+  display: grid;
+  grid-template-areas: 
+    "header header"
+    "sidebar content";
+  grid-template-columns: var(--dashboard-sidebar-width) 1fr;
+  grid-template-rows: var(--dashboard-header-height) 1fr;
+  min-height: 100vh;
+  gap: 0;
+}
+
+@media (max-width: 1023px) {
+  .dashboard-layout {
+    grid-template-areas: 
+      "header"
+      "content";
+    grid-template-columns: 1fr;
+    grid-template-rows: var(--dashboard-header-height) 1fr;
+  }
+}
+
+.dashboard-header {
+  grid-area: header;
+  padding: 0 var(--space-4);
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--neutral-200);
+}
+
+.dashboard-sidebar {
+  grid-area: sidebar;
+  padding: var(--space-4);
+  border-right: 1px solid var(--neutral-200);
+}
+
+.dashboard-content {
+  grid-area: content;
+  padding: var(--dashboard-content-padding);
+  overflow-y: auto;
+}
+
+/* =============================================================================
+   STATS CARDS GRID - Mathematical Distribution
+   ============================================================================= */
+
+.stats-grid {
+  display: grid;
+  gap: var(--gutter-mobile);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--gutter-tablet);
+  }
+}
+
+@media (min-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--gutter-desktop);
+  }
+}
+
+.stats-card {
+  aspect-ratio: var(--golden-ratio) / 1;
+  min-height: var(--stats-card-height);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: var(--space-3);
+}
+
+/* =============================================================================
+   PROJECT CARDS GRID
+   ============================================================================= */
+
+.projects-grid {
+  display: grid;
+  gap: var(--gutter-mobile);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .projects-grid {
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: var(--gutter-tablet);
+  }
+}
+
+@media (min-width: 1280px) {
+  .projects-grid {
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    gap: var(--gutter-desktop);
+  }
+}
+
+.project-card {
+  height: var(--project-card-height);
+  padding: var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* =============================================================================
+   APPLICATIONS LIST GRID
+   ============================================================================= */
+
+.applications-grid {
+  display: grid;
+  gap: var(--space-2);
+  grid-template-columns: 1fr;
+}
+
+.application-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  align-items: center;
+  min-height: calc(var(--space-8) * 1); /* 64px */
+}
+
+@media (min-width: 768px) {
+  .application-item {
+    grid-template-columns: auto 1fr auto auto;
+    gap: var(--space-4);
+    padding: var(--space-4);
+  }
+}
+
+/* =============================================================================
+   RESPONSIVE SPACING UTILITIES
+   ============================================================================= */
+
+/* Margin Utilities */
+.m-grid-0-5 { margin: var(--space-0-5); }
+.m-grid-1 { margin: var(--space-1); }
+.m-grid-2 { margin: var(--space-2); }
+.m-grid-3 { margin: var(--space-3); }
+.m-grid-4 { margin: var(--space-4); }
+.m-grid-6 { margin: var(--space-6); }
+.m-grid-8 { margin: var(--space-8); }
+
+/* Padding Utilities */
+.p-grid-0-5 { padding: var(--space-0-5); }
+.p-grid-1 { padding: var(--space-1); }
+.p-grid-2 { padding: var(--space-2); }
+.p-grid-3 { padding: var(--space-3); }
+.p-grid-4 { padding: var(--space-4); }
+.p-grid-6 { padding: var(--space-6); }
+.p-grid-8 { padding: var(--space-8); }
+
+/* Gap Utilities */
+.gap-grid-1 { gap: var(--space-1); }
+.gap-grid-2 { gap: var(--space-2); }
+.gap-grid-3 { gap: var(--space-3); }
+.gap-grid-4 { gap: var(--space-4); }
+.gap-grid-6 { gap: var(--space-6); }
+.gap-grid-8 { gap: var(--space-8); }
+
+/* =============================================================================
+   GOLDEN RATIO LAYOUT UTILITIES
+   ============================================================================= */
+
+.aspect-golden { aspect-ratio: var(--golden-ratio) / 1; }
+.aspect-golden-vertical { aspect-ratio: 1 / var(--golden-ratio); }
+.aspect-square { aspect-ratio: 1; }
+.aspect-video { aspect-ratio: 16 / 9; }
+.aspect-photo { aspect-ratio: 4 / 3; }
+
+/* Golden ratio spacing */
+.space-golden-sm { margin: var(--space-golden-sm); }
+.space-golden-md { margin: var(--space-golden-md); }
+.space-golden-lg { margin: var(--space-golden-lg); }
+
+/* =============================================================================
+   PERFORMANCE OPTIMIZATIONS
+   ============================================================================= */
+
+/* GPU Acceleration for smooth animations */
+.casting-grid,
+.talent-grid,
+.stats-grid,
+.projects-grid {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Minimize reflow with contain */
+.talent-card,
+.stats-card,
+.project-card {
+  contain: layout style paint;
+}
+
+/* =============================================================================
+   ACCESSIBILITY & RESPONSIVE BEHAVIOR
+   ============================================================================= */
+
+/* Respect user motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .casting-grid,
+  .talent-grid,
+  .stats-grid,
+  .projects-grid {
+    transform: none;
+    will-change: auto;
+  }
+}
+
+/* High contrast adjustments */
+@media (prefers-contrast: high) {
+  .talent-card,
+  .stats-card,
+  .project-card {
+    border: 2px solid currentColor;
+  }
+}
+
+/* Focus management for keyboard navigation */
+.casting-grid:focus-within,
+.talent-grid:focus-within {
+  outline: 2px solid var(--brand-500);
+  outline-offset: var(--space-1);
+}
+
+/* =============================================================================
+   CONTAINER QUERIES FOR COMPONENT-LEVEL RESPONSIVENESS
+   ============================================================================= */
+
+/* Talent Card responsive behavior */
+@container (max-width: 320px) {
+  .talent-card-content {
+    padding: var(--space-2);
+    gap: var(--space-1);
+  }
+}
+
+@container (min-width: 400px) {
+  .talent-card-content {
+    padding: var(--space-4);
+    gap: var(--space-3);
+  }
+}
+
+/* Project card responsive behavior */
+@container (max-width: 400px) {
+  .project-card {
+    flex-direction: column;
+    text-align: center;
+    height: auto;
+    min-height: var(--project-card-height);
+  }
+}
+
+/* =============================================================================
+   DEBUGGING UTILITIES (Remove in production)
+   ============================================================================= */
+
+.debug-grid {
+  position: relative;
+}
+
+.debug-grid::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    linear-gradient(to right, rgba(255, 0, 0, 0.1) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 0, 0, 0.1) 1px, transparent 1px);
+  background-size: var(--space-1) var(--space-1);
+  pointer-events: none;
+  z-index: 1000;
+}

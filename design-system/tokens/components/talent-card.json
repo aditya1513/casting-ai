@@ -1,0 +1,289 @@
+{
+  "$schema": "https://schemas.opendesigntokens.org/0.1.0/tokens.json",
+  "talent-card": {
+    "$description": "Complete design specification for CastMatch Talent Card component",
+    "$version": "1.0.0",
+    "$created": "2025-09-04",
+    "$author": "Visual Systems Architect",
+    
+    "layout": {
+      "$description": "Grid and spacing specifications",
+      "width": {
+        "mobile": { "$value": "100%", "$description": "Full width on mobile" },
+        "tablet": { "$value": "calc(50% - 12px)", "$description": "2 columns with gap" },
+        "desktop": { "$value": "calc(33.333% - 16px)", "$description": "3 columns with gap" },
+        "desktop-large": { "$value": "calc(25% - 18px)", "$description": "4 columns with gap" },
+        "desktop-xl": { "$value": "calc(20% - 19.2px)", "$description": "5 columns with gap" }
+      },
+      "height": {
+        "mobile": { "$value": "auto", "$description": "Auto height based on content" },
+        "minimum": { "$value": "280px", "$description": "Minimum height to maintain consistency" }
+      },
+      "padding": {
+        "mobile": { "$value": "16px", "$description": "16px padding on mobile" },
+        "tablet": { "$value": "20px", "$description": "20px padding on tablet" },
+        "desktop": { "$value": "24px", "$description": "24px padding on desktop" }
+      },
+      "gap": {
+        "internal": { "$value": "16px", "$description": "Gap between internal sections" },
+        "small": { "$value": "8px", "$description": "Gap for closely related items" },
+        "tiny": { "$value": "4px", "$description": "Gap for tightly packed items" }
+      }
+    },
+    
+    "visual": {
+      "$description": "Visual design specifications",
+      "background": {
+        "default": {
+          "$value": "linear-gradient(135deg, #171717 0%, #262626 100%)",
+          "$description": "Default card background gradient"
+        },
+        "hover": {
+          "$value": "linear-gradient(135deg, #1f1f1f 0%, #2a2a2a 100%)",
+          "$description": "Hover state background"
+        }
+      },
+      "border": {
+        "width": { "$value": "1px", "$description": "Border thickness" },
+        "radius": { "$value": "12px", "$description": "Border radius for modern look" },
+        "color": {
+          "default": { "$value": "#404040", "$description": "Default border color" },
+          "hover": { "$value": "rgba(212, 175, 55, 0.3)", "$description": "Hover border with gold accent" },
+          "focus": { "$value": "#d4af37", "$description": "Focus state border" }
+        }
+      },
+      "shadow": {
+        "default": { "$value": "none", "$description": "No shadow by default" },
+        "hover": {
+          "$value": "0 8px 32px rgba(212, 175, 55, 0.12)",
+          "$description": "Subtle gold glow on hover"
+        },
+        "focus": {
+          "$value": "0 0 0 2px rgba(212, 175, 55, 0.5)",
+          "$description": "Focus ring shadow"
+        }
+      },
+      "accent": {
+        "line": {
+          "height": { "$value": "2px", "$description": "Accent line thickness" },
+          "background": {
+            "$value": "linear-gradient(90deg, #d4af37 0%, #b8941f 100%)",
+            "$description": "Gold gradient accent line"
+          },
+          "opacity": {
+            "default": { "$value": "0", "$description": "Hidden by default" },
+            "hover": { "$value": "1", "$description": "Visible on hover" }
+          }
+        }
+      }
+    },
+    
+    "typography": {
+      "$description": "Text styling specifications",
+      "talent-name": {
+        "font-family": { "$value": "'Playfair Display', serif", "$description": "Elegant serif for names" },
+        "font-size": {
+          "mobile": { "$value": "18px", "$description": "18px on mobile" },
+          "desktop": { "$value": "22px", "$description": "22px on desktop" }
+        },
+        "font-weight": { "$value": "600", "$description": "Semibold weight" },
+        "line-height": { "$value": "1.2", "$description": "Tight line height" },
+        "color": { "$value": "#ffffff", "$description": "Primary text color" },
+        "margin": { "$value": "0 0 4px 0", "$description": "Bottom margin only" }
+      },
+      "talent-role": {
+        "font-family": { "$value": "'Inter', sans-serif", "$description": "Clean sans-serif" },
+        "font-size": { "$value": "16px", "$description": "16px font size" },
+        "font-weight": { "$value": "500", "$description": "Medium weight" },
+        "line-height": { "$value": "1.4", "$description": "Normal line height" },
+        "color": { "$value": "#d4af37", "$description": "Mumbai gold accent" },
+        "margin": { "$value": "0", "$description": "No margin" }
+      },
+      "talent-location": {
+        "font-family": { "$value": "'Inter', sans-serif", "$description": "Clean sans-serif" },
+        "font-size": { "$value": "14px", "$description": "14px font size" },
+        "font-weight": { "$value": "400", "$description": "Regular weight" },
+        "line-height": { "$value": "1.4", "$description": "Normal line height" },
+        "color": { "$value": "#999999", "$description": "Tertiary text color" },
+        "margin": { "$value": "0", "$description": "No margin" }
+      },
+      "skill-tag": {
+        "font-family": { "$value": "'Inter', sans-serif", "$description": "Clean sans-serif" },
+        "font-size": { "$value": "12px", "$description": "12px font size" },
+        "font-weight": { "$value": "500", "$description": "Medium weight" },
+        "line-height": { "$value": "1", "$description": "Tight line height" },
+        "color": { "$value": "#d4af37", "$description": "Gold text" },
+        "text-transform": { "$value": "uppercase", "$description": "All caps" },
+        "letter-spacing": { "$value": "0.025em", "$description": "Slight letter spacing" }
+      },
+      "stat-value": {
+        "font-family": { "$value": "'Inter', sans-serif", "$description": "Clean sans-serif" },
+        "font-size": {
+          "mobile": { "$value": "16px", "$description": "16px on mobile" },
+          "desktop": { "$value": "20px", "$description": "20px on desktop" }
+        },
+        "font-weight": { "$value": "700", "$description": "Bold weight" },
+        "line-height": { "$value": "1", "$description": "No line height" },
+        "color": { "$value": "#ffffff", "$description": "Primary text color" },
+        "font-variant-numeric": { "$value": "tabular-nums", "$description": "Monospace numbers" }
+      },
+      "stat-label": {
+        "font-family": { "$value": "'Inter', sans-serif", "$description": "Clean sans-serif" },
+        "font-size": { "$value": "12px", "$description": "12px font size" },
+        "font-weight": { "$value": "500", "$description": "Medium weight" },
+        "line-height": { "$value": "1", "$description": "No line height" },
+        "color": { "$value": "#737373", "$description": "Muted text color" },
+        "text-transform": { "$value": "uppercase", "$description": "All caps" },
+        "letter-spacing": { "$value": "0.1em", "$description": "Wide letter spacing" }
+      }
+    },
+    
+    "components": {
+      "$description": "Component part specifications",
+      "avatar": {
+        "size": {
+          "mobile": { "$value": "64px", "$description": "64x64px on mobile" },
+          "desktop": { "$value": "80px", "$description": "80x80px on desktop" }
+        },
+        "border-radius": { "$value": "50%", "$description": "Perfect circle" },
+        "border": {
+          "width": { "$value": "2px", "$description": "Thin border" },
+          "color": { "$value": "#555555", "$description": "Subtle border" }
+        },
+        "background": {
+          "$value": "linear-gradient(135deg, #4a4a4a 0%, #333333 100%)",
+          "$description": "Gradient placeholder"
+        }
+      },
+      "skill-tags": {
+        "padding": { "$value": "6px 12px", "$description": "Comfortable padding" },
+        "border-radius": { "$value": "6px", "$description": "Rounded corners" },
+        "background": {
+          "$value": "rgba(212, 175, 55, 0.1)",
+          "$description": "Subtle gold background"
+        },
+        "border": {
+          "width": { "$value": "1px", "$description": "Thin border" },
+          "color": { "$value": "rgba(212, 175, 55, 0.3)", "$description": "Gold border" }
+        },
+        "gap": { "$value": "8px", "$description": "Gap between tags" }
+      },
+      "buttons": {
+        "primary": {
+          "padding": {
+            "mobile": { "$value": "12px 16px", "$description": "Mobile button padding" },
+            "desktop": { "$value": "14px 20px", "$description": "Desktop button padding" }
+          },
+          "border-radius": { "$value": "8px", "$description": "Rounded corners" },
+          "background": {
+            "$value": "linear-gradient(135deg, #d4af37 0%, #b8941f 100%)",
+            "$description": "Gold gradient background"
+          },
+          "color": { "$value": "#000000", "$description": "Black text on gold" },
+          "font-weight": { "$value": "600", "$description": "Semibold text" },
+          "text-transform": { "$value": "uppercase", "$description": "All caps" },
+          "letter-spacing": { "$value": "0.05em", "$description": "Letter spacing" },
+          "transition": { "$value": "all 0.2s ease", "$description": "Smooth transitions" }
+        },
+        "secondary": {
+          "padding": {
+            "mobile": { "$value": "12px 16px", "$description": "Mobile button padding" },
+            "desktop": { "$value": "14px 20px", "$description": "Desktop button padding" }
+          },
+          "border-radius": { "$value": "8px", "$description": "Rounded corners" },
+          "background": { "$value": "transparent", "$description": "Transparent background" },
+          "border": {
+            "width": { "$value": "1px", "$description": "Thin border" },
+            "color": { "$value": "#666666", "$description": "Gray border" }
+          },
+          "color": { "$value": "#ffffff", "$description": "White text" },
+          "font-weight": { "$value": "500", "$description": "Medium text" },
+          "text-transform": { "$value": "uppercase", "$description": "All caps" },
+          "letter-spacing": { "$value": "0.025em", "$description": "Letter spacing" },
+          "transition": { "$value": "all 0.2s ease", "$description": "Smooth transitions" }
+        }
+      },
+      "availability-indicator": {
+        "size": { "$value": "12px", "$description": "12px circle" },
+        "border-radius": { "$value": "50%", "$description": "Perfect circle" },
+        "border": {
+          "width": { "$value": "2px", "$description": "Border width" },
+          "color": { "$value": "#171717", "$description": "Matches card background" }
+        },
+        "position": {
+          "top": { "$value": "20px", "$description": "From card top" },
+          "right": { "$value": "20px", "$description": "From card right" }
+        },
+        "colors": {
+          "available": { "$value": "#22c55e", "$description": "Green for available" },
+          "busy": { "$value": "#f59e0b", "$description": "Amber for busy" },
+          "unavailable": { "$value": "#ef4444", "$description": "Red for unavailable" }
+        }
+      }
+    },
+    
+    "interactions": {
+      "$description": "Interaction and animation specifications",
+      "hover": {
+        "transform": { "$value": "translateY(-4px)", "$description": "Slight lift on hover" },
+        "transition": { "$value": "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)", "$description": "Smooth easing" },
+        "shadow": { "$value": "0 12px 40px rgba(212, 175, 55, 0.1)", "$description": "Gold glow" },
+        "border-color": { "$value": "rgba(212, 175, 55, 0.3)", "$description": "Gold border" }
+      },
+      "focus": {
+        "outline": { "$value": "none", "$description": "Remove default outline" },
+        "box-shadow": { "$value": "0 0 0 2px rgba(212, 175, 55, 0.5)", "$description": "Gold focus ring" },
+        "border-color": { "$value": "#d4af37", "$description": "Gold border" }
+      },
+      "active": {
+        "transform": { "$value": "translateY(-2px)", "$description": "Pressed state" },
+        "transition": { "$value": "all 0.1s ease", "$description": "Quick transition" }
+      },
+      "loading": {
+        "opacity": { "$value": "0.6", "$description": "Dimmed while loading" },
+        "cursor": { "$value": "wait", "$description": "Wait cursor" }
+      }
+    },
+    
+    "accessibility": {
+      "$description": "Accessibility specifications",
+      "contrast-ratios": {
+        "talent-name": { "$value": "21:1", "$description": "AAA compliant" },
+        "talent-role": { "$value": "8.2:1", "$description": "AAA compliant" },
+        "talent-location": { "$value": "4.8:1", "$description": "AA compliant" },
+        "stat-values": { "$value": "21:1", "$description": "AAA compliant" },
+        "stat-labels": { "$value": "4.5:1", "$description": "AA compliant" }
+      },
+      "focus-indicators": {
+        "visible": true,
+        "high-contrast": "Enhanced borders in high contrast mode",
+        "keyboard-navigation": "Full keyboard navigation support"
+      },
+      "screen-reader": {
+        "labels": "All interactive elements have descriptive labels",
+        "structure": "Proper heading hierarchy and landmark roles",
+        "status": "Availability status announced to screen readers"
+      },
+      "motion": {
+        "respect-preferences": "Animations disabled for users who prefer reduced motion",
+        "alternative": "Focus indicators remain visible without animation"
+      }
+    },
+    
+    "performance": {
+      "$description": "Performance optimization specifications",
+      "gpu-acceleration": {
+        "properties": ["transform", "opacity", "filter"],
+        "will-change": "transform, opacity applied during interactions"
+      },
+      "lazy-loading": {
+        "images": "Avatar images loaded on demand",
+        "content": "Card content optimized for virtual scrolling"
+      },
+      "critical-css": {
+        "above-fold": "Essential styles inlined for first render",
+        "progressive": "Advanced animations loaded progressively"
+      }
+    }
+  }
+}

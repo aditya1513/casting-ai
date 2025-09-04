@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talent Card - Mobile Wireframe</title>
+    <style>
+        /* 8-point grid system foundation */
+        :root {
+            --spacing-xs: 4px;   /* 0.5x */
+            --spacing-sm: 8px;   /* 1x base */
+            --spacing-md: 16px;  /* 2x */
+            --spacing-lg: 24px;  /* 3x */
+            --spacing-xl: 32px;  /* 4x */
+            --spacing-2xl: 48px; /* 6x */
+            
+            /* Grid structure */
+            --mobile-width: 320px;
+            --card-padding: var(--spacing-md);
+            --border-radius: var(--spacing-sm);
+        }
+        
+        body {
+            margin: 0;
+            padding: var(--spacing-md);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a1a; /* Dark mode first */
+            color: #ffffff;
+        }
+        
+        .talent-card {
+            width: 100%;
+            max-width: var(--mobile-width);
+            background: #2a2a2a;
+            border-radius: var(--border-radius);
+            padding: var(--card-padding);
+            margin-bottom: var(--spacing-md);
+            border: 1px solid #3a3a3a;
+        }
+        
+        /* Grid layout using CSS Grid */
+        .card-header {
+            display: grid;
+            grid-template-columns: 64px 1fr 32px;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            align-items: center;
+        }
+        
+        .talent-avatar {
+            width: 64px;
+            height: 64px;
+            background: #4a4a4a;
+            border-radius: 50%;
+            grid-area: 1 / 1;
+        }
+        
+        .talent-info {
+            grid-area: 1 / 2;
+        }
+        
+        .talent-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0 0 var(--spacing-xs) 0;
+            color: #ffffff;
+        }
+        
+        .talent-type {
+            font-size: 14px;
+            color: #cccccc;
+            margin: 0;
+        }
+        
+        .bookmark-btn {
+            width: 32px;
+            height: 32px;
+            background: transparent;
+            border: 1px solid #666;
+            border-radius: var(--spacing-xs);
+            grid-area: 1 / 3;
+            cursor: pointer;
+        }
+        
+        /* Skills section */
+        .talent-skills {
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-xs);
+            margin-top: var(--spacing-xs);
+        }
+        
+        .skill-tag {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            background: #333;
+            border-radius: var(--spacing-xs);
+            font-size: 12px;
+            color: #ffffff;
+            border: 1px solid #444;
+        }
+        
+        /* Stats grid */
+        .talent-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            text-align: center;
+        }
+        
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xs);
+        }
+        
+        .stat-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        /* Action buttons */
+        .card-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-sm);
+        }
+        
+        .btn {
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--spacing-xs);
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary {
+            background: #d4af37; /* Mumbai film industry gold */
+            color: #000;
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: #fff;
+            border: 1px solid #666;
+        }
+        
+        /* Interactive states */
+        .talent-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(212, 175, 55, 0.1);
+            border-color: #d4af37;
+        }
+        
+        .btn:hover {
+            transform: scale(1.02);
+        }
+        
+        /* Accessibility annotations */
+        [data-annotation] {
+            position: relative;
+        }
+        
+        [data-annotation]:before {
+            content: attr(data-annotation);
+            position: absolute;
+            top: -24px;
+            left: 0;
+            background: #ff6b6b;
+            color: white;
+            padding: 2px 6px;
+            font-size: 10px;
+            border-radius: 2px;
+            opacity: 0.8;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- WIREFRAME ANNOTATIONS -->
+    <div style="background: #333; padding: 16px; margin-bottom: 16px; border-radius: 8px;">
+        <h3 style="color: #d4af37; margin: 0 0 8px 0;">Mobile Wireframe: Talent Card Component</h3>
+        <p style="margin: 0; color: #ccc; font-size: 14px;">
+            320px width | 8-point grid system | Dark mode optimized | Cinematic aesthetics
+        </p>
+    </div>
+    
+    <div class="talent-card" data-annotation="Primary Card Container">
+        <div class="card-header">
+            <div class="talent-avatar" data-annotation="64px Avatar Circle"></div>
+            <div class="talent-info">
+                <h3 class="talent-name" data-annotation="Primary Name">Rajesh Kumar</h3>
+                <p class="talent-type" data-annotation="Role Type">Lead Actor • Mumbai</p>
+            </div>
+            <button class="bookmark-btn" data-annotation="Save Action">♡</button>
+        </div>
+        
+        <div class="talent-skills" data-annotation="Skills Section">
+            <div class="skills-list">
+                <span class="skill-tag">Hindi</span>
+                <span class="skill-tag">English</span>
+                <span class="skill-tag">Method Acting</span>
+                <span class="skill-tag">Dance</span>
+            </div>
+        </div>
+        
+        <div class="talent-stats" data-annotation="3-Column Stats Grid">
+            <div class="stat-item">
+                <span class="stat-value">127</span>
+                <span class="stat-label">Projects</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value">4.9</span>
+                <span class="stat-label">Rating</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value">98%</span>
+                <span class="stat-label">Response</span>
+            </div>
+        </div>
+        
+        <div class="card-actions" data-annotation="2-Button Grid">
+            <button class="btn btn-primary">View Profile</button>
+            <button class="btn btn-secondary">Contact</button>
+        </div>
+    </div>
+    
+    <!-- Duplicate for grid demonstration -->
+    <div class="talent-card">
+        <div class="card-header">
+            <div class="talent-avatar"></div>
+            <div class="talent-info">
+                <h3 class="talent-name">Priya Sharma</h3>
+                <p class="talent-type">Supporting Actor • Delhi</p>
+            </div>
+            <button class="bookmark-btn">♡</button>
+        </div>
+        
+        <div class="talent-skills">
+            <div class="skills-list">
+                <span class="skill-tag">Marathi</span>
+                <span class="skill-tag">English</span>
+                <span class="skill-tag">Classical Dance</span>
+                <span class="skill-tag">Singing</span>
+                <span class="skill-tag">Yoga</span>
+            </div>
+        </div>
+        
+        <div class="talent-stats">
+            <div class="stat-item">
+                <span class="stat-value">89</span>
+                <span class="stat-label">Projects</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value">4.7</span>
+                <span class="stat-label">Rating</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value">92%</span>
+                <span class="stat-label">Response</span>
+            </div>
+        </div>
+        
+        <div class="card-actions">
+            <button class="btn btn-primary">View Profile</button>
+            <button class="btn btn-secondary">Contact</button>
+        </div>
+    </div>
+</body>
+</html>

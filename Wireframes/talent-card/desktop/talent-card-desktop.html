@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talent Card - Desktop Wireframe</title>
+    <style>
+        /* 8-point grid system foundation */
+        :root {
+            --spacing-xs: 4px;   /* 0.5x */
+            --spacing-sm: 8px;   /* 1x base */
+            --spacing-md: 16px;  /* 2x */
+            --spacing-lg: 24px;  /* 3x */
+            --spacing-xl: 32px;  /* 4x */
+            --spacing-2xl: 48px; /* 6x */
+            --spacing-3xl: 64px; /* 8x */
+            
+            /* Desktop grid structure */
+            --desktop-card-width: 400px;
+            --card-padding: var(--spacing-lg);
+            --border-radius: var(--spacing-md);
+        }
+        
+        body {
+            margin: 0;
+            padding: var(--spacing-2xl);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a; /* Deeper dark for desktop */
+            color: #ffffff;
+        }
+        
+        .talent-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: var(--spacing-lg);
+            max-width: 1200px;
+        }
+        
+        .talent-card {
+            width: 100%;
+            background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%);
+            border-radius: var(--border-radius);
+            padding: var(--card-padding);
+            border: 1px solid #333;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .talent-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #d4af37 0%, #b8941f 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .talent-card:hover::before {
+            opacity: 1;
+        }
+        
+        /* Enhanced header for desktop */
+        .card-header {
+            display: grid;
+            grid-template-columns: 80px 1fr auto;
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            align-items: center;
+        }
+        
+        .talent-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #4a4a4a 0%, #333 100%);
+            border-radius: 50%;
+            border: 2px solid #555;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .talent-avatar::after {
+            content: '📸';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            opacity: 0.6;
+        }
+        
+        .talent-info {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xs);
+        }
+        
+        .talent-name {
+            font-size: 22px;
+            font-weight: 700;
+            margin: 0;
+            color: #ffffff;
+            line-height: 1.2;
+        }
+        
+        .talent-type {
+            font-size: 16px;
+            color: #d4af37;
+            margin: 0;
+            font-weight: 500;
+        }
+        
+        .talent-location {
+            font-size: 14px;
+            color: #999;
+            margin: 0;
+        }
+        
+        .card-actions-header {
+            display: flex;
+            gap: var(--spacing-sm);
+            align-items: center;
+        }
+        
+        .bookmark-btn, .share-btn {
+            width: 40px;
+            height: 40px;
+            background: transparent;
+            border: 1px solid #666;
+            border-radius: var(--spacing-sm);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.2s ease;
+        }
+        
+        .bookmark-btn:hover, .share-btn:hover {
+            border-color: #d4af37;
+            color: #d4af37;
+        }
+        
+        /* Enhanced skills section */
+        .talent-skills {
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .skills-label {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: var(--spacing-sm);
+            font-weight: 500;
+        }
+        
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+        }
+        
+        .skill-tag {
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: var(--spacing-sm);
+            font-size: 13px;
+            color: #d4af37;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .skill-tag:hover {
+            background: rgba(212, 175, 55, 0.2);
+            border-color: #d4af37;
+        }
+        
+        /* Enhanced stats grid for desktop */
+        .talent-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            padding: var(--spacing-lg);
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: var(--spacing-sm);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Enhanced action buttons for desktop */
+        .card-actions {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: var(--spacing-md);
+        }
+        
+        .btn {
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-radius: var(--spacing-sm);
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #d4af37 0%, #b8941f 100%);
+            color: #000;
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: #fff;
+            border: 1px solid #666;
+        }
+        
+        .btn-secondary:hover {
+            border-color: #d4af37;
+            color: #d4af37;
+        }
+        
+        /* Card hover effects for desktop */
+        .talent-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(212, 175, 55, 0.1);
+            border-color: rgba(212, 175, 55, 0.3);
+        }
+        
+        /* Availability indicator */
+        .availability-indicator {
+            position: absolute;
+            top: var(--spacing-lg);
+            right: var(--spacing-lg);
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #4CAF50;
+            border: 2px solid #2a2a2a;
+        }
+        
+        .availability-indicator.busy {
+            background: #FF9800;
+        }
+        
+        .availability-indicator.unavailable {
+            background: #F44336;
+        }
+    </style>
+</head>
+<body>
+    <!-- WIREFRAME ANNOTATIONS -->
+    <div style="background: #333; padding: 24px; margin-bottom: 32px; border-radius: 12px; border-left: 4px solid #d4af37;">
+        <h2 style="color: #d4af37; margin: 0 0 8px 0;">Desktop Wireframe: Talent Card Component</h2>
+        <p style="margin: 0 0 16px 0; color: #ccc; font-size: 16px;">
+            400px width | 8-point grid system | Enhanced hover states | Cinematic desktop experience
+        </p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; font-size: 14px;">
+            <div><strong style="color: #d4af37;">Grid:</strong> 4-column responsive</div>
+            <div><strong style="color: #d4af37;">Spacing:</strong> 8px baseline</div>
+            <div><strong style="color: #d4af37;">Breakpoint:</strong> 1024px+</div>
+            <div><strong style="color: #d4af37;">Actions:</strong> Enhanced interactions</div>
+        </div>
+    </div>
+    
+    <div class="talent-grid">
+        <div class="talent-card">
+            <div class="availability-indicator" title="Available"></div>
+            <div class="card-header">
+                <div class="talent-avatar"></div>
+                <div class="talent-info">
+                    <h3 class="talent-name">Rajesh Kumar</h3>
+                    <p class="talent-type">Lead Actor</p>
+                    <p class="talent-location">Mumbai, Maharashtra</p>
+                </div>
+                <div class="card-actions-header">
+                    <button class="bookmark-btn" title="Save to favorites">♡</button>
+                    <button class="share-btn" title="Share profile">↗</button>
+                </div>
+            </div>
+            
+            <div class="talent-skills">
+                <div class="skills-label">Skills & Languages</div>
+                <div class="skills-list">
+                    <span class="skill-tag">Hindi</span>
+                    <span class="skill-tag">English</span>
+                    <span class="skill-tag">Method Acting</span>
+                    <span class="skill-tag">Dance</span>
+                    <span class="skill-tag">Action</span>
+                </div>
+            </div>
+            
+            <div class="talent-stats">
+                <div class="stat-item">
+                    <span class="stat-value">127</span>
+                    <span class="stat-label">Projects</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">4.9</span>
+                    <span class="stat-label">Rating</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">98%</span>
+                    <span class="stat-label">Response</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">15yr</span>
+                    <span class="stat-label">Experience</span>
+                </div>
+            </div>
+            
+            <div class="card-actions">
+                <button class="btn btn-primary">View Full Profile</button>
+                <button class="btn btn-secondary">Contact</button>
+                <button class="btn btn-secondary">Audition</button>
+            </div>
+        </div>
+        
+        <div class="talent-card">
+            <div class="availability-indicator busy" title="Busy"></div>
+            <div class="card-header">
+                <div class="talent-avatar"></div>
+                <div class="talent-info">
+                    <h3 class="talent-name">Priya Sharma</h3>
+                    <p class="talent-type">Supporting Actor</p>
+                    <p class="talent-location">Delhi, NCR</p>
+                </div>
+                <div class="card-actions-header">
+                    <button class="bookmark-btn">♡</button>
+                    <button class="share-btn">↗</button>
+                </div>
+            </div>
+            
+            <div class="talent-skills">
+                <div class="skills-label">Skills & Languages</div>
+                <div class="skills-list">
+                    <span class="skill-tag">Marathi</span>
+                    <span class="skill-tag">English</span>
+                    <span class="skill-tag">Classical Dance</span>
+                    <span class="skill-tag">Singing</span>
+                    <span class="skill-tag">Yoga</span>
+                    <span class="skill-tag">Comedy</span>
+                </div>
+            </div>
+            
+            <div class="talent-stats">
+                <div class="stat-item">
+                    <span class="stat-value">89</span>
+                    <span class="stat-label">Projects</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">4.7</span>
+                    <span class="stat-label">Rating</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">92%</span>
+                    <span class="stat-label">Response</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">12yr</span>
+                    <span class="stat-label">Experience</span>
+                </div>
+            </div>
+            
+            <div class="card-actions">
+                <button class="btn btn-primary">View Full Profile</button>
+                <button class="btn btn-secondary">Contact</button>
+                <button class="btn btn-secondary">Audition</button>
+            </div>
+        </div>
+        
+        <div class="talent-card">
+            <div class="availability-indicator unavailable" title="Unavailable"></div>
+            <div class="card-header">
+                <div class="talent-avatar"></div>
+                <div class="talent-info">
+                    <h3 class="talent-name">Arjun Patel</h3>
+                    <p class="talent-type">Character Actor</p>
+                    <p class="talent-location">Ahmedabad, Gujarat</p>
+                </div>
+                <div class="card-actions-header">
+                    <button class="bookmark-btn">♡</button>
+                    <button class="share-btn">↗</button>
+                </div>
+            </div>
+            
+            <div class="talent-skills">
+                <div class="skills-label">Skills & Languages</div>
+                <div class="skills-list">
+                    <span class="skill-tag">Gujarati</span>
+                    <span class="skill-tag">Hindi</span>
+                    <span class="skill-tag">Comedy</span>
+                    <span class="skill-tag">Drama</span>
+                </div>
+            </div>
+            
+            <div class="talent-stats">
+                <div class="stat-item">
+                    <span class="stat-value">156</span>
+                    <span class="stat-label">Projects</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">4.8</span>
+                    <span class="stat-label">Rating</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">95%</span>
+                    <span class="stat-label">Response</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">20yr</span>
+                    <span class="stat-label">Experience</span>
+                </div>
+            </div>
+            
+            <div class="card-actions">
+                <button class="btn btn-primary">View Full Profile</button>
+                <button class="btn btn-secondary">Contact</button>
+                <button class="btn btn-secondary">Audition</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,73 +1,61 @@
 'use client'
 
-import { useState } from 'react'
-import Link from 'next/link'
+import React, { useState } from 'react'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
-import { Heart, MapPin, Star, Award, Eye, Clock, Languages, Briefcase } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardFooter } from '@/components/ui/card'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Star, MapPin, Heart } from 'lucide-react'
 import { Talent } from '@/lib/api-client'
-import { useBookmarkTalent } from '@/hooks/use-talents'
 import { cn } from '@/lib/utils'
+import { TalentCardMotion, AvatarMotion, ButtonMotion, RatingStarsMotion } from '@/lib/animations/talent-card-motion'
 
 interface TalentCardProps {
-  talent: Talent
+  talent: {
+    id: string
+    name: string
+    nameHindi?: string
+    age?: number
+    location: string
+    profileImage?: string
+    experience: string[]
+    rating: number
+    reviewCount: number
+    featured?: boolean
+    premium?: boolean
+    availability?: 'available' | 'busy' | 'not_available'
+    verified?: boolean
+  }
+  size?: 'compact' | 'default' | 'expanded'
+  layout?: 'mobile' | 'desktop'
+  onView: (id: string) => void
+  onShortlist: (id: string) => void
+  isShortlisted?: boolean
+  loading?: boolean
   className?: string
-  onQuickView?: (talent: Talent) => void
 }
 
-export function TalentCard({ talent, className, onQuickView }: TalentCardProps) {
-  const [isBookmarked, setIsBookmarked] = useState(false)
-  const bookmarkMutation = useBookmarkTalent()
-
-  const handleBookmark = async (e: React.MouseEvent) => {
+export function TalentCard({
+  talent,
+  size = 'default',
+  layout = 'mobile',
+  onView,
+  onShortlist,
+  isShortlisted = false,
+  loading = false,
+  className = '',
+}: TalentCardProps) {
+  const [localShortlisted, setLocalShortlisted] = useState(isShortlisted)
+  
+  const handleView = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
-    
-    try {
-      await bookmarkMutation.mutateAsync({
-        id: talent.id,
-        bookmark: !isBookmarked,
-      })
-      setIsBookmarked(!isBookmarked)
-    } catch (error) {
-      console.error('Failed to bookmark talent:', error)
-    }
+    onView(talent.id)
   }
-
-  const handleQuickView = (e: React.MouseEvent) => {
+  
+  const handleShortlist = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
-    onQuickView?.(talent)
-  }
-
-  const getAvailabilityColor = (availability: string) => {
-    switch (availability) {
-      case 'available':
-        return 'bg-green-500'
-      case 'busy':
-        return 'bg-yellow-500'
-      case 'not_available':
-        return 'bg-red-500'
-      default:
-        return 'bg-gray-500'
-    }
-  }
-
-  const getExperienceBadgeVariant = (experience: string) => {
-    switch (experience) {
-      case 'expert':
-        return 'default'
-      case 'intermediate':
-        return 'secondary'
-      case 'beginner':
-        return 'outline'
-      default:
-        return 'outline'
-    }
+    setLocalShortlisted(!localShortlisted)
+    onShortlist(talent.id)
   }
 
   const getInitials = (name: string) => {
@@ -78,150 +66,239 @@ export function TalentCard({ talent, className, onQuickView }: TalentCardProps) 
       .toUpperCase()
       .slice(0, 2)
   }
+  
+  const displayAge = talent.age ? `${talent.age} • ` : ''
+  const cardClasses = cn(
+    'talent-card',
+    {
+      'talent-card--mobile': layout === 'mobile',
+      'talent-card--desktop': layout === 'desktop',
+      'talent-card--compact': size === 'compact',
+      'talent-card--expanded': size === 'expanded',
+      'talent-card--featured': talent.featured,
+      'talent-card--premium': talent.premium,
+      'talent-card--loading': loading,
+    },
+    className
+  )
 
-  return (
-    <motion.div
-      whileHover={{ y: -4 }}
-      transition={{ duration: 0.2 }}
-      className={cn('h-full', className)}
-    >
-      <Card className="h-full overflow-hidden hover:shadow-lg transition-shadow duration-200">
-        <Link href={`/talents/${talent.id}`} className="block">
-          <CardContent className="p-0">
-            {/* Image Section */}
-            <div className="relative aspect-[3/4] bg-gray-100">
-              {talent.profileImage ? (
-                <Image
-                  src={talent.profileImage}
-                  alt={talent.name}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-500 to-pink-500">
-                  <span className="text-white text-4xl font-bold">
-                    {getInitials(talent.name)}
+  // Skeleton/loading state
+  if (loading) {
+    return (
+      <TalentCardMotion id={talent.id} loading={true}>
+        <article className={cn(cardClasses, 'animate-pulse')}>
+          <div className="talent-card__header">
+            <div className="w-20 h-20 rounded-full bg-gray-700" />
+            <div className="talent-card__info flex-1">
+              <div className="h-5 bg-gray-700 rounded mb-2" />
+              <div className="h-4 bg-gray-600 rounded w-2/3" />
+            </div>
+          </div>
+          <div className="talent-card__experience">
+            <div className="h-6 bg-gray-600 rounded w-12" />
+            <div className="h-6 bg-gray-600 rounded w-16" />
+            <div className="h-6 bg-gray-600 rounded w-20" />
+          </div>
+          <div className="talent-card__actions">
+            <div className="h-10 bg-gray-600 rounded flex-1" />
+            <div className="h-10 bg-gray-600 rounded flex-1" />
+          </div>
+        </article>
+      </TalentCardMotion>
+    )
+  }
+
+  // Mobile layout (default)
+  if (layout === 'mobile') {
+    return (
+      <TalentCardMotion
+        id={talent.id}
+        isShortlisted={localShortlisted}
+        featured={talent.featured}
+        className={cardClasses}
+      >
+        <article className="talent-card" role="article" aria-labelledby={`talent-name-${talent.id}`}>
+          {/* Header Section */}
+          <div className="talent-card__header">
+            <AvatarMotion
+              src={talent.profileImage || ''}
+              alt={talent.name}
+              size="medium"
+              loading={!talent.profileImage}
+            />
+            <div className="talent-card__info">
+              <h3 id={`talent-name-${talent.id}`} className="talent-card__name talent-name">
+                {talent.nameHindi && (
+                  <span className="text-hindi block text-sm text-saffron mb-1">
+                    {talent.nameHindi}
                   </span>
-                </div>
-              )}
-
-              {/* Availability Indicator */}
-              <div className="absolute top-2 left-2">
-                <div className="flex items-center gap-1 bg-white/90 backdrop-blur-sm rounded-full px-2 py-1">
-                  <Clock className="w-3 h-3" />
-                  <div className={cn('w-2 h-2 rounded-full', getAvailabilityColor(talent.availability))} />
-                </div>
-              </div>
-
-              {/* Bookmark Button */}
-              <button
-                onClick={handleBookmark}
-                className="absolute top-2 right-2 p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-colors"
-                aria-label={isBookmarked ? 'Remove bookmark' : 'Add bookmark'}
-              >
-                <Heart
-                  className={cn(
-                    'w-5 h-5 transition-colors',
-                    isBookmarked ? 'fill-red-500 text-red-500' : 'text-gray-600'
-                  )}
-                />
-              </button>
-
-              {/* Verified Badge */}
-              {talent.verified && (
-                <div className="absolute bottom-2 right-2">
-                  <div className="bg-blue-500 text-white rounded-full p-1">
-                    <Award className="w-4 h-4" />
-                  </div>
-                </div>
-              )}
+                )}
+                {talent.name}
+              </h3>
+              <p className="talent-card__details talent-details">
+                <MapPin className="w-3 h-3 inline mr-1" aria-hidden="true" />
+                {displayAge}{talent.location}
+              </p>
             </div>
-
-            {/* Content Section */}
-            <div className="p-4 space-y-3">
-              {/* Name and Location */}
-              <div>
-                <h3 className="font-semibold text-lg line-clamp-1 flex items-center gap-2">
-                  {talent.name}
-                  {talent.verified && (
-                    <Award className="w-4 h-4 text-blue-500 flex-shrink-0" />
-                  )}
-                </h3>
-                <div className="flex items-center gap-1 text-sm text-gray-600 mt-1">
-                  <MapPin className="w-3 h-3" />
-                  <span>{talent.location}</span>
-                </div>
-              </div>
-
-              {/* Languages */}
-              {talent.languages.length > 0 && (
-                <div className="flex items-center gap-2">
-                  <Languages className="w-4 h-4 text-gray-500" />
-                  <div className="flex flex-wrap gap-1">
-                    {talent.languages.slice(0, 3).map((lang) => (
-                      <Badge key={lang} variant="secondary" className="text-xs">
-                        {lang}
-                      </Badge>
-                    ))}
-                    {talent.languages.length > 3 && (
-                      <Badge variant="secondary" className="text-xs">
-                        +{talent.languages.length - 3}
-                      </Badge>
-                    )}
-                  </div>
-                </div>
+            {/* Shortlist Button */}
+            <button
+              onClick={handleShortlist}
+              className={cn(
+                'p-2 rounded-full transition-colors',
+                'hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500',
+                localShortlisted ? 'text-red-500' : 'text-gray-400'
               )}
-
-              {/* Skills */}
-              {talent.skills.length > 0 && (
-                <div className="flex flex-wrap gap-1">
-                  {talent.skills.slice(0, 3).map((skill) => (
-                    <Badge key={skill} variant="outline" className="text-xs">
-                      {skill}
-                    </Badge>
-                  ))}
-                  {talent.skills.length > 3 && (
-                    <Badge variant="outline" className="text-xs">
-                      +{talent.skills.length - 3}
-                    </Badge>
-                  )}
-                </div>
-              )}
-
-              {/* Experience and Rating */}
-              <div className="flex items-center justify-between">
-                <Badge variant={getExperienceBadgeVariant(talent.experience)}>
-                  <Briefcase className="w-3 h-3 mr-1" />
-                  {talent.experience}
-                </Badge>
-                <div className="flex items-center gap-1">
-                  <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                  <span className="text-sm font-medium">{talent.rating.toFixed(1)}</span>
-                  <span className="text-xs text-gray-500">({talent.reviewCount})</span>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-
-          <CardFooter className="p-4 pt-0 gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              className="flex-1"
-              onClick={handleQuickView}
+              aria-label={localShortlisted ? 'Remove from shortlist' : 'Add to shortlist'}
             >
-              <Eye className="w-4 h-4 mr-1" />
-              Quick View
-            </Button>
-            <Button size="sm" className="flex-1" asChild>
-              <Link href={`/talents/${talent.id}`}>
-                View Profile
-              </Link>
-            </Button>
-          </CardFooter>
-        </Link>
-      </Card>
-    </motion.div>
+              <Heart
+                className={cn(
+                  'w-5 h-5 transition-colors',
+                  localShortlisted ? 'fill-current' : ''
+                )}
+              />
+            </button>
+          </div>
+
+          {/* Experience Tags */}
+          <div className="talent-card__experience">
+            {talent.experience.slice(0, 3).map((exp) => (
+              <span key={exp} className="talent-card__tag talent-tags">
+                {exp}
+              </span>
+            ))}
+            {talent.experience.length > 3 && (
+              <span className="talent-card__tag talent-tags">
+                +{talent.experience.length - 3}
+              </span>
+            )}
+          </div>
+
+          {/* Rating Section */}
+          <div className="talent-card__rating">
+            <RatingStarsMotion rating={talent.rating} animated={!loading} />
+            <span className="rating-text text-body-sm">
+              {talent.rating.toFixed(1)} • {talent.reviewCount} reviews
+            </span>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="talent-card__actions">
+            <ButtonMotion
+              variant="secondary"
+              onClick={handleView}
+              className="button--secondary"
+            >
+              View Profile
+            </ButtonMotion>
+            <ButtonMotion
+              variant="primary"
+              onClick={handleShortlist}
+              className={cn(
+                'button--primary',
+                localShortlisted && 'button--primary-active'
+              )}
+            >
+              {localShortlisted ? 'Shortlisted' : 'Shortlist'}
+            </ButtonMotion>
+          </div>
+
+          {/* Screen Reader Information */}
+          <div className="sr-only">
+            <span>Talent: {talent.name}</span>
+            <span>Location: {talent.location}</span>
+            <span>Rating: {talent.rating} out of 5 stars</span>
+            <span>Experience areas: {talent.experience.join(', ')}</span>
+            {talent.verified && <span>Verified talent</span>}
+          </div>
+        </article>
+      </TalentCardMotion>
+    )
+  }
+
+  // Desktop layout
+  return (
+    <TalentCardMotion
+      id={talent.id}
+      isShortlisted={localShortlisted}
+      featured={talent.featured}
+      className={cn(cardClasses, 'talent-card--desktop')}
+    >
+      <article className="talent-card talent-card--desktop" role="article" aria-labelledby={`talent-name-${talent.id}`}>
+        <AvatarMotion
+          src={talent.profileImage || ''}
+          alt={talent.name}
+          size="large"
+          loading={!talent.profileImage}
+        />
+        
+        <div className="talent-card__content">
+          <div className="talent-card__info">
+            <h3 id={`talent-name-${talent.id}`} className="talent-card__name text-heading-sm">
+              {talent.nameHindi && (
+                <span className="text-hindi block text-sm text-saffron mb-1">
+                  {talent.nameHindi}
+                </span>
+              )}
+              {talent.name}
+            </h3>
+            <p className="talent-card__details talent-details">
+              <MapPin className="w-3 h-3 inline mr-1" aria-hidden="true" />
+              {displayAge}{talent.location}
+            </p>
+          </div>
+          
+          <div className="talent-card__experience">
+            {talent.experience.slice(0, 4).map((exp) => (
+              <span key={exp} className="talent-card__tag talent-tags">
+                {exp}
+              </span>
+            ))}
+            {talent.experience.length > 4 && (
+              <span className="talent-card__tag talent-tags">
+                +{talent.experience.length - 4}
+              </span>
+            )}
+          </div>
+        </div>
+        
+        <div className="talent-card__meta">
+          <div className="talent-card__rating">
+            <RatingStarsMotion rating={talent.rating} animated={!loading} />
+            <span className="rating-text text-body-sm">
+              {talent.rating.toFixed(1)} • {talent.reviewCount} reviews
+            </span>
+          </div>
+          
+          <div className="talent-card__actions">
+            <ButtonMotion
+              variant="secondary"
+              onClick={handleView}
+              className="button--secondary"
+            >
+              View Profile
+            </ButtonMotion>
+            <ButtonMotion
+              variant="primary"
+              onClick={handleShortlist}
+              className={cn(
+                'button--primary',
+                localShortlisted && 'button--primary-active'
+              )}
+            >
+              {localShortlisted ? 'Shortlisted' : 'Shortlist'}
+            </ButtonMotion>
+          </div>
+        </div>
+
+        {/* Screen Reader Information */}
+        <div className="sr-only">
+          <span>Talent: {talent.name}</span>
+          <span>Location: {talent.location}</span>
+          <span>Rating: {talent.rating} out of 5 stars</span>
+          <span>Experience areas: {talent.experience.join(', ')}</span>
+          {talent.verified && <span>Verified talent</span>}
+        </div>
+      </article>
+    </TalentCardMotion>
   )
 }
