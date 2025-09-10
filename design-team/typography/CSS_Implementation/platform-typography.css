@@ -1,0 +1,680 @@
+/*
+ * CastMatch Platform Typography System v1.0
+ * Complete typography system for the entire CastMatch platform
+ * Dashboard, forms, navigation, and data display typography
+ */
+
+/* ================================================
+   TYPOGRAPHY TOKENS & CSS CUSTOM PROPERTIES
+   ================================================ */
+
+:root {
+  /* Font Families */
+  --font-display: 'SF Pro Display', var(--font-geist-sans), -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Inter', var(--font-geist-sans), -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', var(--font-geist-mono), 'SF Mono', Monaco, monospace;
+  
+  /* Typography Scale */
+  --font-size-display-hero: clamp(48px, 8vw, 72px);
+  --font-size-display-2xl: clamp(36px, 6vw, 60px);
+  --font-size-display-xl: clamp(30px, 5vw, 48px);
+  --font-size-section-title: clamp(24px, 4vw, 36px);
+  --font-size-heading-lg: clamp(20px, 3.5vw, 30px);
+  --font-size-heading-md: clamp(18px, 3vw, 24px);
+  --font-size-heading-sm: clamp(16px, 2.5vw, 20px);
+  --font-size-body-xl: clamp(18px, 2.5vw, 20px);
+  --font-size-body-lg: clamp(16px, 2vw, 18px);
+  --font-size-body-base: 16px; /* Never below 16px */
+  --font-size-body-sm: 14px; /* Minimum readable */
+  --font-size-label: 14px;
+  --font-size-caption: 12px;
+  --font-size-micro: 11px;
+  
+  /* Line Heights */
+  --line-height-display: 0.9;
+  --line-height-heading: 1.2;
+  --line-height-body: 1.5;
+  --line-height-body-relaxed: 1.6;
+  --line-height-tight: 1.25;
+  
+  /* Letter Spacing */
+  --letter-spacing-tight: -0.05em;
+  --letter-spacing-snug: -0.025em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.025em;
+  --letter-spacing-wider: 0.05em;
+  
+  /* Font Weights */
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+}
+
+/* ================================================
+   BASE TYPOGRAPHY CLASSES
+   ================================================ */
+
+/* Display Typography - Hero Headlines */
+.text-display-hero {
+  font-size: var(--font-size-display-hero);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-display);
+  letter-spacing: var(--letter-spacing-tight);
+  color: var(--color-semantic-dark-mode-text-primary);
+  font-family: var(--font-display);
+  
+  /* Performance optimization */
+  font-display: swap;
+  text-rendering: optimizeLegibility;
+}
+
+.text-display-2xl {
+  font-size: var(--font-size-display-2xl);
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--color-semantic-dark-mode-text-primary);
+  font-family: var(--font-display);
+}
+
+.text-display-xl {
+  font-size: var(--font-size-display-xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--color-semantic-dark-mode-text-primary);
+  font-family: var(--font-display);
+}
+
+/* Section Titles */
+.text-section-title {
+  font-size: var(--font-size-section-title);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-heading);
+  letter-spacing: var(--letter-spacing-snug);
+  color: var(--color-semantic-dark-mode-text-primary);
+  font-family: var(--font-display);
+}
+
+/* Heading Typography */
+.text-heading-lg {
+  font-size: var(--font-size-heading-lg);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--color-semantic-dark-mode-text-primary);
+  font-family: var(--font-body);
+}
+
+.text-heading-md {
+  font-size: var(--font-size-heading-md);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.4;
+  letter-spacing: var(--letter-spacing-normal);
+  color: var(--color-semantic-dark-mode-text-primary);
+  font-family: var(--font-body);
+}
+
+.text-heading-sm {
+  font-size: var(--font-size-heading-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-body);
+  letter-spacing: var(--letter-spacing-normal);
+  color: var(--color-semantic-dark-mode-text-primary);
+  font-family: var(--font-body);
+}
+
+/* Body Typography */
+.text-body-xl {
+  font-size: var(--font-size-body-xl);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-body-relaxed);
+  letter-spacing: var(--letter-spacing-normal);
+  color: var(--color-semantic-dark-mode-text-secondary);
+  font-family: var(--font-body);
+}
+
+.text-body-lg {
+  font-size: var(--font-size-body-lg);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-body-relaxed);
+  letter-spacing: var(--letter-spacing-normal);
+  color: var(--color-semantic-dark-mode-text-secondary);
+  font-family: var(--font-body);
+}
+
+.text-body-base {
+  font-size: var(--font-size-body-base);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-body);
+  letter-spacing: var(--letter-spacing-normal);
+  color: var(--color-semantic-dark-mode-text-secondary);
+  font-family: var(--font-body);
+}
+
+.text-body-sm {
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-body);
+  letter-spacing: var(--letter-spacing-normal);
+  color: var(--color-semantic-dark-mode-text-secondary);
+  font-family: var(--font-body);
+}
+
+/* Labels & Captions */
+.text-label {
+  font-size: var(--font-size-label);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-wide);
+  color: var(--color-semantic-dark-mode-text-tertiary);
+  font-family: var(--font-body);
+  text-transform: uppercase;
+}
+
+.text-caption {
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-normal);
+  color: var(--color-semantic-dark-mode-text-tertiary);
+  font-family: var(--font-body);
+}
+
+.text-micro {
+  font-size: var(--font-size-micro);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-tight);
+  letter-spacing: 0.02em;
+  color: var(--color-semantic-dark-mode-text-tertiary);
+  font-family: var(--font-body);
+}
+
+/* ================================================
+   DASHBOARD TYPOGRAPHY
+   ================================================ */
+
+/* Dashboard Header */
+.dashboard-title {
+  font-size: var(--font-size-section-title);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-heading);
+  color: var(--color-semantic-dark-mode-text-primary);
+  font-family: var(--font-display);
+  margin-bottom: 8px;
+}
+
+.dashboard-subtitle {
+  font-size: var(--font-size-body-lg);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-body);
+  color: var(--color-semantic-dark-mode-text-secondary);
+  font-family: var(--font-body);
+  opacity: 0.9;
+}
+
+/* Navigation Typography */
+.nav-primary {
+  font-size: var(--font-size-body-base);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-tight);
+  color: var(--color-semantic-dark-mode-text-secondary);
+  font-family: var(--font-body);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.nav-primary:hover,
+.nav-primary--active {
+  color: var(--color-mumbai-saffron-400);
+}
+
+.nav-secondary {
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-tight);
+  color: var(--color-semantic-dark-mode-text-tertiary);
+  font-family: var(--font-body);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.nav-secondary:hover {
+  color: var(--color-semantic-dark-mode-text-secondary);
+}
+
+/* Breadcrumbs */
+.breadcrumb {
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-tight);
+  color: var(--color-semantic-dark-mode-text-tertiary);
+  font-family: var(--font-body);
+}
+
+.breadcrumb-link {
+  color: var(--color-semantic-dark-mode-text-secondary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.breadcrumb-link:hover {
+  color: var(--color-mumbai-saffron-400);
+}
+
+.breadcrumb-separator {
+  margin: 0 8px;
+  color: var(--color-semantic-dark-mode-text-tertiary);
+  opacity: 0.5;
+}
+
+/* ================================================
+   FORM TYPOGRAPHY
+   ================================================ */
+
+/* Form Labels */
+.form-label {
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-tight);
+  color: var(--color-semantic-dark-mode-text-primary);
+  font-family: var(--font-body);
+  margin-bottom: 6px;
+  display: block;
+}
+
+.form-label--required::after {
+  content: " *";
+  color: var(--color-mumbai-crimson-400);
+}
+
+/* Input Text */
+.form-input {
+  font-size: var(--font-size-body-base);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-body);
+  color: var(--color-semantic-dark-mode-text-primary);
+  font-family: var(--font-body);
+  
+  /* Placeholder styling */
+}
+
+.form-input::placeholder {
+  color: var(--color-semantic-dark-mode-text-tertiary);
+  opacity: 0.7;
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form Help Text */
+.form-help {
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-body);
+  color: var(--color-semantic-dark-mode-text-tertiary);
+  font-family: var(--font-body);
+  margin-top: 4px;
+}
+
+/* Form Error Messages */
+.form-error {
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-tight);
+  color: var(--color-mumbai-crimson-400);
+  font-family: var(--font-body);
+  margin-top: 4px;
+}
+
+/* Form Success Messages */
+.form-success {
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-tight);
+  color: var(--color-semantic-dark-mode-accent-success);
+  font-family: var(--font-body);
+  margin-top: 4px;
+}
+
+/* ================================================
+   TABLE & DATA DISPLAY TYPOGRAPHY
+   ================================================ */
+
+/* Table Headers */
+.table-header {
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  color: var(--color-semantic-dark-mode-text-primary);
+  font-family: var(--font-body);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wide);
+}
+
+/* Table Cell Data */
+.table-cell {
+  font-size: var(--font-size-body-base);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-body);
+  color: var(--color-semantic-dark-mode-text-secondary);
+  font-family: var(--font-body);
+}
+
+/* Numeric Data (tabular figures) */
+.table-numeric {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+  text-align: right;
+}
+
+/* Data Labels */
+.data-label {
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-tight);
+  color: var(--color-semantic-dark-mode-text-tertiary);
+  font-family: var(--font-body);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wide);
+}
+
+/* Data Values */
+.data-value {
+  font-size: var(--font-size-body-lg);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  color: var(--color-semantic-dark-mode-text-primary);
+  font-family: var(--font-body);
+}
+
+.data-value--large {
+  font-size: var(--font-size-heading-md);
+  font-weight: var(--font-weight-bold);
+}
+
+/* ================================================
+   ENTERTAINMENT INDUSTRY SPECIFIC TYPOGRAPHY
+   ================================================ */
+
+/* Talent Profile Typography */
+.talent-name-primary {
+  font-size: clamp(20px, 3vw, 24px);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-heading);
+  color: var(--color-mumbai-saffron-400);
+  font-family: var(--font-display);
+  margin-bottom: 4px;
+}
+
+.talent-role-type {
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-wider);
+  color: var(--color-mumbai-gold-500);
+  font-family: var(--font-body);
+  text-transform: uppercase;
+}
+
+.talent-experience {
+  font-size: var(--font-size-body-base);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-body);
+  color: var(--color-semantic-dark-mode-text-secondary);
+  font-family: var(--font-body);
+}
+
+.talent-skills-tag {
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-wide);
+  color: var(--color-mumbai-saffron-400);
+  font-family: var(--font-body);
+  text-transform: uppercase;
+  
+  /* Tag styling */
+  background: var(--color-mumbai-saffron-900);
+  border: 1px solid var(--color-mumbai-saffron-800);
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+/* Project & Casting Information */
+.project-title {
+  font-size: clamp(18px, 3vw, 22px);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.3;
+  color: var(--color-semantic-dark-mode-text-primary);
+  font-family: var(--font-display);
+}
+
+.casting-director-name {
+  font-size: var(--font-size-body-base);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.4;
+  color: var(--color-neon-electric-blue-400);
+  font-family: var(--font-body);
+}
+
+.audition-details {
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-body);
+  color: var(--color-semantic-dark-mode-text-secondary);
+  font-family: var(--font-body);
+}
+
+.deadline-urgent {
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  color: var(--color-mumbai-crimson-400);
+  font-family: var(--font-body);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wide);
+}
+
+/* ================================================
+   BUTTON & CTA TYPOGRAPHY
+   ================================================ */
+
+/* Primary Buttons */
+.btn-primary {
+  font-size: var(--font-size-body-base);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-tight);
+  color: var(--color-semantic-dark-mode-text-inverse);
+  font-family: var(--font-body);
+  text-transform: none;
+  letter-spacing: 0.01em;
+}
+
+.btn-secondary {
+  font-size: var(--font-size-body-base);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-tight);
+  color: var(--color-semantic-dark-mode-text-secondary);
+  font-family: var(--font-body);
+}
+
+.btn-sm {
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-tight);
+}
+
+.btn-lg {
+  font-size: var(--font-size-body-lg);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-tight);
+}
+
+/* Link Buttons */
+.link-button {
+  font-size: var(--font-size-body-base);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-tight);
+  color: var(--color-mumbai-saffron-400);
+  font-family: var(--font-body);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.2s ease;
+}
+
+.link-button:hover {
+  color: var(--color-mumbai-saffron-300);
+}
+
+/* ================================================
+   SEARCH & FILTER TYPOGRAPHY
+   ================================================ */
+
+/* Search Input */
+.search-input {
+  font-size: var(--font-size-body-base);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-body);
+  color: var(--color-semantic-dark-mode-text-primary);
+  font-family: var(--font-body);
+}
+
+.search-input::placeholder {
+  color: var(--color-semantic-dark-mode-text-tertiary);
+  opacity: 0.7;
+  font-style: italic;
+}
+
+/* Search Results */
+.search-results-count {
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-tight);
+  color: var(--color-semantic-dark-mode-text-tertiary);
+  font-family: var(--font-body);
+}
+
+.search-highlight {
+  background: var(--color-mumbai-saffron-900);
+  color: var(--color-mumbai-saffron-200);
+  padding: 1px 2px;
+  border-radius: 2px;
+  font-weight: var(--font-weight-medium);
+}
+
+/* Filter Labels */
+.filter-label {
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-tight);
+  color: var(--color-semantic-dark-mode-text-secondary);
+  font-family: var(--font-body);
+}
+
+.filter-count {
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-tight);
+  color: var(--color-semantic-dark-mode-text-tertiary);
+  font-family: var(--font-body);
+  margin-left: 6px;
+  opacity: 0.8;
+}
+
+/* ================================================
+   RESPONSIVE TYPOGRAPHY ADJUSTMENTS
+   ================================================ */
+
+/* Mobile Optimizations */
+@media (max-width: 48rem) {
+  :root {
+    --font-size-body-base: 16px; /* Maintain 16px minimum */
+    --line-height-body: 1.5; /* Tighter line height on mobile */
+  }
+  
+  .dashboard-title {
+    font-size: var(--font-size-heading-lg);
+  }
+  
+  .talent-name-primary {
+    font-size: var(--font-size-heading-md);
+  }
+}
+
+/* Large Desktop Optimizations */
+@media (min-width: 80rem) {
+  .text-body-base,
+  .text-body-lg {
+    max-width: 75ch; /* Optimal reading width */
+  }
+  
+  .form-input {
+    font-size: var(--font-size-body-lg);
+  }
+  
+  .table-cell {
+    font-size: var(--font-size-body-lg);
+  }
+}
+
+/* ================================================
+   ACCESSIBILITY & PERFORMANCE
+   ================================================ */
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .text-display-hero,
+  .text-section-title,
+  .text-heading-lg,
+  .text-heading-md,
+  .text-heading-sm {
+    color: #FFFFFF !important;
+    text-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .nav-primary,
+  .nav-secondary,
+  .breadcrumb-link,
+  .link-button {
+    transition: none;
+  }
+}
+
+/* Focus Management */
+.form-input:focus,
+.search-input:focus {
+  outline: 2px solid var(--color-semantic-dark-mode-border-focus);
+  outline-offset: 2px;
+}
+
+/* Print Styles */
+@media print {
+  .text-display-hero,
+  .text-display-2xl,
+  .text-display-xl {
+    color: #000000 !important;
+    font-size: 24px !important;
+  }
+  
+  .text-body-base,
+  .text-body-lg {
+    color: #333333 !important;
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+  }
+}
+
+/* Performance Optimizations */
+.text-display-hero,
+.text-display-2xl,
+.text-display-xl,
+.text-section-title {
+  font-display: swap;
+  will-change: auto;
+}

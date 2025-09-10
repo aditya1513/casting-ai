@@ -1,0 +1,444 @@
+/* CastMatch Wireframe Design System - Standardized Typography & Content */
+
+/* Enhanced Typography Scale with Improved Line Heights */
+:root {
+    /* Grayscale Palette - Consistent across all wireframes */
+    --gray-0: #FFFFFF;
+    --gray-50: #FAFAFA;
+    --gray-100: #F5F5F5;
+    --gray-200: #E5E5E5;
+    --gray-300: #D4D4D4;
+    --gray-400: #A3A3A3;
+    --gray-500: #737373;
+    --gray-600: #525252;
+    --gray-700: #404040;
+    --gray-800: #262626;
+    --gray-900: #171717;
+    --gray-1000: #000000;
+    
+    /* Enhanced Spacing System - 8px grid */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+    --spacing-2xl: 48px;
+    --spacing-3xl: 64px;
+    --spacing-4xl: 96px;
+    --spacing-5xl: 128px;
+    
+    /* Standardized Typography Scale */
+    --font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    --font-mono: 'SF Mono', Monaco, 'Consolas', monospace;
+    
+    /* Font Sizes with Consistent Scale (1.25 ratio) */
+    --font-size-xs: 12px;      /* Annotations, micro-text */
+    --font-size-sm: 14px;      /* Body text small, captions */
+    --font-size-base: 16px;    /* Primary body text */
+    --font-size-lg: 18px;      /* Large body text */
+    --font-size-xl: 20px;      /* Subheadings */
+    --font-size-2xl: 24px;     /* Section headings */
+    --font-size-3xl: 32px;     /* Page titles */
+    --font-size-4xl: 48px;     /* Hero headings */
+    --font-size-5xl: 64px;     /* Display headings */
+    --font-size-6xl: 80px;     /* Large display */
+    
+    /* Line Heights for Optimal Readability */
+    --line-height-tight: 1.2;   /* Headings */
+    --line-height-normal: 1.5;  /* Body text */
+    --line-height-relaxed: 1.6; /* Long form content */
+    --line-height-loose: 1.8;   /* Captions, annotations */
+    
+    /* Font Weights */
+    --font-weight-light: 300;
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    --font-weight-black: 900;
+    
+    /* Border Styles */
+    --border-width: 1px;
+    --border-width-2: 2px;
+    --border-width-4: 4px;
+    
+    /* Border Radius Scale */
+    --radius-none: 0px;
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-2xl: 24px;
+    --radius-full: 9999px;
+    
+    /* Shadows with Subtle Depth */
+    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+    --shadow-2xl: 0 25px 50px rgba(0, 0, 0, 0.25);
+    
+    /* Layout Constants */
+    --max-width: 1440px;
+    --max-width-prose: 65ch;
+    --header-height: 72px;
+    --sidebar-width: 280px;
+    --mobile-breakpoint: 768px;
+    --tablet-breakpoint: 1024px;
+    
+    /* Component Sizing */
+    --input-height: 48px;
+    --input-height-sm: 40px;
+    --button-height: 48px;
+    --button-height-sm: 40px;
+    --avatar-sm: 32px;
+    --avatar-md: 48px;
+    --avatar-lg: 80px;
+    --avatar-xl: 120px;
+}
+
+/* Typography Classes - Consistent Content Hierarchy */
+.heading-display {
+    font-size: var(--font-size-6xl);
+    font-weight: var(--font-weight-black);
+    line-height: var(--line-height-tight);
+    color: var(--gray-900);
+    letter-spacing: -0.025em;
+}
+
+.heading-1 {
+    font-size: var(--font-size-5xl);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-tight);
+    color: var(--gray-900);
+    letter-spacing: -0.025em;
+}
+
+.heading-2 {
+    font-size: var(--font-size-4xl);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-tight);
+    color: var(--gray-900);
+    letter-spacing: -0.02em;
+}
+
+.heading-3 {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-tight);
+    color: var(--gray-900);
+}
+
+.heading-4 {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-normal);
+    color: var(--gray-900);
+}
+
+.heading-5 {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-normal);
+    color: var(--gray-800);
+}
+
+.heading-6 {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-normal);
+    color: var(--gray-800);
+}
+
+/* Body Text Classes */
+.text-large {
+    font-size: var(--font-size-lg);
+    line-height: var(--line-height-relaxed);
+    color: var(--gray-700);
+}
+
+.text-base {
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-normal);
+    color: var(--gray-700);
+}
+
+.text-small {
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-normal);
+    color: var(--gray-600);
+}
+
+.text-xs {
+    font-size: var(--font-size-xs);
+    line-height: var(--line-height-loose);
+    color: var(--gray-500);
+}
+
+/* Interactive Text States */
+.link-primary {
+    color: var(--gray-900);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-thickness: 1px;
+}
+
+.link-primary:hover {
+    color: var(--gray-600);
+    text-decoration-thickness: 2px;
+}
+
+.link-secondary {
+    color: var(--gray-600);
+    text-decoration: none;
+}
+
+.link-secondary:hover {
+    color: var(--gray-900);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+/* Enhanced Annotation System */
+.annotation {
+    position: absolute;
+    background: var(--gray-900);
+    color: var(--gray-0);
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    z-index: 1000;
+    white-space: nowrap;
+    font-family: var(--font-mono);
+}
+
+.annotation.priority-critical {
+    background: var(--gray-1000);
+    border: 1px solid var(--gray-800);
+}
+
+.annotation.priority-high {
+    background: var(--gray-800);
+}
+
+.annotation.priority-medium {
+    background: var(--gray-600);
+}
+
+.annotation.priority-low {
+    background: var(--gray-500);
+}
+
+/* Interaction State Annotations */
+.annotation.state-default { background: #3b82f6; }
+.annotation.state-hover { background: #1d4ed8; }
+.annotation.state-active { background: #1e40af; }
+.annotation.state-disabled { background: var(--gray-400); }
+.annotation.state-loading { background: #f59e0b; }
+.annotation.state-error { background: #dc2626; }
+.annotation.state-success { background: #16a34a; }
+
+/* Content Consistency Classes */
+.content-section {
+    margin-bottom: var(--spacing-3xl);
+}
+
+.content-section-compact {
+    margin-bottom: var(--spacing-2xl);
+}
+
+.content-group {
+    margin-bottom: var(--spacing-lg);
+}
+
+.content-item {
+    margin-bottom: var(--spacing-md);
+}
+
+/* Wireframe Component Patterns */
+.wireframe-container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    position: relative;
+}
+
+.wireframe-section {
+    padding: var(--spacing-4xl) 0;
+    border-bottom: 2px dashed var(--gray-300);
+    position: relative;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-2xl);
+}
+
+.section-title {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--gray-400);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* Form Elements */
+.form-label {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--gray-700);
+    margin-bottom: var(--spacing-sm);
+    display: block;
+}
+
+.form-input {
+    height: var(--input-height);
+    padding: 0 var(--spacing-md);
+    border: var(--border-width) solid var(--gray-300);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-base);
+    background: var(--gray-0);
+}
+
+.form-input:focus {
+    border-color: var(--gray-900);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Button Elements */
+.button {
+    height: var(--button-height);
+    padding: 0 var(--spacing-xl);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-medium);
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+}
+
+.button-primary {
+    background: var(--gray-900);
+    color: var(--gray-0);
+}
+
+.button-primary:hover {
+    background: var(--gray-800);
+}
+
+.button-secondary {
+    background: var(--gray-0);
+    color: var(--gray-900);
+    border: var(--border-width) solid var(--gray-300);
+}
+
+.button-secondary:hover {
+    border-color: var(--gray-900);
+}
+
+/* Mumbai/Indian Market Specific Content Patterns */
+.indian-payment-methods {
+    /* UPI, NetBanking, Wallet specific styling */
+}
+
+.multilingual-toggle {
+    /* Hindi/English language switching */
+}
+
+.regional-preferences {
+    /* Regional casting preferences */
+}
+
+/* Accessibility Enhancements */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Focus Indicators */
+*:focus-visible {
+    outline: 2px solid var(--gray-900);
+    outline-offset: 2px;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Dark Mode Support (for future implementation) */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --gray-0: #000000;
+        --gray-50: #171717;
+        --gray-100: #262626;
+        --gray-200: #404040;
+        --gray-300: #525252;
+        --gray-400: #737373;
+        --gray-500: #a3a3a3;
+        --gray-600: #d4d4d4;
+        --gray-700: #e5e5e5;
+        --gray-800: #f5f5f5;
+        --gray-900: #fafafa;
+        --gray-1000: #ffffff;
+    }
+}
+
+/* Content Guidelines Comments for Developers */
+/*
+CONTENT CONSISTENCY STANDARDS:
+
+1. Headlines: Use action-oriented, benefit-focused language
+   - "Discover Bollywood talent in Mumbai"
+   - "Book auditions in minutes, not hours"
+   - "Connect with verified casting directors"
+
+2. Button Text: Use clear, actionable language
+   - Primary Actions: "Get Started", "Create Account", "Book Now"
+   - Secondary Actions: "Learn More", "View Details", "Browse Talent"
+
+3. Form Labels: Be specific and helpful
+   - Instead of "Name" → "Full Name (as per ID document)"
+   - Instead of "Phone" → "WhatsApp Number (+91)"
+   - Instead of "Location" → "Primary Casting Location"
+
+4. Error Messages: Be solution-oriented
+   - Instead of "Invalid input" → "Please enter a 10-digit mobile number"
+   - Instead of "Error" → "Unable to connect. Please check your internet."
+
+5. Empty States: Be encouraging and actionable
+   - "No applications yet? Start browsing open casting calls"
+   - "Your portfolio is empty. Upload your first headshot to get started"
+
+6. Loading States: Be informative
+   - "Searching 10,000+ verified talents..."
+   - "Analyzing your profile match..."
+   - "Connecting to casting directors..."
+
+7. Mumbai/Indian Context:
+   - Use familiar terms: "Casting calls" vs "Auditions"
+   - Include regional languages when appropriate
+   - Reference familiar payment methods (UPI, NetBanking)
+   - Use Indian mobile number formats (+91)
+   - Include verification via Aadhaar/PAN where relevant
+*/

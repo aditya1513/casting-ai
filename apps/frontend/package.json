@@ -1,0 +1,41 @@
+{
+  "name": "@castmatch/frontend",
+  "version": "1.0.0",
+  "description": "CastMatch frontend web application",
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev --port 3000",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "lint": "eslint src --ext .ts,.tsx",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@radix-ui/react-avatar": "^1.1.10",
+    "@radix-ui/react-scroll-area": "^1.2.10",
+    "@radix-ui/react-slot": "^1.2.3",
+    "@tanstack/react-query": "^5.87.1",
+    "@trpc/client": "^11.5.1",
+    "@trpc/react-query": "^11.5.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.23.12",
+    "lucide-react": "^0.543.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwind-merge": "^3.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@vitejs/plugin-react": "^5.0.1",
+    "vite": "^6.1.1",
+    "typescript": "^5.9.2",
+    "tailwindcss": "^3.4.0",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.4.41",
+    "eslint": "^8.57.0",
+    "vitest": "^3.0.4"
+  }
+}

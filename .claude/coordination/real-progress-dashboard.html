@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CastMatch - Real Progress Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #764ba2;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-label {
+            color: #999;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-detail {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .progress-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .component-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .component-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .component-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .component-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        .component-status {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-in_progress {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-started {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .status-pending {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .progress-bar-container {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .component-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .detail-item {
+            font-size: 0.9em;
+        }
+
+        .detail-label {
+            color: #666;
+        }
+
+        .detail-value {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .services-list {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .service-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 8px 0;
+            font-size: 0.9em;
+        }
+
+        .service-status {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .service-running {
+            background: #28a745;
+            animation: pulse 2s infinite;
+        }
+
+        .service-stopped {
+            background: #dc3545;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(40, 167, 69, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
+            }
+        }
+
+        .next-steps {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 30px;
+            color: white;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .next-steps h2 {
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .step-item {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            backdrop-filter: blur(10px);
+        }
+
+        .timestamp {
+            text-align: center;
+            color: rgba(255,255,255,0.8);
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+
+        .current-work {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .work-item {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid #764ba2;
+            position: relative;
+        }
+
+        .work-item.critical {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            border-left-color: #e17055;
+        }
+
+        .work-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .work-agent {
+            font-weight: 600;
+            color: #2d3436;
+            font-size: 1.1em;
+        }
+
+        .work-status {
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: 600;
+            background: white;
+            color: #764ba2;
+        }
+
+        .work-task {
+            color: #636e72;
+            margin: 10px 0;
+            font-size: 1.05em;
+        }
+
+        .work-deliverables {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .deliverable-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .deliverable-item {
+            padding: 5px 0;
+            color: #636e72;
+            font-size: 0.9em;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .deliverable-item:before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: #764ba2;
+        }
+
+        .work-timeline {
+            display: inline-block;
+            background: rgba(118, 75, 162, 0.1);
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 0.85em;
+            color: #764ba2;
+            margin-top: 10px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: white;
+            font-size: 1.2em;
+        }
+
+        .error {
+            background: #dc3545;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .refresh-btn {
+            background: white;
+            color: #764ba2;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .refresh-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1>🎬 CastMatch - Real Progress Dashboard</h1>
+                    <p class="subtitle">Live Development Status & Metrics</p>
+                </div>
+                <div style="text-align: right;">
+                    <button class="refresh-btn" onclick="loadProgress()">🔄 Refresh</button>
+                    <div style="margin-top: 10px; font-size: 0.9em; color: #666;">
+                        Last updated: <span id="last-update-time">--</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div id="dashboard-content">
+            <div class="loading">Loading real-time progress data...</div>
+        </div>
+    </div>
+
+    <script>
+        async function loadProgress() {
+            const content = document.getElementById('dashboard-content');
+            content.innerHTML = '<div class="loading">Analyzing project status...</div>';
+
+            try {
+                // First, run the analyzer to get fresh data
+                const response = await fetch('real-progress-data.json?' + Date.now());
+                const data = await response.json();
+                
+                renderDashboard(data);
+            } catch (error) {
+                content.innerHTML = `
+                    <div class="error">
+                        <h3>Error loading progress data</h3>
+                        <p>${error.message}</p>
+                        <p style="margin-top: 10px;">Make sure to run: <code>node analyze-progress.js</code> first</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Load agent status data
+        async function loadAgentStatus() {
+            try {
+                const response = await fetch('agent-status-matrix.json?' + Date.now());
+                return await response.json();
+            } catch (error) {
+                console.error('Could not load agent status:', error);
+                return null;
+            }
+        }
+
+        function renderDashboard(data) {
+            const content = document.getElementById('dashboard-content');
+            
+            // Load agent status for current work section
+            loadAgentStatus().then(agentData => {
+                const currentWorkSection = document.getElementById('current-work-section');
+                if (currentWorkSection && agentData) {
+                    renderCurrentWork(agentData);
+                }
+            });
+            
+            const html = `
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Overall Progress</div>
+                        <div class="stat-value">${data.overallProgress}%</div>
+                        <div class="stat-detail">${data.phase} Phase</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Total Commits</div>
+                        <div class="stat-value">${data.gitStats.totalCommits}</div>
+                        <div class="stat-detail">Last: ${data.gitStats.lastCommitTime}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Modified Files</div>
+                        <div class="stat-value">${data.gitStats.modifiedFiles}</div>
+                        <div class="stat-detail">Uncommitted changes</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Running Services</div>
+                        <div class="stat-value">${data.realMetrics ? data.realMetrics.runningServices : Object.values(data.services).filter(s => s.running).length}</div>
+                        <div class="stat-detail">of ${data.realMetrics ? data.realMetrics.totalServices : Object.keys(data.services).length} services</div>
+                    </div>
+                </div>
+
+                <!-- Currently Working On Section -->
+                <div id="current-work-section"></div>
+
+                <!-- Components Progress -->
+                <div class="progress-section">
+                    <h2 class="section-title">📊 Component Progress</h2>
+                    <div class="component-grid">
+                        ${Object.entries(data.components).map(([name, comp]) => `
+                            <div class="component-card">
+                                <div class="component-header">
+                                    <span class="component-name">${name}</span>
+                                    <span class="component-status status-${comp.status.toLowerCase()}">${comp.status}</span>
+                                </div>
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar" style="width: ${comp.progress}%"></div>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                                    <span style="font-size: 0.9em; color: #666;">${comp.progress}% Complete</span>
+                                    <span style="font-size: 0.9em; color: #666;">${comp.files} files</span>
+                                </div>
+                                ${comp.details ? `
+                                    <div class="component-details">
+                                        ${comp.details.totalFiles ? `
+                                            <div class="detail-item">
+                                                <span class="detail-label">Backend: </span>
+                                                <span class="detail-value">${comp.details.routes} routes, ${comp.details.endpoints} endpoints</span>
+                                            </div>
+                                        ` : ''}
+                                        ${comp.details.components ? `
+                                            <div class="detail-item">
+                                                <span class="detail-label">Components: </span>
+                                                <span class="detail-value">${comp.details.components} UI components</span>
+                                            </div>
+                                        ` : ''}
+                                        ${comp.details.total !== undefined ? `
+                                            <div class="detail-item">
+                                                <span class="detail-label">Tests: </span>
+                                                <span class="detail-value">${comp.details.coverage} coverage</span>
+                                            </div>
+                                        ` : ''}
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <!-- Service Status -->
+                <div class="progress-section">
+                    <h2 class="section-title">🚀 Service Status</h2>
+                    <div class="stats-grid">
+                        ${Object.entries(data.services).map(([key, service]) => `
+                            <div class="stat-card">
+                                <div class="stat-label">${service.name}</div>
+                                <div class="service-status ${service.running ? 'service-running' : 'service-stopped'}" style="display: inline-block; margin-right: 10px;"></div>
+                                <span style="font-weight: 600;">${service.running ? 'Running' : 'Stopped'}</span>
+                                <div class="stat-detail">Port ${service.port}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <!-- Next Steps -->
+                ${data.nextSteps && data.nextSteps.length > 0 ? `
+                    <div class="next-steps">
+                        <h2>🎯 Next Steps</h2>
+                        ${data.nextSteps.map((step, i) => `
+                            <div class="step-item">
+                                <strong>${i + 1}.</strong> ${step}
+                            </div>
+                        `).join('')}
+                    </div>
+                ` : ''}
+
+                <div class="timestamp">
+                    Last updated: ${new Date(data.timestamp).toLocaleString()}
+                </div>
+            `;
+            
+            content.innerHTML = html;
+        }
+
+        function renderCurrentWork(agentData) {
+            const section = document.getElementById('current-work-section');
+            if (!section || !agentData) return;
+
+            // Filter active agents
+            const activeAgents = [...(agentData.agents || []), ...(agentData.design_agents || [])]
+                .filter(agent => agent.status && agent.status.includes('ACTIVE'))
+                .sort((a, b) => {
+                    // Prioritize ACTIVE-CRITICAL
+                    if (a.status.includes('CRITICAL')) return -1;
+                    if (b.status.includes('CRITICAL')) return 1;
+                    return 0;
+                });
+
+            if (activeAgents.length === 0) return;
+
+            const html = `
+                <div class="current-work">
+                    <h2 class="section-title">🚀 Currently Working On</h2>
+                    ${activeAgents.map(agent => `
+                        <div class="work-item ${agent.status.includes('CRITICAL') ? 'critical' : ''}">
+                            <div class="work-item-header">
+                                <div class="work-agent">${formatAgentName(agent.name)}</div>
+                                <div class="work-status">${agent.progress || 0}% Complete</div>
+                            </div>
+                            <div class="work-task">📍 ${agent.current_task || 'No current task'}</div>
+                            ${agent.deliverables && agent.deliverables.length > 0 ? `
+                                <div class="work-deliverables">
+                                    <strong style="font-size: 0.9em; color: #2d3436;">Next Deliverables:</strong>
+                                    <ul class="deliverable-list">
+                                        ${agent.deliverables.slice(0, 3).map(item => `
+                                            <li class="deliverable-item">${item}</li>
+                                        `).join('')}
+                                    </ul>
+                                </div>
+                            ` : ''}
+                            ${agent.timeline ? `<div class="work-timeline">⏱ ${agent.timeline}</div>` : ''}
+                            ${agent.blockers && agent.blockers !== 'None' ? `
+                                <div style="margin-top: 10px; color: #e17055; font-size: 0.9em;">
+                                    ⚠️ Blocker: ${agent.blockers}
+                                </div>
+                            ` : ''}
+                        </div>
+                    `).join('')}
+                    
+                    ${agentData.critical_path && agentData.critical_path.length > 0 ? `
+                        <div style="margin-top: 20px; padding: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; color: white;">
+                            <strong>🎯 Critical Path:</strong>
+                            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
+                                ${agentData.critical_path.map((item, i) => `
+                                    <div style="background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 20px; font-size: 0.9em;">
+                                        ${i + 1}. ${item}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+
+            section.innerHTML = html;
+        }
+
+        function formatAgentName(name) {
+            return name
+                .split(/[-_]/)
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ');
+        }
+
+        // Update last refresh time
+        function updateLastRefreshTime() {
+            const timeEl = document.getElementById('last-update-time');
+            if (timeEl) {
+                timeEl.textContent = new Date().toLocaleTimeString();
+            }
+        }
+
+        // Override loadProgress to include timestamp update
+        const originalLoadProgress = loadProgress;
+        loadProgress = async function() {
+            console.log('Loading progress data...');
+            await originalLoadProgress();
+            updateLastRefreshTime();
+        };
+        
+        // Load on page load
+        loadProgress();
+        
+        // Auto-refresh every 30 seconds
+        setInterval(() => {
+            console.log('Auto-refreshing dashboard at', new Date().toLocaleTimeString());
+            loadProgress();
+        }, 30000);
+    </script>
+</body>
+</html>

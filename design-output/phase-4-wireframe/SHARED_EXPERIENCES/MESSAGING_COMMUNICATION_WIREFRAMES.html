@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CastMatch - Messaging & Communication Wireframes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #f8f9fa;
+            color: #1a1a1a;
+            line-height: 1.5;
+        }
+        
+        /* Container */
+        .wireframe-container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        /* Header */
+        .wireframe-header {
+            text-align: center;
+            margin-bottom: 60px;
+            padding-bottom: 40px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .wireframe-title {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #000;
+        }
+        
+        .wireframe-subtitle {
+            font-size: 20px;
+            color: #666;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        /* Section Headers */
+        .section-header {
+            margin: 60px 0 30px;
+            padding: 20px;
+            background: #fff;
+            border-left: 4px solid #333;
+        }
+        
+        .section-title {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .section-description {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        /* Wireframe Sections */
+        .wireframe-section {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        /* Layout Grids */
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 260px 1fr 320px;
+            gap: 24px;
+            min-height: 600px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .conversation-layout {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 0;
+            min-height: 700px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        /* Sidebar Components */
+        .sidebar {
+            background: #f5f5f5;
+            padding: 24px;
+            border-right: 1px solid #e0e0e0;
+        }
+        
+        .conversation-list {
+            background: #fafafa;
+            border-right: 2px solid #e0e0e0;
+        }
+        
+        .conversation-item {
+            padding: 16px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .conversation-item:hover {
+            background: #f0f0f0;
+        }
+        
+        .conversation-item.active {
+            background: #fff;
+            border-left: 3px solid #333;
+        }
+        
+        .avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #d0d0d0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 18px;
+            color: #666;
+        }
+        
+        .conversation-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .conversation-name {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .conversation-preview {
+            font-size: 13px;
+            color: #666;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .conversation-meta {
+            text-align: right;
+        }
+        
+        .conversation-time {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 4px;
+        }
+        
+        .unread-badge {
+            background: #333;
+            color: #fff;
+            border-radius: 10px;
+            padding: 2px 8px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        
+        /* Chat Area */
+        .chat-area {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .chat-header {
+            padding: 20px 24px;
+            border-bottom: 2px solid #e0e0e0;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .chat-header-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .chat-header-name {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .chat-header-status {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .chat-header-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .icon-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            border: 1px solid #d0d0d0;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .icon-button:hover {
+            background: #f5f5f5;
+            border-color: #999;
+        }
+        
+        /* Messages Area */
+        .messages-container {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+            background: #fafafa;
+        }
+        
+        .message {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 12px;
+        }
+        
+        .message.sent {
+            flex-direction: row-reverse;
+        }
+        
+        .message-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #d0d0d0;
+            flex-shrink: 0;
+        }
+        
+        .message-content {
+            max-width: 70%;
+        }
+        
+        .message-bubble {
+            background: #fff;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 4px;
+        }
+        
+        .message.sent .message-bubble {
+            background: #333;
+            color: #fff;
+            border-color: #333;
+        }
+        
+        .message-text {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .message-time {
+            font-size: 12px;
+            color: #999;
+            margin-top: 4px;
+        }
+        
+        .message.sent .message-time {
+            text-align: right;
+        }
+        
+        /* Message Input */
+        .message-input-container {
+            padding: 20px;
+            border-top: 2px solid #e0e0e0;
+            background: #fff;
+        }
+        
+        .message-input-wrapper {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+        
+        .message-input-box {
+            flex: 1;
+            background: #f5f5f5;
+            border: 1px solid #d0d0d0;
+            border-radius: 24px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .message-input {
+            flex: 1;
+            background: none;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            resize: none;
+            min-height: 20px;
+            max-height: 120px;
+        }
+        
+        .attachment-button {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #fff;
+            border: 1px solid #d0d0d0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .send-button {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #333;
+            color: #fff;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .send-button:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Video Call Interface */
+        .video-call-container {
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 40px;
+            min-height: 600px;
+            position: relative;
+        }
+        
+        .video-main {
+            background: #2a2a2a;
+            border-radius: 8px;
+            height: 480px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        
+        .video-thumbnails {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        
+        .video-thumbnail {
+            width: 160px;
+            height: 90px;
+            background: #333;
+            border-radius: 8px;
+            border: 2px solid #444;
+        }
+        
+        .video-controls {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+        }
+        
+        .video-control-button {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #333;
+            color: #fff;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .video-control-button.end-call {
+            background: #d32f2f;
+        }
+        
+        /* Team Communication */
+        .team-channels {
+            padding: 20px;
+        }
+        
+        .channel-section {
+            margin-bottom: 24px;
+        }
+        
+        .channel-header {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #999;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .channel-item {
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+        
+        .channel-item:hover {
+            background: #f0f0f0;
+        }
+        
+        .channel-item.active {
+            background: #333;
+            color: #fff;
+        }
+        
+        .channel-icon {
+            width: 20px;
+            height: 20px;
+            background: #d0d0d0;
+            border-radius: 4px;
+        }
+        
+        /* Notification Panel */
+        .notification-panel {
+            padding: 24px;
+            background: #fff;
+        }
+        
+        .notification-header {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .notification-item {
+            padding: 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .notification-item:hover {
+            background: #f5f5f5;
+            border-color: #999;
+        }
+        
+        .notification-item.unread {
+            background: #f0f5ff;
+            border-color: #4a90e2;
+        }
+        
+        .notification-type {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .notification-content {
+            font-size: 14px;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        
+        .notification-time {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        /* Voice Note */
+        .voice-note-container {
+            background: #f5f5f5;
+            border: 1px solid #d0d0d0;
+            border-radius: 12px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 12px 0;
+        }
+        
+        .voice-play-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #333;
+            color: #fff;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .voice-waveform {
+            flex: 1;
+            height: 32px;
+            background: linear-gradient(90deg, #333 2px, transparent 2px);
+            background-size: 6px 100%;
+            opacity: 0.3;
+            border-radius: 4px;
+        }
+        
+        .voice-duration {
+            font-size: 13px;
+            color: #666;
+            font-weight: 500;
+        }
+        
+        /* Document Share */
+        .document-share {
+            background: #f5f5f5;
+            border: 1px solid #d0d0d0;
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 12px 0;
+        }
+        
+        .document-icon {
+            width: 48px;
+            height: 48px;
+            background: #fff;
+            border: 1px solid #d0d0d0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+        }
+        
+        .document-info {
+            flex: 1;
+        }
+        
+        .document-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .document-size {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .document-download {
+            padding: 8px 16px;
+            background: #333;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        
+        /* Annotations */
+        .annotation {
+            background: #fffbf0;
+            border: 1px solid #ffd700;
+            border-radius: 4px;
+            padding: 12px;
+            margin: 20px 0;
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .annotation-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        
+        /* States */
+        .state-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .state-indicator.online {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .state-indicator.typing {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .state-indicator.away {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .layout-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .conversation-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .conversation-list {
+                display: none;
+            }
+            
+            .message-content {
+                max-width: 85%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="wireframe-container">
+        <div class="wireframe-header">
+            <h1 class="wireframe-title">Messaging & Communication System</h1>
+            <p class="wireframe-subtitle">Complete messaging infrastructure with chat, video calls, team communication, and real-time notifications for seamless collaboration</p>
+        </div>
+
+        <!-- 1. Main Messaging Interface -->
+        <div class="section-header">
+            <h2 class="section-title">1. Main Messaging Dashboard</h2>
+            <p class="section-description">Central hub for all communication with unified inbox and quick access</p>
+        </div>
+        
+        <div class="wireframe-section">
+            <div class="conversation-layout">
+                <!-- Conversation List -->
+                <div class="conversation-list">
+                    <div style="padding: 20px; border-bottom: 1px solid #e0e0e0;">
+                        <input type="search" placeholder="Search conversations..." style="width: 100%; padding: 10px; border: 1px solid #d0d0d0; border-radius: 8px; outline: none;">
+                    </div>
+                    
+                    <div class="conversation-item active">
+                        <div class="avatar">RK</div>
+                        <div class="conversation-info">
+                            <div class="conversation-name">Rajesh Kumar</div>
+                            <div class="conversation-preview">Thanks for the audition details...</div>
+                        </div>
+                        <div class="conversation-meta">
+                            <div class="conversation-time">2m</div>
+                            <div class="unread-badge">3</div>
+                        </div>
+                    </div>
+                    
+                    <div class="conversation-item">
+                        <div class="avatar">PT</div>
+                        <div class="conversation-info">
+                            <div class="conversation-name">Production Team</div>
+                            <div class="conversation-preview">Schedule confirmed for tomorrow</div>
+                        </div>
+                        <div class="conversation-meta">
+                            <div class="conversation-time">1h</div>
+                        </div>
+                    </div>
+                    
+                    <div class="conversation-item">
+                        <div class="avatar">AS</div>
+                        <div class="conversation-info">
+                            <div class="conversation-name">Ananya Sharma</div>
+                            <div class="conversation-preview">Voice note about the role</div>
+                        </div>
+                        <div class="conversation-meta">
+                            <div class="conversation-time">3h</div>
+                            <div class="unread-badge">1</div>
+                        </div>
+                    </div>
+                    
+                    <div class="conversation-item">
+                        <div class="avatar">CD</div>
+                        <div class="conversation-info">
+                            <div class="conversation-name">Casting Director</div>
+                            <div class="conversation-preview">Shared script.pdf</div>
+                        </div>
+                        <div class="conversation-meta">
+                            <div class="conversation-time">5h</div>
+                        </div>
+                    </div>
+                    
+                    <div class="conversation-item">
+                        <div class="avatar">VT</div>
+                        <div class="conversation-info">
+                            <div class="conversation-name">Video Team</div>
+                            <div class="conversation-preview">Video call ended - 45 minutes</div>
+                        </div>
+                        <div class="conversation-meta">
+                            <div class="conversation-time">1d</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Chat Area -->
+                <div class="chat-area">
+                    <div class="chat-header">
+                        <div class="chat-header-info">
+                            <div class="avatar">RK</div>
+                            <div>
+                                <div class="chat-header-name">Rajesh Kumar</div>
+                                <div class="chat-header-status">
+                                    <span class="state-indicator online">● Online</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chat-header-actions">
+                            <button class="icon-button">📞</button>
+                            <button class="icon-button">📹</button>
+                            <button class="icon-button">ℹ️</button>
+                            <button class="icon-button">⋮</button>
+                        </div>
+                    </div>
+                    
+                    <div class="messages-container">
+                        <div class="message">
+                            <div class="message-avatar"></div>
+                            <div class="message-content">
+                                <div class="message-bubble">
+                                    <div class="message-text">Hi! I saw your profile and would like to discuss an upcoming role.</div>
+                                </div>
+                                <div class="message-time">10:30 AM</div>
+                            </div>
+                        </div>
+                        
+                        <div class="message sent">
+                            <div class="message-avatar"></div>
+                            <div class="message-content">
+                                <div class="message-bubble">
+                                    <div class="message-text">Thank you for reaching out! I'd love to know more about the project.</div>
+                                </div>
+                                <div class="message-time">10:35 AM</div>
+                            </div>
+                        </div>
+                        
+                        <div class="message">
+                            <div class="message-avatar"></div>
+                            <div class="message-content">
+                                <div class="document-share">
+                                    <div class="document-icon">PDF</div>
+                                    <div class="document-info">
+                                        <div class="document-name">Role_Description.pdf</div>
+                                        <div class="document-size">2.4 MB</div>
+                                    </div>
+                                    <button class="document-download">Download</button>
+                                </div>
+                                <div class="message-time">10:40 AM</div>
+                            </div>
+                        </div>
+                        
+                        <div class="message sent">
+                            <div class="message-avatar"></div>
+                            <div class="message-content">
+                                <div class="voice-note-container">
+                                    <button class="voice-play-button">▶</button>
+                                    <div class="voice-waveform"></div>
+                                    <div class="voice-duration">0:45</div>
+                                </div>
+                                <div class="message-time">10:45 AM</div>
+                            </div>
+                        </div>
+                        
+                        <div class="state-indicator typing" style="margin: 20px 0;">
+                            <span>●●●</span> Rajesh is typing...
+                        </div>
+                    </div>
+                    
+                    <div class="message-input-container">
+                        <div class="message-input-wrapper">
+                            <div class="message-input-box">
+                                <button class="attachment-button">📎</button>
+                                <button class="attachment-button">🎤</button>
+                                <textarea class="message-input" placeholder="Type a message..." rows="1"></textarea>
+                                <button class="attachment-button">😊</button>
+                            </div>
+                            <button class="send-button">➤</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="annotation">
+                <div class="annotation-title">💬 Messaging Features</div>
+                Real-time messaging with typing indicators, read receipts, file sharing (scripts, headshots, portfolios), voice notes, emoji reactions, message search, and thread replies.
+            </div>
+        </div>
+
+        <!-- 2. Video Call Interface -->
+        <div class="section-header">
+            <h2 class="section-title">2. Video Call & Virtual Audition</h2>
+            <p class="section-description">Professional video calling with recording, screen sharing, and virtual audition capabilities</p>
+        </div>
+        
+        <div class="wireframe-section">
+            <div class="video-call-container">
+                <div class="video-main">
+                    <div style="text-align: center;">
+                        <div style="font-size: 24px; margin-bottom: 8px;">Main Video Feed</div>
+                        <div style="font-size: 14px; color: #666;">1920x1080 • 30fps</div>
+                    </div>
+                </div>
+                
+                <div class="video-thumbnails">
+                    <div class="video-thumbnail"></div>
+                    <div class="video-thumbnail"></div>
+                    <div class="video-thumbnail"></div>
+                    <div class="video-thumbnail"></div>
+                </div>
+                
+                <div class="video-controls">
+                    <button class="video-control-button">🎤<br>Mute</button>
+                    <button class="video-control-button">📹<br>Video</button>
+                    <button class="video-control-button">📺<br>Share</button>
+                    <button class="video-control-button">⏺️<br>Record</button>
+                    <button class="video-control-button">👥<br>Layout</button>
+                    <button class="video-control-button end-call">📞<br>End</button>
+                </div>
+                
+                <div style="position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.8); padding: 12px 20px; border-radius: 8px; color: #fff;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div style="width: 8px; height: 8px; background: #ff4444; border-radius: 50%; animation: pulse 2s infinite;"></div>
+                        <span>Recording • 12:34</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="annotation">
+                <div class="annotation-title">🎥 Video Call Features</div>
+                HD video quality, virtual backgrounds, noise cancellation, auto-framing, screen/script sharing, session recording, multi-participant support (up to 10), breakout rooms for callbacks.
+            </div>
+        </div>
+
+        <!-- 3. Team Communication -->
+        <div class="section-header">
+            <h2 class="section-title">3. Team Communication Channels</h2>
+            <p class="section-description">Organized channels for production teams and group collaboration</p>
+        </div>
+        
+        <div class="wireframe-section">
+            <div class="layout-grid">
+                <div class="sidebar">
+                    <div class="team-channels">
+                        <div class="channel-section">
+                            <div class="channel-header">
+                                <span>Projects</span>
+                                <span>+</span>
+                            </div>
+                            <div class="channel-item active">
+                                <div class="channel-icon"></div>
+                                <span># mumbai-dreams</span>
+                            </div>
+                            <div class="channel-item">
+                                <div class="channel-icon"></div>
+                                <span># web-series-2024</span>
+                            </div>
+                            <div class="channel-item">
+                                <div class="channel-icon"></div>
+                                <span># tvc-casting</span>
+                            </div>
+                        </div>
+                        
+                        <div class="channel-section">
+                            <div class="channel-header">
+                                <span>Departments</span>
+                                <span>+</span>
+                            </div>
+                            <div class="channel-item">
+                                <div class="channel-icon"></div>
+                                <span># casting-team</span>
+                            </div>
+                            <div class="channel-item">
+                                <div class="channel-icon"></div>
+                                <span># production</span>
+                            </div>
+                            <div class="channel-item">
+                                <div class="channel-icon"></div>
+                                <span># directors</span>
+                            </div>
+                        </div>
+                        
+                        <div class="channel-section">
+                            <div class="channel-header">
+                                <span>Direct Messages</span>
+                                <span>+</span>
+                            </div>
+                            <div class="channel-item">
+                                <div class="state-indicator online" style="width: 8px; height: 8px; padding: 0;"></div>
+                                <span>Casting Director</span>
+                            </div>
+                            <div class="channel-item">
+                                <div class="state-indicator away" style="width: 8px; height: 8px; padding: 0;"></div>
+                                <span>Producer</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="flex: 1; padding: 24px; background: #fafafa;">
+                    <div style="margin-bottom: 24px;">
+                        <h3 style="font-size: 20px; margin-bottom: 8px;"># mumbai-dreams</h3>
+                        <p style="color: #666; font-size: 14px;">Casting discussions for Mumbai Dreams project • 24 members</p>
+                    </div>
+                    
+                    <div style="background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; min-height: 400px;">
+                        <div class="message">
+                            <div class="message-avatar"></div>
+                            <div class="message-content">
+                                <div style="font-weight: 600; margin-bottom: 4px;">Casting Director</div>
+                                <div class="message-bubble">
+                                    <div class="message-text">@everyone We've shortlisted 15 actors for the lead role. Review meeting at 3 PM.</div>
+                                </div>
+                                <div class="message-time">11:30 AM</div>
+                            </div>
+                        </div>
+                        
+                        <div class="message">
+                            <div class="message-avatar"></div>
+                            <div class="message-content">
+                                <div style="font-weight: 600; margin-bottom: 4px;">Producer</div>
+                                <div class="message-bubble">
+                                    <div class="message-text">Great! I've shared the updated budget sheet in the files section.</div>
+                                </div>
+                                <div class="message-time">11:35 AM</div>
+                            </div>
+                        </div>
+                        
+                        <div style="background: #f0f5ff; border-left: 3px solid #4a90e2; padding: 12px; margin: 20px 0; border-radius: 4px;">
+                            <div style="font-size: 12px; color: #4a90e2; margin-bottom: 4px;">Pinned Message</div>
+                            <div style="font-size: 14px;">Audition Schedule: Mon-Fri, 10 AM - 6 PM at Studio 5</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="sidebar" style="background: #fff;">
+                    <div style="padding: 20px; border-bottom: 1px solid #e0e0e0;">
+                        <h4 style="font-size: 16px; margin-bottom: 12px;">Channel Info</h4>
+                    </div>
+                    
+                    <div style="padding: 20px;">
+                        <div style="margin-bottom: 24px;">
+                            <div style="font-size: 12px; color: #999; margin-bottom: 8px;">About</div>
+                            <div style="font-size: 14px;">Main communication channel for Mumbai Dreams casting process</div>
+                        </div>
+                        
+                        <div style="margin-bottom: 24px;">
+                            <div style="font-size: 12px; color: #999; margin-bottom: 8px;">Members (24)</div>
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                <div class="avatar" style="width: 32px; height: 32px; font-size: 12px;">CD</div>
+                                <div class="avatar" style="width: 32px; height: 32px; font-size: 12px;">PD</div>
+                                <div class="avatar" style="width: 32px; height: 32px; font-size: 12px;">AD</div>
+                                <div class="avatar" style="width: 32px; height: 32px; font-size: 12px;">+21</div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div style="font-size: 12px; color: #999; margin-bottom: 8px;">Shared Files</div>
+                            <div style="font-size: 14px; color: #4a90e2; cursor: pointer;">View all 47 files →</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="annotation">
+                <div class="annotation-title">👥 Team Features</div>
+                Project-based channels, department groups, threaded conversations, @mentions, file sharing, pinned messages, member management, search across channels, integrations with calendar.
+            </div>
+        </div>
+
+        <!-- 4. Notification Center -->
+        <div class="section-header">
+            <h2 class="section-title">4. Notification Management</h2>
+            <p class="section-description">Centralized notification system with preferences and real-time alerts</p>
+        </div>
+        
+        <div class="wireframe-section">
+            <div style="display: grid; grid-template-columns: 1fr 360px; gap: 24px;">
+                <div style="background: #fafafa; border: 1px solid #e0e0e0; border-radius: 8px; padding: 24px;">
+                    <h3 style="font-size: 20px; margin-bottom: 20px;">Notification Preferences</h3>
+                    
+                    <div style="margin-bottom: 32px;">
+                        <h4 style="font-size: 16px; margin-bottom: 16px;">Message Notifications</h4>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <label style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px;">
+                                <span>Direct Messages</span>
+                                <input type="checkbox" checked style="width: 20px; height: 20px;">
+                            </label>
+                            <label style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px;">
+                                <span>Channel Mentions</span>
+                                <input type="checkbox" checked style="width: 20px; height: 20px;">
+                            </label>
+                            <label style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px;">
+                                <span>All Channel Messages</span>
+                                <input type="checkbox" style="width: 20px; height: 20px;">
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 32px;">
+                        <h4 style="font-size: 16px; margin-bottom: 16px;">Audition Notifications</h4>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <label style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px;">
+                                <span>New Audition Invites</span>
+                                <input type="checkbox" checked style="width: 20px; height: 20px;">
+                            </label>
+                            <label style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px;">
+                                <span>Schedule Changes</span>
+                                <input type="checkbox" checked style="width: 20px; height: 20px;">
+                            </label>
+                            <label style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px;">
+                                <span>Callback Requests</span>
+                                <input type="checkbox" checked style="width: 20px; height: 20px;">
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 style="font-size: 16px; margin-bottom: 16px;">Delivery Methods</h4>
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+                            <button style="padding: 12px; background: #333; color: #fff; border: none; border-radius: 8px; cursor: pointer;">In-App</button>
+                            <button style="padding: 12px; background: #fff; border: 1px solid #d0d0d0; border-radius: 8px; cursor: pointer;">Email</button>
+                            <button style="padding: 12px; background: #fff; border: 1px solid #d0d0d0; border-radius: 8px; cursor: pointer;">SMS</button>
+                            <button style="padding: 12px; background: #fff; border: 1px solid #d0d0d0; border-radius: 8px; cursor: pointer;">WhatsApp</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="notification-panel">
+                    <div class="notification-header">
+                        <span>Notifications</span>
+                        <span style="font-size: 14px; color: #4a90e2; cursor: pointer;">Mark all read</span>
+                    </div>
+                    
+                    <div class="notification-item unread">
+                        <div class="notification-type">Message</div>
+                        <div class="notification-content">Rajesh Kumar sent you a message about the audition schedule</div>
+                        <div class="notification-time">2 minutes ago</div>
+                    </div>
+                    
+                    <div class="notification-item unread">
+                        <div class="notification-type">Audition</div>
+                        <div class="notification-content">You have a callback request for "Mumbai Dreams" lead role</div>
+                        <div class="notification-time">15 minutes ago</div>
+                    </div>
+                    
+                    <div class="notification-item">
+                        <div class="notification-type">Video Call</div>
+                        <div class="notification-content">Missed video call from Production Team</div>
+                        <div class="notification-time">1 hour ago</div>
+                    </div>
+                    
+                    <div class="notification-item">
+                        <div class="notification-type">Document</div>
+                        <div class="notification-content">New script shared in #mumbai-dreams channel</div>
+                        <div class="notification-time">3 hours ago</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="annotation">
+                <div class="annotation-title">🔔 Notification System</div>
+                Real-time push notifications, customizable preferences by type, multi-channel delivery (in-app, email, SMS, WhatsApp), notification grouping, quiet hours, priority levels.
+            </div>
+        </div>
+
+        <!-- 5. Mobile Messaging View -->
+        <div class="section-header">
+            <h2 class="section-title">5. Mobile Messaging Experience</h2>
+            <p class="section-description">Optimized mobile interface for on-the-go communication</p>
+        </div>
+        
+        <div class="wireframe-section">
+            <div style="max-width: 375px; margin: 0 auto; border: 2px solid #333; border-radius: 20px; overflow: hidden;">
+                <div style="background: #333; color: #fff; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between;">
+                    <span>9:41 AM</span>
+                    <div style="display: flex; gap: 4px;">
+                        <span>📶</span>
+                        <span>📶</span>
+                        <span>🔋</span>
+                    </div>
+                </div>
+                
+                <div style="background: #fff; min-height: 667px;">
+                    <div style="padding: 16px; border-bottom: 1px solid #e0e0e0; display: flex; align-items: center; justify-content: space-between;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <span style="font-size: 20px;">←</span>
+                            <div class="avatar" style="width: 40px; height: 40px;">RK</div>
+                            <div>
+                                <div style="font-weight: 600;">Rajesh Kumar</div>
+                                <div style="font-size: 12px; color: #4CAF50;">● Online</div>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 16px;">
+                            <span style="font-size: 20px;">📞</span>
+                            <span style="font-size: 20px;">📹</span>
+                        </div>
+                    </div>
+                    
+                    <div style="padding: 16px; height: 500px; overflow-y: auto;">
+                        <div style="margin-bottom: 16px;">
+                            <div style="background: #f0f0f0; padding: 12px; border-radius: 16px 16px 16px 0; max-width: 70%; display: inline-block;">
+                                <div>Hi! Are you available for an audition tomorrow?</div>
+                                <div style="font-size: 11px; color: #999; margin-top: 4px;">10:30 AM</div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-bottom: 16px; text-align: right;">
+                            <div style="background: #333; color: #fff; padding: 12px; border-radius: 16px 16px 0 16px; max-width: 70%; display: inline-block; text-align: left;">
+                                <div>Yes, I'm available! What time?</div>
+                                <div style="font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 4px;">10:32 AM ✓✓</div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-bottom: 16px;">
+                            <div style="background: #f0f0f0; padding: 12px; border-radius: 16px; max-width: 70%; display: inline-block;">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <span style="font-size: 24px;">📍</span>
+                                    <div>
+                                        <div style="font-weight: 600;">Studio Location</div>
+                                        <div style="font-size: 13px; color: #666;">Film City, Mumbai</div>
+                                    </div>
+                                </div>
+                                <div style="font-size: 11px; color: #999; margin-top: 4px;">10:35 AM</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="padding: 16px; border-top: 1px solid #e0e0e0;">
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <button style="width: 36px; height: 36px; border-radius: 50%; background: #f0f0f0; border: none;">📎</button>
+                            <div style="flex: 1; background: #f5f5f5; border-radius: 20px; padding: 10px 16px; display: flex; align-items: center;">
+                                <input type="text" placeholder="Type a message..." style="flex: 1; background: none; border: none; outline: none;">
+                                <button style="background: none; border: none; font-size: 20px;">🎤</button>
+                            </div>
+                            <button style="width: 36px; height: 36px; border-radius: 50%; background: #333; color: #fff; border: none;">➤</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="annotation">
+                <div class="annotation-title">📱 Mobile Features</div>
+                Touch-optimized UI, swipe gestures, offline message queue, background sync, push notifications, quick replies, voice message recording, location sharing, compressed media uploads.
+            </div>
+        </div>
+
+        <!-- 6. Advanced Features -->
+        <div class="section-header">
+            <h2 class="section-title">6. Advanced Communication Features</h2>
+            <p class="section-description">Professional tools for casting workflows and collaboration</p>
+        </div>
+        
+        <div class="wireframe-section">
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;">
+                <!-- Schedule Meeting -->
+                <div style="background: #fafafa; border: 1px solid #e0e0e0; border-radius: 8px; padding: 24px;">
+                    <h4 style="font-size: 18px; margin-bottom: 20px;">Schedule Video Audition</h4>
+                    
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; margin-bottom: 8px; font-size: 14px; color: #666;">Title</label>
+                        <input type="text" value="Lead Role Audition - Mumbai Dreams" style="width: 100%; padding: 10px; border: 1px solid #d0d0d0; border-radius: 6px;">
+                    </div>
+                    
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; margin-bottom: 8px; font-size: 14px; color: #666;">Date & Time</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                            <input type="date" style="padding: 10px; border: 1px solid #d0d0d0; border-radius: 6px;">
+                            <input type="time" style="padding: 10px; border: 1px solid #d0d0d0; border-radius: 6px;">
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; margin-bottom: 8px; font-size: 14px; color: #666;">Participants</label>
+                        <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                            <div style="padding: 6px 12px; background: #333; color: #fff; border-radius: 16px; font-size: 13px;">Rajesh Kumar ×</div>
+                            <div style="padding: 6px 12px; background: #333; color: #fff; border-radius: 16px; font-size: 13px;">Director ×</div>
+                        </div>
+                        <input type="text" placeholder="Add participants..." style="width: 100%; padding: 10px; border: 1px solid #d0d0d0; border-radius: 6px;">
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" checked>
+                            <span style="font-size: 14px;">Record audition for review</span>
+                        </label>
+                    </div>
+                    
+                    <button style="width: 100%; padding: 12px; background: #333; color: #fff; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">Schedule & Send Invites</button>
+                </div>
+                
+                <!-- Message Templates -->
+                <div style="background: #fafafa; border: 1px solid #e0e0e0; border-radius: 8px; padding: 24px;">
+                    <h4 style="font-size: 18px; margin-bottom: 20px;">Quick Message Templates</h4>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div style="padding: 12px; background: #fff; border: 1px solid #d0d0d0; border-radius: 8px; cursor: pointer;">
+                            <div style="font-weight: 600; margin-bottom: 4px;">Audition Confirmation</div>
+                            <div style="font-size: 13px; color: #666;">Confirm audition time and location details</div>
+                        </div>
+                        
+                        <div style="padding: 12px; background: #fff; border: 1px solid #d0d0d0; border-radius: 8px; cursor: pointer;">
+                            <div style="font-weight: 600; margin-bottom: 4px;">Callback Invitation</div>
+                            <div style="font-size: 13px; color: #666;">Invite talent for second round audition</div>
+                        </div>
+                        
+                        <div style="padding: 12px; background: #fff; border: 1px solid #d0d0d0; border-radius: 8px; cursor: pointer;">
+                            <div style="font-weight: 600; margin-bottom: 4px;">Selection Notification</div>
+                            <div style="font-size: 13px; color: #666;">Inform about role selection</div>
+                        </div>
+                        
+                        <div style="padding: 12px; background: #fff; border: 1px solid #d0d0d0; border-radius: 8px; cursor: pointer;">
+                            <div style="font-weight: 600; margin-bottom: 4px;">Schedule Change</div>
+                            <div style="font-size: 13px; color: #666;">Notify about audition rescheduling</div>
+                        </div>
+                        
+                        <div style="padding: 12px; background: #fff; border: 1px solid #d0d0d0; border-radius: 8px; cursor: pointer;">
+                            <div style="font-weight: 600; margin-bottom: 4px;">Document Request</div>
+                            <div style="font-size: 13px; color: #666;">Request portfolios or additional materials</div>
+                        </div>
+                    </div>
+                    
+                    <button style="width: 100%; padding: 10px; margin-top: 16px; background: #fff; border: 1px solid #333; border-radius: 6px; cursor: pointer;">+ Create Custom Template</button>
+                </div>
+            </div>
+            
+            <div class="annotation">
+                <div class="annotation-title">⚡ Advanced Features</div>
+                Meeting scheduler with calendar integration, message templates, automated reminders, translation support (Hindi/English), read receipts, message reactions, search filters, export chat history.
+            </div>
+        </div>
+
+        <!-- Final Summary -->
+        <div class="section-header">
+            <h2 class="section-title">Complete Messaging System Architecture</h2>
+            <p class="section-description">Comprehensive communication infrastructure for casting industry</p>
+        </div>
+        
+        <div class="wireframe-section">
+            <div style="background: #f0f0f0; padding: 32px; border-radius: 8px;">
+                <h3 style="font-size: 24px; margin-bottom: 24px; text-align: center;">Messaging & Communication Feature Matrix</h3>
+                
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
+                    <div style="background: #fff; padding: 20px; border-radius: 8px;">
+                        <h4 style="font-size: 16px; margin-bottom: 12px; color: #333;">Core Messaging</h4>
+                        <ul style="list-style: none; padding: 0; font-size: 14px; color: #666; line-height: 1.8;">
+                            <li>✓ Real-time text messaging</li>
+                            <li>✓ Voice notes (up to 5 min)</li>
+                            <li>✓ File sharing (100MB limit)</li>
+                            <li>✓ Read receipts & typing indicators</li>
+                            <li>✓ Message search & filters</li>
+                            <li>✓ Emoji reactions</li>
+                            <li>✓ Thread replies</li>
+                            <li>✓ Message editing/deletion</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="background: #fff; padding: 20px; border-radius: 8px;">
+                        <h4 style="font-size: 16px; margin-bottom: 12px; color: #333;">Video Calling</h4>
+                        <ul style="list-style: none; padding: 0; font-size: 14px; color: #666; line-height: 1.8;">
+                            <li>✓ HD video (1080p)</li>
+                            <li>✓ Screen sharing</li>
+                            <li>✓ Recording capability</li>
+                            <li>✓ Virtual backgrounds</li>
+                            <li>✓ Multi-participant (10 max)</li>
+                            <li>✓ Breakout rooms</li>
+                            <li>✓ Live captions</li>
+                            <li>✓ Session scheduling</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="background: #fff; padding: 20px; border-radius: 8px;">
+                        <h4 style="font-size: 16px; margin-bottom: 12px; color: #333;">Team Features</h4>
+                        <ul style="list-style: none; padding: 0; font-size: 14px; color: #666; line-height: 1.8;">
+                            <li>✓ Project channels</li>
+                            <li>✓ Department groups</li>
+                            <li>✓ @mentions & notifications</li>
+                            <li>✓ Pinned messages</li>
+                            <li>✓ Shared files library</li>
+                            <li>✓ Member permissions</li>
+                            <li>✓ Channel archives</li>
+                            <li>✓ Integration APIs</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid #d0d0d0;">
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; text-align: center;">
+                        <div>
+                            <div style="font-size: 32px; font-weight: 700; color: #333;">10K+</div>
+                            <div style="font-size: 14px; color: #666;">Daily Messages</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 32px; font-weight: 700; color: #333;">500+</div>
+                            <div style="font-size: 14px; color: #666;">Video Calls/Day</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 32px; font-weight: 700; color: #333;">99.9%</div>
+                            <div style="font-size: 14px; color: #666;">Uptime SLA</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 32px; font-weight: 700; color: #333;">&lt;100ms</div>
+                            <div style="font-size: 14px; color: #666;">Message Latency</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

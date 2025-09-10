@@ -1,0 +1,670 @@
+/**
+ * Authentication Service
+ * Complete authentication implementation with Drizzle ORM
+ */
+
+import { eq, and } from 'drizzle-orm';
+import { db } from '../config/database';
+import { users, sessions, type User, type Session } from '../models/schema.simple';
+import { CacheManager, CacheKeys } from '../config/redis';
+import {
+  hashPassword,
+  comparePassword,
+  validatePassword,
+} from '../utils/password';
+import {
+  generateAccessToken,
+  generateRefreshToken,
+  generateSessionId,
+  verifyRefreshToken,
+} from '../utils/jwt';
+import {
+  AppError,
+  ValidationError,
+  AuthenticationError,
+  BadRequestError,
+} from '../utils/errors';
+import { logger } from '../utils/logger';
+import { emailService } from './email.service';
+import crypto from 'crypto';
+
+interface RegisterInput {
+  email: string;
+  password: string;
+  firstName?: string;
+  lastName?: string;
+  role?: 'casting_director' | 'producer' | 'assistant' | 'actor';
+}
+
+interface LoginInput {
+  email: string;
+  password: string;
+}
+
+interface AuthResponse {
+  user: {
+    id: string;
+    email: string;
+    role: string;
+    firstName?: string;
+    lastName?: string;
+    isEmailVerified: boolean;
+  };
+  tokens: {
+    accessToken: string;
+    refreshToken: string;
+    expiresIn: number;
+  };
+}
+
+export class AuthService {
+  /**
+   * Generate email verification token
+   */
+  private generateVerificationToken(): string {
+    return crypto.randomBytes(32).toString('hex');
+  }
+
+  /**
+   * Generate email verification link
+   */
+  private generateVerificationLink(token: string): string {
+    const baseUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+    return `${baseUrl}/auth/verify-email?token=${token}`;
+  }
+
+  /**
+   * Register a new user
+   */
+  async register(userData: RegisterInput): Promise<AuthResponse> {
+    const { email, password, firstName, lastName, role = 'actor' } = userData;
+    
+    try {
+      // Validate password strength
+      const passwordValidation = validatePassword(password);
+      if (!passwordValidation.isValid) {
+        throw new ValidationError(passwordValidation.errors.join(', '));
+      }
+      
+      // Check if user already exists
+      const existingUser = await db
+        .select()
+        .from(users)
+        .where(eq(users.email, email.toLowerCase()))
+        .limit(1);
+      
+      if (existingUser.length > 0) {
+        throw new BadRequestError('User already exists');
+      }
+      
+      // Hash password
+      const hashedPassword = await hashPassword(password);
+      
+      // Generate verification token
+      const verificationToken = this.generateVerificationToken();
+      const hashedVerificationToken = await hashPassword(verificationToken);
+      const tokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+      // Create user
+      const [user] = await db
+        .insert(users)
+        .values({
+          email: email.toLowerCase(),
+          password: hashedPassword,
+          firstName,
+          lastName,
+          role: role as any,
+          isEmailVerified: false,
+          isPhoneVerified: false,
+          resetToken: hashedVerificationToken,
+          resetTokenExpiry: tokenExpiry,
+        })
+        .returning();
+
+      // Send verification email
+      try {
+        await emailService.sendVerificationEmail({
+          to: user.email,
+          name: `${firstName} ${lastName}`,
+          verificationLink: this.generateVerificationLink(verificationToken),
+        });
+        logger.info(`Verification email sent to ${user.email}`);
+      } catch (emailError) {
+        logger.error('Failed to send verification email:', emailError);
+        // Continue with registration even if email fails
+      }
+      
+      // Generate tokens
+      const sessionId = generateSessionId();
+      const accessToken = generateAccessToken(user.id, user.email, user.role, sessionId);
+      const refreshToken = generateRefreshToken(user.id, sessionId);
+      
+      // Create session
+      await db.insert(sessions).values({
+        id: sessionId,
+        userId: user.id,
+        token: refreshToken,
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+      });
+      
+      // Cache user session
+      await CacheManager.set(
+        CacheKeys.userSession(user.id, sessionId),
+        { userId: user.id, sessionId, role: user.role },
+        60 * 60 // 1 hour
+      );
+      
+      return {
+        user: {
+          id: user.id,
+          email: user.email,
+          role: user.role,
+          firstName: user.firstName || undefined,
+          lastName: user.lastName || undefined,
+          isEmailVerified: user.isEmailVerified,
+        },
+        tokens: {
+          accessToken,
+          refreshToken,
+          expiresIn: 3600, // 1 hour
+        }
+      };
+    } catch (error) {
+      logger.error('Registration failed:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Login user
+   */
+  async login(credentials: LoginInput): Promise<AuthResponse> {
+    const { email, password } = credentials;
+    
+    try {
+      // Find user
+      const [user] = await db
+        .select()
+        .from(users)
+        .where(eq(users.email, email.toLowerCase()))
+        .limit(1);
+      
+      if (!user) {
+        throw new AuthenticationError('Invalid credentials');
+      }
+      
+      // Verify password
+      if (!user.password || !await comparePassword(password, user.password)) {
+        throw new AuthenticationError('Invalid credentials');
+      }
+      
+      // Check if account is active
+      if (!user.isActive) {
+        throw new AuthenticationError('Account is deactivated');
+      }
+      
+      // Generate tokens
+      const sessionId = generateSessionId();
+      const accessToken = generateAccessToken(user.id, user.email, user.role, sessionId);
+      const refreshToken = generateRefreshToken(user.id, sessionId);
+      
+      // Create session
+      await db.insert(sessions).values({
+        id: sessionId,
+        userId: user.id,
+        token: refreshToken,
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+      });
+      
+      // Update last login
+      await db
+        .update(users)
+        .set({ lastLoginAt: new Date() })
+        .where(eq(users.id, user.id));
+      
+      // Cache user session
+      await CacheManager.set(
+        CacheKeys.userSession(user.id, sessionId),
+        { userId: user.id, sessionId, role: user.role },
+        60 * 60 // 1 hour
+      );
+      
+      return {
+        user: {
+          id: user.id,
+          email: user.email,
+          role: user.role,
+          firstName: user.firstName || undefined,
+          lastName: user.lastName || undefined,
+          isEmailVerified: user.isEmailVerified,
+        },
+        tokens: {
+          accessToken,
+          refreshToken,
+          expiresIn: 3600, // 1 hour
+        }
+      };
+    } catch (error) {
+      logger.error('Login failed:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Refresh access token with token rotation
+   */
+  async refreshToken(refreshToken: string): Promise<{ accessToken: string; refreshToken: string; expiresIn: number }> {
+    try {
+      // Verify refresh token
+      const decoded = await verifyRefreshToken(refreshToken);
+      if (!decoded) {
+        throw new AuthenticationError('Invalid refresh token');
+      }
+      
+      // Find session
+      const [session] = await db
+        .select({
+          session: sessions,
+          user: users,
+        })
+        .from(sessions)
+        .innerJoin(users, eq(sessions.userId, users.id))
+        .where(
+          and(
+            eq(sessions.token, refreshToken),
+            eq(sessions.id, decoded.sessionId)
+          )
+        )
+        .limit(1);
+      
+      if (!session) {
+        throw new AuthenticationError('Session not found');
+      }
+      
+      // Check if session is expired
+      if (new Date(session.session.expiresAt) < new Date()) {
+        // Clean up expired session
+        await db.delete(sessions).where(eq(sessions.id, session.session.id));
+        await CacheManager.delete(CacheKeys.userSession(session.user.id, session.session.id));
+        throw new AuthenticationError('Session expired');
+      }
+      
+      // Check if user is still active
+      if (!session.user.isActive) {
+        throw new AuthenticationError('Account is deactivated');
+      }
+      
+      // Generate new tokens with rotation
+      const newRefreshToken = generateRefreshToken(session.user.id, session.session.id);
+      const accessToken = generateAccessToken(
+        session.user.id,
+        session.user.email,
+        session.user.role,
+        session.session.id
+      );
+      
+      // Update session with new refresh token
+      await db
+        .update(sessions)
+        .set({
+          token: newRefreshToken,
+          refreshToken: newRefreshToken, // Store both in token and refreshToken fields
+          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // Extend for 7 more days
+        })
+        .where(eq(sessions.id, session.session.id));
+      
+      // Update cache
+      await CacheManager.set(
+        CacheKeys.userSession(session.user.id, session.session.id),
+        { userId: session.user.id, sessionId: session.session.id, role: session.user.role },
+        60 * 60 // 1 hour
+      );
+      
+      logger.info(`Token refreshed for user: ${session.user.email}`);
+      
+      return {
+        accessToken,
+        refreshToken: newRefreshToken, // Return new refresh token
+        expiresIn: 3600, // 1 hour
+      };
+    } catch (error) {
+      logger.error('Token refresh failed:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Verify email with token
+   */
+  async verifyEmail(token: string): Promise<{ success: boolean; message: string }> {
+    try {
+      // Find all users with non-expired tokens
+      const usersWithTokens = await db
+        .select()
+        .from(users)
+        .where(
+          and(
+            users.resetToken !== null,
+            users.resetTokenExpiry !== null
+          )
+        );
+
+      // Find the user with matching token
+      let matchedUser: User | null = null;
+      for (const user of usersWithTokens) {
+        if (
+          user.resetToken &&
+          user.resetTokenExpiry &&
+          new Date(user.resetTokenExpiry) > new Date() &&
+          await comparePassword(token, user.resetToken)
+        ) {
+          matchedUser = user;
+          break;
+        }
+      }
+
+      if (!matchedUser) {
+        return { success: false, message: 'Invalid or expired verification token' };
+      }
+
+      // Update user as verified
+      await db
+        .update(users)
+        .set({
+          isEmailVerified: true,
+          resetToken: null,
+          resetTokenExpiry: null,
+        })
+        .where(eq(users.id, matchedUser.id));
+
+      logger.info(`Email verified for user: ${matchedUser.email}`);
+      return { success: true, message: 'Email successfully verified' };
+    } catch (error) {
+      logger.error('Email verification failed:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Resend verification email
+   */
+  async resendVerificationEmail(email: string): Promise<{ success: boolean; message: string }> {
+    try {
+      const [user] = await db
+        .select()
+        .from(users)
+        .where(eq(users.email, email.toLowerCase()))
+        .limit(1);
+
+      if (!user) {
+        return { success: false, message: 'User not found' };
+      }
+
+      if (user.isEmailVerified) {
+        return { success: false, message: 'Email already verified' };
+      }
+
+      // Generate new verification token
+      const verificationToken = this.generateVerificationToken();
+      const hashedVerificationToken = await hashPassword(verificationToken);
+      const tokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+      // Update user with new token
+      await db
+        .update(users)
+        .set({
+          resetToken: hashedVerificationToken,
+          resetTokenExpiry: tokenExpiry,
+        })
+        .where(eq(users.id, user.id));
+
+      // Send verification email
+      await emailService.sendVerificationEmail({
+        to: user.email,
+        name: `${user.firstName} ${user.lastName}`,
+        verificationLink: this.generateVerificationLink(verificationToken),
+      });
+
+      logger.info(`Verification email resent to ${user.email}`);
+      return { success: true, message: 'Verification email sent' };
+    } catch (error) {
+      logger.error('Failed to resend verification email:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Request password reset
+   */
+  async requestPasswordReset(email: string): Promise<{ success: boolean; message: string }> {
+    try {
+      const [user] = await db
+        .select()
+        .from(users)
+        .where(eq(users.email, email.toLowerCase()))
+        .limit(1);
+
+      if (!user) {
+        // Don't reveal if user exists
+        return { success: true, message: 'If the email exists, a reset link will be sent' };
+      }
+
+      // Generate reset token
+      const resetToken = this.generateVerificationToken();
+      const hashedResetToken = await hashPassword(resetToken);
+      const tokenExpiry = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+      // Update user with reset token
+      await db
+        .update(users)
+        .set({
+          resetToken: hashedResetToken,
+          resetTokenExpiry: tokenExpiry,
+        })
+        .where(eq(users.id, user.id));
+
+      // Send reset email
+      const resetLink = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/auth/reset-password?token=${resetToken}`;
+      await emailService.sendPasswordResetEmail({
+        to: user.email,
+        name: `${user.firstName} ${user.lastName}`,
+        resetLink,
+      });
+
+      logger.info(`Password reset email sent to ${user.email}`);
+      return { success: true, message: 'If the email exists, a reset link will be sent' };
+    } catch (error) {
+      logger.error('Failed to request password reset:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Reset password with token
+   */
+  async resetPassword(token: string, newPassword: string): Promise<{ success: boolean; message: string }> {
+    try {
+      // Validate new password
+      const passwordValidation = validatePassword(newPassword);
+      if (!passwordValidation.isValid) {
+        throw new ValidationError(passwordValidation.errors.join(', '));
+      }
+
+      // Find all users with non-expired tokens
+      const usersWithTokens = await db
+        .select()
+        .from(users)
+        .where(
+          and(
+            users.resetToken !== null,
+            users.resetTokenExpiry !== null
+          )
+        );
+
+      // Find the user with matching token
+      let matchedUser: User | null = null;
+      for (const user of usersWithTokens) {
+        if (
+          user.resetToken &&
+          user.resetTokenExpiry &&
+          new Date(user.resetTokenExpiry) > new Date() &&
+          await comparePassword(token, user.resetToken)
+        ) {
+          matchedUser = user;
+          break;
+        }
+      }
+
+      if (!matchedUser) {
+        return { success: false, message: 'Invalid or expired reset token' };
+      }
+
+      // Hash new password
+      const hashedPassword = await hashPassword(newPassword);
+
+      // Update user password and clear reset token
+      await db
+        .update(users)
+        .set({
+          password: hashedPassword,
+          resetToken: null,
+          resetTokenExpiry: null,
+        })
+        .where(eq(users.id, matchedUser.id));
+
+      // Invalidate all existing sessions for this user
+      await db
+        .delete(sessions)
+        .where(eq(sessions.userId, matchedUser.id));
+
+      // Clear cached sessions
+      await CacheManager.deletePattern(CacheKeys.userSession(matchedUser.id, '*'));
+
+      logger.info(`Password reset successful for user: ${matchedUser.email}`);
+      return { success: true, message: 'Password successfully reset' };
+    } catch (error) {
+      logger.error('Password reset failed:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Logout user
+   */
+  async logout(sessionId: string): Promise<void> {
+    try {
+      // Get session to find userId
+      const [session] = await db
+        .select()
+        .from(sessions)
+        .where(eq(sessions.id, sessionId))
+        .limit(1);
+
+      if (session) {
+        // Delete session
+        await db
+          .delete(sessions)
+          .where(eq(sessions.id, sessionId));
+        
+        // Clear from cache
+        await CacheManager.delete(CacheKeys.userSession(session.userId, sessionId));
+      }
+    } catch (error) {
+      logger.error('Logout failed:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get user by ID
+   */
+  async getUserById(userId: string) {
+    const [user] = await db
+      .select({
+        id: users.id,
+        email: users.email,
+        firstName: users.firstName,
+        lastName: users.lastName,
+        role: users.role,
+        isEmailVerified: users.isEmailVerified,
+        isPhoneVerified: users.isPhoneVerified,
+        profilePicture: users.profilePicture,
+        bio: users.bio,
+        createdAt: users.createdAt,
+        lastLoginAt: users.lastLoginAt,
+      })
+      .from(users)
+      .where(eq(users.id, userId))
+      .limit(1);
+    
+    return user || null;
+  }
+
+  /**
+   * Update user profile
+   */
+  async updateProfile(userId: string, updates: Partial<User>) {
+    const allowedFields = ['firstName', 'lastName', 'bio', 'phoneNumber', 'profilePicture'];
+    const filteredUpdates: any = {};
+    
+    for (const field of allowedFields) {
+      if (field in updates) {
+        filteredUpdates[field] = (updates as any)[field];
+      }
+    }
+    
+    if (Object.keys(filteredUpdates).length === 0) {
+      throw new ValidationError('No valid fields to update');
+    }
+    
+    filteredUpdates.updatedAt = new Date();
+    
+    const [updatedUser] = await db
+      .update(users)
+      .set(filteredUpdates)
+      .where(eq(users.id, userId))
+      .returning();
+    
+    return updatedUser;
+  }
+
+  /**
+   * Change password
+   */
+  async changePassword(userId: string, currentPassword: string, newPassword: string): Promise<void> {
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, userId))
+      .limit(1);
+    
+    if (!user || !user.password) {
+      throw new AuthenticationError('User not found');
+    }
+    
+    // Verify current password
+    if (!await comparePassword(currentPassword, user.password)) {
+      throw new AuthenticationError('Current password is incorrect');
+    }
+    
+    // Validate new password
+    const passwordValidation = validatePassword(newPassword);
+    if (!passwordValidation.isValid) {
+      throw new ValidationError(passwordValidation.errors.join(', '));
+    }
+    
+    // Hash and update password
+    const hashedPassword = await hashPassword(newPassword);
+    await db
+      .update(users)
+      .set({ 
+        password: hashedPassword,
+        updatedAt: new Date()
+      })
+      .where(eq(users.id, userId));
+    
+    logger.info(`Password changed for user: ${user.email}`);
+  }
+}
+
+export const authService = new AuthService();

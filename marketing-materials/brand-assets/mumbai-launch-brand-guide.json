@@ -1,0 +1,87 @@
+{
+  "launchCampaign": {
+    "theme": "Mumbai Film Industry Revolution",
+    "tagline": "Where Talent Meets Opportunity",
+    "hindiTagline": "जहाँ प्रतिभा मिलती है अवसर से",
+    "launchDate": "2025-01-13",
+    "primaryColors": {
+      "bollywoodGold": "#FFD700",
+      "midnightBlue": "#0A0E27",
+      "neonCyan": "#00D9FF",
+      "passionRed": "#FF0066",
+      "studioWhite": "#FFFFFF"
+    },
+    "gradients": {
+      "heroGradient": "linear-gradient(135deg, #FFD700 0%, #FF0066 50%, #00D9FF 100%)",
+      "darkGradient": "linear-gradient(180deg, #0A0E27 0%, #1A1E37 100%)",
+      "glowGradient": "radial-gradient(circle, rgba(0,217,255,0.3) 0%, transparent 70%)"
+    },
+    "typography": {
+      "headline": {
+        "font": "Montserrat",
+        "weight": "800",
+        "size": {
+          "mobile": "32px",
+          "desktop": "64px"
+        }
+      },
+      "body": {
+        "font": "Inter",
+        "weight": "400",
+        "size": {
+          "mobile": "16px",
+          "desktop": "18px"
+        }
+      },
+      "hindi": {
+        "font": "Noto Sans Devanagari",
+        "weight": "600"
+      }
+    },
+    "visualMotifs": {
+      "filmReel": "Classic film strip borders",
+      "spotlight": "Theatrical spotlight effects",
+      "cityLights": "Mumbai skyline silhouettes",
+      "clapperboard": "Director's slate elements"
+    }
+  },
+  "targetAudience": {
+    "primary": {
+      "segment": "Aspiring Actors",
+      "age": "18-35",
+      "location": "Mumbai Metropolitan Region",
+      "languages": ["Hindi", "English", "Marathi"]
+    },
+    "secondary": {
+      "segment": "Casting Directors",
+      "focus": "Production Houses",
+      "scale": "From indie to Bollywood"
+    }
+  },
+  "campaignChannels": {
+    "social": {
+      "instagram": {
+        "posts": 12,
+        "stories": 24,
+        "reels": 6
+      },
+      "twitter": {
+        "tweets": 30,
+        "threads": 5
+      },
+      "linkedin": {
+        "posts": 8,
+        "articles": 2
+      },
+      "youtube": {
+        "shorts": 10,
+        "mainVideo": 1
+      }
+    },
+    "traditional": {
+      "filmCityPosters": true,
+      "studioFlyers": true,
+      "actingSchoolPartnership": true
+    }
+  }
+}

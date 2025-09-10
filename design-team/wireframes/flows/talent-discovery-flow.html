@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CastMatch - Talent Discovery User Flow</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            padding: 40px;
+            line-height: 1.6;
+        }
+
+        .flow-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .flow-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #f1f5f9;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .flow-subtitle {
+            font-size: 18px;
+            color: #94a3b8;
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        /* Flow SVG Container */
+        .flow-diagram {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 40px;
+            margin-bottom: 40px;
+            overflow-x: auto;
+        }
+
+        .flow-svg {
+            width: 100%;
+            min-width: 1200px;
+            height: 800px;
+        }
+
+        /* Flow Elements */
+        .flow-node {
+            fill: #334155;
+            stroke: #475569;
+            stroke-width: 2;
+        }
+
+        .flow-node.start {
+            fill: #22c55e;
+            stroke: #16a34a;
+        }
+
+        .flow-node.decision {
+            fill: #3b82f6;
+            stroke: #2563eb;
+        }
+
+        .flow-node.action {
+            fill: #f59e0b;
+            stroke: #d97706;
+        }
+
+        .flow-node.end {
+            fill: #ef4444;
+            stroke: #dc2626;
+        }
+
+        .flow-text {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            font-size: 12px;
+            fill: #f1f5f9;
+            text-anchor: middle;
+            dominant-baseline: middle;
+        }
+
+        .flow-text.small {
+            font-size: 10px;
+            fill: #94a3b8;
+        }
+
+        .flow-arrow {
+            stroke: #64748b;
+            stroke-width: 2;
+            fill: none;
+            marker-end: url(#arrowhead);
+        }
+
+        .flow-arrow.primary {
+            stroke: #3b82f6;
+            stroke-width: 3;
+        }
+
+        .flow-arrow.success {
+            stroke: #22c55e;
+        }
+
+        .flow-arrow.warning {
+            stroke: #f59e0b;
+        }
+
+        .flow-arrow.error {
+            stroke: #ef4444;
+        }
+
+        /* Legend */
+        .flow-legend {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 40px;
+        }
+
+        .legend-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 16px;
+        }
+
+        .legend-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .legend-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+
+        .legend-icon.start { background: #22c55e; }
+        .legend-icon.decision { background: #3b82f6; }
+        .legend-icon.action { background: #f59e0b; }
+        .legend-icon.end { background: #ef4444; }
+
+        .legend-text {
+            font-size: 14px;
+            color: #e2e8f0;
+        }
+
+        /* Flow Details */
+        .flow-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            margin-bottom: 40px;
+        }
+
+        .detail-section {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .detail-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .detail-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px;
+            background: #334155;
+            border-radius: 6px;
+        }
+
+        .detail-number {
+            background: #3b82f6;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .detail-content {
+            flex: 1;
+        }
+
+        .detail-content-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #f1f5f9;
+            margin-bottom: 4px;
+        }
+
+        .detail-content-desc {
+            font-size: 13px;
+            color: #94a3b8;
+        }
+
+        /* Metrics */
+        .flow-metrics {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .metric-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #3b82f6;
+            margin-bottom: 8px;
+        }
+
+        .metric-label {
+            font-size: 14px;
+            color: #94a3b8;
+        }
+
+        /* Interactive Elements */
+        .flow-node:hover {
+            opacity: 0.8;
+            cursor: pointer;
+        }
+
+        .tooltip {
+            position: absolute;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 12px;
+            color: #f1f5f9;
+            pointer-events: none;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .flow-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .flow-metrics {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .flow-svg {
+                min-width: 800px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="flow-container">
+        <h1 class="flow-title">Talent Discovery User Flow</h1>
+        <p class="flow-subtitle">Complete journey from search initiation to talent selection with decision points and success metrics</p>
+
+        <!-- Flow Legend -->
+        <div class="flow-legend">
+            <div class="legend-title">Flow Elements</div>
+            <div class="legend-grid">
+                <div class="legend-item">
+                    <div class="legend-icon start"></div>
+                    <div class="legend-text">Entry Points</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-icon decision"></div>
+                    <div class="legend-text">Decision Points</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-icon action"></div>
+                    <div class="legend-text">User Actions</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-icon end"></div>
+                    <div class="legend-text">Exit Points</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flow Diagram -->
+        <div class="flow-diagram">
+            <svg class="flow-svg" viewBox="0 0 1200 800">
+                <!-- Define arrow marker -->
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="7" 
+                            refX="9" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#64748b" />
+                    </marker>
+                    <marker id="arrowhead-primary" markerWidth="10" markerHeight="7" 
+                            refX="9" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#3b82f6" />
+                    </marker>
+                </defs>
+
+                <!-- Entry Points -->
+                <rect class="flow-node start" x="50" y="50" width="120" height="60" rx="8"/>
+                <text class="flow-text" x="110" y="75">Dashboard</text>
+                <text class="flow-text small" x="110" y="90">Quick Search</text>
+
+                <rect class="flow-node start" x="50" y="130" width="120" height="60" rx="8"/>
+                <text class="flow-text" x="110" y="155">Navigation</text>
+                <text class="flow-text small" x="110" y="170">Find Talent</text>
+
+                <rect class="flow-node start" x="50" y="210" width="120" height="60" rx="8"/>
+                <text class="flow-text" x="110" y="235">AI Assistant</text>
+                <text class="flow-text small" x="110" y="250">Smart Search</text>
+
+                <!-- Initial Search -->
+                <rect class="flow-node action" x="250" y="130" width="140" height="60" rx="8"/>
+                <text class="flow-text" x="320" y="155">Enter Search</text>
+                <text class="flow-text small" x="320" y="170">Keywords & Basic Filters</text>
+
+                <!-- Decision: Search Method -->
+                <polygon class="flow-node decision" points="460,160 520,130 580,160 520,190"/>
+                <text class="flow-text" x="520" y="155">Search</text>
+                <text class="flow-text small" x="520" y="170">Method?</text>
+
+                <!-- Quick Search Path -->
+                <rect class="flow-node action" x="450" y="50" width="140" height="50" rx="8"/>
+                <text class="flow-text" x="520" y="75">Quick Search</text>
+
+                <!-- Advanced Search Path -->
+                <rect class="flow-node action" x="450" y="230" width="140" height="50" rx="8"/>
+                <text class="flow-text" x="520" y="255">Advanced Filters</text>
+
+                <!-- AI-Assisted Search Path -->
+                <rect class="flow-node action" x="450" y="300" width="140" height="50" rx="8"/>
+                <text class="flow-text" x="520" y="325">AI Recommendations</text>
+
+                <!-- Search Results -->
+                <rect class="flow-node action" x="650" y="130" width="140" height="60" rx="8"/>
+                <text class="flow-text" x="720" y="155">View Results</text>
+                <text class="flow-text small" x="720" y="170">Grid/List View</text>
+
+                <!-- Decision: Results Quality -->
+                <polygon class="flow-node decision" points="850,160 910,130 970,160 910,190"/>
+                <text class="flow-text" x="910" y="155">Results</text>
+                <text class="flow-text small" x="910" y="170">Satisfactory?</text>
+
+                <!-- Refine Search (No Path) -->
+                <rect class="flow-node action" x="850" y="250" width="120" height="50" rx="8"/>
+                <text class="flow-text" x="910" y="275">Refine Search</text>
+
+                <!-- Browse Talent (Yes Path) -->
+                <rect class="flow-node action" x="1030" y="130" width="120" height="60" rx="8"/>
+                <text class="flow-text" x="1090" y="155">Browse Talent</text>
+                <text class="flow-text small" x="1090" y="170">Profile Cards</text>
+
+                <!-- Talent Profile View -->
+                <rect class="flow-node action" x="950" y="50" width="140" height="50" rx="8"/>
+                <text class="flow-text" x="1020" y="75">View Profile</text>
+
+                <!-- Decision: Profile Interest -->
+                <polygon class="flow-node decision" points="850,70 910,40 970,70 910,100"/>
+                <text class="flow-text" x="910" y="65">Profile</text>
+                <text class="flow-text small" x="910" y="80">Interesting?</text>
+
+                <!-- Shortlist -->
+                <rect class="flow-node action" x="700" y="40" width="120" height="50" rx="8"/>
+                <text class="flow-text" x="760" y="65">Add to Shortlist</text>
+
+                <!-- Contact/Message -->
+                <rect class="flow-node action" x="500" y="40" width="120" height="50" rx="8"/>
+                <text class="flow-text" x="560" y="65">Contact Talent</text>
+
+                <!-- Schedule Audition -->
+                <rect class="flow-node action" x="300" y="40" width="120" height="50" rx="8"/>
+                <text class="flow-text" x="360" y="65">Schedule Audition</text>
+
+                <!-- Save Search -->
+                <rect class="flow-node action" x="650" y="250" width="120" height="50" rx="8"/>
+                <text class="flow-text" x="710" y="275">Save Search</text>
+
+                <!-- Success Outcomes -->
+                <rect class="flow-node end" x="50" y="350" width="120" height="60" rx="8"/>
+                <text class="flow-text" x="110" y="375">Talent Found</text>
+                <text class="flow-text small" x="110" y="390">✓ Success</text>
+
+                <rect class="flow-node end" x="200" y="350" width="120" height="60" rx="8"/>
+                <text class="flow-text" x="260" y="375">Search Saved</text>
+                <text class="flow-text small" x="260" y="390">⭐ Future Use</text>
+
+                <!-- Abandonment Points -->
+                <rect class="flow-node end" x="400" y="400" width="120" height="50" rx="8"/>
+                <text class="flow-text" x="460" y="420">No Results</text>
+                <text class="flow-text small" x="460" y="435">❌ Exit</text>
+
+                <rect class="flow-node end" x="600" y="400" width="120" height="50" rx="8"/>
+                <text class="flow-text" x="660" y="420">Too Complex</text>
+                <text class="flow-text small" x="660" y="435">❌ Exit</text>
+
+                <!-- Flow Arrows -->
+                <!-- Entry to Search -->
+                <path class="flow-arrow" d="M 170 80 L 250 150"/>
+                <path class="flow-arrow" d="M 170 160 L 250 160"/>
+                <path class="flow-arrow" d="M 170 240 L 250 170"/>
+
+                <!-- Search to Decision -->
+                <path class="flow-arrow primary" d="M 390 160 L 460 160" marker-end="url(#arrowhead-primary)"/>
+
+                <!-- Decision to Search Types -->
+                <path class="flow-arrow" d="M 520 130 L 520 100"/>
+                <path class="flow-text" x="540" y="115">Quick</path>
+
+                <path class="flow-arrow" d="M 520 190 L 520 230"/>
+                <path class="flow-text" x="540" y="215">Advanced</path>
+
+                <path class="flow-arrow" d="M 520 190 L 520 300"/>
+                <path class="flow-text" x="540" y="280">AI</path>
+
+                <!-- To Results -->
+                <path class="flow-arrow" d="M 590 75 L 720 130"/>
+                <path class="flow-arrow primary" d="M 590 255 L 650 190" marker-end="url(#arrowhead-primary)"/>
+                <path class="flow-arrow" d="M 590 325 L 720 190"/>
+
+                <!-- Results to Decision -->
+                <path class="flow-arrow primary" d="M 790 160 L 850 160" marker-end="url(#arrowhead-primary)"/>
+
+                <!-- Decision Outcomes -->
+                <path class="flow-arrow success" d="M 970 160 L 1030 160"/>
+                <path class="flow-text" x="1000" y="150">Yes</path>
+
+                <path class="flow-arrow warning" d="M 910 190 L 910 250"/>
+                <path class="flow-text" x="930" y="220">No</path>
+
+                <!-- Refine Loop -->
+                <path class="flow-arrow" d="M 850 275 L 320 300 L 320 190"/>
+
+                <!-- Browse to Profile -->
+                <path class="flow-arrow" d="M 1090 130 L 1020 100"/>
+
+                <!-- Profile Decision -->
+                <path class="flow-arrow" d="M 970 75 L 850 75"/>
+
+                <!-- Profile Actions -->
+                <path class="flow-arrow success" d="M 850 70 L 820 65"/>
+                <path class="flow-text" x="830" y="55">Yes</path>
+
+                <path class="flow-arrow" d="M 820 65 L 700 65"/>
+                <path class="flow-arrow" d="M 620 65 L 500 65"/>
+                <path class="flow-arrow" d="M 420 65 L 300 65"/>
+
+                <!-- To Success -->
+                <path class="flow-arrow success" d="M 360 90 L 110 350"/>
+                <path class="flow-arrow" d="M 710 300 L 260 350"/>
+
+                <!-- To Exit -->
+                <path class="flow-arrow error" d="M 910 100 L 460 400"/>
+                <path class="flow-text" x="680" y="250">No</path>
+
+                <path class="flow-arrow error" d="M 970 275 L 660 400"/>
+
+                <!-- Performance Indicators -->
+                <circle cx="110" cy="30" r="8" fill="#22c55e" opacity="0.8"/>
+                <text class="flow-text small" x="110" y="20">90% Entry Rate</text>
+
+                <circle cx="520" cy="30" r="8" fill="#3b82f6" opacity="0.8"/>
+                <text class="flow-text small" x="520" y="20">75% Continue</text>
+
+                <circle cx="910" cy="30" r="8" fill="#f59e0b" opacity="0.8"/>
+                <text class="flow-text small" x="910" y="20">60% Satisfied</text>
+
+                <circle cx="360" cy="20" r="8" fill="#22c55e" opacity="0.8"/>
+                <text class="flow-text small" x="360" y="10">35% Success</text>
+            </svg>
+        </div>
+
+        <!-- Flow Metrics -->
+        <div class="flow-metrics">
+            <div class="metric-card">
+                <div class="metric-value">92%</div>
+                <div class="metric-label">Search Completion Rate</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">2.3 min</div>
+                <div class="metric-label">Average Time to Results</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">67%</div>
+                <div class="metric-label">Profile View Rate</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">35%</div>
+                <div class="metric-label">Contact/Shortlist Rate</div>
+            </div>
+        </div>
+
+        <!-- Flow Details -->
+        <div class="flow-details">
+            <!-- Critical Success Factors -->
+            <div class="detail-section">
+                <div class="detail-title">
+                    <span>🎯</span>
+                    <span>Critical Success Factors</span>
+                </div>
+                <div class="detail-list">
+                    <div class="detail-item">
+                        <div class="detail-number">1</div>
+                        <div class="detail-content">
+                            <div class="detail-content-title">Fast Results Display</div>
+                            <div class="detail-content-desc">Search results must load within 1.5 seconds to maintain user engagement</div>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-number">2</div>
+                        <div class="detail-content">
+                            <div class="detail-content-title">Relevant Matching</div>
+                            <div class="detail-content-desc">Algorithm accuracy >85% for first-page results to minimize refinement loops</div>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-number">3</div>
+                        <div class="detail-content">
+                            <div class="detail-content-title">Clear Profile Preview</div>
+                            <div class="detail-content-desc">Essential information visible in cards to enable quick decision making</div>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-number">4</div>
+                        <div class="detail-content">
+                            <div class="detail-content-title">Seamless Actions</div>
+                            <div class="detail-content-desc">One-click shortlisting and contact options from any view</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Decision Points Analysis -->
+            <div class="detail-section">
+                <div class="detail-title">
+                    <span>🔄</span>
+                    <span>Key Decision Points</span>
+                </div>
+                <div class="detail-list">
+                    <div class="detail-item">
+                        <div class="detail-number">A</div>
+                        <div class="detail-content">
+                            <div class="detail-content-title">Search Method Choice</div>
+                            <div class="detail-content-desc">Quick (45%), Advanced (35%), AI-Assisted (20%) - Optimize for quick path</div>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-number">B</div>
+                        <div class="detail-content">
+                            <div class="detail-content-title">Results Satisfaction</div>
+                            <div class="detail-content-desc">60% satisfied on first try, 40% refine - Focus on initial relevance</div>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-number">C</div>
+                        <div class="detail-content">
+                            <div class="detail-content-title">Profile Interest</div>
+                            <div class="detail-content-desc">70% click through to profiles, 35% take action - Improve CTAs</div>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-number">D</div>
+                        <div class="detail-content">
+                            <div class="detail-content-title">Exit Points</div>
+                            <div class="detail-content-desc">Main dropoffs: No results (15%), Complexity (10%) - Simplify UX</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Optimization Recommendations -->
+        <div class="detail-section">
+            <div class="detail-title">
+                <span>⚡</span>
+                <span>Optimization Opportunities</span>
+            </div>
+            <div class="detail-list">
+                <div class="detail-item">
+                    <div class="detail-number">1</div>
+                    <div class="detail-content">
+                        <div class="detail-content-title">Smart Default Filters</div>
+                        <div class="detail-content-desc">Pre-populate common filters based on user's project history and location</div>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-number">2</div>
+                    <div class="detail-content">
+                        <div class="detail-content-title">Progressive Results Loading</div>
+                        <div class="detail-content-desc">Show top 6 results immediately, load more as user scrolls</div>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-number">3</div>
+                    <div class="detail-content">
+                        <div class="detail-content-title">Quick Action Buttons</div>
+                        <div class="detail-content-desc">Add hover states with instant shortlist/contact without page navigation</div>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-number">4</div>
+                    <div class="detail-content">
+                        <div class="detail-content-title">Search Suggestions</div>
+                        <div class="detail-content-desc">Auto-complete and suggestion bubbles to reduce typing and improve accuracy</div>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-number">5</div>
+                    <div class="detail-content">
+                        <div class="detail-content-title">Bulk Actions</div>
+                        <div class="detail-content-desc">Allow selecting multiple profiles for batch shortlisting or messaging</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tooltip for interactions -->
+    <div class="tooltip" id="tooltip"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const flowNodes = document.querySelectorAll('.flow-node');
+            const tooltip = document.getElementById('tooltip');
+
+            // Node descriptions for tooltip
+            const nodeDescriptions = {
+                'Dashboard': 'Main entry point - Quick search from home page',
+                'Navigation': 'Dedicated talent search from main menu',
+                'AI Assistant': 'Smart search with natural language input',
+                'Enter Search': 'User enters search terms and basic filters',
+                'Search Method?': 'System determines search approach based on input complexity',
+                'Quick Search': 'Simple keyword search with basic filters',
+                'Advanced Filters': 'Detailed filtering by skills, location, experience, etc.',
+                'AI Recommendations': 'ML-powered suggestions based on project context',
+                'View Results': 'Display talent matches in grid or list format',
+                'Results Satisfactory?': 'User evaluates if results meet expectations',
+                'Refine Search': 'Adjust search criteria to improve results',
+                'Browse Talent': 'Explore individual talent profiles',
+                'View Profile': 'Detailed talent information and portfolio',
+                'Profile Interesting?': 'User decides if talent is suitable for project',
+                'Add to Shortlist': 'Save talent for future consideration',
+                'Contact Talent': 'Direct message or booking inquiry',
+                'Schedule Audition': 'Book audition slot with selected talent',
+                'Save Search': 'Store search criteria for future use',
+                'Talent Found': 'Successful completion - talent selected',
+                'Search Saved': 'Search criteria saved for future use',
+                'No Results': 'Exit due to insufficient matches',
+                'Too Complex': 'Exit due to overwhelming interface'
+            };
+
+            // Add hover interactions
+            flowNodes.forEach(node => {
+                node.addEventListener('mouseenter', function(e) {
+                    const textElement = this.nextElementSibling;
+                    const nodeText = textElement ? textElement.textContent.trim() : '';
+                    const description = nodeDescriptions[nodeText];
+                    
+                    if (description) {
+                        tooltip.textContent = description;
+                        tooltip.style.opacity = '1';
+                        
+                        // Position tooltip
+                        const rect = this.getBoundingClientRect();
+                        tooltip.style.left = (rect.left + rect.width / 2) + 'px';
+                        tooltip.style.top = (rect.top - 40) + 'px';
+                    }
+                });
+
+                node.addEventListener('mouseleave', function() {
+                    tooltip.style.opacity = '0';
+                });
+
+                node.addEventListener('click', function() {
+                    const textElement = this.nextElementSibling;
+                    const nodeText = textElement ? textElement.textContent.trim() : '';
+                    console.log('Clicked node:', nodeText);
+                    
+                    // Highlight connected paths
+                    this.style.stroke = '#fbbf24';
+                    this.style.strokeWidth = '4';
+                    
+                    setTimeout(() => {
+                        this.style.stroke = '';
+                        this.style.strokeWidth = '';
+                    }, 1000);
+                });
+            });
+
+            // Animate flow arrows
+            const flowArrows = document.querySelectorAll('.flow-arrow');
+            flowArrows.forEach((arrow, index) => {
+                setTimeout(() => {
+                    arrow.style.strokeDasharray = '5,5';
+                    arrow.style.strokeDashoffset = '0';
+                    arrow.style.animation = 'flow 2s linear infinite';
+                }, index * 100);
+            });
+
+            // Add CSS animation for flow
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes flow {
+                    to {
+                        stroke-dashoffset: -10;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>

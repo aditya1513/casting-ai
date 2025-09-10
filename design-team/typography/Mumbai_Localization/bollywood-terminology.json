@@ -1,0 +1,244 @@
+{
+  "industry_terms": {
+    "casting_director": {
+      "en": "Casting Director",
+      "hi": "कास्टिंग डायरेक्टर",
+      "mr": "कास्टिंग डायरेक्टर"
+    },
+    "producer": {
+      "en": "Producer",
+      "hi": "निर्माता",
+      "mr": "निर्माता"
+    },
+    "director": {
+      "en": "Director",
+      "hi": "निर्देशक",
+      "mr": "दिग्दर्शक"
+    },
+    "actor": {
+      "en": "Actor",
+      "hi": "अभिनेता",
+      "mr": "अभिनेता"
+    },
+    "actress": {
+      "en": "Actress",
+      "hi": "अभिनेत्री",
+      "mr": "अभिनेत्री"
+    },
+    "audition": {
+      "en": "Audition",
+      "hi": "ऑडिशन",
+      "mr": "ऑडिशन"
+    },
+    "screen_test": {
+      "en": "Screen Test",
+      "hi": "स्क्रीन टेस्ट",
+      "mr": "स्क्रीन टेस्ट"
+    },
+    "look_test": {
+      "en": "Look Test",
+      "hi": "लुक टेस्ट",
+      "mr": "लुक टेस्ट"
+    },
+    "call_sheet": {
+      "en": "Call Sheet",
+      "hi": "कॉल शीट",
+      "mr": "कॉल शीट"
+    },
+    "shooting_schedule": {
+      "en": "Shooting Schedule",
+      "hi": "शूटिंग शेड्यूल",
+      "mr": "शूटिंग वेळापत्रक"
+    },
+    "mahurat": {
+      "en": "Mahurat (Auspicious Beginning)",
+      "hi": "मुहूर्त",
+      "mr": "मुहूर्त"
+    },
+    "muhurat_shot": {
+      "en": "Muhurat Shot",
+      "hi": "मुहूर्त शॉट",
+      "mr": "मुहूर्त शॉट"
+    },
+    "film_city": {
+      "en": "Film City",
+      "hi": "फिल्म सिटी",
+      "mr": "फिल्म सिटी"
+    },
+    "vanity_van": {
+      "en": "Vanity Van",
+      "hi": "वैनिटी वैन",
+      "mr": "व्हॅनिटी व्हॅन"
+    },
+    "dubbing": {
+      "en": "Dubbing",
+      "hi": "डबिंग",
+      "mr": "डबिंग"
+    },
+    "playback_singer": {
+      "en": "Playback Singer",
+      "hi": "पार्श्व गायक",
+      "mr": "पार्श्वगायक"
+    },
+    "item_number": {
+      "en": "Item Number",
+      "hi": "आइटम नंबर",
+      "mr": "आयटम नंबर"
+    },
+    "masala_film": {
+      "en": "Commercial Film",
+      "hi": "मसाला फिल्म",
+      "mr": "मसाला चित्रपट"
+    },
+    "100_crore_club": {
+      "en": "100 Crore Club",
+      "hi": "100 करोड़ क्लब",
+      "mr": "100 कोटी क्लब"
+    },
+    "box_office": {
+      "en": "Box Office",
+      "hi": "बॉक्स ऑफिस",
+      "mr": "बॉक्स ऑफिस"
+    }
+  },
+  "role_categories": {
+    "lead_hero": {
+      "en": "Lead Hero",
+      "hi": "मुख्य नायक",
+      "mr": "मुख्य नायक"
+    },
+    "lead_heroine": {
+      "en": "Lead Heroine",
+      "hi": "मुख्य नायिका",
+      "mr": "मुख्य नायिका"
+    },
+    "supporting_actor": {
+      "en": "Supporting Actor",
+      "hi": "सहायक अभिनेता",
+      "mr": "सहाय्यक अभिनेता"
+    },
+    "character_artist": {
+      "en": "Character Artist",
+      "hi": "चरित्र कलाकार",
+      "mr": "चरित्र कलाकार"
+    },
+    "villain": {
+      "en": "Villain",
+      "hi": "खलनायक",
+      "mr": "खलनायक"
+    },
+    "comedian": {
+      "en": "Comedian",
+      "hi": "हास्य कलाकार",
+      "mr": "हास्य कलाकार"
+    },
+    "child_artist": {
+      "en": "Child Artist",
+      "hi": "बाल कलाकार",
+      "mr": "बाल कलाकार"
+    },
+    "junior_artist": {
+      "en": "Junior Artist",
+      "hi": "जूनियर आर्टिस्ट",
+      "mr": "ज्युनिअर आर्टिस्ट"
+    },
+    "body_double": {
+      "en": "Body Double",
+      "hi": "बॉडी डबल",
+      "mr": "बॉडी डबल"
+    },
+    "stunt_double": {
+      "en": "Stunt Double",
+      "hi": "स्टंट डबल",
+      "mr": "स्टंट डबल"
+    }
+  },
+  "genre_terms": {
+    "romance": {
+      "en": "Romance",
+      "hi": "रोमांस",
+      "mr": "प्रेमकथा"
+    },
+    "action": {
+      "en": "Action",
+      "hi": "एक्शन",
+      "mr": "अॅक्शन"
+    },
+    "drama": {
+      "en": "Drama",
+      "hi": "नाटक",
+      "mr": "नाटक"
+    },
+    "comedy": {
+      "en": "Comedy",
+      "hi": "कॉमेडी",
+      "mr": "कॉमेडी"
+    },
+    "thriller": {
+      "en": "Thriller",
+      "hi": "थ्रिलर",
+      "mr": "थ्रिलर"
+    },
+    "horror": {
+      "en": "Horror",
+      "hi": "हॉरर",
+      "mr": "हॉरर"
+    },
+    "biopic": {
+      "en": "Biopic",
+      "hi": "बायोपिक",
+      "mr": "बायोपिक"
+    },
+    "period_film": {
+      "en": "Period Film",
+      "hi": "पीरियड फिल्म",
+      "mr": "कालखंड चित्रपट"
+    },
+    "art_film": {
+      "en": "Art Film",
+      "hi": "कला फिल्म",
+      "mr": "कला चित्रपट"
+    },
+    "parallel_cinema": {
+      "en": "Parallel Cinema",
+      "hi": "समांतर सिनेमा",
+      "mr": "समांतर सिनेमा"
+    }
+  },
+  "production_houses": {
+    "yrf": "Yash Raj Films",
+    "dharma": "Dharma Productions",
+    "red_chillies": "Red Chillies Entertainment",
+    "eros": "Eros International",
+    "tseries": "T-Series",
+    "balaji": "Balaji Motion Pictures",
+    "excel": "Excel Entertainment",
+    "phantom": "Phantom Films",
+    "rsvp": "RSVP Movies",
+    "abundantia": "Abundantia Entertainment"
+  },
+  "filming_locations": {
+    "film_city": "Film City, Goregaon",
+    "madh_island": "Madh Island",
+    "nd_studios": "ND Studios, Karjat",
+    "mehboob_studios": "Mehboob Studios, Bandra",
+    "filmistan": "Filmistan Studios, Goregaon",
+    "kamalistan": "Kamalistan Studios, Jogeshwari",
+    "filmalaya": "Filmalaya Studios, Andheri",
+    "rk_studios": "RK Studios, Chembur",
+    "famous_studios": "Famous Studios, Mahalaxmi",
+    "yrf_studios": "YRF Studios, Andheri"
+  },
+  "cultural_events": {
+    "filmfare_awards": "Filmfare Awards",
+    "iifa": "IIFA (International Indian Film Academy)",
+    "screen_awards": "Screen Awards",
+    "zee_cine_awards": "Zee Cine Awards",
+    "stardust_awards": "Stardust Awards",
+    "national_film_awards": "National Film Awards",
+    "mumbai_film_festival": "Mumbai Film Festival (MAMI)",
+    "kala_ghoda": "Kala Ghoda Arts Festival",
+    "ganesh_chaturthi": "Ganesh Chaturthi",
+    "navratri": "Navratri"
+  }
+}

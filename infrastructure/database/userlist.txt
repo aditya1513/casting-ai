@@ -1,0 +1,5 @@
+"castmatch_user" "SCRAM-SHA-256$4096:salt$hash:serverkey"
+"castmatch_admin" "SCRAM-SHA-256$4096:salt$hash:serverkey"
+"castmatch_stats" "SCRAM-SHA-256$4096:salt$hash:serverkey"
+"castmatch_readonly" "SCRAM-SHA-256$4096:salt$hash:serverkey"
+"castmatch_backup" "SCRAM-SHA-256$4096:salt$hash:serverkey"

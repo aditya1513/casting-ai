@@ -1,0 +1,1498 @@
+{
+  "metadata": {
+    "created_by": "Workflow Orchestrator",
+    "created_at": "2025-01-13T00:00:00Z",
+    "roadmap_duration": "28 days",
+    "target_quality_score": "9.5/10",
+    "current_quality_score": "3.2/10",
+    "inspiration_reference": "/design-team/research/inspiration/uxerflow"
+  },
+  "priority_legend": {
+    "P0": "Critical - Blocks other work",
+    "P1": "High - Core deliverable",
+    "P2": "Medium - Enhancement"
+  },
+  "agents": {
+    "typography-designer-detailed": {
+      "agent_id": "TD1",
+      "focus": "Primary Typography System",
+      "todos": [
+        {
+          "id": "TD1-001",
+          "task": "Create modular typography scale with 1.25 ratio",
+          "priority": "P0",
+          "week": 1,
+          "deadline": "Day 2",
+          "dependencies": [],
+          "success_criteria": [
+            "12-tier hierarchy system defined",
+            "Font sizes from 12px to 96px",
+            "Responsive scaling implemented"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/tokens/typography-scale.json",
+          "status": "pending"
+        },
+        {
+          "id": "TD1-002",
+          "task": "Define line-height optimization for all text sizes",
+          "priority": "P0",
+          "week": 1,
+          "deadline": "Day 3",
+          "dependencies": ["TD1-001"],
+          "success_criteria": [
+            "Line-height ratios for body text (1.5-1.7)",
+            "Heading line-heights (1.2-1.3)",
+            "Caption line-heights optimized"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/tokens/line-height-system.json",
+          "status": "pending"
+        },
+        {
+          "id": "TD1-003",
+          "task": "Establish letter-spacing system for optical balance",
+          "priority": "P1",
+          "week": 1,
+          "deadline": "Day 4",
+          "dependencies": ["TD1-001"],
+          "success_criteria": [
+            "Tracking values for all caps text",
+            "Letter-spacing for different weights",
+            "Optical adjustments documented"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/tokens/letter-spacing.json",
+          "status": "pending"
+        },
+        {
+          "id": "TD1-004",
+          "task": "Select and implement variable font system",
+          "priority": "P0",
+          "week": 1,
+          "deadline": "Day 5",
+          "dependencies": [],
+          "success_criteria": [
+            "Primary font family selected (Inter/SF Pro equivalent)",
+            "Variable weight axis (100-900)",
+            "Fallback stack defined"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/fonts/font-selection.md",
+          "status": "pending"
+        },
+        {
+          "id": "TD1-005",
+          "task": "Create responsive typography tokens for breakpoints",
+          "priority": "P0",
+          "week": 1,
+          "deadline": "Day 6",
+          "dependencies": ["TD1-001", "LGE-001"],
+          "success_criteria": [
+            "Mobile typography scale",
+            "Tablet adjustments",
+            "Desktop optimizations",
+            "4K display considerations"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/tokens/responsive-typography.json",
+          "status": "pending"
+        },
+        {
+          "id": "TD1-006",
+          "task": "Design typography for glassmorphic UI components",
+          "priority": "P1",
+          "week": 2,
+          "deadline": "Day 10",
+          "dependencies": ["TD1-001", "VSA-002"],
+          "success_criteria": [
+            "Text contrast on glass surfaces",
+            "Shadow/glow for readability",
+            "Blur-safe font weights"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/components/glassmorphic-typography.json",
+          "status": "pending"
+        },
+        {
+          "id": "TD1-007",
+          "task": "Optimize typography for dark mode OLED displays",
+          "priority": "P1",
+          "week": 2,
+          "deadline": "Day 12",
+          "dependencies": ["CLA-002"],
+          "success_criteria": [
+            "Reduced pure white usage",
+            "Appropriate weight adjustments",
+            "OLED burn-in prevention"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/themes/dark-mode-typography.json",
+          "status": "pending"
+        },
+        {
+          "id": "TD1-008",
+          "task": "Create animation specs for text transitions",
+          "priority": "P2",
+          "week": 3,
+          "deadline": "Day 18",
+          "dependencies": ["MUS-001"],
+          "success_criteria": [
+            "Fade-in timing for headings",
+            "Typewriter effects for features",
+            "Loading text animations"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/motion/text-animations.json",
+          "status": "pending"
+        }
+      ]
+    },
+    "typography-content-designer": {
+      "agent_id": "TC1",
+      "focus": "Cultural Typography & Content",
+      "todos": [
+        {
+          "id": "TC1-001",
+          "task": "Implement Devanagari script support system",
+          "priority": "P0",
+          "week": 1,
+          "deadline": "Day 3",
+          "dependencies": ["TD1-004"],
+          "success_criteria": [
+            "Hindi font selection (Noto Sans Devanagari)",
+            "Script rendering optimization",
+            "Conjunct character support"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/fonts/devanagari-system.json",
+          "status": "pending"
+        },
+        {
+          "id": "TC1-002",
+          "task": "Design multilingual text rendering strategy",
+          "priority": "P0",
+          "week": 1,
+          "deadline": "Day 4",
+          "dependencies": ["TC1-001"],
+          "success_criteria": [
+            "Language detection system",
+            "Font fallback chains",
+            "RTL support preparation"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/i18n/multilingual-strategy.md",
+          "status": "pending"
+        },
+        {
+          "id": "TC1-003",
+          "task": "Create Mumbai film industry content guidelines",
+          "priority": "P1",
+          "week": 1,
+          "deadline": "Day 5",
+          "dependencies": ["DRA-001"],
+          "success_criteria": [
+            "Industry terminology guide",
+            "Cultural sensitivity rules",
+            "Bollywood reference style"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/content/industry-guidelines.md",
+          "status": "pending"
+        },
+        {
+          "id": "TC1-004",
+          "task": "Design bilingual UI text hierarchy",
+          "priority": "P1",
+          "week": 1,
+          "deadline": "Day 6",
+          "dependencies": ["TD1-001", "TC1-001"],
+          "success_criteria": [
+            "English-Hindi pairing rules",
+            "Mixed script layouts",
+            "Translation space allowances"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/content/bilingual-hierarchy.json",
+          "status": "pending"
+        },
+        {
+          "id": "TC1-005",
+          "task": "Develop microcopy for onboarding flows",
+          "priority": "P1",
+          "week": 2,
+          "deadline": "Day 11",
+          "dependencies": ["UWA-002"],
+          "success_criteria": [
+            "Welcome messages",
+            "Tooltip content",
+            "Error messages",
+            "Success confirmations"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/content/microcopy-library.json",
+          "status": "pending"
+        },
+        {
+          "id": "TC1-006",
+          "task": "Create placeholder content for talent cards",
+          "priority": "P1",
+          "week": 2,
+          "deadline": "Day 13",
+          "dependencies": ["VSA-003"],
+          "success_criteria": [
+            "Actor bio templates",
+            "Skill descriptions",
+            "Experience summaries"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/content/talent-card-content.json",
+          "status": "pending"
+        },
+        {
+          "id": "TC1-007",
+          "task": "Write loading and empty state messages",
+          "priority": "P2",
+          "week": 3,
+          "deadline": "Day 17",
+          "dependencies": ["IDS-003"],
+          "success_criteria": [
+            "Contextual loading messages",
+            "Empty state guidance",
+            "Error recovery instructions"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/content/state-messages.json",
+          "status": "pending"
+        }
+      ]
+    },
+    "color-lighting-artist": {
+      "agent_id": "CLA",
+      "focus": "Color System & Lighting Effects",
+      "todos": [
+        {
+          "id": "CLA-001",
+          "task": "Develop 3-tier semantic color token system",
+          "priority": "P0",
+          "week": 1,
+          "deadline": "Day 2",
+          "dependencies": [],
+          "success_criteria": [
+            "Primitive colors (60 base colors)",
+            "Semantic tokens (success, error, warning, info)",
+            "Component tokens (button, card, input)"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/tokens/color-system.json",
+          "status": "pending"
+        },
+        {
+          "id": "CLA-002",
+          "task": "Create OLED-optimized dark mode palette",
+          "priority": "P0",
+          "week": 1,
+          "deadline": "Day 3",
+          "dependencies": ["CLA-001"],
+          "success_criteria": [
+            "True black backgrounds (#000000)",
+            "Reduced white point usage",
+            "Energy-efficient color choices"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/themes/dark-mode-colors.json",
+          "status": "pending"
+        },
+        {
+          "id": "CLA-003",
+          "task": "Design glassmorphic transparency system",
+          "priority": "P0",
+          "week": 1,
+          "deadline": "Day 4",
+          "dependencies": ["CLA-001"],
+          "success_criteria": [
+            "Backdrop blur values",
+            "Glass opacity levels (0.1-0.8)",
+            "Border luminosity effects"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/effects/glassmorphism.json",
+          "status": "pending"
+        },
+        {
+          "id": "CLA-004",
+          "task": "Create ambient lighting and glow effects",
+          "priority": "P1",
+          "week": 1,
+          "deadline": "Day 5",
+          "dependencies": ["CLA-001"],
+          "success_criteria": [
+            "Neon glow specifications",
+            "Ambient shadow colors",
+            "Light leak effects"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/effects/lighting-system.json",
+          "status": "pending"
+        },
+        {
+          "id": "CLA-005",
+          "task": "Design Mumbai/Bollywood color inspiration palette",
+          "priority": "P1",
+          "week": 1,
+          "deadline": "Day 6",
+          "dependencies": ["DRA-002"],
+          "success_criteria": [
+            "Festival colors (Holi, Diwali)",
+            "Film poster aesthetics",
+            "Cultural significance mapping"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/themes/mumbai-palette.json",
+          "status": "pending"
+        },
+        {
+          "id": "CLA-006",
+          "task": "Build accessibility color contrast matrix",
+          "priority": "P0",
+          "week": 1,
+          "deadline": "Day 7",
+          "dependencies": ["CLA-001", "CLA-002"],
+          "success_criteria": [
+            "WCAG AAA compliance",
+            "4.5:1 minimum contrast ratios",
+            "Color blind safe combinations"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/accessibility/color-contrast.json",
+          "status": "pending"
+        },
+        {
+          "id": "CLA-007",
+          "task": "Create gradient and mesh gradient library",
+          "priority": "P1",
+          "week": 2,
+          "deadline": "Day 10",
+          "dependencies": ["CLA-001"],
+          "success_criteria": [
+            "Linear gradients (20 variations)",
+            "Radial gradients for buttons",
+            "Mesh gradients for backgrounds"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/effects/gradients.json",
+          "status": "pending"
+        },
+        {
+          "id": "CLA-008",
+          "task": "Design cinematic color grading presets",
+          "priority": "P2",
+          "week": 3,
+          "deadline": "Day 19",
+          "dependencies": ["CLA-005"],
+          "success_criteria": [
+            "Film noir mode",
+            "Vintage Bollywood filter",
+            "Modern cinema look"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/themes/cinematic-grades.json",
+          "status": "pending"
+        }
+      ]
+    },
+    "visual-systems-architect": {
+      "agent_id": "VSA",
+      "focus": "Design Token Architecture",
+      "todos": [
+        {
+          "id": "VSA-001",
+          "task": "Establish comprehensive token architecture",
+          "priority": "P0",
+          "week": 1,
+          "deadline": "Day 1",
+          "dependencies": [],
+          "success_criteria": [
+            "Token naming convention",
+            "Category structure",
+            "Version control strategy"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/tokens/token-architecture.md",
+          "status": "pending"
+        },
+        {
+          "id": "VSA-002",
+          "task": "Build spacing system with 8px baseline grid",
+          "priority": "P0",
+          "week": 1,
+          "deadline": "Day 2",
+          "dependencies": [],
+          "success_criteria": [
+            "Spacing scale (4, 8, 12, 16, 24, 32, 48, 64, 96)",
+            "Component padding rules",
+            "Layout margins"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/tokens/spacing-system.json",
+          "status": "pending"
+        },
+        {
+          "id": "VSA-003",
+          "task": "Create elevation and shadow system",
+          "priority": "P0",
+          "week": 1,
+          "deadline": "Day 3",
+          "dependencies": ["CLA-001"],
+          "success_criteria": [
+            "6 elevation levels",
+            "Shadow color and opacity",
+            "Blur and spread values"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/tokens/elevation-system.json",
+          "status": "pending"
+        },
+        {
+          "id": "VSA-004",
+          "task": "Develop border radius scale system",
+          "priority": "P0",
+          "week": 1,
+          "deadline": "Day 4",
+          "dependencies": [],
+          "success_criteria": [
+            "Radius scale (0, 4, 8, 12, 16, 24, full)",
+            "Component-specific rules",
+            "Nested radius calculations"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/tokens/border-radius.json",
+          "status": "pending"
+        },
+        {
+          "id": "VSA-005",
+          "task": "Design component token structure",
+          "priority": "P0",
+          "week": 1,
+          "deadline": "Day 6",
+          "dependencies": ["VSA-001", "CLA-001", "TD1-001"],
+          "success_criteria": [
+            "Button tokens",
+            "Card tokens",
+            "Input tokens",
+            "Navigation tokens"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/tokens/component-tokens.json",
+          "status": "pending"
+        },
+        {
+          "id": "VSA-006",
+          "task": "Create opacity and transparency scale",
+          "priority": "P1",
+          "week": 1,
+          "deadline": "Day 7",
+          "dependencies": [],
+          "success_criteria": [
+            "Opacity levels (0.05 to 1)",
+            "Disabled state opacities",
+            "Overlay transparencies"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/tokens/opacity-scale.json",
+          "status": "pending"
+        },
+        {
+          "id": "VSA-007",
+          "task": "Build responsive token variations",
+          "priority": "P1",
+          "week": 2,
+          "deadline": "Day 11",
+          "dependencies": ["LGE-002"],
+          "success_criteria": [
+            "Mobile token overrides",
+            "Tablet adjustments",
+            "Desktop optimizations"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/tokens/responsive-tokens.json",
+          "status": "pending"
+        },
+        {
+          "id": "VSA-008",
+          "task": "Document token implementation guidelines",
+          "priority": "P1",
+          "week": 4,
+          "deadline": "Day 24",
+          "dependencies": ["VSA-001", "VSA-005"],
+          "success_criteria": [
+            "Developer handoff docs",
+            "Token usage examples",
+            "Migration guide"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/docs/token-implementation.md",
+          "status": "pending"
+        }
+      ]
+    },
+    "interaction-design-specialist": {
+      "agent_id": "IDS",
+      "focus": "Micro-interactions & States",
+      "todos": [
+        {
+          "id": "IDS-001",
+          "task": "Design comprehensive hover state system",
+          "priority": "P0",
+          "week": 2,
+          "deadline": "Day 8",
+          "dependencies": ["VSA-003", "CLA-001"],
+          "success_criteria": [
+            "Elevation changes on hover",
+            "Color transitions",
+            "Scale transformations",
+            "Cursor variations"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/interactions/hover-states.json",
+          "status": "pending"
+        },
+        {
+          "id": "IDS-002",
+          "task": "Create focus state specifications for accessibility",
+          "priority": "P0",
+          "week": 2,
+          "deadline": "Day 9",
+          "dependencies": ["CLA-006"],
+          "success_criteria": [
+            "Focus ring styles",
+            "Keyboard navigation indicators",
+            "High contrast mode support"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/interactions/focus-states.json",
+          "status": "pending"
+        },
+        {
+          "id": "IDS-003",
+          "task": "Design loading and skeleton screen patterns",
+          "priority": "P1",
+          "week": 2,
+          "deadline": "Day 10",
+          "dependencies": ["VSA-005"],
+          "success_criteria": [
+            "Skeleton component specs",
+            "Shimmer effects",
+            "Progressive loading states"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/interactions/loading-states.json",
+          "status": "pending"
+        },
+        {
+          "id": "IDS-004",
+          "task": "Create error and validation feedback patterns",
+          "priority": "P1",
+          "week": 2,
+          "deadline": "Day 11",
+          "dependencies": ["CLA-001", "TC1-005"],
+          "success_criteria": [
+            "Inline validation",
+            "Error message styling",
+            "Success confirmations"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/interactions/validation-states.json",
+          "status": "pending"
+        },
+        {
+          "id": "IDS-005",
+          "task": "Design drag and drop interaction patterns",
+          "priority": "P1",
+          "week": 2,
+          "deadline": "Day 12",
+          "dependencies": ["IDS-001"],
+          "success_criteria": [
+            "Drag initiation feedback",
+            "Drop zone indicators",
+            "Ghost element styling"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/interactions/drag-drop.json",
+          "status": "pending"
+        },
+        {
+          "id": "IDS-006",
+          "task": "Create touch gesture specifications for mobile",
+          "priority": "P1",
+          "week": 2,
+          "deadline": "Day 13",
+          "dependencies": [],
+          "success_criteria": [
+            "Swipe gestures",
+            "Pinch to zoom",
+            "Long press actions",
+            "Pull to refresh"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/interactions/touch-gestures.json",
+          "status": "pending"
+        },
+        {
+          "id": "IDS-007",
+          "task": "Design contextual menu and tooltip behaviors",
+          "priority": "P2",
+          "week": 3,
+          "deadline": "Day 16",
+          "dependencies": ["IDS-001"],
+          "success_criteria": [
+            "Tooltip triggers and timing",
+            "Context menu animations",
+            "Positioning logic"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/interactions/contextual-ui.json",
+          "status": "pending"
+        },
+        {
+          "id": "IDS-008",
+          "task": "Create celebration micro-interactions",
+          "priority": "P2",
+          "week": 3,
+          "deadline": "Day 20",
+          "dependencies": ["MUS-003"],
+          "success_criteria": [
+            "Success animations",
+            "Confetti effects",
+            "Achievement unlocks"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/interactions/celebrations.json",
+          "status": "pending"
+        }
+      ]
+    },
+    "motion-ui-specialist": {
+      "agent_id": "MUS",
+      "focus": "Animation & Motion System",
+      "todos": [
+        {
+          "id": "MUS-001",
+          "task": "Establish motion principles and timing functions",
+          "priority": "P0",
+          "week": 2,
+          "deadline": "Day 8",
+          "dependencies": [],
+          "success_criteria": [
+            "Easing functions library",
+            "Duration scales (fast, normal, slow)",
+            "Motion principles documentation"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/motion/motion-principles.json",
+          "status": "pending"
+        },
+        {
+          "id": "MUS-002",
+          "task": "Design page transition system",
+          "priority": "P0",
+          "week": 2,
+          "deadline": "Day 9",
+          "dependencies": ["MUS-001"],
+          "success_criteria": [
+            "Route transition animations",
+            "Shared element transitions",
+            "Loading transition sequences"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/motion/page-transitions.json",
+          "status": "pending"
+        },
+        {
+          "id": "MUS-003",
+          "task": "Create micro-animation library for components",
+          "priority": "P1",
+          "week": 2,
+          "deadline": "Day 11",
+          "dependencies": ["MUS-001", "IDS-001"],
+          "success_criteria": [
+            "Button press animations",
+            "Toggle switch transitions",
+            "Card flip effects"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/motion/micro-animations.json",
+          "status": "pending"
+        },
+        {
+          "id": "MUS-004",
+          "task": "Design loading animation sequences",
+          "priority": "P1",
+          "week": 2,
+          "deadline": "Day 12",
+          "dependencies": ["IDS-003"],
+          "success_criteria": [
+            "Spinner animations",
+            "Progress bar transitions",
+            "Skeleton shimmer effects"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/motion/loading-animations.json",
+          "status": "pending"
+        },
+        {
+          "id": "MUS-005",
+          "task": "Create parallax scrolling effects",
+          "priority": "P2",
+          "week": 3,
+          "deadline": "Day 15",
+          "dependencies": [],
+          "success_criteria": [
+            "Hero section parallax",
+            "Card entrance animations",
+            "Scroll-triggered reveals"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/motion/parallax-effects.json",
+          "status": "pending"
+        },
+        {
+          "id": "MUS-006",
+          "task": "Design cinematic intro animations",
+          "priority": "P2",
+          "week": 3,
+          "deadline": "Day 17",
+          "dependencies": ["CLA-008"],
+          "success_criteria": [
+            "Logo animation sequence",
+            "Splash screen transitions",
+            "First-load experience"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/motion/intro-animations.json",
+          "status": "pending"
+        },
+        {
+          "id": "MUS-007",
+          "task": "Create gesture response animations",
+          "priority": "P1",
+          "week": 3,
+          "deadline": "Day 18",
+          "dependencies": ["IDS-006"],
+          "success_criteria": [
+            "Swipe feedback",
+            "Pinch zoom smoothness",
+            "Rubber band effects"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/motion/gesture-animations.json",
+          "status": "pending"
+        },
+        {
+          "id": "MUS-008",
+          "task": "Optimize animation performance metrics",
+          "priority": "P1",
+          "week": 4,
+          "deadline": "Day 23",
+          "dependencies": ["MUS-001", "MUS-003"],
+          "success_criteria": [
+            "60fps on all animations",
+            "GPU acceleration usage",
+            "Battery efficiency"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/motion/performance-guide.md",
+          "status": "pending"
+        }
+      ]
+    },
+    "ux-wireframe-architect": {
+      "agent_id": "UWA",
+      "focus": "Information Architecture & Wireframes",
+      "todos": [
+        {
+          "id": "UWA-001",
+          "task": "Design authentication flow wireframes",
+          "priority": "P0",
+          "week": 2,
+          "deadline": "Day 8",
+          "dependencies": ["LGE-003"],
+          "success_criteria": [
+            "Login screens (email, social)",
+            "Registration flow (3-step)",
+            "Password recovery",
+            "2FA setup"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/wireframes/auth-flows.fig",
+          "status": "pending"
+        },
+        {
+          "id": "UWA-002",
+          "task": "Create progressive onboarding wireframes",
+          "priority": "P0",
+          "week": 2,
+          "deadline": "Day 9",
+          "dependencies": ["UWA-001"],
+          "success_criteria": [
+            "Role selection",
+            "Profile setup",
+            "Preference configuration",
+            "Tutorial overlay"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/wireframes/onboarding.fig",
+          "status": "pending"
+        },
+        {
+          "id": "UWA-003",
+          "task": "Design actor dashboard wireframe",
+          "priority": "P0",
+          "week": 2,
+          "deadline": "Day 10",
+          "dependencies": ["LGE-003"],
+          "success_criteria": [
+            "Metrics overview",
+            "Recent auditions",
+            "Upcoming callbacks",
+            "Profile completion"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/wireframes/actor-dashboard.fig",
+          "status": "pending"
+        },
+        {
+          "id": "UWA-004",
+          "task": "Create casting director workspace wireframe",
+          "priority": "P0",
+          "week": 2,
+          "deadline": "Day 11",
+          "dependencies": ["LGE-003"],
+          "success_criteria": [
+            "Project management",
+            "Talent pipeline",
+            "Schedule view",
+            "Team collaboration"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/wireframes/director-workspace.fig",
+          "status": "pending"
+        },
+        {
+          "id": "UWA-005",
+          "task": "Design talent discovery interface wireframe",
+          "priority": "P0",
+          "week": 3,
+          "deadline": "Day 15",
+          "dependencies": ["UWA-003"],
+          "success_criteria": [
+            "Advanced filters",
+            "Search results grid",
+            "Talent comparison",
+            "Saved searches"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/wireframes/talent-discovery.fig",
+          "status": "pending"
+        },
+        {
+          "id": "UWA-006",
+          "task": "Create talent profile view wireframe",
+          "priority": "P1",
+          "week": 3,
+          "deadline": "Day 16",
+          "dependencies": ["UWA-005"],
+          "success_criteria": [
+            "Portfolio showcase",
+            "Experience timeline",
+            "Skills matrix",
+            "Availability calendar"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/wireframes/talent-profile.fig",
+          "status": "pending"
+        },
+        {
+          "id": "UWA-007",
+          "task": "Design messaging system wireframe",
+          "priority": "P1",
+          "week": 3,
+          "deadline": "Day 17",
+          "dependencies": [],
+          "success_criteria": [
+            "Conversation list",
+            "Chat interface",
+            "Video call integration",
+            "File sharing"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/wireframes/messaging.fig",
+          "status": "pending"
+        },
+        {
+          "id": "UWA-008",
+          "task": "Create mobile-first responsive wireframes",
+          "priority": "P1",
+          "week": 3,
+          "deadline": "Day 19",
+          "dependencies": ["UWA-003", "UWA-005"],
+          "success_criteria": [
+            "Mobile navigation",
+            "Touch-optimized layouts",
+            "Simplified workflows",
+            "Bottom sheets"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/wireframes/mobile-views.fig",
+          "status": "pending"
+        }
+      ]
+    },
+    "design-review-qa": {
+      "agent_id": "DQA",
+      "focus": "Quality Assurance & Compliance",
+      "todos": [
+        {
+          "id": "DQA-001",
+          "task": "Establish design QA checklist and criteria",
+          "priority": "P0",
+          "week": 1,
+          "deadline": "Day 5",
+          "dependencies": ["CDO-001"],
+          "success_criteria": [
+            "Component consistency rules",
+            "Accessibility requirements",
+            "Performance benchmarks",
+            "Brand compliance"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/qa/qa-checklist.md",
+          "status": "pending"
+        },
+        {
+          "id": "DQA-002",
+          "task": "Review Week 1 token system deliverables",
+          "priority": "P0",
+          "week": 1,
+          "deadline": "Day 7",
+          "dependencies": ["VSA-005", "CLA-001", "TD1-001"],
+          "success_criteria": [
+            "Token naming consistency",
+            "Value appropriateness",
+            "Documentation completeness"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/qa/week1-review.md",
+          "status": "pending"
+        },
+        {
+          "id": "DQA-003",
+          "task": "Conduct WCAG AAA accessibility audit",
+          "priority": "P0",
+          "week": 2,
+          "deadline": "Day 14",
+          "dependencies": ["CLA-006", "IDS-002"],
+          "success_criteria": [
+            "Color contrast validation",
+            "Focus management check",
+            "Screen reader compatibility",
+            "Keyboard navigation"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/qa/accessibility-audit.md",
+          "status": "pending"
+        },
+        {
+          "id": "DQA-004",
+          "task": "Review component library for consistency",
+          "priority": "P0",
+          "week": 2,
+          "deadline": "Day 14",
+          "dependencies": ["VSA-005", "IDS-001"],
+          "success_criteria": [
+            "Token usage validation",
+            "State completeness",
+            "Responsive behavior",
+            "Documentation quality"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/qa/component-review.md",
+          "status": "pending"
+        },
+        {
+          "id": "DQA-005",
+          "task": "Validate glassmorphic implementation quality",
+          "priority": "P1",
+          "week": 3,
+          "deadline": "Day 18",
+          "dependencies": ["CLA-003", "VSA-003"],
+          "success_criteria": [
+            "Matches uxerflow standards",
+            "Performance impact acceptable",
+            "Cross-browser compatibility"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/qa/glassmorphic-review.md",
+          "status": "pending"
+        },
+        {
+          "id": "DQA-006",
+          "task": "Review all screen redesigns against audit",
+          "priority": "P0",
+          "week": 3,
+          "deadline": "Day 21",
+          "dependencies": ["UWA-008"],
+          "success_criteria": [
+            "Quality score improvement",
+            "Consistency validation",
+            "User flow optimization"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/qa/screen-review.md",
+          "status": "pending"
+        },
+        {
+          "id": "DQA-007",
+          "task": "Conduct performance impact assessment",
+          "priority": "P1",
+          "week": 4,
+          "deadline": "Day 25",
+          "dependencies": ["MUS-008"],
+          "success_criteria": [
+            "Load time < 3s",
+            "Animation at 60fps",
+            "Bundle size acceptable"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/qa/performance-review.md",
+          "status": "pending"
+        },
+        {
+          "id": "DQA-008",
+          "task": "Final design system validation and sign-off",
+          "priority": "P0",
+          "week": 4,
+          "deadline": "Day 28",
+          "dependencies": ["CDO-008"],
+          "success_criteria": [
+            "All components approved",
+            "Documentation complete",
+            "Implementation ready",
+            "Quality score >= 9.5"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/qa/final-signoff.md",
+          "status": "pending"
+        }
+      ]
+    },
+    "design-research-analyst": {
+      "agent_id": "DRA",
+      "focus": "User Research & Competitive Analysis",
+      "todos": [
+        {
+          "id": "DRA-001",
+          "task": "Analyze Mumbai film industry user personas",
+          "priority": "P0",
+          "week": 1,
+          "deadline": "Day 2",
+          "dependencies": [],
+          "success_criteria": [
+            "Actor personas (3 types)",
+            "Casting director profiles",
+            "Producer requirements",
+            "Agent workflows"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/research/user-personas.md",
+          "status": "pending"
+        },
+        {
+          "id": "DRA-002",
+          "task": "Research Bollywood visual language and aesthetics",
+          "priority": "P0",
+          "week": 1,
+          "deadline": "Day 3",
+          "dependencies": [],
+          "success_criteria": [
+            "Color psychology study",
+            "Typography preferences",
+            "Cultural symbols",
+            "Visual metaphors"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/research/bollywood-aesthetics.md",
+          "status": "pending"
+        },
+        {
+          "id": "DRA-003",
+          "task": "Competitive analysis of casting platforms",
+          "priority": "P0",
+          "week": 1,
+          "deadline": "Day 4",
+          "dependencies": [],
+          "success_criteria": [
+            "Feature comparison matrix",
+            "Design pattern analysis",
+            "Strengths/weaknesses",
+            "Opportunity areas"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/research/competitive-analysis.md",
+          "status": "pending"
+        },
+        {
+          "id": "DRA-004",
+          "task": "Study uxerflow inspiration materials in detail",
+          "priority": "P0",
+          "week": 1,
+          "deadline": "Day 5",
+          "dependencies": [],
+          "success_criteria": [
+            "Pattern identification",
+            "Quality benchmarks",
+            "Implementation feasibility",
+            "Adaptation strategy"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/research/uxerflow-analysis.md",
+          "status": "pending"
+        },
+        {
+          "id": "DRA-005",
+          "task": "Set up user testing protocol for Week 2",
+          "priority": "P1",
+          "week": 1,
+          "deadline": "Day 7",
+          "dependencies": ["DRA-001"],
+          "success_criteria": [
+            "Test scenarios",
+            "Participant recruitment",
+            "Testing tools setup",
+            "Success metrics"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/research/testing-protocol.md",
+          "status": "pending"
+        },
+        {
+          "id": "DRA-006",
+          "task": "Conduct usability testing on new components",
+          "priority": "P1",
+          "week": 2,
+          "deadline": "Day 13",
+          "dependencies": ["DRA-005", "VSA-005"],
+          "success_criteria": [
+            "10 user sessions",
+            "Task completion rates",
+            "Error frequency",
+            "Satisfaction scores"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/research/usability-results.md",
+          "status": "pending"
+        },
+        {
+          "id": "DRA-007",
+          "task": "A/B test design variations",
+          "priority": "P2",
+          "week": 3,
+          "deadline": "Day 20",
+          "dependencies": ["UWA-005"],
+          "success_criteria": [
+            "Test setup",
+            "Metric tracking",
+            "Statistical significance",
+            "Recommendations"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/research/ab-test-results.md",
+          "status": "pending"
+        },
+        {
+          "id": "DRA-008",
+          "task": "Final user validation and feedback synthesis",
+          "priority": "P1",
+          "week": 4,
+          "deadline": "Day 26",
+          "dependencies": ["DRA-006", "DRA-007"],
+          "success_criteria": [
+            "Feedback synthesis",
+            "Priority issues",
+            "Success validation",
+            "Future recommendations"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/research/final-validation.md",
+          "status": "pending"
+        }
+      ]
+    },
+    "layout-grid-engineer": {
+      "agent_id": "LGE",
+      "focus": "Responsive Grid & Layout System",
+      "todos": [
+        {
+          "id": "LGE-001",
+          "task": "Design 12-column responsive grid system",
+          "priority": "P0",
+          "week": 1,
+          "deadline": "Day 2",
+          "dependencies": [],
+          "success_criteria": [
+            "Column definitions",
+            "Gutter specifications (16px, 24px, 32px)",
+            "Max-width containers",
+            "Nested grid support"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/layout/grid-system.json",
+          "status": "pending"
+        },
+        {
+          "id": "LGE-002",
+          "task": "Establish breakpoint system for responsiveness",
+          "priority": "P0",
+          "week": 1,
+          "deadline": "Day 3",
+          "dependencies": [],
+          "success_criteria": [
+            "Mobile: 320-767px",
+            "Tablet: 768-1023px",
+            "Desktop: 1024-1439px",
+            "Wide: 1440-1919px",
+            "Ultra: 1920px+"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/layout/breakpoints.json",
+          "status": "pending"
+        },
+        {
+          "id": "LGE-003",
+          "task": "Create layout templates for key screens",
+          "priority": "P0",
+          "week": 1,
+          "deadline": "Day 5",
+          "dependencies": ["LGE-001", "LGE-002"],
+          "success_criteria": [
+            "Dashboard layouts",
+            "List view templates",
+            "Detail page structures",
+            "Form layouts"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/layout/templates.json",
+          "status": "pending"
+        },
+        {
+          "id": "LGE-004",
+          "task": "Design density variations system",
+          "priority": "P1",
+          "week": 1,
+          "deadline": "Day 6",
+          "dependencies": ["VSA-002"],
+          "success_criteria": [
+            "Comfortable mode spacing",
+            "Compact mode adjustments",
+            "Touch target sizes",
+            "Information density"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/layout/density-modes.json",
+          "status": "pending"
+        },
+        {
+          "id": "LGE-005",
+          "task": "Create responsive card grid layouts",
+          "priority": "P1",
+          "week": 2,
+          "deadline": "Day 9",
+          "dependencies": ["LGE-001", "VSA-005"],
+          "success_criteria": [
+            "Auto-fit grid behavior",
+            "Minimum card widths",
+            "Gap specifications",
+            "Alignment rules"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/layout/card-grids.json",
+          "status": "pending"
+        },
+        {
+          "id": "LGE-006",
+          "task": "Design flexible navigation layouts",
+          "priority": "P1",
+          "week": 2,
+          "deadline": "Day 11",
+          "dependencies": ["LGE-002"],
+          "success_criteria": [
+            "Side nav collapse points",
+            "Top bar adaptations",
+            "Mobile menu transitions",
+            "Breadcrumb truncation"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/layout/navigation-layouts.json",
+          "status": "pending"
+        },
+        {
+          "id": "LGE-007",
+          "task": "Create print and export layout specifications",
+          "priority": "P2",
+          "week": 3,
+          "deadline": "Day 19",
+          "dependencies": ["LGE-003"],
+          "success_criteria": [
+            "Print stylesheets",
+            "PDF export layouts",
+            "Resume formatting",
+            "Portfolio exports"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/layout/print-layouts.json",
+          "status": "pending"
+        },
+        {
+          "id": "LGE-008",
+          "task": "Document grid implementation guidelines",
+          "priority": "P1",
+          "week": 4,
+          "deadline": "Day 24",
+          "dependencies": ["LGE-001", "LGE-003"],
+          "success_criteria": [
+            "CSS Grid examples",
+            "Flexbox patterns",
+            "Framework integration",
+            "Best practices"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/layout/implementation-guide.md",
+          "status": "pending"
+        }
+      ]
+    },
+    "chief-design-officer": {
+      "agent_id": "CDO",
+      "focus": "Vision, Strategy & Coordination",
+      "todos": [
+        {
+          "id": "CDO-001",
+          "task": "Finalize and communicate design vision to all agents",
+          "priority": "P0",
+          "week": 1,
+          "deadline": "Day 1",
+          "dependencies": [],
+          "success_criteria": [
+            "Vision document approved",
+            "Success metrics defined",
+            "Timeline confirmed",
+            "Roles clarified"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/vision/design-vision.md",
+          "status": "pending"
+        },
+        {
+          "id": "CDO-002",
+          "task": "Conduct Week 1 foundation review and approval",
+          "priority": "P0",
+          "week": 1,
+          "deadline": "Day 7",
+          "dependencies": ["DQA-002"],
+          "success_criteria": [
+            "Token system approved",
+            "Grid system validated",
+            "Color palette confirmed",
+            "Typography blessed"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/reviews/week1-approval.md",
+          "status": "pending"
+        },
+        {
+          "id": "CDO-003",
+          "task": "Review and approve component library designs",
+          "priority": "P0",
+          "week": 2,
+          "deadline": "Day 14",
+          "dependencies": ["DQA-004"],
+          "success_criteria": [
+            "25 core components approved",
+            "Interaction patterns validated",
+            "Motion principles confirmed"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/reviews/component-approval.md",
+          "status": "pending"
+        },
+        {
+          "id": "CDO-004",
+          "task": "Facilitate daily design standups",
+          "priority": "P0",
+          "week": 1,
+          "deadline": "Daily",
+          "dependencies": [],
+          "success_criteria": [
+            "15-minute standups",
+            "Blocker resolution",
+            "Progress tracking",
+            "Dependency management"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/meetings/daily-standups.md",
+          "status": "pending"
+        },
+        {
+          "id": "CDO-005",
+          "task": "Review screen redesigns and provide feedback",
+          "priority": "P0",
+          "week": 3,
+          "deadline": "Day 21",
+          "dependencies": ["UWA-008", "DQA-006"],
+          "success_criteria": [
+            "All screens reviewed",
+            "Feedback documented",
+            "Revisions requested",
+            "Quality validated"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/reviews/screen-review.md",
+          "status": "pending"
+        },
+        {
+          "id": "CDO-006",
+          "task": "Present design progress to stakeholders",
+          "priority": "P1",
+          "week": 3,
+          "deadline": "Day 21",
+          "dependencies": ["CDO-005"],
+          "success_criteria": [
+            "Executive presentation",
+            "Progress demonstration",
+            "Feedback collection",
+            "Approval secured"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/presentations/stakeholder-review.pdf",
+          "status": "pending"
+        },
+        {
+          "id": "CDO-007",
+          "task": "Coordinate developer handoff preparation",
+          "priority": "P0",
+          "week": 4,
+          "deadline": "Day 26",
+          "dependencies": ["VSA-008", "LGE-008"],
+          "success_criteria": [
+            "Documentation complete",
+            "Assets exported",
+            "Specifications clear",
+            "Training scheduled"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/handoff/developer-package.md",
+          "status": "pending"
+        },
+        {
+          "id": "CDO-008",
+          "task": "Final design system approval and launch",
+          "priority": "P0",
+          "week": 4,
+          "deadline": "Day 28",
+          "dependencies": ["DQA-008"],
+          "success_criteria": [
+            "Quality score >= 9.5/10",
+            "All deliverables complete",
+            "Implementation ready",
+            "Team celebration"
+          ],
+          "deliverable": "/Design_Vision_Q1_2025/launch/final-approval.md",
+          "status": "pending"
+        }
+      ]
+    }
+  },
+  "dependencies_matrix": {
+    "week_1_critical_path": [
+      "CDO-001 → All agents can begin",
+      "VSA-001 → VSA token work",
+      "CLA-001 → Color dependencies",
+      "TD1-001 → Typography dependencies",
+      "LGE-001 → Grid dependencies"
+    ],
+    "week_2_critical_path": [
+      "Week 1 tokens → Component design",
+      "Grid system → Wireframes",
+      "Typography → Content design",
+      "Motion principles → Interactions"
+    ],
+    "week_3_critical_path": [
+      "Components → Screen design",
+      "Wireframes → Final layouts",
+      "Interactions → Polish"
+    ],
+    "week_4_critical_path": [
+      "All screens → QA review",
+      "QA approval → Developer handoff",
+      "Documentation → Implementation"
+    ]
+  },
+  "success_metrics": {
+    "week_1": {
+      "deliverables_count": 48,
+      "quality_checkpoints": 5,
+      "expected_score": "5.0/10"
+    },
+    "week_2": {
+      "deliverables_count": 32,
+      "quality_checkpoints": 4,
+      "expected_score": "7.0/10"
+    },
+    "week_3": {
+      "deliverables_count": 24,
+      "quality_checkpoints": 3,
+      "expected_score": "8.5/10"
+    },
+    "week_4": {
+      "deliverables_count": 16,
+      "quality_checkpoints": 2,
+      "expected_score": "9.5/10"
+    }
+  },
+  "coordination_notes": {
+    "blocking_dependencies": [
+      "Token system blocks all component work",
+      "Grid system blocks all wireframes",
+      "Color palette blocks accessibility work",
+      "Typography blocks content design",
+      "CDO approval gates block progression"
+    ],
+    "parallel_tracks": [
+      "Typography designers can work simultaneously",
+      "Color and Visual Systems can parallelize Week 1",
+      "Interaction and Motion coordinate in Week 2",
+      "UX and Layout collaborate on wireframes"
+    ],
+    "risk_areas": [
+      "Week 1 foundation must be solid",
+      "Component approval is critical gate",
+      "User testing may reveal issues",
+      "Performance impact of glassmorphism",
+      "Mumbai aesthetic integration complexity"
+    ]
+  }
+}

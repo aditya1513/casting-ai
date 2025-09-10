@@ -1,0 +1,107 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e5]:
+      - heading "Mumbai's Premier Casting Platform" [level=1] [ref=e6]
+      - paragraph [ref=e7]: Connecting talent with opportunity in the OTT revolution
+      - generic [ref=e8]:
+        - link "Get Started" [ref=e9] [cursor=pointer]:
+          - /url: /signup
+        - link "Explore Talent" [ref=e10] [cursor=pointer]:
+          - /url: /explore
+    - generic [ref=e13]:
+      - generic [ref=e14]:
+        - img [ref=e16]
+        - paragraph [ref=e21]: 10,000+
+        - paragraph [ref=e22]: Active Actors
+      - generic [ref=e23]:
+        - img [ref=e25]
+        - paragraph [ref=e27]: 500+
+        - paragraph [ref=e28]: Projects Posted
+      - generic [ref=e29]:
+        - img [ref=e31]
+        - paragraph [ref=e33]: 1,200+
+        - paragraph [ref=e34]: Auditions This Month
+      - generic [ref=e35]:
+        - img [ref=e37]
+        - paragraph [ref=e40]: 85%
+        - paragraph [ref=e41]: Success Rate
+    - generic [ref=e43]:
+      - generic [ref=e44]:
+        - heading "Your Gateway to Entertainment Industry" [level=2] [ref=e45]
+        - paragraph [ref=e46]: Whether you're casting or auditioning, we make the process seamless
+      - generic [ref=e47]:
+        - generic [ref=e48]:
+          - img [ref=e50]
+          - heading "For Casting Directors" [level=3] [ref=e52]
+          - paragraph [ref=e53]: Find the perfect talent for your OTT projects with our advanced search and filtering system.
+          - link "Learn more →" [ref=e54] [cursor=pointer]:
+            - /url: /casting-directors
+        - generic [ref=e55]:
+          - img [ref=e57]
+          - heading "For Actors" [level=3] [ref=e60]
+          - paragraph [ref=e61]: Build your portfolio, find auditions, and connect with top casting directors in Mumbai.
+          - link "Learn more →" [ref=e62] [cursor=pointer]:
+            - /url: /actors
+        - generic [ref=e63]:
+          - img [ref=e65]
+          - heading "For Producers" [level=3] [ref=e67]
+          - paragraph [ref=e68]: Manage your productions, track casting progress, and collaborate with your team seamlessly.
+          - link "Learn more →" [ref=e69] [cursor=pointer]:
+            - /url: /producers
+    - generic [ref=e71]:
+      - heading "Ready to Transform Your Casting Experience?" [level=2] [ref=e72]
+      - paragraph [ref=e73]: Join thousands of industry professionals already using CastMatch
+      - link "Start Your Free Trial" [active] [ref=e74] [cursor=pointer]:
+        - /url: /signup
+    - contentinfo [ref=e75]:
+      - generic [ref=e76]:
+        - generic [ref=e77]:
+          - generic [ref=e78]:
+            - heading "CastMatch" [level=3] [ref=e79]
+            - paragraph [ref=e80]: Mumbai's trusted platform for casting and talent discovery in the OTT era.
+          - generic [ref=e81]:
+            - heading "Platform" [level=4] [ref=e82]
+            - list [ref=e83]:
+              - listitem [ref=e84]:
+                - link "For Actors" [ref=e85] [cursor=pointer]:
+                  - /url: /actors
+              - listitem [ref=e86]:
+                - link "For Casting Directors" [ref=e87] [cursor=pointer]:
+                  - /url: /casting-directors
+              - listitem [ref=e88]:
+                - link "For Producers" [ref=e89] [cursor=pointer]:
+                  - /url: /producers
+          - generic [ref=e90]:
+            - heading "Company" [level=4] [ref=e91]
+            - list [ref=e92]:
+              - listitem [ref=e93]:
+                - link "About Us" [ref=e94] [cursor=pointer]:
+                  - /url: /about
+              - listitem [ref=e95]:
+                - link "Contact" [ref=e96] [cursor=pointer]:
+                  - /url: /contact
+              - listitem [ref=e97]:
+                - link "Careers" [ref=e98] [cursor=pointer]:
+                  - /url: /careers
+          - generic [ref=e99]:
+            - heading "Legal" [level=4] [ref=e100]
+            - list [ref=e101]:
+              - listitem [ref=e102]:
+                - link "Privacy Policy" [ref=e103] [cursor=pointer]:
+                  - /url: /privacy
+              - listitem [ref=e104]:
+                - link "Terms of Service" [ref=e105] [cursor=pointer]:
+                  - /url: /terms
+        - paragraph [ref=e107]: © 2025 CastMatch. All rights reserved.
+  - region "Notifications alt+T"
+  - generic [ref=e108]:
+    - img [ref=e110]
+    - button "Open Tanstack query devtools" [ref=e158] [cursor=pointer]:
+      - img [ref=e159] [cursor=pointer]
+  - button "Open Next.js Dev Tools" [ref=e212] [cursor=pointer]:
+    - img [ref=e213] [cursor=pointer]
+  - alert [ref=e216]
+```

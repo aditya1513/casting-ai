@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mobile UAT Checklist - CastMatch</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f7;
+            padding-bottom: 80px;
+        }
+        
+        .mobile-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .mobile-header h1 {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+        
+        .device-info {
+            display: flex;
+            gap: 15px;
+            margin-top: 12px;
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        .device-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 8px;
+            border-radius: 12px;
+        }
+        
+        .test-categories {
+            padding: 16px;
+        }
+        
+        .category-card {
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .category-header {
+            background: linear-gradient(135deg, #f5f5f7 0%, #e8e8ed 100%);
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .category-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            color: #1d1d1f;
+        }
+        
+        .category-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        
+        .category-progress {
+            font-size: 14px;
+            color: #86868b;
+        }
+        
+        .test-items {
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        
+        .test-items.expanded {
+            max-height: 2000px;
+            padding: 16px;
+        }
+        
+        .test-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .test-item:last-child {
+            border-bottom: none;
+        }
+        
+        .test-checkbox {
+            width: 24px;
+            height: 24px;
+            margin-right: 12px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        
+        .test-content {
+            flex: 1;
+        }
+        
+        .test-label {
+            color: #1d1d1f;
+            line-height: 1.5;
+            margin-bottom: 4px;
+        }
+        
+        .test-hint {
+            font-size: 12px;
+            color: #86868b;
+            line-height: 1.4;
+        }
+        
+        .severity-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        
+        .severity-critical {
+            background: #ffebee;
+            color: #c62828;
+        }
+        
+        .severity-high {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+        
+        .severity-medium {
+            background: #fff8e1;
+            color: #f9a825;
+        }
+        
+        .test-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d2d2d7;
+            border-radius: 8px;
+            margin-top: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: vertical;
+        }
+        
+        .touch-test-area {
+            background: #f5f5f7;
+            border: 2px dashed #667eea;
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            margin: 16px 0;
+            touch-action: none;
+        }
+        
+        .touch-indicator {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        
+        .touch-status {
+            color: #86868b;
+            font-size: 14px;
+        }
+        
+        .performance-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        
+        .metric-card {
+            background: #f5f5f7;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .metric-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1d1d1f;
+        }
+        
+        .metric-label {
+            font-size: 11px;
+            color: #86868b;
+            margin-top: 4px;
+        }
+        
+        .floating-actions {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #d2d2d7;
+            padding: 16px;
+            display: flex;
+            gap: 12px;
+            z-index: 200;
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: 14px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .action-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #f5f5f7;
+            color: #1d1d1f;
+        }
+        
+        .orientation-test {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            text-align: center;
+        }
+        
+        .orientation-icon {
+            font-size: 48px;
+            margin-bottom: 8px;
+        }
+        
+        .orientation-status {
+            color: #1976d2;
+            font-weight: 600;
+        }
+        
+        @media (min-width: 768px) {
+            .test-categories {
+                max-width: 600px;
+                margin: 0 auto;
+            }
+        }
+        
+        /* iOS-specific styles */
+        @supports (-webkit-touch-callout: none) {
+            .test-checkbox {
+                -webkit-appearance: none;
+                appearance: none;
+                width: 24px;
+                height: 24px;
+                border: 2px solid #d2d2d7;
+                border-radius: 6px;
+                position: relative;
+            }
+            
+            .test-checkbox:checked {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                border-color: transparent;
+            }
+            
+            .test-checkbox:checked::after {
+                content: '✓';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                color: white;
+                font-size: 14px;
+                font-weight: bold;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-header">
+        <h1>📱 Mobile UAT Testing</h1>
+        <p>CastMatch Platform Validation</p>
+        <div class="device-info">
+            <span class="device-badge" id="deviceType">Device</span>
+            <span class="device-badge" id="browserInfo">Browser</span>
+            <span class="device-badge" id="screenSize">Screen</span>
+        </div>
+    </div>
+    
+    <div class="test-categories">
+        <!-- Touch & Gestures -->
+        <div class="category-card">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <div class="category-title">
+                    <div class="category-icon">👆</div>
+                    <span>Touch & Gestures</span>
+                </div>
+                <span class="category-progress">0/8</span>
+            </div>
+            <div class="test-items">
+                <div class="test-item">
+                    <input type="checkbox" class="test-checkbox" onchange="updateProgress(this)">
+                    <div class="test-content">
+                        <div class="test-label">
+                            Touch targets ≥44px
+                            <span class="severity-badge severity-critical">Critical</span>
+                        </div>
+                        <div class="test-hint">All buttons and links should be at least 44x44 pixels for easy tapping</div>
+                    </div>
+                </div>
+                
+                <div class="test-item">
+                    <input type="checkbox" class="test-checkbox" onchange="updateProgress(this)">
+                    <div class="test-content">
+                        <div class="test-label">Swipe navigation works</div>
+                        <div class="test-hint">Test swipe left/right on talent cards and image galleries</div>
+                    </div>
+                </div>
+                
+                <div class="test-item">
+                    <input type="checkbox" class="test-checkbox" onchange="updateProgress(this)">
+                    <div class="test-content">
+                        <div class="test-label">Pinch to zoom on images</div>
+                        <div class="test-hint">Portfolio images should support pinch-to-zoom gesture</div>
+                    </div>
+                </div>
+                
+                <div class="test-item">
+                    <input type="checkbox" class="test-checkbox" onchange="updateProgress(this)">
+                    <div class="test-content">
+                        <div class="test-label">Pull-to-refresh functionality</div>
+                        <div class="test-hint">Results and profile pages should refresh on pull-down</div>
+                    </div>
+                </div>
+                
+                <div class="test-item">
+                    <input type="checkbox" class="test-checkbox" onchange="updateProgress(this)">
+                    <div class="test-content">
+                        <div class="test-label">Long press actions</div>
+                        <div class="test-hint">Long press on talent cards should show quick actions menu</div>
+                    </div>
+                </div>
+                
+                <div class="test-item">
+                    <input type="checkbox" class="test-checkbox" onchange="updateProgress(this)">
+                    <div class="test-content">
+                        <div class="test-label">Double-tap to like/favorite</div>
+                        <div class="test-hint">Double-tapping profile images should toggle favorite status</div>
+                    </div>
+                </div>
+                
+                <div class="test-item">
+                    <input type="checkbox" class="test-checkbox" onchange="updateProgress(this)">
+                    <div class="test-content">
+                        <div class="test-label">No accidental taps</div>
+                        <div class="test-hint">Adequate spacing between interactive elements</div>
+                    </div>
+                </div>
+                
+                <div class="test-item">
+                    <input type="checkbox" class="test-checkbox" onchange="updateProgress(this)">
+                    <div class="test-content">
+                        <div class="test-label">Scroll momentum</div>
+                        <div class="test-hint">Natural scrolling with proper momentum and bounce</div>
+                    </div>
+                </div>
+                
+                <div class="touch-test-area" id="touchTest">
+                    <div class="touch-indicator">👆</div>
+                    <div class="touch-status">Test touch responsiveness here</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Responsive Layout -->
+        <div class="category-card">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <div class="category-title">
+                    <div class="category-icon">📐</div>
+                    <span>Responsive Layout</span>
+                </div>
+                <span class="category-progress">0/7</span>
+            </div>
+            <div class="test-items">
+                <div class="test-item">
+                    <input type="checkbox" class="test-checkbox" onchange="updateProgress(this)">
+                    <div class="test-content">
+                        <div class="test-label">
+                            Portrait mode layout
+                            <span class="severity-badge severity-critical">Critical</span>
+                        </div>
+                        <div class="test-hint">All content properly arranged in vertical orientation</div>
+                    </div>
+                </div>
+                
+                <div class="test-item">
+                    <input type="checkbox" class="test-checkbox" onchange="updateProgress(this)">
+                    <div class="test-content">
+                        <div class="test-label">Landscape mode support</div>
+                        <div class="test-hint">Smooth transition and proper layout in horizontal orientation</div>
+                    </div>
+                </div>
+                
+                <div class="test-item">
+                    <input type="checkbox" class="test-checkbox" onchange="updateProgress(this)">
+                    <div class="test-content">
+                        <div class="test-label">Text readability</div>
+                        <div class="test-hint">Font size ≥14px, proper line height, no text overflow</div>
+                    </div>
+                </div>
+                
+                <div class="test-item">
+                    <input type="checkbox" class="test-checkbox" onchange="updateProgress(this)">
+                    <div class="test-content">
+                        <div class="test-label">Image scaling</div>
+                        <div class="test-hint">Images resize properly without distortion or pixelation</div>
+                    </div>
+                </div>
+                
+                <div class="test-item">
+                    <input type="checkbox" class="test-checkbox" onchange="updateProgress(this)">
+                    <div class="test-content">
+                        <div class="test-label">Navigation accessibility</div>
+                        <div class="test-hint">Bottom nav or hamburger menu easily reachable with thumb</div>
+                    </div>
+                </div>
+                
+                <div class="test-item">
+                    <input type="checkbox" class="test-checkbox" onchange="updateProgress(this)">
+                    <div class="test-content">
+                        <div class="test-label">Form inputs optimized</div>
+                        <div class="test-hint">Proper keyboard types, auto-capitalization, input labels</div>
+                    </div>
+                </div>
+                
+                <div class="test-item">
+                    <input type="checkbox" class="test-checkbox" onchange="updateProgress(this)">
+                    <div class="test-content">
+                        <div class="test-label">Modal/popup sizing</div>
+                        <div class="test-hint">Modals fit screen with proper padding and close buttons</div>
+                    </div>
+                </div>
+                
+                <div class="orientation-test">
+                    <div class="orientation-icon" id="orientationIcon">📱</div>
+                    <div class="orientation-status" id="orientationStatus">Current: Portrait</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Performance -->
+        <div class="category-card">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <div class="category-title">
+                    <div class="category-icon">⚡</div>
+                    <span>Performance</span>
+                </div>
+                <span class="category-progress">0/6</span>
+            </div>
+            <div class="test-items">
+                <div class="test-item">
+                    <input type="checkbox" class="test-checkbox" onchange="updateProgress(this)">
+                    <div class="test-content">
+                        <div class="test-label">
+                            Page load <3 seconds
+                            <span class="severity-badge severity-critical">Critical</span>
+                        </div>
+                        <div class="test-hint">Initial page load on 4G connection</div>
+                    </div>
+                </div>
+                
+                <div class="test-item">
+                    <input type="checkbox" class="test-checkbox" onchange="updateProgress(this)">
+                    <div class="test-content">
+                        <div class="test-label">Smooth scrolling (60fps)</div>
+                        <div class="test-hint">No jank or stuttering while scrolling through lists</div>
+                    </div>
+                </div>
+                
+                <div class="test-item">
+                    <input type="checkbox" class="test-checkbox" onchange="updateProgress(this)">
+                    <div class="test-content">
+                        <div class="test-label">Image lazy loading</div>
+                        <div class="test-hint">Images load as user scrolls, not all at once</div>
+                    </div>
+                </div>
+                
+                <div class="test-item">
+                    <input type="checkbox" class="test-checkbox" onchange="updateProgress(this)">
+                    <div class="test-content">
+                        <div class="test-label">Offline mode handling</div>
+                        <div class="test-hint">Graceful degradation when connection is lost</div>
+                    </div>
+                </div>
+                
+                <div class="test-item">
+                    <input type="checkbox" class="test-checkbox" onchange="updateProgress(this)">
+                    <div class="test-content">
+                        <div class="test-label">Battery efficiency</div>
+                        <div class="test-hint">No excessive battery drain during use</div>
+                    </div>
+                </div>
+                
+                <div class="test-item">
+                    <input type="checkbox" class="test-checkbox" onchange="updateProgress(this)">
+                    <div class="test-content">
+                        <div class="test-label">Memory management</div>
+                        <div class="test-hint">App doesn't crash or slow down after extended use</div>
+                    </div>
+                </div>
+                
+                <div class="performance-metrics">
+                    <div class="metric-card">
+                        <div class="metric-value" id="loadTime">--</div>
+                        <div class="metric-label">Load Time (s)</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="fps">--</div>
+                        <div class="metric-label">FPS</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="memory">--</div>
+                        <div class="metric-label">Memory (MB)</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="network">--</div>
+                        <div class="metric-label">Network</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Native Features -->
+        <div class="category-card">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <div class="category-title">
+                    <div class="category-icon">📲</div>
+                    <span>Native Features</span>
+                </div>
+                <span class="category-progress">0/8</span>
+            </div>
+            <div class="test-items">
+                <div class="test-item">
+                    <input type="checkbox" class="test-checkbox" onchange="updateProgress(this)">
+                    <div class="test-content">
+                        <div class="test-label">
+                            Camera access
+                            <span class="severity-badge severity-high">High</span>
+                        </div>
+                        <div class="test-hint">Can take/upload photos for profile</div>
+                    </div>
+                </div>
+                
+                <div class="test-item">
+                    <input type="checkbox" class="test-checkbox" onchange="updateProgress(this)">
+                    <div class="test-content">
+                        <div class="test-label">Gallery access</div>
+                        <div class="test-hint">Can select multiple photos from device gallery</div>
+                    </div>
+                </div>
+                
+                <div class="test-item">
+                    <input type="checkbox" class="test-checkbox" onchange="updateProgress(this)">
+                    <div class="test-content">
+                        <div class="test-label">Location services</div>
+                        <div class="test-hint">Location-based search with permission request</div>
+                    </div>
+                </div>
+                
+                <div class="test-item">
+                    <input type="checkbox" class="test-checkbox" onchange="updateProgress(this)">
+                    <div class="test-content">
+                        <div class="test-label">Push notifications</div>
+                        <div class="test-hint">Receive audition invites and messages</div>
+                    </div>
+                </div>
+                
+                <div class="test-item">
+                    <input type="checkbox" class="test-checkbox" onchange="updateProgress(this)">
+                    <div class="test-content">
+                        <div class="test-label">Share functionality</div>
+                        <div class="test-hint">Share profiles via native share sheet</div>
+                    </div>
+                </div>
+                
+                <div class="test-item">
+                    <input type="checkbox" class="test-checkbox" onchange="updateProgress(this)">
+                    <div class="test-content">
+                        <div class="test-label">Calendar integration</div>
+                        <div class="test-hint">Add auditions to device calendar</div>
+                    </div>
+                </div>
+                
+                <div class="test-item">
+                    <input type="checkbox" class="test-checkbox" onchange="updateProgress(this)">
+                    <div class="test-content">
+                        <div class="test-label">Biometric authentication</div>
+                        <div class="test-hint">Face ID/Touch ID/Fingerprint login</div>
+                    </div>
+                </div>
+                
+                <div class="test-item">
+                    <input type="checkbox" class="test-checkbox" onchange="updateProgress(this)">
+                    <div class="test-content">
+                        <div class="test-label">Voice input</div>
+                        <div class="test-hint">Voice search and dictation in text fields</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Accessibility -->
+        <div class="category-card">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <div class="category-title">
+                    <div class="category-icon">♿</div>
+                    <span>Accessibility</span>
+                </div>
+                <span class="category-progress">0/6</span>
+            </div>
+            <div class="test-items">
+                <div class="test-item">
+                    <input type="checkbox" class="test-checkbox" onchange="updateProgress(this)">
+                    <div class="test-content">
+                        <div class="test-label">
+                            VoiceOver/TalkBack support
+                            <span class="severity-badge severity-high">High</span>
+                        </div>
+                        <div class="test-hint">Screen reader announces all elements correctly</div>
+                    </div>
+                </div>
+                
+                <div class="test-item">
+                    <input type="checkbox" class="test-checkbox" onchange="updateProgress(this)">
+                    <div class="test-content">
+                        <div class="test-label">Color contrast (4.5:1)</div>
+                        <div class="test-hint">Text readable against backgrounds</div>
+                    </div>
+                </div>
+                
+                <div class="test-item">
+                    <input type="checkbox" class="test-checkbox" onchange="updateProgress(this)">
+                    <div class="test-content">
+                        <div class="test-label">Text scaling support</div>
+                        <div class="test-hint">Respects system font size settings</div>
+                    </div>
+                </div>
+                
+                <div class="test-item">
+                    <input type="checkbox" class="test-checkbox" onchange="updateProgress(this)">
+                    <div class="test-content">
+                        <div class="test-label">Focus indicators</div>
+                        <div class="test-hint">Clear visual focus for keyboard navigation</div>
+                    </div>
+                </div>
+                
+                <div class="test-item">
+                    <input type="checkbox" class="test-checkbox" onchange="updateProgress(this)">
+                    <div class="test-content">
+                        <div class="test-label">Alternative text</div>
+                        <div class="test-hint">All images have descriptive alt text</div>
+                    </div>
+                </div>
+                
+                <div class="test-item">
+                    <input type="checkbox" class="test-checkbox" onchange="updateProgress(this)">
+                    <div class="test-content">
+                        <div class="test-label">Reduce motion support</div>
+                        <div class="test-hint">Respects system reduce motion preference</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Issues & Notes -->
+        <div class="category-card">
+            <div class="category-header">
+                <div class="category-title">
+                    <div class="category-icon">📝</div>
+                    <span>Issues & Notes</span>
+                </div>
+            </div>
+            <div class="test-items expanded">
+                <textarea class="test-input" rows="6" placeholder="Document any issues, bugs, or suggestions here..."></textarea>
+                
+                <div style="margin-top: 16px;">
+                    <label style="font-weight: 600; color: #1d1d1f; display: block; margin-bottom: 8px;">Overall Mobile Experience</label>
+                    <select class="test-input" style="height: auto;">
+                        <option>5 - Excellent (Ready for production)</option>
+                        <option>4 - Good (Minor fixes needed)</option>
+                        <option>3 - Fair (Several issues to address)</option>
+                        <option>2 - Poor (Major problems)</option>
+                        <option>1 - Unusable (Critical failures)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="floating-actions">
+        <button class="action-btn btn-secondary" onclick="saveProgress()">Save Progress</button>
+        <button class="action-btn btn-primary" onclick="submitReport()">Submit Report</button>
+    </div>
+    
+    <script>
+        // Device Detection
+        function detectDevice() {
+            const userAgent = navigator.userAgent;
+            let deviceType = 'Unknown';
+            let browserInfo = 'Unknown';
+            
+            // Device type
+            if (/iPhone|iPod/.test(userAgent)) {
+                deviceType = 'iPhone';
+            } else if (/iPad/.test(userAgent)) {
+                deviceType = 'iPad';
+            } else if (/Android/.test(userAgent)) {
+                deviceType = 'Android';
+            }
+            
+            // Browser
+            if (/CriOS/.test(userAgent)) {
+                browserInfo = 'Chrome iOS';
+            } else if (/FxiOS/.test(userAgent)) {
+                browserInfo = 'Firefox iOS';
+            } else if (/Safari/.test(userAgent) && !/Chrome/.test(userAgent)) {
+                browserInfo = 'Safari';
+            } else if (/Chrome/.test(userAgent)) {
+                browserInfo = 'Chrome';
+            }
+            
+            // Screen size
+            const screenSize = `${window.screen.width}×${window.screen.height}`;
+            
+            document.getElementById('deviceType').textContent = deviceType;
+            document.getElementById('browserInfo').textContent = browserInfo;
+            document.getElementById('screenSize').textContent = screenSize;
+        }
+        
+        // Toggle category expansion
+        function toggleCategory(header) {
+            const items = header.nextElementSibling;
+            items.classList.toggle('expanded');
+        }
+        
+        // Update progress
+        function updateProgress(checkbox) {
+            const card = checkbox.closest('.category-card');
+            const checkboxes = card.querySelectorAll('.test-checkbox');
+            const checked = card.querySelectorAll('.test-checkbox:checked');
+            const progress = card.querySelector('.category-progress');
+            
+            progress.textContent = `${checked.length}/${checkboxes.length}`;
+            
+            // Update category color based on completion
+            const header = card.querySelector('.category-header');
+            const percentage = (checked.length / checkboxes.length) * 100;
+            
+            if (percentage === 100) {
+                header.style.background = 'linear-gradient(135deg, #4caf50 0%, #45a049 100%)';
+            } else if (percentage > 0) {
+                header.style.background = 'linear-gradient(135deg, #ff9800 0%, #f57c00 100%)';
+            } else {
+                header.style.background = 'linear-gradient(135deg, #f5f5f7 0%, #e8e8ed 100%)';
+            }
+        }
+        
+        // Touch test
+        const touchTest = document.getElementById('touchTest');
+        let touchStartTime;
+        
+        touchTest.addEventListener('touchstart', function(e) {
+            touchStartTime = Date.now();
+            this.style.background = '#c8e6c9';
+            this.querySelector('.touch-status').textContent = 'Touch detected!';
+        });
+        
+        touchTest.addEventListener('touchend', function(e) {
+            const duration = Date.now() - touchStartTime;
+            this.style.background = '#f5f5f7';
+            this.querySelector('.touch-status').textContent = `Touch duration: ${duration}ms`;
+        });
+        
+        // Orientation detection
+        function detectOrientation() {
+            const orientation = window.orientation;
+            const icon = document.getElementById('orientationIcon');
+            const status = document.getElementById('orientationStatus');
+            
+            if (orientation === 0 || orientation === 180) {
+                icon.textContent = '📱';
+                status.textContent = 'Current: Portrait';
+            } else {
+                icon.textContent = '📱';
+                icon.style.transform = 'rotate(90deg)';
+                status.textContent = 'Current: Landscape';
+            }
+        }
+        
+        window.addEventListener('orientationchange', detectOrientation);
+        
+        // Performance monitoring
+        function monitorPerformance() {
+            // Simulated performance metrics
+            document.getElementById('loadTime').textContent = (Math.random() * 2 + 1).toFixed(1);
+            document.getElementById('fps').textContent = Math.floor(Math.random() * 20 + 40);
+            document.getElementById('memory').textContent = Math.floor(Math.random() * 50 + 100);
+            
+            // Network detection
+            const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+            if (connection) {
+                document.getElementById('network').textContent = connection.effectiveType || '4G';
+            } else {
+                document.getElementById('network').textContent = 'WiFi';
+            }
+        }
+        
+        // Save progress
+        function saveProgress() {
+            const testData = {
+                timestamp: new Date().toISOString(),
+                device: document.getElementById('deviceType').textContent,
+                browser: document.getElementById('browserInfo').textContent,
+                categories: []
+            };
+            
+            document.querySelectorAll('.category-card').forEach(card => {
+                const title = card.querySelector('.category-title span').textContent;
+                const checkboxes = card.querySelectorAll('.test-checkbox');
+                const checked = card.querySelectorAll('.test-checkbox:checked');
+                
+                testData.categories.push({
+                    name: title,
+                    completed: checked.length,
+                    total: checkboxes.length
+                });
+            });
+            
+            localStorage.setItem('mobile_uat_progress', JSON.stringify(testData));
+            alert('Progress saved successfully!');
+        }
+        
+        // Submit report
+        function submitReport() {
+            const report = {
+                sessionId: 'MOB-' + Math.random().toString(36).substr(2, 9).toUpperCase(),
+                timestamp: new Date().toISOString(),
+                device: {
+                    type: document.getElementById('deviceType').textContent,
+                    browser: document.getElementById('browserInfo').textContent,
+                    screen: document.getElementById('screenSize').textContent
+                },
+                results: []
+            };
+            
+            document.querySelectorAll('.category-card').forEach(card => {
+                const category = {
+                    name: card.querySelector('.category-title span').textContent,
+                    tests: []
+                };
+                
+                card.querySelectorAll('.test-item').forEach(item => {
+                    const checkbox = item.querySelector('.test-checkbox');
+                    const label = item.querySelector('.test-label').textContent.trim();
+                    
+                    category.tests.push({
+                        test: label,
+                        passed: checkbox.checked
+                    });
+                });
+                
+                report.results.push(category);
+            });
+            
+            report.notes = document.querySelector('textarea').value;
+            report.overallRating = document.querySelector('select').value;
+            
+            console.log('Mobile UAT Report:', report);
+            localStorage.setItem('mobile_uat_report_' + report.sessionId, JSON.stringify(report));
+            
+            alert(`Report submitted successfully!\nSession ID: ${report.sessionId}`);
+        }
+        
+        // Initialize
+        detectDevice();
+        detectOrientation();
+        monitorPerformance();
+        
+        // Load saved progress if exists
+        const savedProgress = localStorage.getItem('mobile_uat_progress');
+        if (savedProgress) {
+            console.log('Previous progress found:', JSON.parse(savedProgress));
+        }
+    </script>
+</body>
+</html>

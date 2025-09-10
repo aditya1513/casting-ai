@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CastMatch - Comprehensive Error State Library</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8fafc;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 48px;
+            padding: 32px 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 16px;
+        }
+
+        .error-category {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .error-category h2 {
+            color: #1f2937;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .error-state {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            overflow: hidden;
+            background: #fafafa;
+        }
+
+        .error-state-header {
+            background: #f3f4f6;
+            padding: 16px 24px;
+            border-bottom: 1px solid #e5e7eb;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .error-state-content {
+            padding: 24px;
+        }
+
+        .error-display {
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            padding: 32px;
+            text-align: center;
+            margin-bottom: 24px;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .error-icon {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        .network-error .error-icon { background: #ef4444; }
+        .auth-error .error-icon { background: #f59e0b; }
+        .validation-error .error-icon { background: #8b5cf6; }
+        .system-error .error-icon { background: #6b7280; }
+        .user-error .error-icon { background: #3b82f6; }
+
+        .error-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1f2937;
+        }
+
+        .error-message {
+            color: #6b7280;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+
+        .error-details {
+            background: #f9fafb;
+            border-radius: 6px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            font-family: 'Monaco', monospace;
+            font-size: 12px;
+            color: #374151;
+            border-left: 4px solid #e5e7eb;
+        }
+
+        .error-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+            min-width: 120px;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .error-annotations {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .error-annotations h4 {
+            color: #92400e;
+            margin-bottom: 8px;
+        }
+
+        .error-annotations ul {
+            color: #92400e;
+            padding-left: 20px;
+        }
+
+        .error-annotations li {
+            margin-bottom: 4px;
+        }
+
+        .progressive-disclosure {
+            margin-top: 16px;
+        }
+
+        .disclosure-toggle {
+            background: none;
+            border: none;
+            color: #3b82f6;
+            cursor: pointer;
+            text-decoration: underline;
+            font-size: 14px;
+        }
+
+        .disclosure-content {
+            display: none;
+            margin-top: 12px;
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: 6px;
+            border-left: 3px solid #3b82f6;
+        }
+
+        .loading-state {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #e5e7eb;
+            border-top: 2px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .retry-counter {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+
+            .error-category {
+                padding: 20px;
+            }
+
+            .error-state-content {
+                padding: 16px;
+            }
+
+            .error-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                min-width: auto;
+                width: 100%;
+            }
+
+            .error-display {
+                padding: 24px 16px;
+                min-height: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>CastMatch Error State Library</h1>
+            <p>Comprehensive error patterns for production-ready user experience</p>
+        </div>
+
+        <!-- Network Errors -->
+        <div class="error-category">
+            <h2>🌐 Network Errors</h2>
+            
+            <div class="error-state network-error">
+                <div class="error-state-header">Connection Lost</div>
+                <div class="error-state-content">
+                    <div class="error-display">
+                        <div class="error-icon">📶</div>
+                        <div class="error-title">Connection Lost</div>
+                        <div class="error-message">We're having trouble connecting to our servers. Please check your internet connection.</div>
+                        <div class="error-actions">
+                            <button class="btn btn-primary">Retry Connection</button>
+                            <button class="btn btn-secondary">Work Offline</button>
+                        </div>
+                        <div class="retry-counter">Retry attempt 1 of 3</div>
+                    </div>
+                    <div class="error-annotations">
+                        <h4>UX Annotations:</h4>
+                        <ul>
+                            <li>Auto-retry with exponential backoff (1s, 3s, 9s)</li>
+                            <li>Offer offline mode for cached content</li>
+                            <li>Show retry counter to set expectations</li>
+                            <li>Priority: Critical (P1)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="error-state network-error">
+                <div class="error-state-header">Request Timeout</div>
+                <div class="error-state-content">
+                    <div class="error-display">
+                        <div class="error-icon">⏱️</div>
+                        <div class="error-title">Request Timed Out</div>
+                        <div class="error-message">The request is taking longer than usual. This might be due to high server load.</div>
+                        <div class="loading-state">
+                            <div class="spinner"></div>
+                            <span>Still trying to connect...</span>
+                        </div>
+                        <div class="error-actions">
+                            <button class="btn btn-primary">Keep Waiting</button>
+                            <button class="btn btn-secondary">Cancel & Retry</button>
+                        </div>
+                    </div>
+                    <div class="progressive-disclosure">
+                        <button class="disclosure-toggle" onclick="toggleDisclosure(this)">Show technical details</button>
+                        <div class="disclosure-content">
+                            <div class="error-details">
+                                Error Code: TIMEOUT_ERROR<br>
+                                Endpoint: /api/v1/talent/search<br>
+                                Timeout: 30 seconds<br>
+                                Timestamp: 2025-01-15 14:23:45 UTC
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Authentication Errors -->
+        <div class="error-category">
+            <h2>🔐 Authentication Errors</h2>
+            
+            <div class="error-state auth-error">
+                <div class="error-state-header">Session Expired</div>
+                <div class="error-state-content">
+                    <div class="error-display">
+                        <div class="error-icon">🔑</div>
+                        <div class="error-title">Session Expired</div>
+                        <div class="error-message">Your session has expired for security reasons. Please log in again to continue.</div>
+                        <div class="error-actions">
+                            <button class="btn btn-primary">Log In Again</button>
+                            <button class="btn btn-secondary">Save Work & Exit</button>
+                        </div>
+                    </div>
+                    <div class="error-annotations">
+                        <h4>UX Annotations:</h4>
+                        <ul>
+                            <li>Preserve user's work state before redirect</li>
+                            <li>Auto-save form data to localStorage</li>
+                            <li>Return to same page after re-authentication</li>
+                            <li>Priority: High (P2)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="error-state auth-error">
+                <div class="error-state-header">Access Denied</div>
+                <div class="error-state-content">
+                    <div class="error-display">
+                        <div class="error-icon">🚫</div>
+                        <div class="error-title">Access Denied</div>
+                        <div class="error-message">You don't have permission to access this feature. Contact your admin for access.</div>
+                        <div class="error-actions">
+                            <button class="btn btn-primary">Request Access</button>
+                            <button class="btn btn-secondary">Go Back</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Validation Errors -->
+        <div class="error-category">
+            <h2>✅ Validation Errors</h2>
+            
+            <div class="error-state validation-error">
+                <div class="error-state-header">Form Validation Failed</div>
+                <div class="error-state-content">
+                    <div class="error-display">
+                        <div class="error-icon">📝</div>
+                        <div class="error-title">Please Fix These Issues</div>
+                        <div class="error-message">Some fields need your attention before we can continue.</div>
+                        <div class="error-details">
+                            • Email address is required<br>
+                            • Phone number format is invalid<br>
+                            • Profile photo must be under 5MB
+                        </div>
+                        <div class="error-actions">
+                            <button class="btn btn-primary">Fix Issues</button>
+                            <button class="btn btn-secondary">Save Draft</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="error-state validation-error">
+                <div class="error-state-header">File Upload Error</div>
+                <div class="error-state-content">
+                    <div class="error-display">
+                        <div class="error-icon">📎</div>
+                        <div class="error-title">Upload Failed</div>
+                        <div class="error-message">Your headshot couldn't be uploaded. Please try again with a different file.</div>
+                        <div class="error-details">
+                            Supported formats: JPG, PNG, HEIC<br>
+                            Maximum size: 10MB<br>
+                            Minimum resolution: 400x400px
+                        </div>
+                        <div class="error-actions">
+                            <button class="btn btn-primary">Choose Different File</button>
+                            <button class="btn btn-secondary">Skip for Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Errors -->
+        <div class="error-category">
+            <h2>🔧 System Errors</h2>
+            
+            <div class="error-state system-error">
+                <div class="error-state-header">Server Error</div>
+                <div class="error-state-content">
+                    <div class="error-display">
+                        <div class="error-icon">⚠️</div>
+                        <div class="error-title">Something Went Wrong</div>
+                        <div class="error-message">We're experiencing technical difficulties. Our team has been notified and is working on a fix.</div>
+                        <div class="error-actions">
+                            <button class="btn btn-primary">Try Again</button>
+                            <button class="btn btn-secondary">Contact Support</button>
+                        </div>
+                    </div>
+                    <div class="progressive-disclosure">
+                        <button class="disclosure-toggle" onclick="toggleDisclosure(this)">Report this issue</button>
+                        <div class="disclosure-content">
+                            <div class="error-details">
+                                Error ID: ERR_500_20250115_142345<br>
+                                Please include this ID when contacting support.
+                            </div>
+                            <div style="margin-top: 12px;">
+                                <button class="btn btn-secondary">Copy Error ID</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="error-state system-error">
+                <div class="error-state-header">Maintenance Mode</div>
+                <div class="error-state-content">
+                    <div class="error-display">
+                        <div class="error-icon">🔨</div>
+                        <div class="error-title">Scheduled Maintenance</div>
+                        <div class="error-message">CastMatch is currently undergoing scheduled maintenance. We'll be back shortly!</div>
+                        <div class="error-details">
+                            Estimated completion: 15 minutes<br>
+                            Started: 2:00 AM PST<br>
+                            Status: In Progress
+                        </div>
+                        <div class="error-actions">
+                            <button class="btn btn-primary">Get Notified</button>
+                            <button class="btn btn-secondary">Check Status</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Errors -->
+        <div class="error-category">
+            <h2>👤 User Errors</h2>
+            
+            <div class="error-state user-error">
+                <div class="error-state-header">Invalid Action</div>
+                <div class="error-state-content">
+                    <div class="error-display">
+                        <div class="error-icon">ℹ️</div>
+                        <div class="error-title">Action Not Available</div>
+                        <div class="error-message">You can't send messages to this talent because your profile isn't complete.</div>
+                        <div class="error-actions">
+                            <button class="btn btn-primary">Complete Profile</button>
+                            <button class="btn btn-secondary">Learn More</button>
+                        </div>
+                    </div>
+                    <div class="error-annotations">
+                        <h4>UX Annotations:</h4>
+                        <ul>
+                            <li>Guide user to required action</li>
+                            <li>Explain the 'why' behind restrictions</li>
+                            <li>Provide clear next steps</li>
+                            <li>Priority: Medium (P3)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="error-state user-error">
+                <div class="error-state-header">Unsupported Feature</div>
+                <div class="error-state-content">
+                    <div class="error-display">
+                        <div class="error-icon">🚧</div>
+                        <div class="error-title">Feature Coming Soon</div>
+                        <div class="error-message">Video calls are not available on mobile devices yet. Please use desktop for now.</div>
+                        <div class="error-actions">
+                            <button class="btn btn-primary">Switch to Desktop</button>
+                            <button class="btn btn-secondary">Get Updates</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleDisclosure(button) {
+            const content = button.nextElementSibling;
+            const isVisible = content.style.display === 'block';
+            
+            content.style.display = isVisible ? 'none' : 'block';
+            button.textContent = isVisible ? 'Show technical details' : 'Hide technical details';
+        }
+
+        // Simulate retry functionality
+        document.querySelectorAll('.btn-primary').forEach(button => {
+            if (button.textContent === 'Retry Connection' || button.textContent === 'Try Again') {
+                button.addEventListener('click', function() {
+                    const loadingState = this.closest('.error-display').querySelector('.loading-state') ||
+                                       this.closest('.error-display').querySelector('.retry-counter');
+                    
+                    this.disabled = true;
+                    this.textContent = 'Retrying...';
+                    
+                    setTimeout(() => {
+                        this.disabled = false;
+                        this.textContent = 'Retry Connection';
+                    }, 2000);
+                });
+            }
+        });
+
+        // Auto-dismiss temporary errors
+        setTimeout(() => {
+            const temporaryErrors = document.querySelectorAll('.network-error, .system-error');
+            temporaryErrors.forEach(error => {
+                const dismissButton = document.createElement('button');
+                dismissButton.className = 'btn btn-secondary';
+                dismissButton.textContent = 'Dismiss';
+                dismissButton.style.position = 'absolute';
+                dismissButton.style.top = '16px';
+                dismissButton.style.right = '16px';
+                dismissButton.onclick = () => error.style.opacity = '0.5';
+                
+                error.style.position = 'relative';
+                error.appendChild(dismissButton);
+            });
+        }, 3000);
+    </script>
+</body>
+</html>

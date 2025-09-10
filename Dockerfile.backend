@@ -1,0 +1,119 @@
+# Multi-stage Dockerfile for CastMatch Backend Service
+# Optimized for production with security and performance improvements
+
+# Base stage with common dependencies
+FROM node:18-alpine AS base
+
+# Install system dependencies for building native modules
+RUN apk add --no-cache \
+    python3 \
+    make \
+    g++ \
+    curl \
+    bash \
+    && rm -rf /var/cache/apk/*
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files first for better layer caching
+COPY package*.json ./
+COPY tsconfig*.json ./
+
+# Development stage
+FROM base AS development
+ENV NODE_ENV=development
+
+# Install all dependencies including devDependencies
+RUN npm ci --verbose
+
+# Copy source code
+COPY . .
+
+# Expose port
+EXPOSE 3001
+
+# Development command with hot reload
+CMD ["npm", "run", "dev"]
+
+# Dependencies stage - install production dependencies
+FROM base AS dependencies
+
+# Install production dependencies only
+RUN npm ci --only=production --verbose && \
+    npm cache clean --force
+
+# Copy production node_modules for later use
+RUN cp -R node_modules /tmp/prod_node_modules
+
+# Install all dependencies for building
+RUN npm ci --verbose
+
+# Builder stage - compile TypeScript
+FROM dependencies AS builder
+
+# Copy source code
+COPY . .
+
+# Build the application
+RUN npm run build && \
+    # Remove unnecessary files
+    rm -rf src tests .git .github docs && \
+    # Create necessary directories
+    mkdir -p dist/logs dist/uploads
+
+# Production stage - minimal runtime
+FROM node:18-alpine AS production
+
+# Install runtime dependencies only
+RUN apk add --no-cache \
+    curl \
+    tini \
+    && rm -rf /var/cache/apk/*
+
+# Set environment
+ENV NODE_ENV=production \
+    PORT=3001 \
+    NODE_OPTIONS="--max-old-space-size=1024 --enable-source-maps" \
+    NPM_CONFIG_LOGLEVEL=error
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+COPY tsconfig*.json ./
+
+# Copy production dependencies from dependencies stage
+COPY --from=dependencies /tmp/prod_node_modules ./node_modules
+
+# Copy built application from builder stage
+COPY --from=builder /app/dist ./dist
+
+# Copy necessary configuration files
+COPY --from=builder /app/.env.example ./.env.example
+
+# Create non-root user with specific UID/GID
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001 -G nodejs && \
+    # Create necessary directories
+    mkdir -p /app/logs /app/uploads /app/temp && \
+    # Set proper permissions
+    chown -R nodejs:nodejs /app && \
+    chmod -R 755 /app/logs /app/uploads /app/temp
+
+# Switch to non-root user
+USER nodejs
+
+# Expose port
+EXPOSE 3001
+
+# Health check with proper timeout and retries
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+  CMD curl -f http://localhost:3001/health || exit 1
+
+# Use tini for proper signal handling
+ENTRYPOINT ["/sbin/tini", "--"]
+
+# Start the application
+CMD ["node", "--enable-source-maps", "dist/server.js"]

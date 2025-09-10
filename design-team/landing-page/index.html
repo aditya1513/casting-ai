@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CastMatch - AI-powered casting platform for Mumbai's entertainment industry">
+    <title>CastMatch - Cast Your Vision, Shape Cinema's Future</title>
+    
+    <!-- Preconnect to font services -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Core Design System CSS -->
+    <link rel="stylesheet" href="../visual-systems/landing-page/tokens.css">
+    <link rel="stylesheet" href="../visual-systems/grids/landing-page/grid-implementation.css">
+    <link rel="stylesheet" href="../color-lighting/landing-page/mumbai-gradients.css">
+    <link rel="stylesheet" href="../typography/landing-page/type-system.css">
+    <link rel="stylesheet" href="../motion/Animation_Library/castmatch-animations.css">
+    <link rel="stylesheet" href="../motion/Animation_Library/micro-interactions.css">
+    <link rel="stylesheet" href="../motion/Animation_Library/glassmorphic-effects.css">
+    
+    <style>
+        /* Combined Landing Page Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--cinema-black);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Ambient Background */
+        .ambient-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            background: linear-gradient(180deg, 
+                var(--cinema-black) 0%, 
+                #0A0515 50%, 
+                #150525 100%);
+        }
+
+        .ambient-gradient {
+            position: absolute;
+            width: 800px;
+            height: 800px;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.3;
+            animation: ambient-float 20s ease-in-out infinite;
+        }
+
+        .gradient-1 {
+            top: -400px;
+            left: -400px;
+            background: var(--gradient-mumbai-sunset);
+        }
+
+        .gradient-2 {
+            bottom: -400px;
+            right: -400px;
+            background: var(--gradient-arabian-sea);
+            animation-delay: -10s;
+        }
+
+        @keyframes ambient-float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(50px, -50px) scale(1.1); }
+        }
+
+        /* Hero Section */
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding: var(--spacing-4) 0;
+        }
+
+        /* Content Area Styling */
+        .hero-content-area {
+            z-index: 2;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero-headline {
+            background: linear-gradient(135deg, #FF6B35 0%, #F7931E 50%, #FFD700 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient-shift 8s ease-in-out infinite;
+            margin-bottom: var(--spacing-3);
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+        }
+
+        @keyframes gradient-shift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .hero-subheadline {
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-4);
+            opacity: 0.9;
+        }
+
+        /* CTA Buttons */
+        .hero-cta-group {
+            display: flex;
+            gap: var(--spacing-3);
+            margin-bottom: var(--spacing-4);
+            flex-wrap: wrap;
+        }
+
+        .hero-cta {
+            padding: var(--spacing-2) var(--spacing-4);
+            border-radius: var(--radius-lg);
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-1);
+            transition: all 0.3s var(--ease-spring);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-cta--primary {
+            background: var(--gradient-mumbai-sunset);
+            color: white;
+            box-shadow: var(--shadow-glow-mumbai);
+        }
+
+        .hero-cta--primary:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: var(--shadow-glow-mumbai-intense);
+        }
+
+        .hero-cta--secondary {
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+        }
+
+        .hero-cta--secondary:hover {
+            background: var(--glass-bg-hover);
+            transform: translateY(-2px);
+        }
+
+        /* Trust Indicators */
+        .trust-indicators {
+            display: flex;
+            gap: var(--spacing-4);
+            color: var(--text-tertiary);
+            font-size: var(--font-size-sm);
+            flex-wrap: wrap;
+        }
+
+        .trust-indicator {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-1);
+        }
+
+        .trust-indicator-value {
+            color: var(--color-amber-400);
+            font-weight: 600;
+        }
+
+        /* Visual Area */
+        .hero-visual-area {
+            position: relative;
+            z-index: 1;
+        }
+
+        .visual-showcase {
+            position: relative;
+            padding: var(--spacing-3);
+        }
+
+        /* Talent Cards Grid */
+        .talent-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-2);
+            transform: perspective(1000px) rotateY(-5deg);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: perspective(1000px) rotateY(-5deg) translateY(0); }
+            50% { transform: perspective(1000px) rotateY(-5deg) translateY(-20px); }
+        }
+
+        .talent-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-2);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s var(--ease-spring);
+        }
+
+        .talent-card:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-glass-elevated);
+            border-color: var(--color-amber-400);
+        }
+
+        .talent-card-image {
+            width: 100%;
+            height: 120px;
+            background: var(--gradient-arabian-sea);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .talent-card-shimmer {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.1), 
+                transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 200%; }
+        }
+
+        .talent-card-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .talent-card-role {
+            font-size: var(--font-size-sm);
+            color: var(--text-tertiary);
+        }
+
+        .talent-card-match {
+            position: absolute;
+            top: var(--spacing-1);
+            right: var(--spacing-1);
+            background: var(--gradient-mumbai-sunset);
+            color: white;
+            padding: 4px 8px;
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-xs);
+            font-weight: 600;
+        }
+
+        /* Floating Particles */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--color-amber-400);
+            border-radius: 50%;
+            animation: particle-float 20s linear infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes particle-float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-cta-group {
+                flex-direction: column;
+            }
+
+            .hero-cta {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .talent-cards-grid {
+                grid-template-columns: 1fr;
+                transform: none;
+            }
+
+            .trust-indicators {
+                flex-direction: column;
+                gap: var(--spacing-2);
+            }
+        }
+
+        /* Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Loading Animation */
+        .hero-loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--cinema-black);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            animation: fadeOut 0.5s ease-out 2s forwards;
+        }
+
+        .loading-logo {
+            width: 120px;
+            height: 120px;
+            background: var(--gradient-mumbai-sunset);
+            border-radius: var(--radius-xl);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="hero-loading">
+        <div class="loading-logo"></div>
+    </div>
+
+    <!-- Ambient Background -->
+    <div class="ambient-background">
+        <div class="ambient-gradient gradient-1"></div>
+        <div class="ambient-gradient gradient-2"></div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-grid-container">
+            <div class="hero-inner-grid">
+                <!-- Content Area -->
+                <div class="hero-content-area">
+                    <div class="hero-content-elements">
+                        <h1 class="hero-headline">
+                            Cast Your Vision,<br>
+                            Shape Cinema's Future
+                        </h1>
+                        
+                        <p class="hero-subheadline">
+                            AI-powered casting platform connecting Mumbai's finest talent 
+                            with visionary filmmakers. Find your perfect cast in seconds, 
+                            not weeks.
+                        </p>
+                        
+                        <div class="hero-cta-group">
+                            <a href="#" class="hero-cta hero-cta--primary">
+                                <span>Start Casting</span>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                                </svg>
+                            </a>
+                            <a href="#" class="hero-cta hero-cta--secondary">
+                                <span>Join as Talent</span>
+                            </a>
+                        </div>
+                        
+                        <div class="trust-indicators">
+                            <div class="trust-indicator">
+                                <span class="trust-indicator-value">50,000+</span>
+                                <span>Verified Talents</span>
+                            </div>
+                            <div class="trust-indicator">
+                                <span class="trust-indicator-value">1,000+</span>
+                                <span>Productions</span>
+                            </div>
+                            <div class="trust-indicator">
+                                <span class="trust-indicator-value">AI-Powered</span>
+                                <span>Instant Matching</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visual Area -->
+                <div class="hero-visual-area">
+                    <div class="visual-showcase">
+                        <div class="talent-cards-grid">
+                            <div class="talent-card">
+                                <div class="talent-card-image">
+                                    <div class="talent-card-shimmer"></div>
+                                </div>
+                                <div class="talent-card-name">Priya Sharma</div>
+                                <div class="talent-card-role">Lead Actress</div>
+                                <div class="talent-card-match">95% Match</div>
+                            </div>
+                            
+                            <div class="talent-card">
+                                <div class="talent-card-image">
+                                    <div class="talent-card-shimmer"></div>
+                                </div>
+                                <div class="talent-card-name">Arjun Mehta</div>
+                                <div class="talent-card-role">Character Actor</div>
+                                <div class="talent-card-match">92% Match</div>
+                            </div>
+                            
+                            <div class="talent-card">
+                                <div class="talent-card-image">
+                                    <div class="talent-card-shimmer"></div>
+                                </div>
+                                <div class="talent-card-name">Zara Khan</div>
+                                <div class="talent-card-role">Supporting Role</div>
+                                <div class="talent-card-match">88% Match</div>
+                            </div>
+                            
+                            <div class="talent-card">
+                                <div class="talent-card-image">
+                                    <div class="talent-card-shimmer"></div>
+                                </div>
+                                <div class="talent-card-name">Rohit Verma</div>
+                                <div class="talent-card-role">Debut Actor</div>
+                                <div class="talent-card-match">90% Match</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Floating Particles -->
+                        <div class="particles">
+                            <div class="particle" style="left: 10%; animation-delay: 0s;"></div>
+                            <div class="particle" style="left: 30%; animation-delay: 3s;"></div>
+                            <div class="particle" style="left: 50%; animation-delay: 6s;"></div>
+                            <div class="particle" style="left: 70%; animation-delay: 9s;"></div>
+                            <div class="particle" style="left: 90%; animation-delay: 12s;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Font Loader -->
+    <script src="../typography/landing-page/font-loader.js" defer></script>
+    
+    <!-- Animation Scripts -->
+    <script src="../motion/Animation_Library/castmatch-animations.js" defer></script>
+    
+    <!-- Page Initialization -->
+    <script>
+        // Initialize animations when page loads
+        window.addEventListener('load', () => {
+            // Remove loading screen
+            setTimeout(() => {
+                document.querySelector('.hero-loading').style.display = 'none';
+            }, 2500);
+            
+            // Initialize motion system if available
+            if (window.CastMatchMotion) {
+                window.CastMatchMotion.init();
+            }
+        });
+
+        // Add scroll-based animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in');
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements for animation
+        document.querySelectorAll('.talent-card').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,708 @@
+/**
+ * =========================================================================
+ * CASTMATCH LANDING PAGE - HERO GRID IMPLEMENTATION
+ * Layout Grid Engineer - Mathematical Precision System
+ * Version: 1.0
+ * Date: January 2025
+ * =========================================================================
+ * 
+ * Foundation: 12-column grid with golden ratio (1.618) proportions
+ * Spacing: 8px baseline grid with harmonic progression
+ * Layout: 60/40 split for hero content (7/5 columns on desktop)
+ * Performance: GPU-optimized with minimal reflows
+ * 
+ * =========================================================================
+ */
+
+/* ==========================================
+   GRID CONTAINER - Foundation Layer
+   ========================================== */
+
+.hero-grid-container {
+  /* Grid Setup */
+  display: grid;
+  width: 100%;
+  max-width: var(--container-max, 1920px);
+  margin: 0 auto;
+  position: relative;
+  
+  /* Mobile First: 4 columns */
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--gutter-mobile, 16px);
+  padding: 0 var(--margin-mobile, 16px);
+  
+  /* Subgrid Support for Nested Grids */
+  grid-auto-flow: dense;
+  align-items: start;
+  
+  /* Performance Optimization */
+  will-change: transform;
+  contain: layout style paint;
+}
+
+/* ==========================================
+   HERO SECTION - Main Layout Grid
+   ========================================== */
+
+.hero-section {
+  /* Full viewport height with safe areas */
+  min-height: 100vh;
+  min-height: 100dvh; /* Dynamic viewport height */
+  
+  /* Grid-based centering */
+  display: grid;
+  place-items: center;
+  
+  /* Spacing using 8px baseline */
+  padding-top: calc(var(--spacing-8, 64px) + env(safe-area-inset-top));
+  padding-bottom: calc(var(--spacing-8, 64px) + env(safe-area-inset-bottom));
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  
+  /* Z-index layering */
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+/* Hero Inner Grid - Content Layout */
+.hero-inner-grid {
+  display: grid;
+  width: 100%;
+  max-width: var(--container-max, 1920px);
+  margin: 0 auto;
+  
+  /* Mobile: Single column */
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "content"
+    "visual";
+  gap: var(--spacing-6, 48px);
+  
+  /* Alignment */
+  align-items: center;
+  justify-items: start;
+}
+
+/* ==========================================
+   CONTENT AREA - 60% Golden Ratio
+   ========================================== */
+
+.hero-content-area {
+  grid-area: content;
+  
+  /* Content Grid */
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-3, 24px);
+  
+  /* Golden Ratio Max Width */
+  max-width: calc(100vw * 0.618);
+  width: 100%;
+  
+  /* Spacing Rhythm */
+  padding: var(--spacing-4, 32px) 0;
+}
+
+/* Content Elements Grid */
+.hero-content-elements {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-auto-rows: min-content;
+  gap: var(--spacing-2, 16px);
+  
+  /* Text Alignment */
+  justify-items: start;
+  align-content: start;
+}
+
+/* Headline Container */
+.hero-headline-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-1, 8px);
+  
+  /* Typography Grid Alignment */
+  align-items: baseline;
+  line-height: var(--baseline, 8px);
+}
+
+/* Subheadline Container */
+.hero-subheadline-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-1, 8px);
+  
+  /* Golden Ratio Width Constraint */
+  max-width: calc(100% * 0.618);
+}
+
+/* CTA Button Grid */
+.hero-cta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, max-content));
+  gap: var(--spacing-2, 16px);
+  
+  /* Alignment */
+  justify-content: start;
+  align-items: center;
+  
+  /* Spacing */
+  margin-top: var(--spacing-2, 16px);
+}
+
+/* Trust Indicators Grid */
+.hero-trust-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--spacing-3, 24px);
+  
+  /* Spacing */
+  margin-top: var(--spacing-4, 32px);
+  padding-top: var(--spacing-3, 24px);
+  border-top: 1px solid var(--border-light, rgba(255, 255, 255, 0.05));
+}
+
+/* ==========================================
+   VISUAL AREA - 40% Golden Ratio
+   ========================================== */
+
+.hero-visual-area {
+  grid-area: visual;
+  
+  /* Visual Container Grid */
+  display: grid;
+  grid-template-columns: 1fr;
+  place-items: center;
+  
+  /* Aspect Ratio */
+  aspect-ratio: 4 / 3;
+  min-height: 320px;
+  width: 100%;
+  
+  /* Golden Ratio Constraint */
+  max-width: calc(100vw * 0.382); /* 1 - 0.618 = 0.382 */
+}
+
+/* Visual Cards Grid - Bento Style */
+.hero-visual-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: var(--spacing-2, 16px);
+  
+  /* Full container */
+  width: 100%;
+  height: 100%;
+  padding: var(--spacing-3, 24px);
+  
+  /* Auto-placement */
+  grid-auto-flow: dense;
+}
+
+/* Card Size Variations */
+.visual-card-small {
+  grid-column: span 1;
+  grid-row: span 1;
+}
+
+.visual-card-wide {
+  grid-column: span 2;
+  grid-row: span 1;
+}
+
+.visual-card-tall {
+  grid-column: span 1;
+  grid-row: span 2;
+}
+
+.visual-card-large {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+/* ==========================================
+   TABLET BREAKPOINT - 768px (8 columns)
+   ========================================== */
+
+@media (min-width: 768px) {
+  .hero-grid-container {
+    /* 8 Column Grid */
+    grid-template-columns: repeat(8, 1fr);
+    gap: var(--gutter-tablet, 24px);
+    padding: 0 var(--margin-tablet, 24px);
+  }
+  
+  .hero-inner-grid {
+    /* Side-by-side layout */
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-areas: "content content content content content visual visual visual";
+    gap: var(--spacing-4, 32px);
+    align-items: center;
+  }
+  
+  .hero-content-area {
+    /* 5 of 8 columns (62.5% ≈ Golden ratio) */
+    grid-column: span 5;
+    padding: var(--spacing-6, 48px) 0;
+  }
+  
+  .hero-visual-area {
+    /* 3 of 8 columns (37.5%) */
+    grid-column: span 3;
+    aspect-ratio: 3 / 4;
+    min-height: 400px;
+  }
+  
+  .hero-visual-grid {
+    /* 2x3 grid for tablets */
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+  }
+  
+  /* Content spacing adjustments */
+  .hero-content-elements {
+    gap: var(--spacing-3, 24px);
+  }
+  
+  .hero-cta-grid {
+    grid-template-columns: repeat(auto-fit, minmax(160px, max-content));
+    gap: var(--spacing-3, 24px);
+  }
+}
+
+/* ==========================================
+   DESKTOP BREAKPOINT - 1024px (12 columns)
+   ========================================== */
+
+@media (min-width: 1024px) {
+  .hero-grid-container {
+    /* 12 Column Grid */
+    grid-template-columns: repeat(12, 1fr);
+    gap: var(--gutter-desktop, 32px);
+    padding: 0 var(--margin-desktop, 40px);
+    
+    /* Container constraint */
+    max-width: var(--container-desktop, 984px);
+  }
+  
+  .hero-inner-grid {
+    /* 12 column layout */
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-areas: "content content content content content content content visual visual visual visual visual";
+    gap: var(--spacing-5, 40px);
+  }
+  
+  .hero-content-area {
+    /* 7 of 12 columns (58.3% ≈ Golden ratio) */
+    grid-column: span 7;
+    max-width: none;
+    padding: var(--spacing-8, 64px) 0;
+  }
+  
+  .hero-visual-area {
+    /* 5 of 12 columns (41.7%) */
+    grid-column: span 5;
+    max-width: none;
+    aspect-ratio: 1 / 1;
+    min-height: 500px;
+  }
+  
+  .hero-visual-grid {
+    /* 3x3 grid for desktop */
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: var(--spacing-3, 24px);
+  }
+  
+  /* Enhanced content spacing */
+  .hero-content-elements {
+    gap: var(--spacing-4, 32px);
+  }
+  
+  .hero-headline-container {
+    gap: var(--spacing-2, 16px);
+  }
+  
+  .hero-cta-grid {
+    margin-top: var(--spacing-4, 32px);
+  }
+  
+  .hero-trust-grid {
+    grid-template-columns: repeat(3, max-content);
+    gap: var(--spacing-5, 40px);
+    margin-top: var(--spacing-6, 48px);
+  }
+}
+
+/* ==========================================
+   WIDE DESKTOP - 1440px (12 columns)
+   ========================================== */
+
+@media (min-width: 1440px) {
+  .hero-grid-container {
+    gap: var(--gutter-wide, 32px);
+    padding: 0 var(--margin-wide, 48px);
+    max-width: var(--container-wide, 1360px);
+  }
+  
+  .hero-inner-grid {
+    gap: var(--spacing-6, 48px);
+  }
+  
+  .hero-visual-grid {
+    /* 4x3 grid for wide screens */
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: var(--spacing-4, 32px);
+  }
+  
+  /* Larger featured cards */
+  .visual-card-featured {
+    grid-column: span 3;
+    grid-row: span 2;
+  }
+}
+
+/* ==========================================
+   ULTRA WIDE - 1920px+ (12 columns)
+   ========================================== */
+
+@media (min-width: 1920px) {
+  .hero-grid-container {
+    gap: var(--gutter-ultra, 40px);
+    padding: 0 var(--margin-ultra, 64px);
+    max-width: var(--container-ultra, 1840px);
+  }
+  
+  .hero-inner-grid {
+    gap: var(--spacing-8, 64px);
+  }
+  
+  /* Maximum content width for readability */
+  .hero-content-area {
+    max-width: 800px;
+  }
+  
+  .hero-visual-area {
+    min-height: 600px;
+  }
+}
+
+/* ==========================================
+   DENSITY VARIATIONS - User Preference
+   ========================================== */
+
+/* Comfortable (Default) */
+[data-density="comfortable"] .hero-grid-container {
+  gap: var(--gutter-desktop, 32px);
+}
+
+/* Compact - 20% reduction */
+[data-density="compact"] .hero-grid-container {
+  gap: calc(var(--gutter-desktop, 32px) * 0.8);
+}
+
+[data-density="compact"] .hero-content-elements {
+  gap: calc(var(--spacing-3, 24px) * 0.8);
+}
+
+[data-density="compact"] .hero-inner-grid {
+  gap: calc(var(--spacing-5, 40px) * 0.8);
+}
+
+/* Spacious - 20% increase */
+[data-density="spacious"] .hero-grid-container {
+  gap: calc(var(--gutter-desktop, 32px) * 1.2);
+}
+
+[data-density="spacious"] .hero-content-elements {
+  gap: calc(var(--spacing-3, 24px) * 1.2);
+}
+
+[data-density="spacious"] .hero-inner-grid {
+  gap: calc(var(--spacing-5, 40px) * 1.2);
+}
+
+/* ==========================================
+   CONTAINER QUERIES - Component Responsive
+   ========================================== */
+
+/* Container setup */
+.hero-section {
+  container-type: inline-size;
+  container-name: hero;
+}
+
+/* Small container */
+@container hero (max-width: 640px) {
+  .hero-content-elements {
+    gap: var(--spacing-2, 16px);
+  }
+  
+  .hero-visual-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Medium container */
+@container hero (min-width: 640px) and (max-width: 1024px) {
+  .hero-content-elements {
+    gap: var(--spacing-3, 24px);
+  }
+  
+  .hero-visual-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Large container */
+@container hero (min-width: 1024px) {
+  .hero-content-elements {
+    gap: var(--spacing-4, 32px);
+  }
+  
+  .hero-visual-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ==========================================
+   PERFORMANCE OPTIMIZATIONS
+   ========================================== */
+
+/* GPU Acceleration for Grid Items */
+.hero-content-area,
+.hero-visual-area,
+.visual-card-small,
+.visual-card-wide,
+.visual-card-tall,
+.visual-card-large {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-font-smoothing: subpixel-antialiased;
+}
+
+/* Reduce Paint Areas */
+.hero-grid-container {
+  isolation: isolate;
+}
+
+/* Optimize Grid Calculations */
+@supports (grid-template-columns: subgrid) {
+  .hero-content-elements,
+  .hero-visual-grid {
+    grid-template-columns: subgrid;
+  }
+}
+
+/* ==========================================
+   FALLBACK SUPPORT - Flexbox
+   ========================================== */
+
+/* Flexbox fallback for older browsers */
+@supports not (display: grid) {
+  .hero-grid-container,
+  .hero-inner-grid {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .hero-content-area {
+    flex: 0 0 60%;
+    max-width: 60%;
+  }
+  
+  .hero-visual-area {
+    flex: 0 0 40%;
+    max-width: 40%;
+  }
+  
+  .hero-content-elements,
+  .hero-visual-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-3, 24px);
+  }
+  
+  .hero-cta-grid,
+  .hero-trust-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-2, 16px);
+  }
+}
+
+/* ==========================================
+   ACCESSIBILITY ENHANCEMENTS
+   ========================================== */
+
+/* Focus visible for keyboard navigation */
+.hero-grid-container *:focus-visible {
+  outline: 3px solid var(--accent-primary, #06B6D4);
+  outline-offset: 4px;
+  border-radius: var(--radius-sm, 4px);
+}
+
+/* Skip to content link */
+.skip-to-hero {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--bg-elevated);
+  color: var(--fg-primary);
+  padding: var(--spacing-2, 16px);
+  z-index: 100;
+  text-decoration: none;
+}
+
+.skip-to-hero:focus {
+  top: 0;
+}
+
+/* Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ==========================================
+   MOTION PREFERENCES
+   ========================================== */
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .hero-grid-container,
+  .hero-grid-container * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Smooth transitions for layout shifts */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-inner-grid,
+  .hero-content-area,
+  .hero-visual-area {
+    transition: all 300ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  
+  .visual-card-small,
+  .visual-card-wide,
+  .visual-card-tall,
+  .visual-card-large {
+    transition: transform 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+}
+
+/* ==========================================
+   PRINT STYLES
+   ========================================== */
+
+@media print {
+  .hero-section {
+    min-height: auto;
+    padding: var(--spacing-4, 32px) 0;
+  }
+  
+  .hero-grid-container {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-2, 16px);
+  }
+  
+  .hero-inner-grid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "content"
+      "visual";
+  }
+  
+  .hero-visual-area {
+    display: none;
+  }
+}
+
+/* ==========================================
+   DEBUG MODE - Grid Visualization
+   ========================================== */
+
+[data-debug="grid"] .hero-grid-container {
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(255, 0, 0, 0.1) 0,
+    rgba(255, 0, 0, 0.1) calc(100% / 12 - var(--gutter-desktop, 32px)),
+    transparent calc(100% / 12 - var(--gutter-desktop, 32px)),
+    transparent calc(100% / 12)
+  );
+}
+
+[data-debug="grid"] .hero-grid-container > * {
+  outline: 1px dashed rgba(0, 255, 0, 0.5);
+  position: relative;
+}
+
+[data-debug="grid"] .hero-grid-container > *::before {
+  content: attr(class);
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.8);
+  color: #00FF00;
+  font-size: 10px;
+  padding: 2px 4px;
+  z-index: 999;
+  pointer-events: none;
+}
+
+/* ==========================================
+   GOLDEN RATIO UTILITIES
+   ========================================== */
+
+.golden-width-major {
+  width: calc(100% * 0.618);
+}
+
+.golden-width-minor {
+  width: calc(100% * 0.382);
+}
+
+.golden-height-major {
+  height: calc(100% * 0.618);
+}
+
+.golden-height-minor {
+  height: calc(100% * 0.382);
+}
+
+/* Golden ratio spacing utilities */
+.golden-gap-1 {
+  gap: 13px; /* 8 × 1.618 */
+}
+
+.golden-gap-2 {
+  gap: 21px; /* 13 × 1.618 */
+}
+
+.golden-gap-3 {
+  gap: 34px; /* 21 × 1.618 */
+}
+
+.golden-gap-4 {
+  gap: 55px; /* 34 × 1.618 */
+}
+
+.golden-gap-5 {
+  gap: 89px; /* 55 × 1.618 */
+}
+
+/* ==========================================
+   END OF GRID IMPLEMENTATION
+   ========================================== */

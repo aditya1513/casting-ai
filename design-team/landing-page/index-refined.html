@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CastMatch - AI-powered casting platform for Mumbai's entertainment industry">
+    <title>CastMatch - Cast Your Vision, Shape Cinema's Future</title>
+    
+    <!-- Inter Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Grid System -->
+    <link rel="stylesheet" href="../visual-systems/grids/Grid_System_v2/castmatch-grid-system.css">
+    
+    <style>
+        :root {
+            /* Colors */
+            --bg-primary: #0A0A0F;
+            --bg-secondary: #12121A;
+            --bg-tertiary: #1A1A25;
+            
+            --text-primary: #FFFFFF;
+            --text-secondary: #A0A0B0;
+            --text-tertiary: #70708B;
+            
+            --accent-orange: #FF6B35;
+            --accent-orange-dark: #E55A2B;
+            --accent-purple: #8B5CF6;
+            --accent-blue: #3B82F6;
+            --accent-gold: #FFD700;
+            
+            --gradient-primary: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+            --gradient-purple: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+            --gradient-mesh: radial-gradient(at 40% 20%, hsla(28, 100%, 74%, 0.3) 0px, transparent 50%),
+                            radial-gradient(at 80% 0%, hsla(189, 100%, 56%, 0.2) 0px, transparent 50%),
+                            radial-gradient(at 0% 50%, hsla(355, 100%, 93%, 0.1) 0px, transparent 50%);
+            
+            /* Glass effect */
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            
+            /* Typography Scale (Golden Ratio) */
+            --text-xs: 0.694rem;     /* 11.1px */
+            --text-sm: 0.833rem;     /* 13.3px */
+            --text-base: 1rem;       /* 16px */
+            --text-lg: 1.2rem;       /* 19.2px */
+            --text-xl: 1.44rem;      /* 23px */
+            --text-2xl: 1.728rem;    /* 27.6px */
+            --text-3xl: 2.074rem;    /* 33.2px */
+            --text-4xl: 2.488rem;    /* 39.8px */
+            --text-5xl: 2.986rem;    /* 47.8px */
+            --text-6xl: 3.583rem;    /* 57.3px */
+            --text-7xl: 4.3rem;      /* 68.8px */
+            
+            /* Line Heights */
+            --line-height-tight: 1.1;
+            --line-height-base: 1.5;
+            --line-height-relaxed: 1.618; /* Golden ratio */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: var(--line-height-base);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ==========================================
+           NAVIGATION WITH PERFECT GRID ALIGNMENT
+           ========================================== */
+        
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: var(--z-fixed);
+            backdrop-filter: blur(20px);
+            background: rgba(10, 10, 15, 0.8);
+            border-bottom: 1px solid var(--glass-border);
+            height: var(--spacing-10); /* 80px - consistent height */
+        }
+
+        .nav-container {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: var(--gutter-desktop);
+            align-items: center;
+            height: 100%;
+            max-width: var(--container-wide);
+            margin: 0 auto;
+            padding: 0 var(--margin-desktop);
+        }
+
+        .logo {
+            grid-column: span 2;
+            font-size: var(--text-xl);
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            grid-column: span 8;
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-6);
+            list-style: none;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: var(--text-base);
+            transition: color 0.2s;
+            padding: var(--spacing-1) 0;
+        }
+
+        .nav-link:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-cta-wrapper {
+            grid-column: span 2;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .nav-cta {
+            background: var(--gradient-primary);
+            color: white;
+            padding: var(--spacing-1_5) var(--spacing-3);
+            border-radius: var(--spacing-1);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: var(--text-base);
+            transition: all 0.2s;
+            display: inline-block;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 107, 53, 0.3);
+        }
+
+        /* ==========================================
+           HERO SECTION WITH 12-COLUMN GRID
+           ========================================== */
+        
+        .hero {
+            min-height: 100vh;
+            padding-top: var(--spacing-10); /* Account for fixed nav */
+            padding-bottom: var(--spacing-12);
+            position: relative;
+            background: var(--gradient-mesh);
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-container {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: var(--gutter-desktop);
+            max-width: var(--container-wide);
+            margin: 0 auto;
+            padding: 0 var(--margin-desktop);
+            align-items: center;
+        }
+
+        .hero-content {
+            grid-column: span 6;
+            padding-right: var(--spacing-6);
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(var(--spacing-4));
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-1);
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: var(--spacing-1) var(--spacing-2);
+            border-radius: var(--spacing-4);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .badge-dot {
+            width: var(--spacing-1);
+            height: var(--spacing-1);
+            background: #10B981;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .badge-text {
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+        }
+
+        h1 {
+            font-size: clamp(var(--text-5xl), 5vw, var(--text-7xl));
+            font-weight: 900;
+            line-height: var(--line-height-tight);
+            margin-bottom: var(--spacing-3);
+            letter-spacing: -0.03em;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #FFFFFF 0%, #FFFFFF 50%, #FF6B35 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-description {
+            font-size: var(--text-lg);
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-6);
+            line-height: var(--line-height-relaxed);
+            max-width: 90%;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: var(--spacing-2);
+            margin-bottom: var(--spacing-8);
+        }
+
+        .btn {
+            padding: var(--spacing-2) var(--spacing-4);
+            border-radius: var(--spacing-1);
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-1);
+            transition: all 0.2s;
+            font-size: var(--text-base);
+            height: var(--spacing-6); /* Consistent button height */
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: 0 4px 14px 0 rgba(255, 107, 53, 0.35);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px 0 rgba(255, 107, 53, 0.45);
+        }
+
+        .btn-secondary {
+            background: var(--glass-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--spacing-4);
+            max-width: 80%;
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-0_5);
+        }
+
+        .stat-value {
+            font-size: var(--text-3xl);
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: var(--text-sm);
+            color: var(--text-tertiary);
+        }
+
+        /* ==========================================
+           HERO VISUAL WITH GOLDEN RATIO POSITIONING
+           ========================================== */
+        
+        .hero-visual {
+            grid-column: span 6;
+            position: relative;
+            animation: fadeIn 1s ease-out 0.2s both;
+            height: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .talent-showcase {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            max-width: 560px; /* Constrain showcase width */
+        }
+
+        .showcase-card {
+            position: absolute;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--spacing-2);
+            padding: var(--spacing-2);
+            box-shadow: var(--glass-shadow);
+            transition: all 0.3s ease;
+        }
+
+        .showcase-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            border-color: rgba(255, 107, 53, 0.5);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Golden ratio positioning */
+        .card-1 {
+            top: calc(100% * 0.134); /* 13.4% from top (golden ratio) */
+            left: 0;
+            width: 280px;
+            z-index: 3;
+        }
+
+        .card-2 {
+            top: calc(100% * 0.236); /* 23.6% from top (golden ratio) */
+            right: var(--spacing-6);
+            width: 240px;
+            z-index: 2;
+        }
+
+        .card-3 {
+            bottom: calc(100% * 0.134); /* 13.4% from bottom (golden ratio) */
+            left: var(--spacing-12);
+            width: 260px;
+            z-index: 4;
+        }
+
+        .card-header {
+            display: grid;
+            grid-template-columns: var(--spacing-6) 1fr;
+            gap: var(--spacing-2);
+            align-items: center;
+            margin-bottom: var(--spacing-2);
+        }
+
+        .avatar {
+            width: var(--spacing-6);
+            height: var(--spacing-6);
+            border-radius: 50%;
+            background: var(--gradient-purple);
+        }
+
+        .card-info h3 {
+            font-size: var(--text-base);
+            font-weight: 600;
+            margin-bottom: var(--spacing-0_5);
+        }
+
+        .card-info p {
+            font-size: var(--text-sm);
+            color: var(--text-tertiary);
+        }
+
+        .match-badge {
+            position: absolute;
+            top: var(--spacing-2);
+            right: var(--spacing-2);
+            background: var(--gradient-primary);
+            color: white;
+            padding: var(--spacing-0_5) var(--spacing-1_5);
+            border-radius: var(--spacing-4);
+            font-size: var(--text-xs);
+            font-weight: 600;
+        }
+
+        .card-skills {
+            display: flex;
+            gap: var(--spacing-1);
+            flex-wrap: wrap;
+            margin-top: var(--spacing-2);
+        }
+
+        .skill-tag {
+            background: rgba(139, 92, 246, 0.1);
+            color: #A78BFA;
+            padding: var(--spacing-0_5) var(--spacing-1_5);
+            border-radius: var(--spacing-0_5);
+            font-size: var(--text-xs);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+
+        /* ==========================================
+           FEATURES SECTION WITH PERFECT GRID
+           ========================================== */
+        
+        .features {
+            padding: var(--spacing-12) 0;
+            background: var(--bg-secondary);
+        }
+
+        .features-container {
+            max-width: var(--container-wide);
+            margin: 0 auto;
+            padding: 0 var(--margin-desktop);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: var(--spacing-8);
+        }
+
+        .section-title {
+            font-size: var(--text-5xl);
+            font-weight: 800;
+            margin-bottom: var(--spacing-2);
+            letter-spacing: -0.02em;
+        }
+
+        .section-subtitle {
+            font-size: var(--text-lg);
+            color: var(--text-secondary);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: var(--gutter-desktop);
+        }
+
+        .feature-card {
+            grid-column: span 4;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--spacing-2);
+            padding: var(--spacing-4);
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-3);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 107, 53, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature-icon {
+            width: var(--spacing-6);
+            height: var(--spacing-6);
+            background: var(--gradient-primary);
+            border-radius: var(--spacing-1_5);
+        }
+
+        .feature-title {
+            font-size: var(--text-xl);
+            font-weight: 700;
+            line-height: var(--line-height-tight);
+        }
+
+        .feature-description {
+            color: var(--text-secondary);
+            line-height: var(--line-height-relaxed);
+            font-size: var(--text-base);
+        }
+
+        /* ==========================================
+           RESPONSIVE ADAPTATIONS
+           ========================================== */
+        
+        /* Tablet: 768px - 1023px */
+        @media screen and (min-width: 768px) and (max-width: 1023px) {
+            .nav-container,
+            .hero-container,
+            .features-grid {
+                grid-template-columns: repeat(8, 1fr);
+                gap: var(--gutter-tablet);
+                padding: 0 var(--margin-tablet);
+            }
+
+            .logo {
+                grid-column: span 2;
+            }
+
+            .nav-links {
+                grid-column: span 4;
+                gap: var(--spacing-3);
+            }
+
+            .nav-cta-wrapper {
+                grid-column: span 2;
+            }
+
+            .hero-content {
+                grid-column: span 8;
+                padding-right: 0;
+            }
+
+            .hero-visual {
+                display: none;
+            }
+
+            .feature-card {
+                grid-column: span 4;
+            }
+
+            .hero-stats {
+                max-width: 100%;
+            }
+        }
+
+        /* Mobile: 320px - 767px */
+        @media screen and (max-width: 767px) {
+            .nav-container {
+                grid-template-columns: repeat(4, 1fr);
+                gap: var(--gutter-mobile);
+                padding: 0 var(--margin-mobile);
+            }
+
+            .logo {
+                grid-column: span 3;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .nav-cta-wrapper {
+                grid-column: span 1;
+            }
+
+            .nav-cta {
+                padding: var(--spacing-1) var(--spacing-2);
+                font-size: var(--text-sm);
+            }
+
+            .hero-container {
+                grid-template-columns: repeat(4, 1fr);
+                gap: var(--gutter-mobile);
+                padding: 0 var(--margin-mobile);
+            }
+
+            .hero-content {
+                grid-column: span 4;
+                padding-right: 0;
+            }
+
+            .hero-visual {
+                display: none;
+            }
+
+            .hero-description {
+                max-width: 100%;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                gap: var(--spacing-2);
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .hero-stats {
+                grid-template-columns: repeat(3, 1fr);
+                gap: var(--spacing-2);
+                max-width: 100%;
+            }
+
+            .stat-value {
+                font-size: var(--text-2xl);
+            }
+
+            .features-container {
+                padding: 0 var(--margin-mobile);
+            }
+
+            .features-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: var(--gutter-mobile);
+            }
+
+            .feature-card {
+                grid-column: span 4;
+            }
+
+            .section-title {
+                font-size: var(--text-4xl);
+            }
+
+            h1 {
+                font-size: var(--text-5xl);
+            }
+        }
+
+        /* Ultra-wide: 1920px+ */
+        @media screen and (min-width: 1920px) {
+            .nav-container,
+            .hero-container,
+            .features-container {
+                max-width: var(--container-ultra);
+                padding: 0 var(--margin-ultra);
+            }
+
+            .features-grid {
+                gap: var(--gutter-ultra);
+            }
+        }
+
+        /* ==========================================
+           VISUAL GRID OVERLAY (Debug Mode)
+           ========================================== */
+        
+        .show-grid {
+            position: relative;
+        }
+
+        .show-grid::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: repeating-linear-gradient(
+                90deg,
+                rgba(255, 0, 0, 0.1) 0,
+                rgba(255, 0, 0, 0.1) calc((100% - 11 * var(--gutter-desktop)) / 12),
+                transparent calc((100% - 11 * var(--gutter-desktop)) / 12),
+                transparent calc((100% - 11 * var(--gutter-desktop)) / 12 + var(--gutter-desktop))
+            );
+            pointer-events: none;
+            z-index: 9999;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation with 12-column grid -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">CastMatch</div>
+            <ul class="nav-links">
+                <li><a href="#features" class="nav-link">Features</a></li>
+                <li><a href="#pricing" class="nav-link">Pricing</a></li>
+                <li><a href="#testimonials" class="nav-link">Testimonials</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <div class="nav-cta-wrapper">
+                <a href="#" class="nav-cta">Get Started</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section with perfect grid alignment -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span class="badge-dot"></span>
+                    <span class="badge-text">AI-Powered Casting Platform</span>
+                </div>
+                
+                <h1>
+                    Cast Your Vision,<br>
+                    <span class="gradient-text">Shape Cinema's Future</span>
+                </h1>
+                
+                <p class="hero-description">
+                    Transform your casting process with AI-powered talent discovery. 
+                    Connect with Mumbai's finest actors instantly and bring your 
+                    creative vision to life.
+                </p>
+                
+                <div class="hero-buttons">
+                    <a href="#" class="btn btn-primary">
+                        Start Casting Free
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                    <a href="#" class="btn btn-secondary">
+                        Watch Demo
+                    </a>
+                </div>
+                
+                <div class="hero-stats">
+                    <div class="stat">
+                        <div class="stat-value">50K+</div>
+                        <div class="stat-label">Verified Talents</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">1000+</div>
+                        <div class="stat-label">Productions</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">95%</div>
+                        <div class="stat-label">Match Accuracy</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hero-visual">
+                <div class="talent-showcase">
+                    <div class="showcase-card card-1">
+                        <div class="match-badge">98% Match</div>
+                        <div class="card-header">
+                            <div class="avatar"></div>
+                            <div class="card-info">
+                                <h3>Priya Sharma</h3>
+                                <p>Lead Actress</p>
+                            </div>
+                        </div>
+                        <div class="card-skills">
+                            <span class="skill-tag">Drama</span>
+                            <span class="skill-tag">Dance</span>
+                            <span class="skill-tag">Hindi</span>
+                        </div>
+                    </div>
+                    
+                    <div class="showcase-card card-2">
+                        <div class="match-badge">94% Match</div>
+                        <div class="card-header">
+                            <div class="avatar"></div>
+                            <div class="card-info">
+                                <h3>Arjun Verma</h3>
+                                <p>Character Actor</p>
+                            </div>
+                        </div>
+                        <div class="card-skills">
+                            <span class="skill-tag">Action</span>
+                            <span class="skill-tag">Comedy</span>
+                        </div>
+                    </div>
+                    
+                    <div class="showcase-card card-3">
+                        <div class="match-badge">92% Match</div>
+                        <div class="card-header">
+                            <div class="avatar"></div>
+                            <div class="card-info">
+                                <h3>Maya Kapoor</h3>
+                                <p>Supporting Role</p>
+                            </div>
+                        </div>
+                        <div class="card-skills">
+                            <span class="skill-tag">Theatre</span>
+                            <span class="skill-tag">Singing</span>
+                            <span class="skill-tag">English</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section with perfect grid -->
+    <section class="features" id="features">
+        <div class="features-container">
+            <div class="section-header">
+                <h2 class="section-title">Why Choose CastMatch?</h2>
+                <p class="section-subtitle">Advanced features designed for modern filmmakers</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"></div>
+                    <h3 class="feature-title">AI-Powered Matching</h3>
+                    <p class="feature-description">
+                        Our advanced AI analyzes scripts and automatically suggests 
+                        the perfect talent based on character requirements, saving 
+                        you hours of manual searching.
+                    </p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon"></div>
+                    <h3 class="feature-title">Instant Auditions</h3>
+                    <p class="feature-description">
+                        Schedule and conduct video auditions directly through the 
+                        platform. Review self-tapes, provide feedback, and make 
+                        decisions faster than ever.
+                    </p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon"></div>
+                    <h3 class="feature-title">Mumbai Talent Pool</h3>
+                    <p class="feature-description">
+                        Access the largest database of verified actors from Mumbai's 
+                        thriving entertainment industry, from seasoned professionals 
+                        to fresh faces.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Debug: Uncomment to see grid overlay -->
+    <!-- <script>
+        document.querySelectorAll('.hero-container, .features-grid, .nav-container').forEach(el => {
+            el.classList.add('show-grid');
+        });
+    </script> -->
+</body>
+</html>

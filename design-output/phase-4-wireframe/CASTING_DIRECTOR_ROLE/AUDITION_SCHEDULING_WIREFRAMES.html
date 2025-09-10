@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../SYSTEM_DOCUMENTATION/WIREFRAME_STANDARDS_GRAYSCALE.css">
+    <title>CastMatch - Audition Scheduling Wireframes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            line-height: var(--line-height); 
+            font-family: var(--font-family);
+            background: var(--white);
+            color: var(--dark);
+        }
+        
+        /* Layout Structure */
+        .wireframe-container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: var(--spacing-lg);
+        }
+        
+        /* Calendar View Container */
+        .calendar-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: var(--spacing-lg);
+            margin-bottom: 32px;
+        }
+        
+        /* Sidebar */
+        .calendar-sidebar {
+            background: var(--white);
+            border: var(--border-width) solid var(--medium-light);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            height: fit-content;
+        }
+        
+        .sidebar-section {
+            margin-bottom: 24px;
+            padding-bottom: 24px;
+            border-bottom: var(--border-width) solid var(--light-gray);
+        }
+        
+        .sidebar-section:last-child {
+            border-bottom: none;
+        }
+        
+        /* Main Calendar */
+        .calendar-main {
+            background: var(--white);
+            border: var(--border-width) solid var(--medium-light);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+        }
+        
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        
+        .calendar-nav {
+            display: flex;
+            gap: var(--spacing-md);
+            align-items: center;
+        }
+        
+        .view-switcher {
+            display: flex;
+            gap: var(--spacing-sm);
+            background: var(--light-gray);
+            padding: var(--spacing-sm);
+            border-radius: var(--radius-sm);
+        }
+        
+        .view-button {
+            padding: var(--spacing-sm) 16px;
+            background: transparent;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+        }
+        
+        .view-button.active {
+            background: var(--white);
+            border: 2px solid var(--medium);
+        }
+        
+        /* Calendar Grid */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: 60px repeat(7, 1fr);
+            border: var(--border-width) solid var(--medium-light);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+        }
+        
+        .calendar-header-cell {
+            padding: var(--spacing-md);
+            background: var(--light-gray);
+            border-right: var(--border-width) solid var(--medium-light);
+            border-bottom: var(--border-width) solid var(--medium-light);
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .time-slot {
+            padding: var(--spacing-sm);
+            background: var(--light-gray);
+            border-right: var(--border-width) solid var(--medium-light);
+            border-bottom: var(--border-width) solid var(--light-gray);
+            font-size: var(--font-size-sm);
+            color: var(--medium-dark);
+        }
+        
+        .calendar-cell {
+            position: relative;
+            border-right: var(--border-width) solid var(--light-gray);
+            border-bottom: var(--border-width) solid var(--light-gray);
+            min-height: 60px;
+        }
+        
+        /* Audition Slots */
+        .audition-slot {
+            position: absolute;
+            left: 4px;
+            right: 4px;
+            padding: var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-sm);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .audition-slot:hover {
+            transform: translateY(-1px);
+            border: 2px solid var(--medium);
+        }
+        
+        .slot-confirmed {
+            background: var(--medium-dark);
+            color: var(--white);
+        }
+        
+        .slot-pending {
+            background: var(--medium);
+            color: var(--white);
+        }
+        
+        .slot-available {
+            background: var(--light-gray);
+            border: 2px dashed var(--medium-light);
+            color: var(--medium);
+        }
+        
+        .slot-conflict {
+            background: var(--dark);
+            color: var(--white);
+        }
+        
+        /* Scheduling Form */
+        .scheduling-form {
+            background: var(--white);
+            border: var(--border-width) solid var(--medium-light);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-xl);
+            margin-bottom: 24px;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-lg);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: var(--border-width) solid var(--medium-light);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-sm);
+        }
+        
+        /* Time Slot Picker */
+        .time-slot-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--spacing-sm);
+            margin-top: 12px;
+        }
+        
+        .time-option {
+            padding: var(--spacing-md);
+            border: var(--border-width) solid var(--medium-light);
+            border-radius: var(--radius-sm);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .time-option:hover {
+            background: var(--light-gray);
+        }
+        
+        .time-option.selected {
+            background: var(--black);
+            color: var(--white);
+            border-color: var(--black);
+        }
+        
+        .time-option.unavailable {
+            background: var(--light-gray);
+            color: var(--medium-light);
+            cursor: not-allowed;
+        }
+        
+        /* Conflict Resolution */
+        .conflict-panel {
+            background: var(--medium-light);
+            border: var(--border-width) solid var(--medium-light);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            margin-bottom: 20px;
+        }
+        
+        .conflict-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            margin-bottom: 16px;
+        }
+        
+        .conflict-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--dark);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+        }
+        
+        .conflict-item {
+            background: var(--white);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-sm);
+            margin-bottom: 8px;
+        }
+        
+        .resolution-options {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-top: 16px;
+        }
+        
+        /* Team Availability */
+        .team-availability {
+            background: var(--white);
+            border: var(--border-width) solid var(--medium-light);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            margin-bottom: 24px;
+        }
+        
+        .team-member-row {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-md) 0;
+            border-bottom: var(--border-width) solid var(--light-gray);
+        }
+        
+        .team-member-row:last-child {
+            border-bottom: none;
+        }
+        
+        .member-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--medium-light);
+            margin-right: 12px;
+        }
+        
+        .member-info {
+            flex: 1;
+        }
+        
+        .availability-indicator {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+        
+        .availability-block {
+            width: 20px;
+            height: 20px;
+            border-radius: 2px;
+        }
+        
+        .available {
+            background: var(--medium-dark);
+        }
+        
+        .busy {
+            background: var(--dark);
+        }
+        
+        .tentative {
+            background: var(--medium);
+        }
+        
+        /* Bulk Scheduling */
+        .bulk-scheduler {
+            background: var(--white);
+            border: var(--border-width) solid var(--medium-light);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            margin-bottom: 24px;
+        }
+        
+        .talent-schedule-list {
+            max-height: 400px;
+            overflow-y: auto;
+            border: var(--border-width) solid var(--medium-light);
+            border-radius: var(--radius-sm);
+            margin: var(--spacing-lg) 0;
+        }
+        
+        .schedule-row {
+            display: grid;
+            grid-template-columns: 40px 200px 150px 150px 100px auto;
+            align-items: center;
+            padding: var(--spacing-md);
+            border-bottom: var(--border-width) solid var(--light-gray);
+        }
+        
+        .schedule-row:hover {
+            background: var(--light-gray);
+        }
+        
+        .schedule-row.header {
+            background: var(--light-gray);
+            font-weight: 600;
+            font-size: var(--font-size-sm);
+        }
+        
+        /* Notification Settings */
+        .notification-panel {
+            background: var(--light-gray);
+            border: var(--border-width) solid var(--medium-light);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            margin-top: 20px;
+        }
+        
+        .notification-option {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            margin-bottom: 12px;
+        }
+        
+        /* Status Indicators */
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        
+        .status-confirmed {
+            background: var(--medium-dark);
+        }
+        
+        .status-pending {
+            background: var(--medium);
+        }
+        
+        .status-cancelled {
+            background: var(--dark);
+        }
+        
+        /* Action Buttons */
+        .primary-button {
+            background: var(--black);
+            color: var(--white);
+            padding: var(--spacing-md) 24px;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .secondary-button {
+            background: var(--white);
+            color: var(--black);
+            padding: var(--spacing-md) 24px;
+            border: var(--border-width) solid var(--black);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .ghost-button {
+            background: transparent;
+            color: var(--medium-dark);
+            padding: var(--spacing-md) 24px;
+            border: var(--border-width) solid var(--medium-light);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+        }
+        
+        /* Mini Calendar */
+        .mini-calendar {
+            background: var(--white);
+            border: var(--border-width) solid var(--medium-light);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+        }
+        
+        .mini-cal-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: var(--spacing-sm);
+            margin-top: 12px;
+        }
+        
+        .mini-cal-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-sm);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+        }
+        
+        .mini-cal-day:hover {
+            background: var(--light-gray);
+        }
+        
+        .mini-cal-day.selected {
+            background: var(--black);
+            color: var(--white);
+        }
+        
+        .mini-cal-day.has-auditions {
+            position: relative;
+        }
+        
+        .mini-cal-day.has-auditions::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            width: 4px;
+            height: 4px;
+            background: var(--medium-dark);
+            border-radius: 50%;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .calendar-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .calendar-grid {
+                overflow-x: auto;
+            }
+            
+            .schedule-row {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-sm);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wireframe-container">
+        <h1 style="margin-bottom: 32px;">Audition Scheduling System</h1>
+        
+        <!-- Calendar View -->
+        <div class="calendar-container">
+            <!-- Sidebar -->
+            <aside class="calendar-sidebar">
+                <!-- Mini Calendar -->
+                <div class="sidebar-section">
+                    <h4 style="margin-bottom: 12px;">January 2025</h4>
+                    <div class="mini-cal-grid">
+                        <div class="mini-cal-day" style="color: var(--medium);">S</div>
+                        <div class="mini-cal-day" style="color: var(--medium);">M</div>
+                        <div class="mini-cal-day" style="color: var(--medium);">T</div>
+                        <div class="mini-cal-day" style="color: var(--medium);">W</div>
+                        <div class="mini-cal-day" style="color: var(--medium);">T</div>
+                        <div class="mini-cal-day" style="color: var(--medium);">F</div>
+                        <div class="mini-cal-day" style="color: var(--medium);">S</div>
+                        
+                        <div class="mini-cal-day">1</div>
+                        <div class="mini-cal-day">2</div>
+                        <div class="mini-cal-day">3</div>
+                        <div class="mini-cal-day">4</div>
+                        <div class="mini-cal-day">5</div>
+                        <div class="mini-cal-day">6</div>
+                        <div class="mini-cal-day">7</div>
+                        <div class="mini-cal-day">8</div>
+                        <div class="mini-cal-day">9</div>
+                        <div class="mini-cal-day">10</div>
+                        <div class="mini-cal-day">11</div>
+                        <div class="mini-cal-day">12</div>
+                        <div class="mini-cal-day selected">13</div>
+                        <div class="mini-cal-day has-auditions">14</div>
+                        <div class="mini-cal-day has-auditions">15</div>
+                        <div class="mini-cal-day has-auditions">16</div>
+                        <div class="mini-cal-day">17</div>
+                        <div class="mini-cal-day">18</div>
+                        <div class="mini-cal-day">19</div>
+                        <div class="mini-cal-day">20</div>
+                    </div>
+                </div>
+                
+                <!-- Projects Filter -->
+                <div class="sidebar-section">
+                    <h4 style="margin-bottom: 12px;">Projects</h4>
+                    <label style="display: flex; align-items: center; gap: var(--spacing-sm); margin-bottom: 8px; cursor: pointer;">
+                        <input type="checkbox" checked>
+                        <span style="font-size: var(--font-size-sm);">Mumbai Dreams</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: var(--spacing-sm); margin-bottom: 8px; cursor: pointer;">
+                        <input type="checkbox" checked>
+                        <span style="font-size: var(--font-size-sm);">Zee TV Series</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: var(--spacing-sm); cursor: pointer;">
+                        <input type="checkbox">
+                        <span style="font-size: var(--font-size-sm);">Commercial Ad</span>
+                    </label>
+                </div>
+                
+                <!-- Venue Filter -->
+                <div class="sidebar-section">
+                    <h4 style="margin-bottom: 12px;">Venues</h4>
+                    <label style="display: flex; align-items: center; gap: var(--spacing-sm); margin-bottom: 8px; cursor: pointer;">
+                        <input type="checkbox" checked>
+                        <span style="font-size: var(--font-size-sm);">Studio A - Mumbai</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: var(--spacing-sm); margin-bottom: 8px; cursor: pointer;">
+                        <input type="checkbox">
+                        <span style="font-size: var(--font-size-sm);">Studio B - Mumbai</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: var(--spacing-sm); cursor: pointer;">
+                        <input type="checkbox" checked>
+                        <span style="font-size: var(--font-size-sm);">Virtual (Zoom)</span>
+                    </label>
+                </div>
+                
+                <!-- Quick Stats -->
+                <div class="sidebar-section">
+                    <h4 style="margin-bottom: 12px;">This Week</h4>
+                    <div style="font-size: var(--font-size-sm); margin-bottom: 8px;">
+                        <span class="status-dot status-confirmed"></span>
+                        <span style="margin-left: 8px;">12 Confirmed</span>
+                    </div>
+                    <div style="font-size: var(--font-size-sm); margin-bottom: 8px;">
+                        <span class="status-dot status-pending"></span>
+                        <span style="margin-left: 8px;">5 Pending</span>
+                    </div>
+                    <div style="font-size: var(--font-size-sm);">
+                        <span class="status-dot status-cancelled"></span>
+                        <span style="margin-left: 8px;">2 Cancelled</span>
+                    </div>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="sidebar-section">
+                    <button class="primary-button" style="width: 100%; margin-bottom: 8px;">+ Schedule Audition</button>
+                    <button class="secondary-button" style="width: 100%;">Bulk Schedule</button>
+                </div>
+            </aside>
+            
+            <!-- Main Calendar -->
+            <div class="calendar-main">
+                <div class="calendar-header">
+                    <div class="calendar-nav">
+                        <button class="ghost-button" style="padding: var(--spacing-sm);">←</button>
+                        <h2>Week of Jan 13-19, 2025</h2>
+                        <button class="ghost-button" style="padding: var(--spacing-sm);">→</button>
+                    </div>
+                    <div class="view-switcher">
+                        <button class="view-button">Day</button>
+                        <button class="view-button active">Week</button>
+                        <button class="view-button">Month</button>
+                    </div>
+                </div>
+                
+                <!-- Calendar Grid -->
+                <div class="calendar-grid">
+                    <!-- Headers -->
+                    <div class="calendar-header-cell"></div>
+                    <div class="calendar-header-cell">Mon 13</div>
+                    <div class="calendar-header-cell">Tue 14</div>
+                    <div class="calendar-header-cell">Wed 15</div>
+                    <div class="calendar-header-cell">Thu 16</div>
+                    <div class="calendar-header-cell">Fri 17</div>
+                    <div class="calendar-header-cell">Sat 18</div>
+                    <div class="calendar-header-cell">Sun 19</div>
+                    
+                    <!-- 9:00 AM -->
+                    <div class="time-slot">9:00 AM</div>
+                    <div class="calendar-cell"></div>
+                    <div class="calendar-cell">
+                        <div class="audition-slot slot-confirmed" style="top: 4px; height: 50px;">
+                            <strong>Arjun Sharma</strong><br>
+                            Lead Role • Studio A
+                        </div>
+                    </div>
+                    <div class="calendar-cell"></div>
+                    <div class="calendar-cell"></div>
+                    <div class="calendar-cell"></div>
+                    <div class="calendar-cell"></div>
+                    <div class="calendar-cell"></div>
+                    
+                    <!-- 10:00 AM -->
+                    <div class="time-slot">10:00 AM</div>
+                    <div class="calendar-cell">
+                        <div class="audition-slot slot-available" style="top: 4px; height: 50px;">
+                            + Available
+                        </div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="audition-slot slot-confirmed" style="top: 4px; height: 50px;">
+                            <strong>Vikram Patel</strong><br>
+                            Lead Role • Studio A
+                        </div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="audition-slot slot-pending" style="top: 4px; height: 50px;">
+                            <strong>Priya Singh</strong><br>
+                            Supporting • Virtual
+                        </div>
+                    </div>
+                    <div class="calendar-cell"></div>
+                    <div class="calendar-cell"></div>
+                    <div class="calendar-cell"></div>
+                    <div class="calendar-cell"></div>
+                    
+                    <!-- 11:00 AM -->
+                    <div class="time-slot">11:00 AM</div>
+                    <div class="calendar-cell"></div>
+                    <div class="calendar-cell"></div>
+                    <div class="calendar-cell">
+                        <div class="audition-slot slot-confirmed" style="top: 4px; height: 100px;">
+                            <strong>Group Audition</strong><br>
+                            5 Talents • Studio B
+                        </div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="audition-slot slot-conflict" style="top: 4px; height: 50px;">
+                            <strong>Conflict!</strong><br>
+                            2 bookings overlap
+                        </div>
+                    </div>
+                    <div class="calendar-cell"></div>
+                    <div class="calendar-cell"></div>
+                    <div class="calendar-cell"></div>
+                    
+                    <!-- 12:00 PM -->
+                    <div class="time-slot">12:00 PM</div>
+                    <div class="calendar-cell" style="background: var(--light-gray);"></div>
+                    <div class="calendar-cell" style="background: var(--light-gray);"></div>
+                    <div class="calendar-cell" style="background: var(--light-gray);"></div>
+                    <div class="calendar-cell" style="background: var(--light-gray);"></div>
+                    <div class="calendar-cell" style="background: var(--light-gray);"></div>
+                    <div class="calendar-cell" style="background: var(--light-gray);"></div>
+                    <div class="calendar-cell" style="background: var(--light-gray);"></div>
+                    
+                    <!-- 1:00 PM -->
+                    <div class="time-slot">1:00 PM</div>
+                    <div class="calendar-cell"></div>
+                    <div class="calendar-cell"></div>
+                    <div class="calendar-cell"></div>
+                    <div class="calendar-cell"></div>
+                    <div class="calendar-cell">
+                        <div class="audition-slot slot-confirmed" style="top: 4px; height: 50px;">
+                            <strong>Rahul Khan</strong><br>
+                            Lead Role • Virtual
+                        </div>
+                    </div>
+                    <div class="calendar-cell"></div>
+                    <div class="calendar-cell"></div>
+                    
+                    <!-- 2:00 PM -->
+                    <div class="time-slot">2:00 PM</div>
+                    <div class="calendar-cell">
+                        <div class="audition-slot slot-pending" style="top: 4px; height: 100px;">
+                            <strong>Callback Session</strong><br>
+                            3 Finalists • Studio A
+                        </div>
+                    </div>
+                    <div class="calendar-cell"></div>
+                    <div class="calendar-cell"></div>
+                    <div class="calendar-cell"></div>
+                    <div class="calendar-cell"></div>
+                    <div class="calendar-cell"></div>
+                    <div class="calendar-cell"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Schedule New Audition Form -->
+        <div class="scheduling-form">
+            <h2 style="margin-bottom: 24px;">Schedule New Audition</h2>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">Project</label>
+                    <select class="form-select">
+                        <option selected>Mumbai Dreams - Feature Film</option>
+                        <option>Zee TV Drama Series</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Role</label>
+                    <select class="form-select">
+                        <option>Lead Actor - Male</option>
+                        <option>Lead Actor - Female</option>
+                        <option>Supporting Role</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Talent Name</label>
+                    <input type="text" class="form-input" placeholder="Search and select talent">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Audition Type</label>
+                    <select class="form-select">
+                        <option>In-Person</option>
+                        <option>Virtual (Video Call)</option>
+                        <option>Self-Tape Review</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Date</label>
+                    <input type="date" class="form-input" value="2025-01-15">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Duration</label>
+                    <select class="form-select">
+                        <option>15 minutes</option>
+                        <option selected>30 minutes</option>
+                        <option>45 minutes</option>
+                        <option>1 hour</option>
+                    </select>
+                </div>
+                
+                <div class="form-group full-width">
+                    <label class="form-label">Available Time Slots</label>
+                    <div class="time-slot-grid">
+                        <div class="time-option">9:00 AM</div>
+                        <div class="time-option unavailable">9:30 AM</div>
+                        <div class="time-option selected">10:00 AM</div>
+                        <div class="time-option">10:30 AM</div>
+                        <div class="time-option">11:00 AM</div>
+                        <div class="time-option unavailable">11:30 AM</div>
+                        <div class="time-option">2:00 PM</div>
+                        <div class="time-option">2:30 PM</div>
+                        <div class="time-option">3:00 PM</div>
+                        <div class="time-option">3:30 PM</div>
+                        <div class="time-option">4:00 PM</div>
+                        <div class="time-option">4:30 PM</div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Venue/Location</label>
+                    <select class="form-select">
+                        <option>Studio A - Mumbai</option>
+                        <option>Studio B - Mumbai</option>
+                        <option>Virtual - Zoom Link</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Panel Members</label>
+                    <select class="form-select" multiple style="height: 100px;">
+                        <option selected>Priya Sharma (Director)</option>
+                        <option selected>Raj Kapoor (Producer)</option>
+                        <option>Amit Kumar (Casting Assistant)</option>
+                        <option>Sarah Johnson (Executive)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group full-width">
+                    <label class="form-label">Notes/Instructions</label>
+                    <textarea class="form-textarea" rows="3" placeholder="Any special instructions for the talent or panel"></textarea>
+                </div>
+            </div>
+            
+            <!-- Notification Settings -->
+            <div class="notification-panel">
+                <h4 style="margin-bottom: 16px;">Notification Settings</h4>
+                <div class="notification-option">
+                    <input type="checkbox" checked>
+                    <span>Send confirmation email to talent</span>
+                </div>
+                <div class="notification-option">
+                    <input type="checkbox" checked>
+                    <span>Send calendar invite to panel members</span>
+                </div>
+                <div class="notification-option">
+                    <input type="checkbox" checked>
+                    <span>Send reminder 24 hours before</span>
+                </div>
+                <div class="notification-option">
+                    <input type="checkbox">
+                    <span>Send reminder 1 hour before</span>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: var(--spacing-md); justify-content: flex-end; margin-top: 24px;">
+                <button class="ghost-button">Cancel</button>
+                <button class="secondary-button">Save as Draft</button>
+                <button class="primary-button">Schedule Audition</button>
+            </div>
+        </div>
+        
+        <!-- Conflict Resolution Panel -->
+        <div class="conflict-panel">
+            <div class="conflict-header">
+                <div class="conflict-icon">!</div>
+                <div>
+                    <h3>Scheduling Conflict Detected</h3>
+                    <p style="color: var(--medium-dark); font-size: var(--font-size-sm);">2 auditions are scheduled for the same time slot</p>
+                </div>
+            </div>
+            
+            <div class="conflict-item">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <strong>Arjun Sharma</strong> - Lead Role
+                        <div style="color: var(--medium-dark); font-size: var(--font-size-sm);">Thursday, Jan 16 • 11:00 AM • Studio A</div>
+                    </div>
+                    <span style="color: var(--dark); font-weight: 600;">Conflict</span>
+                </div>
+            </div>
+            
+            <div class="conflict-item">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <strong>Vikram Patel</strong> - Lead Role
+                        <div style="color: var(--medium-dark); font-size: var(--font-size-sm);">Thursday, Jan 16 • 11:00 AM • Studio B</div>
+                    </div>
+                    <span style="color: var(--dark); font-weight: 600;">Conflict</span>
+                </div>
+            </div>
+            
+            <div class="resolution-options">
+                <button class="secondary-button">Reschedule First</button>
+                <button class="secondary-button">Reschedule Second</button>
+                <button class="primary-button">Use Different Venues</button>
+            </div>
+        </div>
+        
+        <!-- Team Availability -->
+        <div class="team-availability">
+            <h3 style="margin-bottom: 20px;">Team Availability - Jan 15, 2025</h3>
+            
+            <div class="team-member-row">
+                <div class="member-avatar"></div>
+                <div class="member-info">
+                    <strong>Priya Sharma</strong>
+                    <div style="color: var(--medium-dark); font-size: var(--font-size-sm);">Director</div>
+                </div>
+                <div class="availability-indicator">
+                    <div class="availability-block available" title="9-10 AM"></div>
+                    <div class="availability-block available" title="10-11 AM"></div>
+                    <div class="availability-block busy" title="11-12 PM"></div>
+                    <div class="availability-block busy" title="12-1 PM"></div>
+                    <div class="availability-block available" title="1-2 PM"></div>
+                    <div class="availability-block available" title="2-3 PM"></div>
+                    <div class="availability-block tentative" title="3-4 PM"></div>
+                    <div class="availability-block available" title="4-5 PM"></div>
+                </div>
+            </div>
+            
+            <div class="team-member-row">
+                <div class="member-avatar"></div>
+                <div class="member-info">
+                    <strong>Raj Kapoor</strong>
+                    <div style="color: var(--medium-dark); font-size: var(--font-size-sm);">Producer</div>
+                </div>
+                <div class="availability-indicator">
+                    <div class="availability-block busy" title="9-10 AM"></div>
+                    <div class="availability-block busy" title="10-11 AM"></div>
+                    <div class="availability-block available" title="11-12 PM"></div>
+                    <div class="availability-block busy" title="12-1 PM"></div>
+                    <div class="availability-block available" title="1-2 PM"></div>
+                    <div class="availability-block available" title="2-3 PM"></div>
+                    <div class="availability-block available" title="3-4 PM"></div>
+                    <div class="availability-block tentative" title="4-5 PM"></div>
+                </div>
+            </div>
+            
+            <div class="team-member-row">
+                <div class="member-avatar"></div>
+                <div class="member-info">
+                    <strong>Amit Kumar</strong>
+                    <div style="color: var(--medium-dark); font-size: var(--font-size-sm);">Casting Assistant</div>
+                </div>
+                <div class="availability-indicator">
+                    <div class="availability-block available" title="9-10 AM"></div>
+                    <div class="availability-block available" title="10-11 AM"></div>
+                    <div class="availability-block available" title="11-12 PM"></div>
+                    <div class="availability-block busy" title="12-1 PM"></div>
+                    <div class="availability-block available" title="1-2 PM"></div>
+                    <div class="availability-block available" title="2-3 PM"></div>
+                    <div class="availability-block available" title="3-4 PM"></div>
+                    <div class="availability-block available" title="4-5 PM"></div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 16px; padding: var(--spacing-md); background: var(--light-gray); border-radius: var(--radius-sm);">
+                <strong style="color: var(--dark);">Best Available Slots:</strong> 1:00 PM - 3:00 PM (All team members available)
+            </div>
+        </div>
+        
+        <!-- Bulk Scheduling -->
+        <div class="bulk-scheduler">
+            <h3 style="margin-bottom: 20px;">Bulk Schedule Auditions</h3>
+            <p style="color: var(--medium-dark); margin-bottom: 20px;">Schedule multiple talents for the same role efficiently</p>
+            
+            <div style="display: flex; gap: var(--spacing-md); margin-bottom: 20px;">
+                <select class="form-select" style="flex: 1;">
+                    <option>Lead Actor - Male (12 shortlisted)</option>
+                    <option>Lead Actor - Female (8 shortlisted)</option>
+                </select>
+                <input type="date" class="form-input" style="width: 200px;" value="2025-01-15">
+                <select class="form-select" style="width: 150px;">
+                    <option>30 min slots</option>
+                    <option>45 min slots</option>
+                    <option>1 hour slots</option>
+                </select>
+            </div>
+            
+            <div class="talent-schedule-list">
+                <div class="schedule-row header">
+                    <div></div>
+                    <div>Talent</div>
+                    <div>Preferred Time</div>
+                    <div>Assigned Slot</div>
+                    <div>Status</div>
+                    <div>Actions</div>
+                </div>
+                
+                <div class="schedule-row">
+                    <input type="checkbox" checked>
+                    <div>Arjun Sharma</div>
+                    <div>Morning</div>
+                    <div>
+                        <select style="padding: var(--spacing-sm); border: var(--border-width) solid var(--medium-light); border-radius: var(--radius-sm);">
+                            <option selected>9:00 AM</option>
+                            <option>9:30 AM</option>
+                            <option>10:00 AM</option>
+                        </select>
+                    </div>
+                    <div><span class="status-dot status-confirmed"></span> Auto-assigned</div>
+                    <div>
+                        <button class="ghost-button" style="padding: var(--spacing-sm) 8px; font-size: var(--font-size-sm);">Edit</button>
+                    </div>
+                </div>
+                
+                <div class="schedule-row">
+                    <input type="checkbox" checked>
+                    <div>Vikram Patel</div>
+                    <div>Any time</div>
+                    <div>
+                        <select style="padding: var(--spacing-sm); border: var(--border-width) solid var(--medium-light); border-radius: var(--radius-sm);">
+                            <option>9:00 AM</option>
+                            <option selected>9:30 AM</option>
+                            <option>10:00 AM</option>
+                        </select>
+                    </div>
+                    <div><span class="status-dot status-confirmed"></span> Auto-assigned</div>
+                    <div>
+                        <button class="ghost-button" style="padding: var(--spacing-sm) 8px; font-size: var(--font-size-sm);">Edit</button>
+                    </div>
+                </div>
+                
+                <div class="schedule-row">
+                    <input type="checkbox" checked>
+                    <div>Rahul Khanna</div>
+                    <div>Afternoon</div>
+                    <div>
+                        <select style="padding: var(--spacing-sm); border: var(--border-width) solid var(--medium-light); border-radius: var(--radius-sm);">
+                            <option>2:00 PM</option>
+                            <option selected>2:30 PM</option>
+                            <option>3:00 PM</option>
+                        </select>
+                    </div>
+                    <div><span class="status-dot status-pending"></span> Pending</div>
+                    <div>
+                        <button class="ghost-button" style="padding: var(--spacing-sm) 8px; font-size: var(--font-size-sm);">Edit</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+                <div style="color: var(--medium-dark);">
+                    <strong>3</strong> of 12 talents scheduled
+                </div>
+                <div style="display: flex; gap: var(--spacing-md);">
+                    <button class="secondary-button">Auto-Schedule All</button>
+                    <button class="primary-button">Send Invitations</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,298 @@
+{
+  "context_mapping": {
+    "flow": "project_initiation",
+    "version": "1.0.0",
+    "description": "How context builds and propagates through project setup"
+  },
+  "context_layers": {
+    "user_context": {
+      "persistent": {
+        "user_id": "string",
+        "role": "casting_director",
+        "organization": "production_house",
+        "preferences": {
+          "language": "en_hi_mixed",
+          "timezone": "Asia/Kolkata",
+          "communication": "whatsapp_preferred"
+        },
+        "history": {
+          "previous_projects": ["array_of_project_ids"],
+          "frequent_collaborators": ["array_of_user_ids"],
+          "preferred_talent_pool": ["array_of_talent_ids"]
+        }
+      },
+      "session": {
+        "device": "mobile|desktop",
+        "location": "coordinates",
+        "network_quality": "4g|wifi",
+        "input_method": "voice|text|touch"
+      }
+    },
+    "project_context": {
+      "initialization": {
+        "timestamp": "ISO_8601",
+        "initiated_by": "user_id",
+        "creation_method": "new|template|import"
+      },
+      "progressive_build": [
+        {
+          "step": 1,
+          "adds": {
+            "project_name": "string",
+            "working_title": "boolean"
+          },
+          "validates": ["unique_name", "character_limit"],
+          "persists": "immediately"
+        },
+        {
+          "step": 2,
+          "adds": {
+            "project_type": "enum",
+            "platform": "string",
+            "production_house": "reference"
+          },
+          "enriches": {
+            "industry_standards": "auto_applied",
+            "platform_requirements": "noted"
+          }
+        },
+        {
+          "step": 3,
+          "adds": {
+            "timeline": {
+              "casting_deadline": "date",
+              "shooting_start": "date",
+              "release_target": "date"
+            },
+            "urgency_level": "calculated"
+          },
+          "triggers": {
+            "if_urgent": "expedited_workflow",
+            "notifications": "team_alerts"
+          }
+        },
+        {
+          "step": 4,
+          "adds": {
+            "roles": [
+              {
+                "id": "generated",
+                "title": "string",
+                "requirements": "object",
+                "priority": "number"
+              }
+            ]
+          },
+          "analyzes": {
+            "role_complexity": "score",
+            "casting_difficulty": "prediction"
+          }
+        },
+        {
+          "step": 5,
+          "adds": {
+            "team": [
+              {
+                "user_id": "string",
+                "role": "enum",
+                "permissions": "array",
+                "notification_prefs": "object"
+              }
+            ]
+          },
+          "establishes": {
+            "hierarchy": "approval_chain",
+            "communication": "channels"
+          }
+        },
+        {
+          "step": 6,
+          "adds": {
+            "budget": {
+              "total": "range",
+              "per_role": "object",
+              "flexibility": "boolean"
+            },
+            "constraints": {
+              "locations": "array",
+              "languages": "array",
+              "union_requirements": "array"
+            }
+          },
+          "finalizes": {
+            "project_parameters": "complete",
+            "search_filters": "configured"
+          }
+        }
+      ]
+    },
+    "ai_context": {
+      "conversation_memory": {
+        "current_topic": "project_setup",
+        "discussed_points": ["array_of_topics"],
+        "pending_clarifications": ["array_of_questions"],
+        "user_corrections": ["array_of_corrections"]
+      },
+      "learning_context": {
+        "user_patterns": {
+          "setup_speed": "fast|moderate|detailed",
+          "preference_changes": "frequency",
+          "common_requirements": "extracted_patterns"
+        },
+        "project_insights": {
+          "similar_projects": ["reference_ids"],
+          "success_patterns": "analyzed",
+          "risk_factors": "identified"
+        }
+      },
+      "recommendation_context": {
+        "immediate_suggestions": [
+          "next_best_action",
+          "relevant_talent",
+          "timeline_optimization"
+        ],
+        "prepared_searches": {
+          "for_defined_roles": "pre_cached",
+          "based_on_requirements": "filtered"
+        }
+      }
+    },
+    "workflow_context": {
+      "current_state": {
+        "step": "number",
+        "completion_percentage": "number",
+        "required_fields": "checklist",
+        "optional_fields": "checklist"
+      },
+      "navigation_state": {
+        "can_go_back": "boolean",
+        "can_skip": "boolean",
+        "can_save_draft": "boolean",
+        "can_use_template": "boolean"
+      },
+      "validation_state": {
+        "errors": ["array_of_errors"],
+        "warnings": ["array_of_warnings"],
+        "suggestions": ["array_of_suggestions"]
+      }
+    }
+  },
+  "context_propagation_rules": {
+    "forward_propagation": {
+      "from_project_to_search": {
+        "carries": ["roles", "requirements", "budget", "timeline"],
+        "enriches": ["search_filters", "ranking_weights"],
+        "maintains": ["project_id", "urgency_level"]
+      },
+      "from_project_to_team": {
+        "shares": ["project_details", "roles", "timeline"],
+        "notifies": ["project_created", "role_assignments"],
+        "establishes": ["permissions", "workflows"]
+      },
+      "from_project_to_ai": {
+        "trains": ["preference_model", "requirement_patterns"],
+        "improves": ["recommendations", "suggestions"],
+        "remembers": ["decisions", "corrections"]
+      }
+    },
+    "backward_references": {
+      "from_talent_to_project": {
+        "checks": ["budget_fit", "timeline_match", "requirement_alignment"],
+        "flags": ["conflicts", "concerns", "opportunities"]
+      },
+      "from_audition_to_project": {
+        "updates": ["progress", "decisions", "feedback"],
+        "affects": ["timeline", "budget_utilization"]
+      }
+    },
+    "lateral_connections": {
+      "between_projects": {
+        "identifies": ["conflicts", "synergies", "shared_resources"],
+        "suggests": ["combined_auditions", "bulk_negotiations"]
+      },
+      "between_team_members": {
+        "synchronizes": ["calendars", "decisions", "communications"],
+        "resolves": ["conflicts", "overlaps"]
+      }
+    }
+  },
+  "context_persistence": {
+    "storage_strategy": {
+      "immediate": ["project_name", "type", "timeline"],
+      "batched": ["roles", "team", "preferences"],
+      "lazy": ["analytics", "reports", "predictions"]
+    },
+    "recovery_points": {
+      "auto_save": "every_30_seconds",
+      "step_completion": "after_each_step",
+      "explicit_save": "user_triggered"
+    },
+    "session_management": {
+      "timeout": "30_minutes",
+      "resume_capability": "full_context_restoration",
+      "cross_device": "seamless_continuation"
+    }
+  },
+  "context_transformations": {
+    "step_transitions": [
+      {
+        "from": "name_input",
+        "to": "type_selection",
+        "transform": "validate_and_sanitize"
+      },
+      {
+        "from": "role_description",
+        "to": "role_object",
+        "transform": "nlp_extraction_and_structuring"
+      },
+      {
+        "from": "team_names",
+        "to": "team_profiles",
+        "transform": "lookup_and_link"
+      },
+      {
+        "from": "budget_range",
+        "to": "search_filters",
+        "transform": "calculate_rate_boundaries"
+      }
+    ],
+    "aggregations": {
+      "project_summary": {
+        "combines": ["all_steps"],
+        "generates": ["overview", "statistics", "predictions"]
+      },
+      "team_view": {
+        "merges": ["permissions", "notifications", "availability"],
+        "produces": ["unified_team_dashboard"]
+      }
+    }
+  },
+  "context_usage_downstream": {
+    "in_talent_search": {
+      "automatic_filters": ["budget", "timeline", "location", "language"],
+      "ranking_factors": ["role_fit", "availability", "experience"],
+      "ai_prompts": ["contextual_suggestions", "warning_incompatibilities"]
+    },
+    "in_audition_scheduling": {
+      "defaults": ["project_timeline", "team_availability", "location_preference"],
+      "constraints": ["budget_limits", "union_rules", "venue_availability"],
+      "optimizations": ["batch_scheduling", "travel_minimization"]
+    },
+    "in_decision_making": {
+      "comparison_framework": ["against_requirements", "within_budget", "team_consensus"],
+      "approval_routing": ["based_on_hierarchy", "permission_matrix"],
+      "documentation": ["decision_rationale", "context_at_time"]
+    },
+    "in_reporting": {
+      "metrics": ["setup_time", "completion_rate", "team_size"],
+      "insights": ["common_patterns", "optimization_opportunities"],
+      "predictions": ["success_likelihood", "timeline_risks"]
+    }
+  },
+  "context_privacy_boundaries": {
+    "user_private": ["personal_preferences", "salary_information"],
+    "project_private": ["budget_details", "strategic_decisions"],
+    "team_shared": ["project_overview", "role_requirements", "timeline"],
+    "public": ["project_type", "general_requirements"]
+  }
+}

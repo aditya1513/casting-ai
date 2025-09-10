@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CastMatch - Complete Authentication Flow Wireframes | Desktop First | Ultra Comprehensive</title>
+    <style>
+        /* Grayscale Design System - Core Variables */
+        :root {
+            /* Grayscale Palette */
+            --gray-0: #FFFFFF;
+            --gray-50: #FAFAFA;
+            --gray-100: #F5F5F5;
+            --gray-200: #E5E5E5;
+            --gray-300: #D4D4D4;
+            --gray-400: #A3A3A3;
+            --gray-500: #737373;
+            --gray-600: #525252;
+            --gray-700: #404040;
+            --gray-800: #262626;
+            --gray-900: #171717;
+            --gray-1000: #000000;
+            
+            /* Spacing System */
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --spacing-2xl: 48px;
+            --spacing-3xl: 64px;
+            --spacing-4xl: 96px;
+            
+            /* Typography */
+            --font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            --font-size-xs: 12px;
+            --font-size-sm: 14px;
+            --font-size-base: 16px;
+            --font-size-lg: 18px;
+            --font-size-xl: 20px;
+            --font-size-2xl: 24px;
+            --font-size-3xl: 32px;
+            --font-size-4xl: 48px;
+            
+            /* Borders & Radii */
+            --border-width: 1px;
+            --border-width-2: 2px;
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-full: 9999px;
+            
+            /* Shadows */
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+            
+            /* Layout */
+            --auth-width: 480px;
+            --onboarding-width: 800px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-primary);
+            font-size: var(--font-size-base);
+            line-height: 1.6;
+            color: var(--gray-900);
+            background: var(--gray-50);
+        }
+        
+        /* Annotation System */
+        .annotation {
+            position: absolute;
+            background: var(--gray-900);
+            color: var(--gray-0);
+            padding: 2px 8px;
+            border-radius: var(--radius-sm);
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            z-index: 1000;
+            white-space: nowrap;
+        }
+        
+        .annotation.priority-1 {
+            background: var(--gray-1000);
+        }
+        
+        .annotation.priority-2 {
+            background: var(--gray-700);
+        }
+        
+        .annotation.priority-3 {
+            background: var(--gray-500);
+        }
+        
+        .annotation.state {
+            background: #2563eb;
+        }
+        
+        .annotation.error {
+            background: #dc2626;
+        }
+        
+        .annotation.success {
+            background: #16a34a;
+        }
+        
+        /* Section Dividers */
+        .auth-section {
+            padding: var(--spacing-4xl) var(--spacing-xl);
+            border-bottom: 2px dashed var(--gray-300);
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .section-label {
+            position: absolute;
+            top: var(--spacing-xl);
+            left: var(--spacing-xl);
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            color: var(--gray-400);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        /* Auth Container Layouts */
+        .auth-container {
+            width: 100%;
+            max-width: var(--auth-width);
+            background: var(--gray-0);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-xl);
+            padding: var(--spacing-2xl);
+            position: relative;
+        }
+        
+        .auth-split-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            max-width: 1200px;
+            width: 100%;
+            background: var(--gray-0);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-xl);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .auth-visual {
+            background: linear-gradient(135deg, var(--gray-800) 0%, var(--gray-600) 100%);
+            padding: var(--spacing-3xl);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .auth-form-section {
+            padding: var(--spacing-3xl);
+            position: relative;
+        }
+        
+        /* Form Components */
+        .logo-section {
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .logo {
+            width: 180px;
+            height: 40px;
+            background: var(--gray-300);
+            border-radius: var(--radius-md);
+            margin: 0 auto var(--spacing-md);
+        }
+        
+        .auth-title {
+            font-size: var(--font-size-3xl);
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: var(--spacing-sm);
+            text-align: center;
+        }
+        
+        .auth-subtitle {
+            font-size: var(--font-size-base);
+            color: var(--gray-600);
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .form-group {
+            margin-bottom: var(--spacing-lg);
+            position: relative;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: var(--spacing-sm);
+            font-size: var(--font-size-sm);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: var(--spacing-md);
+            border: var(--border-width) solid var(--gray-300);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-base);
+            transition: all 0.2s ease;
+            background: var(--gray-0);
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--gray-700);
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-input.error {
+            border-color: #dc2626;
+        }
+        
+        .input-group {
+            position: relative;
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: var(--spacing-md);
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            background: var(--gray-400);
+            border-radius: var(--radius-sm);
+        }
+        
+        .input-with-icon {
+            padding-left: calc(var(--spacing-md) * 3);
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: var(--spacing-md);
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            background: var(--gray-400);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+        }
+        
+        .form-error {
+            color: #dc2626;
+            font-size: var(--font-size-sm);
+            margin-top: var(--spacing-xs);
+        }
+        
+        .form-helper {
+            color: var(--gray-500);
+            font-size: var(--font-size-sm);
+            margin-top: var(--spacing-xs);
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-radius: var(--radius-md);
+            border: none;
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 48px;
+            position: relative;
+        }
+        
+        .btn-primary {
+            background: var(--gray-900);
+            color: var(--gray-0);
+            width: 100%;
+        }
+        
+        .btn-primary:hover {
+            background: var(--gray-800);
+        }
+        
+        .btn-secondary {
+            background: var(--gray-200);
+            color: var(--gray-700);
+            width: 100%;
+        }
+        
+        .btn-ghost {
+            background: transparent;
+            color: var(--gray-700);
+            border: var(--border-width) solid var(--gray-300);
+            width: 100%;
+        }
+        
+        .btn-social {
+            background: var(--gray-0);
+            border: var(--border-width) solid var(--gray-300);
+            color: var(--gray-700);
+            width: 100%;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .btn-loading {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        
+        /* Role Selection */
+        .role-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .role-card {
+            padding: var(--spacing-lg);
+            border: var(--border-width-2) solid var(--gray-300);
+            border-radius: var(--radius-lg);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        
+        .role-card:hover {
+            border-color: var(--gray-500);
+            background: var(--gray-50);
+        }
+        
+        .role-card.selected {
+            border-color: var(--gray-900);
+            background: var(--gray-100);
+        }
+        
+        .role-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--gray-300);
+            border-radius: var(--radius-full);
+            margin: 0 auto var(--spacing-md);
+        }
+        
+        .role-title {
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .role-description {
+            font-size: var(--font-size-sm);
+            color: var(--gray-600);
+        }
+        
+        /* Dividers */
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: var(--spacing-lg) 0;
+            color: var(--gray-500);
+            font-size: var(--font-size-sm);
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--gray-300);
+        }
+        
+        .divider span {
+            padding: 0 var(--spacing-md);
+        }
+        
+        /* Links */
+        .auth-link {
+            color: var(--gray-700);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+        
+        .auth-link:hover {
+            color: var(--gray-900);
+        }
+        
+        .auth-footer {
+            text-align: center;
+            margin-top: var(--spacing-xl);
+            padding-top: var(--spacing-lg);
+            border-top: var(--border-width) solid var(--gray-200);
+            color: var(--gray-600);
+            font-size: var(--font-size-sm);
+        }
+        
+        /* OTP Input */
+        .otp-container {
+            display: flex;
+            gap: var(--spacing-sm);
+            justify-content: center;
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .otp-input {
+            width: 60px;
+            height: 60px;
+            text-align: center;
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            border: var(--border-width-2) solid var(--gray-300);
+            border-radius: var(--radius-md);
+            background: var(--gray-0);
+        }
+        
+        .otp-input:focus {
+            border-color: var(--gray-700);
+            outline: none;
+        }
+        
+        /* Progress Indicator */
+        .progress-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-2xl);
+            position: relative;
+        }
+        
+        .progress-bar::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gray-300);
+            z-index: 0;
+        }
+        
+        .progress-step {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+        
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            background: var(--gray-300);
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--spacing-sm);
+            font-weight: 700;
+            color: var(--gray-600);
+        }
+        
+        .step-circle.active {
+            background: var(--gray-900);
+            color: var(--gray-0);
+        }
+        
+        .step-circle.completed {
+            background: var(--gray-700);
+            color: var(--gray-0);
+        }
+        
+        .step-label {
+            font-size: var(--font-size-sm);
+            color: var(--gray-600);
+        }
+        
+        /* Onboarding Specific */
+        .onboarding-container {
+            max-width: var(--onboarding-width);
+            width: 100%;
+            background: var(--gray-0);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-xl);
+            padding: var(--spacing-3xl);
+            position: relative;
+        }
+        
+        .onboarding-header {
+            text-align: center;
+            margin-bottom: var(--spacing-2xl);
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-lg);
+        }
+        
+        .form-grid.three-columns {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        
+        .full-width {
+            grid-column: span 2;
+        }
+        
+        .full-width-three {
+            grid-column: span 3;
+        }
+        
+        /* File Upload */
+        .upload-area {
+            border: var(--border-width-2) dashed var(--gray-400);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-2xl);
+            text-align: center;
+            background: var(--gray-50);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        
+        .upload-area:hover {
+            border-color: var(--gray-600);
+            background: var(--gray-100);
+        }
+        
+        .upload-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--gray-300);
+            border-radius: var(--radius-full);
+            margin: 0 auto var(--spacing-md);
+        }
+        
+        .upload-text {
+            color: var(--gray-700);
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .upload-subtext {
+            color: var(--gray-500);
+            font-size: var(--font-size-sm);
+        }
+        
+        /* Success States */
+        .success-container {
+            text-align: center;
+            padding: var(--spacing-3xl);
+        }
+        
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--gray-900);
+            border-radius: var(--radius-full);
+            margin: 0 auto var(--spacing-xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .success-checkmark {
+            width: 40px;
+            height: 40px;
+            background: var(--gray-0);
+            border-radius: var(--radius-sm);
+        }
+        
+        /* Loading States */
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--gray-300);
+            border-top-color: var(--gray-900);
+            border-radius: var(--radius-full);
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Error States */
+        .error-banner {
+            background: #fee;
+            border: var(--border-width) solid #fcc;
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+            color: #dc2626;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .error-icon {
+            width: 20px;
+            height: 20px;
+            background: #dc2626;
+            border-radius: var(--radius-full);
+            flex-shrink: 0;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .auth-split-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .auth-visual {
+                display: none;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .full-width,
+            .full-width-three {
+                grid-column: span 1;
+            }
+            
+            .role-selector {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- SECTION 1: SIGN UP SELECTION -->
+    <section class="auth-section">
+        <div class="section-label">1. Sign Up Selection</div>
+        <div class="annotation priority-1" style="top: 100px; left: 40px;">P1: ROLE SELECTION</div>
+        
+        <div class="auth-container">
+            <div class="logo-section">
+                <div class="logo"></div>
+            </div>
+            
+            <h1 class="auth-title">Join CastMatch</h1>
+            <p class="auth-subtitle">Choose how you want to use CastMatch</p>
+            
+            <div class="role-selector">
+                <div class="role-card selected">
+                    <div class="annotation state" style="top: 10px; right: 10px;">SELECTED</div>
+                    <div class="role-icon"></div>
+                    <div class="role-title">I'm a Talent</div>
+                    <div class="role-description">Actor, Model, Dancer, Musician</div>
+                </div>
+                
+                <div class="role-card">
+                    <div class="role-icon"></div>
+                    <div class="role-title">I'm Casting</div>
+                    <div class="role-description">Casting Director, Production House</div>
+                </div>
+            </div>
+            
+            <button class="btn btn-primary">Continue</button>
+            
+            <div class="divider">
+                <span>OR</span>
+            </div>
+            
+            <button class="btn btn-social">
+                Continue with Google
+            </button>
+            <button class="btn btn-social">
+                Continue with Facebook
+            </button>
+            
+            <div class="auth-footer">
+                Already have an account? <a href="#" class="auth-link">Sign In</a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- SECTION 2: TALENT REGISTRATION -->
+    <section class="auth-section">
+        <div class="section-label">2. Talent Registration</div>
+        <div class="annotation priority-1" style="top: 100px; left: 40px;">P1: TALENT SIGNUP</div>
+        
+        <div class="auth-split-container">
+            <div class="auth-visual">
+                <div class="annotation" style="top: 20px; left: 20px; background: var(--gray-0); color: var(--gray-900);">VISUAL CONTENT</div>
+                <h2 style="color: var(--gray-0); font-size: var(--font-size-3xl); margin-bottom: var(--spacing-lg);">
+                    Start Your Journey
+                </h2>
+                <p style="color: var(--gray-200); line-height: 1.8;">
+                    Join 50,000+ talents who've found their breakthrough roles through CastMatch
+                </p>
+                <div style="margin-top: var(--spacing-3xl);">
+                    <div style="display: flex; gap: var(--spacing-md); margin-bottom: var(--spacing-lg);">
+                        <div style="width: 24px; height: 24px; background: var(--gray-400); border-radius: var(--radius-full);"></div>
+                        <span style="color: var(--gray-200);">Verified casting calls only</span>
+                    </div>
+                    <div style="display: flex; gap: var(--spacing-md); margin-bottom: var(--spacing-lg);">
+                        <div style="width: 24px; height: 24px; background: var(--gray-400); border-radius: var(--radius-full);"></div>
+                        <span style="color: var(--gray-200);">Direct access to casting directors</span>
+                    </div>
+                    <div style="display: flex; gap: var(--spacing-md);">
+                        <div style="width: 24px; height: 24px; background: var(--gray-400); border-radius: var(--radius-full);"></div>
+                        <span style="color: var(--gray-200);">Build your professional portfolio</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="auth-form-section">
+                <h2 class="auth-title">Create Your Account</h2>
+                <p class="auth-subtitle">Start your free account in 30 seconds</p>
+                
+                <form>
+                    <div class="form-group">
+                        <label class="form-label">Full Name *</label>
+                        <input type="text" class="form-input" placeholder="Enter your full name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Email Address *</label>
+                        <input type="email" class="form-input" placeholder="you@example.com">
+                        <div class="form-helper">We'll send a verification link to this email</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Phone Number *</label>
+                        <div class="input-group">
+                            <input type="tel" class="form-input" placeholder="+91 98765 43210">
+                        </div>
+                        <div class="form-helper">For audition notifications via WhatsApp</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Password *</label>
+                        <div class="input-group">
+                            <input type="password" class="form-input" placeholder="Create a strong password">
+                            <div class="password-toggle"></div>
+                        </div>
+                        <div class="form-helper">Minimum 8 characters with numbers and symbols</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: var(--spacing-sm); cursor: pointer;">
+                            <input type="checkbox" style="width: 20px; height: 20px;">
+                            <span style="font-size: var(--font-size-sm); color: var(--gray-600);">
+                                I agree to the <a href="#" class="auth-link">Terms of Service</a> and <a href="#" class="auth-link">Privacy Policy</a>
+                            </span>
+                        </label>
+                    </div>
+                    
+                    <button class="btn btn-primary">Create Account</button>
+                </form>
+                
+                <div class="auth-footer">
+                    Already have an account? <a href="#" class="auth-link">Sign In</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- SECTION 3: CASTING DIRECTOR REGISTRATION -->
+    <section class="auth-section">
+        <div class="section-label">3. Casting Registration</div>
+        <div class="annotation priority-1" style="top: 100px; left: 40px;">P1: CASTING SIGNUP</div>
+        
+        <div class="auth-split-container">
+            <div class="auth-form-section">
+                <h2 class="auth-title">Create Business Account</h2>
+                <p class="auth-subtitle">Start finding perfect talent for your productions</p>
+                
+                <form>
+                    <div class="form-group">
+                        <label class="form-label">Your Name *</label>
+                        <input type="text" class="form-input" placeholder="Enter your full name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Company/Production House *</label>
+                        <input type="text" class="form-input" placeholder="Company name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Business Email *</label>
+                        <input type="email" class="form-input" placeholder="work@company.com">
+                        <div class="form-error" style="display: none;">Please use a business email address</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Phone Number *</label>
+                        <input type="tel" class="form-input" placeholder="+91 98765 43210">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Team Size</label>
+                        <select class="form-input">
+                            <option>1-5 members</option>
+                            <option>6-20 members</option>
+                            <option>21-50 members</option>
+                            <option>50+ members</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Password *</label>
+                        <div class="input-group">
+                            <input type="password" class="form-input" placeholder="Create a strong password">
+                            <div class="password-toggle"></div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary">Start Free Trial</button>
+                    
+                    <div style="text-align: center; margin-top: var(--spacing-md); color: var(--gray-600); font-size: var(--font-size-sm);">
+                        14-day free trial • No credit card required
+                    </div>
+                </form>
+            </div>
+            
+            <div class="auth-visual" style="background: linear-gradient(135deg, var(--gray-900) 0%, var(--gray-700) 100%);">
+                <div class="annotation" style="top: 20px; right: 20px; background: var(--gray-0); color: var(--gray-900);">ENTERPRISE VISUAL</div>
+                <h2 style="color: var(--gray-0); font-size: var(--font-size-3xl); margin-bottom: var(--spacing-lg);">
+                    Streamline Your Casting
+                </h2>
+                <p style="color: var(--gray-200); line-height: 1.8; margin-bottom: var(--spacing-xl);">
+                    Join leading production houses using CastMatch
+                </p>
+                
+                <!-- Client Logos -->
+                <div style="margin-top: var(--spacing-2xl);">
+                    <p style="color: var(--gray-400); font-size: var(--font-size-sm); margin-bottom: var(--spacing-lg);">Trusted by:</p>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--spacing-md);">
+                        <div style="height: 40px; background: rgba(255,255,255,0.1); border-radius: var(--radius-md);"></div>
+                        <div style="height: 40px; background: rgba(255,255,255,0.1); border-radius: var(--radius-md);"></div>
+                        <div style="height: 40px; background: rgba(255,255,255,0.1); border-radius: var(--radius-md);"></div>
+                        <div style="height: 40px; background: rgba(255,255,255,0.1); border-radius: var(--radius-md);"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- SECTION 4: LOGIN -->
+    <section class="auth-section">
+        <div class="section-label">4. Login</div>
+        <div class="annotation priority-1" style="top: 100px; left: 40px;">P1: SIGN IN</div>
+        
+        <div class="auth-container">
+            <div class="logo-section">
+                <div class="logo"></div>
+            </div>
+            
+            <h1 class="auth-title">Welcome Back</h1>
+            <p class="auth-subtitle">Sign in to your account</p>
+            
+            <form>
+                <div class="form-group">
+                    <label class="form-label">Email or Phone</label>
+                    <div class="input-group">
+                        <div class="input-icon"></div>
+                        <input type="text" class="form-input input-with-icon" placeholder="Enter email or phone">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        Password
+                        <a href="#" class="auth-link" style="float: right; font-weight: normal;">Forgot?</a>
+                    </label>
+                    <div class="input-group">
+                        <div class="input-icon"></div>
+                        <input type="password" class="form-input input-with-icon" placeholder="Enter password">
+                        <div class="password-toggle"></div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label style="display: flex; align-items: center; gap: var(--spacing-sm); cursor: pointer;">
+                        <input type="checkbox" style="width: 20px; height: 20px;">
+                        <span style="font-size: var(--font-size-sm); color: var(--gray-600);">Remember me for 30 days</span>
+                    </label>
+                </div>
+                
+                <button class="btn btn-primary">Sign In</button>
+            </form>
+            
+            <div class="divider">
+                <span>OR</span>
+            </div>
+            
+            <button class="btn btn-social">Sign in with Google</button>
+            <button class="btn btn-social">Sign in with Facebook</button>
+            
+            <div class="auth-footer">
+                New to CastMatch? <a href="#" class="auth-link">Create Account</a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- SECTION 5: FORGOT PASSWORD -->
+    <section class="auth-section">
+        <div class="section-label">5. Password Recovery</div>
+        <div class="annotation priority-2" style="top: 100px; left: 40px;">P2: FORGOT PASSWORD</div>
+        
+        <div class="auth-container">
+            <div class="logo-section">
+                <div class="logo"></div>
+            </div>
+            
+            <h1 class="auth-title">Reset Password</h1>
+            <p class="auth-subtitle">Enter your email and we'll send you instructions to reset your password</p>
+            
+            <form>
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" class="form-input" placeholder="you@example.com">
+                </div>
+                
+                <button class="btn btn-primary">Send Reset Link</button>
+                
+                <div style="text-align: center; margin-top: var(--spacing-lg);">
+                    <a href="#" class="auth-link">← Back to Sign In</a>
+                </div>
+            </form>
+            
+            <!-- Success State -->
+            <div class="success-container" style="display: none;">
+                <div class="success-icon">
+                    <div class="success-checkmark"></div>
+                </div>
+                <h2 style="font-size: var(--font-size-2xl); margin-bottom: var(--spacing-sm);">Check Your Email</h2>
+                <p style="color: var(--gray-600); margin-bottom: var(--spacing-xl);">
+                    We've sent password reset instructions to<br>
+                    <strong>john.doe@example.com</strong>
+                </p>
+                <button class="btn btn-secondary">Open Email App</button>
+                <div style="margin-top: var(--spacing-lg);">
+                    <p style="color: var(--gray-500); font-size: var(--font-size-sm);">
+                        Didn't receive the email? <a href="#" class="auth-link">Resend</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- SECTION 6: EMAIL VERIFICATION -->
+    <section class="auth-section">
+        <div class="section-label">6. Email Verification</div>
+        <div class="annotation priority-1" style="top: 100px; left: 40px;">P1: VERIFY EMAIL</div>
+        
+        <div class="auth-container">
+            <div class="logo-section">
+                <div class="logo"></div>
+            </div>
+            
+            <h1 class="auth-title">Verify Your Email</h1>
+            <p class="auth-subtitle">We've sent a verification code to john.doe@example.com</p>
+            
+            <form>
+                <div class="otp-container">
+                    <input type="text" class="otp-input" maxlength="1">
+                    <input type="text" class="otp-input" maxlength="1">
+                    <input type="text" class="otp-input" maxlength="1">
+                    <input type="text" class="otp-input" maxlength="1">
+                    <input type="text" class="otp-input" maxlength="1">
+                    <input type="text" class="otp-input" maxlength="1">
+                </div>
+                
+                <button class="btn btn-primary">Verify Email</button>
+                
+                <div style="text-align: center; margin-top: var(--spacing-lg);">
+                    <p style="color: var(--gray-600); font-size: var(--font-size-sm);">
+                        Didn't receive the code? 
+                        <a href="#" class="auth-link">Resend</a> in 00:45
+                    </p>
+                </div>
+            </form>
+            
+            <!-- Loading State -->
+            <div style="text-align: center; padding: var(--spacing-3xl); display: none;">
+                <div class="loading-spinner"></div>
+                <p style="margin-top: var(--spacing-lg); color: var(--gray-600);">Verifying your code...</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- SECTION 7: ONBOARDING - TALENT -->
+    <section class="auth-section" style="min-height: auto; padding: var(--spacing-3xl);">
+        <div class="section-label">7. Talent Onboarding</div>
+        <div class="annotation priority-1" style="top: 100px; left: 40px;">P1: PROFILE SETUP</div>
+        
+        <div class="onboarding-container">
+            <!-- Progress Bar -->
+            <div class="progress-bar">
+                <div class="progress-step">
+                    <div class="step-circle completed">✓</div>
+                    <div class="step-label">Account</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-circle active">2</div>
+                    <div class="step-label">Personal</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-circle">3</div>
+                    <div class="step-label">Physical</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-circle">4</div>
+                    <div class="step-label">Professional</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-circle">5</div>
+                    <div class="step-label">Media</div>
+                </div>
+            </div>
+            
+            <div class="onboarding-header">
+                <h2 class="auth-title">Personal Details</h2>
+                <p class="auth-subtitle">Help casting directors know you better</p>
+            </div>
+            
+            <form>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">First Name *</label>
+                        <input type="text" class="form-input" placeholder="First name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Last Name *</label>
+                        <input type="text" class="form-input" placeholder="Last name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Date of Birth *</label>
+                        <input type="date" class="form-input">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Gender *</label>
+                        <select class="form-input">
+                            <option>Select gender</option>
+                            <option>Male</option>
+                            <option>Female</option>
+                            <option>Non-binary</option>
+                            <option>Prefer not to say</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label class="form-label">Current Location *</label>
+                        <input type="text" class="form-input" placeholder="City, State">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Languages Known *</label>
+                        <input type="text" class="form-input" placeholder="Hindi, English, etc.">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">WhatsApp Number</label>
+                        <input type="tel" class="form-input" placeholder="+91 98765 43210">
+                    </div>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; margin-top: var(--spacing-2xl);">
+                    <button class="btn btn-ghost" style="width: auto; padding: var(--spacing-md) var(--spacing-xl);">
+                        Skip for Now
+                    </button>
+                    <button class="btn btn-primary" style="width: auto; padding: var(--spacing-md) var(--spacing-xl);">
+                        Continue
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+    
+    <!-- SECTION 8: MEDIA UPLOAD -->
+    <section class="auth-section" style="min-height: auto; padding: var(--spacing-3xl);">
+        <div class="section-label">8. Media Upload</div>
+        <div class="annotation priority-1" style="top: 100px; left: 40px;">P1: PORTFOLIO</div>
+        
+        <div class="onboarding-container">
+            <!-- Progress Bar -->
+            <div class="progress-bar">
+                <div class="progress-step">
+                    <div class="step-circle completed">✓</div>
+                    <div class="step-label">Account</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-circle completed">✓</div>
+                    <div class="step-label">Personal</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-circle completed">✓</div>
+                    <div class="step-label">Physical</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-circle completed">✓</div>
+                    <div class="step-label">Professional</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-circle active">5</div>
+                    <div class="step-label">Media</div>
+                </div>
+            </div>
+            
+            <div class="onboarding-header">
+                <h2 class="auth-title">Upload Your Photos</h2>
+                <p class="auth-subtitle">Add professional headshots and full-body photos</p>
+            </div>
+            
+            <div class="form-grid three-columns">
+                <!-- Headshot Upload -->
+                <div class="form-group">
+                    <label class="form-label">Headshot (Required)</label>
+                    <div class="upload-area">
+                        <div class="annotation" style="top: 10px; right: 10px;">REQUIRED</div>
+                        <div class="upload-icon"></div>
+                        <div class="upload-text">Upload Headshot</div>
+                        <div class="upload-subtext">JPG, PNG up to 5MB</div>
+                    </div>
+                </div>
+                
+                <!-- Full Body Upload -->
+                <div class="form-group">
+                    <label class="form-label">Full Body</label>
+                    <div class="upload-area">
+                        <div class="upload-icon"></div>
+                        <div class="upload-text">Upload Full Body</div>
+                        <div class="upload-subtext">JPG, PNG up to 5MB</div>
+                    </div>
+                </div>
+                
+                <!-- Additional Photo -->
+                <div class="form-group">
+                    <label class="form-label">Additional Photo</label>
+                    <div class="upload-area">
+                        <div class="upload-icon"></div>
+                        <div class="upload-text">Upload Photo</div>
+                        <div class="upload-subtext">JPG, PNG up to 5MB</div>
+                    </div>
+                </div>
+                
+                <!-- Performance Reel -->
+                <div class="form-group full-width-three">
+                    <label class="form-label">Performance Reel (Optional)</label>
+                    <div class="upload-area">
+                        <div class="upload-icon"></div>
+                        <div class="upload-text">Upload Video or Add YouTube/Vimeo Link</div>
+                        <div class="upload-subtext">MP4, MOV up to 100MB or paste video URL</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; margin-top: var(--spacing-2xl);">
+                <button class="btn btn-ghost" style="width: auto; padding: var(--spacing-md) var(--spacing-xl);">
+                    Back
+                </button>
+                <button class="btn btn-primary" style="width: auto; padding: var(--spacing-md) var(--spacing-xl);">
+                    Complete Profile
+                </button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- SECTION 9: TWO-FACTOR AUTHENTICATION -->
+    <section class="auth-section">
+        <div class="section-label">9. Two-Factor Auth</div>
+        <div class="annotation priority-2" style="top: 100px; left: 40px;">P2: 2FA SETUP</div>
+        
+        <div class="auth-container">
+            <div class="logo-section">
+                <div class="logo"></div>
+            </div>
+            
+            <h1 class="auth-title">Enable Two-Factor Authentication</h1>
+            <p class="auth-subtitle">Add an extra layer of security to your account</p>
+            
+            <div style="background: var(--gray-50); padding: var(--spacing-lg); border-radius: var(--radius-md); margin-bottom: var(--spacing-xl);">
+                <div style="display: flex; align-items: center; gap: var(--spacing-md); margin-bottom: var(--spacing-md);">
+                    <div style="width: 40px; height: 40px; background: var(--gray-300); border-radius: var(--radius-md);"></div>
+                    <div>
+                        <div style="font-weight: 600;">SMS Authentication</div>
+                        <div style="font-size: var(--font-size-sm); color: var(--gray-600);">Receive codes via SMS</div>
+                    </div>
+                    <button class="btn btn-secondary" style="width: auto; margin-left: auto;">Enable</button>
+                </div>
+                
+                <div style="display: flex; align-items: center; gap: var(--spacing-md);">
+                    <div style="width: 40px; height: 40px; background: var(--gray-300); border-radius: var(--radius-md);"></div>
+                    <div>
+                        <div style="font-weight: 600;">Authenticator App</div>
+                        <div style="font-size: var(--font-size-sm); color: var(--gray-600);">Use Google Authenticator or similar</div>
+                    </div>
+                    <button class="btn btn-secondary" style="width: auto; margin-left: auto;">Setup</button>
+                </div>
+            </div>
+            
+            <button class="btn btn-ghost">Skip for Now</button>
+            
+            <div style="text-align: center; margin-top: var(--spacing-md); color: var(--gray-500); font-size: var(--font-size-sm);">
+                You can enable this later in Settings
+            </div>
+        </div>
+    </section>
+    
+    <!-- SECTION 10: SUCCESS STATE -->
+    <section class="auth-section">
+        <div class="section-label">10. Success States</div>
+        <div class="annotation priority-1" style="top: 100px; left: 40px;">P1: COMPLETION</div>
+        
+        <div class="auth-container">
+            <div class="success-container">
+                <div class="success-icon">
+                    <div class="success-checkmark"></div>
+                </div>
+                
+                <h2 style="font-size: var(--font-size-3xl); margin-bottom: var(--spacing-sm);">Welcome to CastMatch!</h2>
+                <p style="color: var(--gray-600); margin-bottom: var(--spacing-2xl);">
+                    Your profile is now live. Start exploring opportunities!
+                </p>
+                
+                <button class="btn btn-primary" style="margin-bottom: var(--spacing-md);">Go to Dashboard</button>
+                <button class="btn btn-secondary">Complete Your Profile (60%)</button>
+                
+                <div style="margin-top: var(--spacing-2xl); padding-top: var(--spacing-xl); border-top: var(--border-width) solid var(--gray-200);">
+                    <h3 style="font-size: var(--font-size-lg); margin-bottom: var(--spacing-md);">Quick Start Tips:</h3>
+                    <div style="text-align: left;">
+                        <div style="display: flex; align-items: center; gap: var(--spacing-sm); margin-bottom: var(--spacing-sm);">
+                            <div style="width: 20px; height: 20px; background: var(--gray-300); border-radius: var(--radius-full);"></div>
+                            <span style="color: var(--gray-700);">Upload a professional headshot</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: var(--spacing-sm); margin-bottom: var(--spacing-sm);">
+                            <div style="width: 20px; height: 20px; background: var(--gray-300); border-radius: var(--radius-full);"></div>
+                            <span style="color: var(--gray-700);">Add your performance reel</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: var(--spacing-sm);">
+                            <div style="width: 20px; height: 20px; background: var(--gray-300); border-radius: var(--radius-full);"></div>
+                            <span style="color: var(--gray-700);">Apply for your first audition</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- SECTION 11: ERROR STATES -->
+    <section class="auth-section">
+        <div class="section-label">11. Error States</div>
+        <div class="annotation error" style="top: 100px; left: 40px;">ERROR STATES</div>
+        
+        <div class="auth-container">
+            <h1 class="auth-title">Error State Examples</h1>
+            
+            <!-- Login Error -->
+            <div class="error-banner">
+                <div class="error-icon"></div>
+                <div>
+                    <strong>Invalid credentials</strong><br>
+                    The email or password you entered is incorrect. Please try again.
+                </div>
+            </div>
+            
+            <!-- Form with Errors -->
+            <form>
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" class="form-input error" value="invalid.email">
+                    <div class="form-error">Please enter a valid email address</div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-input error" value="123">
+                    <div class="form-error">Password must be at least 8 characters</div>
+                </div>
+                
+                <button class="btn btn-primary btn-loading">
+                    <span style="display: inline-flex; align-items: center; gap: var(--spacing-sm);">
+                        <div style="width: 16px; height: 16px; border: 2px solid var(--gray-400); border-top-color: var(--gray-0); border-radius: var(--radius-full); animation: spin 1s linear infinite;"></div>
+                        Processing...
+                    </span>
+                </button>
+            </form>
+            
+            <!-- Network Error -->
+            <div style="text-align: center; padding: var(--spacing-2xl); background: var(--gray-50); border-radius: var(--radius-md); margin-top: var(--spacing-xl);">
+                <div style="width: 64px; height: 64px; background: var(--gray-300); border-radius: var(--radius-full); margin: 0 auto var(--spacing-md);"></div>
+                <h3 style="margin-bottom: var(--spacing-sm);">Connection Error</h3>
+                <p style="color: var(--gray-600); margin-bottom: var(--spacing-lg);">
+                    Unable to connect to server. Please check your internet connection and try again.
+                </p>
+                <button class="btn btn-primary" style="width: auto; padding: var(--spacing-sm) var(--spacing-xl);">Retry</button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- SECTION 12: SOCIAL LOGIN VARIATIONS -->
+    <section class="auth-section">
+        <div class="section-label">12. Social Login</div>
+        <div class="annotation priority-2" style="top: 100px; left: 40px;">P2: SOCIAL AUTH</div>
+        
+        <div class="auth-container">
+            <h1 class="auth-title">Continue with Social Account</h1>
+            <p class="auth-subtitle">Choose your preferred sign-in method</p>
+            
+            <div style="display: grid; gap: var(--spacing-md);">
+                <button class="btn btn-social">
+                    <span style="display: flex; align-items: center; gap: var(--spacing-md);">
+                        <div style="width: 24px; height: 24px; background: var(--gray-400); border-radius: var(--radius-sm);"></div>
+                        Continue with Google
+                    </span>
+                </button>
+                
+                <button class="btn btn-social">
+                    <span style="display: flex; align-items: center; gap: var(--spacing-md);">
+                        <div style="width: 24px; height: 24px; background: var(--gray-400); border-radius: var(--radius-sm);"></div>
+                        Continue with Facebook
+                    </span>
+                </button>
+                
+                <button class="btn btn-social">
+                    <span style="display: flex; align-items: center; gap: var(--spacing-md);">
+                        <div style="width: 24px; height: 24px; background: var(--gray-400); border-radius: var(--radius-sm);"></div>
+                        Continue with Apple
+                    </span>
+                </button>
+                
+                <button class="btn btn-social">
+                    <span style="display: flex; align-items: center; gap: var(--spacing-md);">
+                        <div style="width: 24px; height: 24px; background: var(--gray-400); border-radius: var(--radius-sm);"></div>
+                        Continue with LinkedIn
+                    </span>
+                </button>
+            </div>
+            
+            <div class="divider">
+                <span>OR</span>
+            </div>
+            
+            <button class="btn btn-ghost">Use Email Instead</button>
+            
+            <div style="text-align: center; margin-top: var(--spacing-xl); padding: var(--spacing-md); background: var(--gray-50); border-radius: var(--radius-md);">
+                <p style="font-size: var(--font-size-sm); color: var(--gray-600);">
+                    By continuing, you agree to our <a href="#" class="auth-link">Terms of Service</a> and acknowledge that you've read our <a href="#" class="auth-link">Privacy Policy</a>
+                </p>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

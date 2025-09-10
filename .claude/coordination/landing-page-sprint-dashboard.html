@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CastMatch Landing Page Sprint Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #1a0b2e 0%, #2d1b4e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .dashboard {
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 48px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #FF6B35 0%, #F72B1C 50%, #A91E5B 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        
+        .sprint-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .info-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .info-card .label {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+        
+        .info-card .value {
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .phases {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .phase {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 16px;
+            padding: 20px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .phase.active {
+            background: rgba(255, 107, 53, 0.15);
+            border-color: rgba(255, 107, 53, 0.5);
+            box-shadow: 0 0 30px rgba(255, 107, 53, 0.3);
+        }
+        
+        .phase.complete {
+            background: rgba(76, 175, 80, 0.15);
+            border-color: rgba(76, 175, 80, 0.5);
+        }
+        
+        .phase h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+        
+        .phase-time {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        
+        .phase-progress {
+            background: rgba(255, 255, 255, 0.1);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        
+        .phase-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #FF6B35, #F72B1C);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        .agents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .agent-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 16px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .agent-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .agent-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .agent-name {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .agent-status {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+        
+        .status-active {
+            background: rgba(255, 107, 53, 0.2);
+            color: #FF6B35;
+            border: 1px solid rgba(255, 107, 53, 0.5);
+        }
+        
+        .status-standby {
+            background: rgba(255, 193, 7, 0.2);
+            color: #FFC107;
+            border: 1px solid rgba(255, 193, 7, 0.5);
+        }
+        
+        .status-complete {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+            border: 1px solid rgba(76, 175, 80, 0.5);
+        }
+        
+        .task-list {
+            margin-top: 15px;
+        }
+        
+        .task-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .task-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .task-checkbox.checked {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            border-color: #4CAF50;
+        }
+        
+        .task-checkbox.checked::after {
+            content: '✓';
+            color: white;
+            font-weight: bold;
+        }
+        
+        .task-text {
+            flex: 1;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .task-priority {
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        
+        .priority-p0 {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+        }
+        
+        .priority-p1 {
+            background: rgba(255, 152, 0, 0.2);
+            color: #FF9800;
+        }
+        
+        .priority-p2 {
+            background: rgba(33, 150, 243, 0.2);
+            color: #2196F3;
+        }
+        
+        .quality-meter {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .quality-score {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .score-current {
+            font-size: 72px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #FF6B35, #F72B1C);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .score-target {
+            text-align: right;
+        }
+        
+        .score-label {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .score-value {
+            font-size: 36px;
+            font-weight: 600;
+            color: #4CAF50;
+        }
+        
+        .quality-bar {
+            background: rgba(255, 255, 255, 0.1);
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .quality-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #FF6B35, #F72B1C, #A91E5B);
+            border-radius: 10px;
+            width: 68%;
+            transition: width 1s ease;
+        }
+        
+        .countdown {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .countdown-display {
+            font-size: 48px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #FF6B35, #F72B1C);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        
+        .countdown-label {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Header -->
+        <div class="header">
+            <h1>Landing Page Excellence Sprint</h1>
+            <div class="sprint-info">
+                <div class="info-card">
+                    <div class="label">Sprint Duration</div>
+                    <div class="value">72 Hours</div>
+                </div>
+                <div class="info-card">
+                    <div class="label">Start Time</div>
+                    <div class="value">Jan 13, 4:30 PM</div>
+                </div>
+                <div class="info-card">
+                    <div class="label">End Time</div>
+                    <div class="value">Jan 16, 4:30 PM</div>
+                </div>
+                <div class="info-card">
+                    <div class="label">Total Agents</div>
+                    <div class="value">11 Active</div>
+                </div>
+                <div class="info-card">
+                    <div class="label">Target Market</div>
+                    <div class="value">Mumbai Film</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Countdown Timer -->
+        <div class="countdown">
+            <div class="countdown-display" id="countdown">71:45:30</div>
+            <div class="countdown-label">Time Remaining</div>
+        </div>
+        
+        <!-- Quality Meter -->
+        <div class="quality-meter">
+            <div class="quality-score">
+                <div>
+                    <div class="score-label">Current Quality Score</div>
+                    <div class="score-current">6.8/10</div>
+                </div>
+                <div class="score-target">
+                    <div class="score-label">Target Score</div>
+                    <div class="score-value">9.5/10</div>
+                </div>
+            </div>
+            <div class="quality-bar">
+                <div class="quality-progress"></div>
+            </div>
+        </div>
+        
+        <!-- Sprint Phases -->
+        <div class="phases">
+            <div class="phase active">
+                <h3>Phase 1: Foundation</h3>
+                <div class="phase-time">0-6 hours</div>
+                <div class="phase-progress">
+                    <div class="phase-progress-bar" style="width: 15%"></div>
+                </div>
+                <div style="font-size: 12px; color: rgba(255,255,255,0.6);">
+                    Vision & Requirements
+                </div>
+            </div>
+            <div class="phase">
+                <h3>Phase 2: Structure</h3>
+                <div class="phase-time">6-24 hours</div>
+                <div class="phase-progress">
+                    <div class="phase-progress-bar" style="width: 0%"></div>
+                </div>
+                <div style="font-size: 12px; color: rgba(255,255,255,0.6);">
+                    Wireframes & Tokens
+                </div>
+            </div>
+            <div class="phase">
+                <h3>Phase 3: Visual</h3>
+                <div class="phase-time">24-48 hours</div>
+                <div class="phase-progress">
+                    <div class="phase-progress-bar" style="width: 0%"></div>
+                </div>
+                <div style="font-size: 12px; color: rgba(255,255,255,0.6);">
+                    Polish & Enhancement
+                </div>
+            </div>
+            <div class="phase">
+                <h3>Phase 4: Interaction</h3>
+                <div class="phase-time">48-60 hours</div>
+                <div class="phase-progress">
+                    <div class="phase-progress-bar" style="width: 0%"></div>
+                </div>
+                <div style="font-size: 12px; color: rgba(255,255,255,0.6);">
+                    Motion & Animations
+                </div>
+            </div>
+            <div class="phase">
+                <h3>Phase 5: QA</h3>
+                <div class="phase-time">60-72 hours</div>
+                <div class="phase-progress">
+                    <div class="phase-progress-bar" style="width: 0%"></div>
+                </div>
+                <div style="font-size: 12px; color: rgba(255,255,255,0.6);">
+                    Testing & Handoff
+                </div>
+            </div>
+        </div>
+        
+        <!-- Agent Status Grid -->
+        <div class="agents-grid">
+            <!-- Chief Design Officer -->
+            <div class="agent-card pulse">
+                <div class="agent-header">
+                    <div class="agent-name">👑 Chief Design Officer</div>
+                    <div class="agent-status status-active">Active</div>
+                </div>
+                <div class="task-list">
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">Create vision document</div>
+                        <div class="task-priority priority-p0">P0</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">Assign agent sections</div>
+                        <div class="task-priority priority-p0">P0</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- UX Wireframe Architect -->
+            <div class="agent-card">
+                <div class="agent-header">
+                    <div class="agent-name">📐 UX Wireframe Architect</div>
+                    <div class="agent-status status-active">Active</div>
+                </div>
+                <div class="task-list">
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">Hero section wireframe</div>
+                        <div class="task-priority priority-p0">P0</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">Feature grid layout</div>
+                        <div class="task-priority priority-p0">P0</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Visual Systems Architect -->
+            <div class="agent-card">
+                <div class="agent-header">
+                    <div class="agent-name">🎨 Visual Systems Architect</div>
+                    <div class="agent-status status-active">Active</div>
+                </div>
+                <div class="task-list">
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">Landing token overrides</div>
+                        <div class="task-priority priority-p0">P0</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">Glassmorphic card system</div>
+                        <div class="task-priority priority-p0">P0</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Color & Lighting Artist -->
+            <div class="agent-card">
+                <div class="agent-header">
+                    <div class="agent-name">🌅 Color & Lighting Artist</div>
+                    <div class="agent-status status-active">Active</div>
+                </div>
+                <div class="task-list">
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">Mumbai sunset gradient</div>
+                        <div class="task-priority priority-p0">P0</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">Ambient lighting system</div>
+                        <div class="task-priority priority-p0">P0</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Layout Grid Engineer -->
+            <div class="agent-card">
+                <div class="agent-header">
+                    <div class="agent-name">📏 Layout Grid Engineer</div>
+                    <div class="agent-status status-active">Active</div>
+                </div>
+                <div class="task-list">
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">12-column responsive grid</div>
+                        <div class="task-priority priority-p0">P0</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">Section spacing system</div>
+                        <div class="task-priority priority-p0">P0</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Typography Designer -->
+            <div class="agent-card">
+                <div class="agent-header">
+                    <div class="agent-name">✍️ Typography Designer</div>
+                    <div class="agent-status status-active">Active</div>
+                </div>
+                <div class="task-list">
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">Hero headline scaling</div>
+                        <div class="task-priority priority-p0">P0</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">Feature card hierarchy</div>
+                        <div class="task-priority priority-p0">P0</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Typography Content Designer -->
+            <div class="agent-card">
+                <div class="agent-header">
+                    <div class="agent-name">📝 Content Designer</div>
+                    <div class="agent-status status-active">Active</div>
+                </div>
+                <div class="task-list">
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">Hero copy writing</div>
+                        <div class="task-priority priority-p0">P0</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">Feature descriptions</div>
+                        <div class="task-priority priority-p0">P0</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Design Research Analyst -->
+            <div class="agent-card">
+                <div class="agent-header">
+                    <div class="agent-name">🔬 Research Analyst</div>
+                    <div class="agent-status status-active">Active</div>
+                </div>
+                <div class="task-list">
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">Competitor analysis</div>
+                        <div class="task-priority priority-p0">P0</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">Mumbai market patterns</div>
+                        <div class="task-priority priority-p0">P0</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Interaction Design Specialist -->
+            <div class="agent-card">
+                <div class="agent-header">
+                    <div class="agent-name">⚡ Interaction Designer</div>
+                    <div class="agent-status status-standby">Standby</div>
+                </div>
+                <div class="task-list">
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">Button hover states</div>
+                        <div class="task-priority priority-p1">P1</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">Scroll triggers</div>
+                        <div class="task-priority priority-p1">P1</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Motion UI Specialist -->
+            <div class="agent-card">
+                <div class="agent-header">
+                    <div class="agent-name">🎬 Motion Specialist</div>
+                    <div class="agent-status status-standby">Standby</div>
+                </div>
+                <div class="task-list">
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">Hero entrance animation</div>
+                        <div class="task-priority priority-p1">P1</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">Particle effects</div>
+                        <div class="task-priority priority-p2">P2</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Design Review QA -->
+            <div class="agent-card">
+                <div class="agent-header">
+                    <div class="agent-name">✅ Design QA</div>
+                    <div class="agent-status status-standby">Standby</div>
+                </div>
+                <div class="task-list">
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">Set up testing framework</div>
+                        <div class="task-priority priority-p1">P1</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">Prepare checklists</div>
+                        <div class="task-priority priority-p1">P1</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Countdown Timer
+        function updateCountdown() {
+            const endTime = new Date('2025-01-16T16:30:00');
+            const now = new Date();
+            const diff = endTime - now;
+            
+            if (diff > 0) {
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                
+                document.getElementById('countdown').textContent = 
+                    `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            } else {
+                document.getElementById('countdown').textContent = 'Sprint Complete!';
+            }
+        }
+        
+        // Update countdown every second
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+        
+        // Simulate progress updates
+        setTimeout(() => {
+            // Simulate some tasks being completed
+            const checkboxes = document.querySelectorAll('.task-checkbox');
+            checkboxes[0].classList.add('checked');
+            checkboxes[3].classList.add('checked');
+        }, 3000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,1519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../SYSTEM_DOCUMENTATION/WIREFRAME_STANDARDS_GRAYSCALE.css">
+    <title>CastMatch - Casting Directors Landing Page Wireframe | Desktop First | Ultra Comprehensive</title>
+    <style>
+        /* Use standard grayscale variables from WIREFRAME_STANDARDS_GRAYSCALE.css */
+        :root {
+            
+            /* Spacing System */
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --spacing-2xl: 48px;
+            --spacing-3xl: 64px;
+            --spacing-4xl: 96px;
+            
+            /* Typography - Using standard sizes */
+            --font-primary: var(--font-family);
+            --font-size-3xl: 32px;
+            --font-size-4xl: 48px;
+            --font-size-5xl: 64px;
+            
+            /* Borders & Radii */
+            --border-width: 1px;
+            --border-width-2: 2px;
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-full: 9999px;
+            
+            /* Shadows */
+            --shadow-sm: 1px solid var(--medium-light);
+            --shadow-md: 2px solid var(--medium-light);
+            --shadow-lg: 2px solid var(--medium);
+            --shadow-xl: 3px solid var(--medium);
+            
+            /* Layout */
+            --max-width: 1440px;
+            --header-height: 80px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-primary);
+            font-size: var(--font-size-base);
+            line-height: 1.6;
+            color: var(--black);
+            background: var(--white);
+        }
+        
+        /* Annotation System */
+        .annotation {
+            position: absolute;
+            background: var(--black);
+            color: var(--white);
+            padding: 2px 8px;
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            z-index: 1000;
+            white-space: nowrap;
+        }
+        
+        .annotation.priority-1 {
+            background: var(--black);
+        }
+        
+        .annotation.priority-2 {
+            background: var(--dark);
+        }
+        
+        .annotation.priority-3 {
+            background: var(--medium);
+        }
+        
+        /* Wireframe Components */
+        .wireframe-container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .wireframe-placeholder {
+            background: repeating-linear-gradient(
+                45deg,
+                var(--light-gray),
+                var(--light-gray) 10px,
+                var(--light-gray) 10px,
+                var(--light-gray) 20px
+            );
+            border: 2px dashed var(--medium);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--medium-dark);
+            font-size: var(--font-size-sm);
+            text-align: center;
+            padding: var(--spacing-lg);
+            position: relative;
+        }
+        
+        /* Header Navigation */
+        .header {
+            height: var(--header-height);
+            border-bottom: var(--border-width) solid var(--medium-light);
+            background: var(--white);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 var(--spacing-xl);
+            position: relative;
+        }
+        
+        .logo-placeholder {
+            width: 180px;
+            height: 40px;
+            background: var(--medium-light);
+            border-radius: var(--radius-md);
+            position: relative;
+        }
+        
+        .nav-primary {
+            display: flex;
+            gap: var(--spacing-xl);
+            align-items: center;
+        }
+        
+        .nav-link {
+            height: 20px;
+            width: 80px;
+            background: var(--medium-light);
+            border-radius: var(--radius-sm);
+        }
+        
+        .nav-actions {
+            display: flex;
+            gap: var(--spacing-md);
+            align-items: center;
+        }
+        
+        .btn {
+            padding: var(--spacing-sm) var(--spacing-lg);
+            border-radius: var(--radius-md);
+            border: none;
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 44px;
+            position: relative;
+        }
+        
+        .btn-primary {
+            background: var(--black);
+            color: var(--white);
+        }
+        
+        .btn-secondary {
+            background: var(--medium-light);
+            color: var(--dark);
+        }
+        
+        .btn-ghost {
+            background: transparent;
+            color: var(--dark);
+            border: var(--border-width) solid var(--medium-light);
+        }
+        
+        /* Casting Hero Section */
+        .casting-hero {
+            padding: var(--spacing-4xl) var(--spacing-xl);
+            background: linear-gradient(135deg, var(--black) 0%, var(--dark) 100%);
+            color: var(--white);
+            position: relative;
+        }
+        
+        .casting-hero-content {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-3xl);
+            align-items: center;
+        }
+        
+        .casting-hero-text {
+            position: relative;
+        }
+        
+        .enterprise-badge {
+            display: inline-block;
+            background: var(--white);
+            color: var(--black);
+            padding: var(--spacing-xs) var(--spacing-md);
+            border-radius: 50%;
+            font-size: var(--font-size-sm);
+            margin-bottom: var(--spacing-lg);
+            font-weight: 600;
+        }
+        
+        .casting-hero-title {
+            font-size: var(--font-size-5xl);
+            font-weight: var(--font-weight-bold);
+            line-height: 1.1;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .casting-hero-subtitle {
+            font-size: var(--font-size-xl);
+            opacity: 0.9;
+            margin-bottom: var(--spacing-xl);
+            line-height: 1.5;
+        }
+        
+        .casting-hero-actions {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .btn-hero {
+            background: var(--white);
+            color: var(--black);
+            padding: var(--spacing-md) var(--spacing-xl);
+            font-size: var(--font-size-lg);
+        }
+        
+        .btn-hero-secondary {
+            background: transparent;
+            color: var(--white);
+            border: 2px solid var(--white);
+            padding: var(--spacing-md) var(--spacing-xl);
+        }
+        
+        .client-logos {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xl);
+            padding-top: var(--spacing-xl);
+            border-top: var(--border-width) solid var(--medium-light);
+        }
+        
+        .client-logo {
+            width: 120px;
+            height: 40px;
+            background: var(--light-gray);
+            border-radius: var(--radius-sm);
+        }
+        
+        .casting-hero-visual {
+            position: relative;
+            height: 600px;
+            background: var(--light-gray);
+            border-radius: var(--radius-xl);
+            border: 2px dashed var(--medium-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Problems We Solve Section */
+        .problems-section {
+            padding: var(--spacing-4xl) var(--spacing-xl);
+            background: var(--white);
+            position: relative;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: var(--spacing-3xl);
+            position: relative;
+        }
+        
+        .section-title {
+            font-size: var(--font-size-4xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--black);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .section-subtitle {
+            font-size: var(--font-size-lg);
+            color: var(--medium-dark);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .problems-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-xl);
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+        
+        .problem-card {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: var(--spacing-lg);
+            padding: var(--spacing-xl);
+            background: var(--light-gray);
+            border-radius: var(--radius-lg);
+            border: var(--border-width) solid var(--medium-light);
+            position: relative;
+        }
+        
+        .problem-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--medium-light);
+            border-radius: var(--radius-md);
+        }
+        
+        .problem-content {
+            position: relative;
+        }
+        
+        .problem-title {
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            color: var(--black);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .problem-before {
+            color: var(--medium);
+            text-decoration: line-through;
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .problem-after {
+            color: var(--dark);
+            font-weight: 500;
+        }
+        
+        /* Enterprise Solutions Section */
+        .enterprise-solutions {
+            padding: var(--spacing-4xl) var(--spacing-xl);
+            background: var(--light-gray);
+            position: relative;
+        }
+        
+        .solutions-showcase {
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+        
+        .solution-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-3xl);
+            align-items: center;
+            margin-bottom: var(--spacing-4xl);
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-3xl);
+            box-shadow: var(--shadow-md);
+            position: relative;
+        }
+        
+        .solution-row:nth-child(even) {
+            direction: rtl;
+        }
+        
+        .solution-row:nth-child(even) > * {
+            direction: ltr;
+        }
+        
+        .solution-content {
+            position: relative;
+        }
+        
+        .solution-label {
+            display: inline-block;
+            background: var(--black);
+            color: var(--white);
+            padding: var(--spacing-xs) var(--spacing-md);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .solution-title {
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--black);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .solution-description {
+            color: var(--medium-dark);
+            margin-bottom: var(--spacing-lg);
+            line-height: 1.6;
+        }
+        
+        .solution-features {
+            list-style: none;
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .solution-feature {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm) 0;
+            color: var(--dark);
+        }
+        
+        .feature-icon {
+            width: 24px;
+            height: 24px;
+            background: var(--medium-light);
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        
+        .solution-visual {
+            height: 400px;
+            background: var(--light-gray);
+            border-radius: var(--radius-lg);
+            border: 2px dashed var(--medium-light);
+            position: relative;
+        }
+        
+        /* Workflow Automation Section */
+        .workflow-automation {
+            padding: var(--spacing-4xl) var(--spacing-xl);
+            background: var(--white);
+            position: relative;
+        }
+        
+        .workflow-diagram {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            background: var(--light-gray);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-3xl);
+            position: relative;
+        }
+        
+        .workflow-steps {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: var(--spacing-lg);
+            position: relative;
+        }
+        
+        .workflow-step {
+            text-align: center;
+            position: relative;
+        }
+        
+        .workflow-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--black);
+            border-radius: 50%;
+            margin: 0 auto var(--spacing-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-bold);
+        }
+        
+        .workflow-title {
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            color: var(--black);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .workflow-time {
+            font-size: var(--font-size-sm);
+            color: var(--medium);
+        }
+        
+        .workflow-arrow {
+            position: absolute;
+            top: 40px;
+            right: -20px;
+            width: 40px;
+            height: 2px;
+            background: var(--medium);
+        }
+        
+        .workflow-arrow::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: -4px;
+            width: 0;
+            height: 0;
+            border-left: 8px solid var(--medium);
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+        }
+        
+        /* ROI Calculator Section */
+        .roi-calculator {
+            padding: var(--spacing-4xl) var(--spacing-xl);
+            background: var(--light-gray);
+            position: relative;
+        }
+        
+        .calculator-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-3xl);
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-3xl);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .calculator-inputs {
+            position: relative;
+        }
+        
+        .calculator-title {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--black);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .input-group {
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .input-label {
+            display: block;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .input-slider {
+            width: 100%;
+            height: 40px;
+            background: var(--light-gray);
+            border: var(--border-width) solid var(--medium-light);
+            border-radius: var(--radius-md);
+            padding: 0 var(--spacing-md);
+        }
+        
+        .input-value {
+            display: inline-block;
+            background: var(--black);
+            color: var(--white);
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            margin-left: var(--spacing-sm);
+        }
+        
+        .calculator-results {
+            background: var(--light-gray);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            position: relative;
+        }
+        
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-md) 0;
+            border-bottom: var(--border-width) solid var(--medium-light);
+        }
+        
+        .result-label {
+            color: var(--medium-dark);
+        }
+        
+        .result-value {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--black);
+        }
+        
+        .result-highlight {
+            background: var(--black);
+            color: var(--white);
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-md);
+            margin-top: var(--spacing-lg);
+            text-align: center;
+        }
+        
+        .savings-amount {
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-bold);
+        }
+        
+        /* Case Studies Section */
+        .case-studies {
+            padding: var(--spacing-4xl) var(--spacing-xl);
+            background: var(--white);
+            position: relative;
+        }
+        
+        .case-study-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--spacing-xl);
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+        
+        .case-study-card {
+            background: var(--light-gray);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .case-study-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .case-study-image {
+            height: 200px;
+            background: var(--medium-light);
+            position: relative;
+        }
+        
+        .case-study-content {
+            padding: var(--spacing-xl);
+        }
+        
+        .case-study-logo {
+            width: 120px;
+            height: 40px;
+            background: var(--medium-light);
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .case-study-title {
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            color: var(--black);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .case-study-description {
+            color: var(--medium-dark);
+            margin-bottom: var(--spacing-lg);
+            line-height: 1.6;
+        }
+        
+        .case-study-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-md);
+            padding-top: var(--spacing-md);
+            border-top: var(--border-width) solid var(--medium-light);
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--black);
+        }
+        
+        .stat-label {
+            font-size: var(--font-size-sm);
+            color: var(--medium);
+            text-transform: uppercase;
+        }
+        
+        /* Enterprise Pricing Section */
+        .enterprise-pricing {
+            padding: var(--spacing-4xl) var(--spacing-xl);
+            background: var(--light-gray);
+            position: relative;
+        }
+        
+        .pricing-tiers {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--spacing-xl);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .enterprise-card {
+            background: var(--white);
+            border: 2px solid var(--medium-light);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-xl);
+            position: relative;
+            text-align: center;
+        }
+        
+        .enterprise-card.recommended {
+            border-color: var(--black);
+            transform: scale(1.05);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .recommended-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--black);
+            color: var(--white);
+            padding: var(--spacing-xs) var(--spacing-lg);
+            border-radius: 50%;
+            font-size: var(--font-size-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .enterprise-tier {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--black);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .enterprise-description {
+            color: var(--medium-dark);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .enterprise-price {
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--black);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .price-label {
+            font-size: var(--font-size-sm);
+            color: var(--medium);
+        }
+        
+        .enterprise-features {
+            list-style: none;
+            text-align: left;
+            padding: var(--spacing-lg) 0;
+            border-top: var(--border-width) solid var(--medium-light);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .enterprise-feature {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm) 0;
+            color: var(--dark);
+        }
+        
+        /* Demo Request Section */
+        .demo-request {
+            padding: var(--spacing-4xl) var(--spacing-xl);
+            background: linear-gradient(135deg, var(--black) 0%, var(--dark) 100%);
+            color: var(--white);
+            position: relative;
+        }
+        
+        .demo-container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .demo-title {
+            font-size: var(--font-size-4xl);
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .demo-subtitle {
+            font-size: var(--font-size-xl);
+            opacity: 0.9;
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .demo-form {
+            background: var(--light-gray);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .form-input {
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            border: none;
+            background: var(--white);
+            font-size: var(--font-size-base);
+        }
+        
+        .form-input.full-width {
+            grid-column: span 2;
+        }
+        
+        .btn-demo {
+            width: 100%;
+            background: var(--white);
+            color: var(--black);
+            padding: var(--spacing-md) var(--spacing-xl);
+            font-size: var(--font-size-lg);
+        }
+        
+        .demo-benefits {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-xl);
+            margin-top: var(--spacing-xl);
+        }
+        
+        .demo-benefit {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            opacity: 0.9;
+        }
+        
+        .benefit-icon {
+            width: 20px;
+            height: 20px;
+            background: var(--medium-light);
+            border-radius: 50%;
+        }
+        
+        /* Footer */
+        .footer {
+            background: var(--black);
+            color: var(--medium-light);
+            padding: var(--spacing-3xl) var(--spacing-xl);
+            position: relative;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .casting-hero-content,
+            .calculator-container,
+            .solutions-showcase .solution-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .problems-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .workflow-steps {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .case-study-grid,
+            .pricing-tiers {
+                grid-template-columns: 1fr;
+                max-width: 500px;
+                margin: 0 auto;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .casting-hero-title {
+                font-size: var(--font-size-3xl);
+            }
+            
+            .workflow-steps {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-input.full-width {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="annotation priority-1" style="top: 10px; left: 20px;">P1: ENTERPRISE NAV</div>
+        <div class="header-content">
+            <div class="logo-placeholder">
+                <div class="annotation" style="top: -20px; left: 0;">LOGO: 180x40px</div>
+            </div>
+            
+            <nav class="nav-primary">
+                <div class="nav-link"></div>
+                <div class="nav-link"></div>
+                <div class="nav-link"></div>
+                <div class="nav-link"></div>
+                <div class="nav-link"></div>
+            </nav>
+            
+            <div class="nav-actions">
+                <button class="btn btn-ghost">Sign In</button>
+                <button class="btn btn-primary">Request Demo</button>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Casting Hero Section -->
+    <section class="casting-hero">
+        <div class="annotation priority-1" style="top: 20px; left: 20px;">P1: ENTERPRISE HERO</div>
+        <div class="casting-hero-content">
+            <div class="casting-hero-text">
+                <div class="enterprise-badge">ENTERPRISE SOLUTION</div>
+                <h1 class="casting-hero-title">
+                    Streamline Your Casting Process with AI-Powered Talent Discovery
+                </h1>
+                <p class="casting-hero-subtitle">
+                    Find perfect talent 10x faster. Manage auditions seamlessly. Collaborate with your team in real-time. Join India's leading production houses on CastMatch.
+                </p>
+                
+                <div class="casting-hero-actions">
+                    <button class="btn btn-hero">Schedule Demo</button>
+                    <button class="btn btn-hero-secondary">Watch Product Tour</button>
+                </div>
+                
+                <div class="client-logos">
+                    <span style="opacity: 0.7; margin-right: var(--spacing-md);">Trusted by:</span>
+                    <div class="client-logo"></div>
+                    <div class="client-logo"></div>
+                    <div class="client-logo"></div>
+                    <div class="client-logo"></div>
+                </div>
+            </div>
+            
+            <div class="casting-hero-visual">
+                <div class="annotation" style="top: 20px; right: 20px; background: var(--white); color: var(--black);">PRODUCT DEMO VIDEO</div>
+                <div class="wireframe-placeholder" style="color: var(--medium-light); border-color: var(--medium-light);">
+                    Interactive Product Demo<br>
+                    600x600px<br>
+                    Click to Play
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Problems We Solve -->
+    <section class="problems-section">
+        <div class="annotation priority-1" style="top: 20px; left: 20px;">P1: PAIN POINTS</div>
+        <div class="wireframe-container">
+            <div class="section-header">
+                <h2 class="section-title">Casting Challenges We Solve</h2>
+                <p class="section-subtitle">Transform your casting workflow from chaos to clarity</p>
+            </div>
+            
+            <div class="problems-grid">
+                <div class="problem-card">
+                    <div class="problem-icon"></div>
+                    <div class="problem-content">
+                        <h3 class="problem-title">Time-Consuming Searches</h3>
+                        <p class="problem-before">Before: 2-3 weeks to find suitable talent</p>
+                        <p class="problem-after">After: Find perfect matches in hours with AI</p>
+                    </div>
+                </div>
+                
+                <div class="problem-card">
+                    <div class="problem-icon"></div>
+                    <div class="problem-content">
+                        <h3 class="problem-title">Unorganized Applications</h3>
+                        <p class="problem-before">Before: Hundreds of emails and WhatsApp messages</p>
+                        <p class="problem-after">After: Centralized dashboard with smart filtering</p>
+                    </div>
+                </div>
+                
+                <div class="problem-card">
+                    <div class="problem-icon"></div>
+                    <div class="problem-content">
+                        <h3 class="problem-title">Scheduling Nightmares</h3>
+                        <p class="problem-before">Before: Manual coordination via phone calls</p>
+                        <p class="problem-after">After: Automated scheduling with calendar sync</p>
+                    </div>
+                </div>
+                
+                <div class="problem-card">
+                    <div class="problem-icon"></div>
+                    <div class="problem-content">
+                        <h3 class="problem-title">Team Collaboration Issues</h3>
+                        <p class="problem-before">Before: Disconnected feedback across team</p>
+                        <p class="problem-after">After: Real-time collaboration and voting</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Enterprise Solutions -->
+    <section class="enterprise-solutions">
+        <div class="annotation priority-1" style="top: 20px; left: 20px;">P1: KEY SOLUTIONS</div>
+        <div class="solutions-showcase">
+            <div class="section-header">
+                <h2 class="section-title">Enterprise-Grade Casting Solutions</h2>
+                <p class="section-subtitle">Powerful tools designed for production houses and casting agencies</p>
+            </div>
+            
+            <div class="solution-row">
+                <div class="solution-content">
+                    <div class="solution-label">AI-POWERED SEARCH</div>
+                    <h3 class="solution-title">Find Perfect Talent in Seconds</h3>
+                    <p class="solution-description">
+                        Our advanced AI analyzes your requirements and instantly matches you with the most suitable talent from our verified database of 50,000+ profiles.
+                    </p>
+                    <ul class="solution-features">
+                        <li class="solution-feature">
+                            <div class="feature-icon"></div>
+                            <span>Natural language search queries</span>
+                        </li>
+                        <li class="solution-feature">
+                            <div class="feature-icon"></div>
+                            <span>Visual similarity matching</span>
+                        </li>
+                        <li class="solution-feature">
+                            <div class="feature-icon"></div>
+                            <span>Multi-parameter filtering</span>
+                        </li>
+                        <li class="solution-feature">
+                            <div class="feature-icon"></div>
+                            <span>Bulk talent comparison</span>
+                        </li>
+                    </ul>
+                    <button class="btn btn-primary">See AI Search Demo</button>
+                </div>
+                <div class="solution-visual">
+                    <div class="annotation" style="top: 20px; right: 20px;">AI SEARCH UI</div>
+                </div>
+            </div>
+            
+            <div class="solution-row">
+                <div class="solution-content">
+                    <div class="solution-label">AUDITION MANAGEMENT</div>
+                    <h3 class="solution-title">Streamlined Audition Workflow</h3>
+                    <p class="solution-description">
+                        Manage in-person and video auditions seamlessly. Schedule, record, review, and share feedback all in one platform.
+                    </p>
+                    <ul class="solution-features">
+                        <li class="solution-feature">
+                            <div class="feature-icon"></div>
+                            <span>HD video audition recording</span>
+                        </li>
+                        <li class="solution-feature">
+                            <div class="feature-icon"></div>
+                            <span>Automated scheduling & reminders</span>
+                        </li>
+                        <li class="solution-feature">
+                            <div class="feature-icon"></div>
+                            <span>Side-by-side comparisons</span>
+                        </li>
+                        <li class="solution-feature">
+                            <div class="feature-icon"></div>
+                            <span>Team feedback & ratings</span>
+                        </li>
+                    </ul>
+                    <button class="btn btn-primary">Explore Audition Tools</button>
+                </div>
+                <div class="solution-visual">
+                    <div class="annotation" style="top: 20px; right: 20px;">AUDITION DASHBOARD</div>
+                </div>
+            </div>
+            
+            <div class="solution-row">
+                <div class="solution-content">
+                    <div class="solution-label">TEAM COLLABORATION</div>
+                    <h3 class="solution-title">Real-Time Team Coordination</h3>
+                    <p class="solution-description">
+                        Enable your entire team to collaborate efficiently with shared shortlists, voting systems, and instant communication.
+                    </p>
+                    <ul class="solution-features">
+                        <li class="solution-feature">
+                            <div class="feature-icon"></div>
+                            <span>Multi-user access controls</span>
+                        </li>
+                        <li class="solution-feature">
+                            <div class="feature-icon"></div>
+                            <span>Shared shortlists & notes</span>
+                        </li>
+                        <li class="solution-feature">
+                            <div class="feature-icon"></div>
+                            <span>Decision voting system</span>
+                        </li>
+                        <li class="solution-feature">
+                            <div class="feature-icon"></div>
+                            <span>Activity timeline tracking</span>
+                        </li>
+                    </ul>
+                    <button class="btn btn-primary">See Collaboration Features</button>
+                </div>
+                <div class="solution-visual">
+                    <div class="annotation" style="top: 20px; right: 20px;">TEAM INTERFACE</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Workflow Automation -->
+    <section class="workflow-automation">
+        <div class="annotation priority-2" style="top: 20px; left: 20px;">P2: WORKFLOW</div>
+        <div class="wireframe-container">
+            <div class="section-header">
+                <h2 class="section-title">Your Casting Workflow, Automated</h2>
+                <p class="section-subtitle">From project creation to final selection in 5 simple steps</p>
+            </div>
+            
+            <div class="workflow-diagram">
+                <div class="workflow-steps">
+                    <div class="workflow-step">
+                        <div class="workflow-icon">1</div>
+                        <h4 class="workflow-title">Create Project</h4>
+                        <p class="workflow-time">2 minutes</p>
+                        <div class="workflow-arrow"></div>
+                    </div>
+                    
+                    <div class="workflow-step">
+                        <div class="workflow-icon">2</div>
+                        <h4 class="workflow-title">Define Roles</h4>
+                        <p class="workflow-time">5 minutes</p>
+                        <div class="workflow-arrow"></div>
+                    </div>
+                    
+                    <div class="workflow-step">
+                        <div class="workflow-icon">3</div>
+                        <h4 class="workflow-title">AI Matching</h4>
+                        <p class="workflow-time">Instant</p>
+                        <div class="workflow-arrow"></div>
+                    </div>
+                    
+                    <div class="workflow-step">
+                        <div class="workflow-icon">4</div>
+                        <h4 class="workflow-title">Review & Audition</h4>
+                        <p class="workflow-time">1-2 days</p>
+                        <div class="workflow-arrow"></div>
+                    </div>
+                    
+                    <div class="workflow-step">
+                        <div class="workflow-icon">5</div>
+                        <h4 class="workflow-title">Final Selection</h4>
+                        <p class="workflow-time">Minutes</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- ROI Calculator -->
+    <section class="roi-calculator">
+        <div class="annotation priority-2" style="top: 20px; left: 20px;">P2: ROI CALCULATOR</div>
+        <div class="wireframe-container">
+            <div class="section-header">
+                <h2 class="section-title">Calculate Your Savings</h2>
+                <p class="section-subtitle">See how much time and money you can save with CastMatch</p>
+            </div>
+            
+            <div class="calculator-container">
+                <div class="calculator-inputs">
+                    <h3 class="calculator-title">Your Current Process</h3>
+                    
+                    <div class="input-group">
+                        <label class="input-label">
+                            Projects per month
+                            <span class="input-value">5</span>
+                        </label>
+                        <input type="range" class="input-slider" min="1" max="20" value="5">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">
+                            Roles per project
+                            <span class="input-value">10</span>
+                        </label>
+                        <input type="range" class="input-slider" min="1" max="50" value="10">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">
+                            Hours spent per role
+                            <span class="input-value">15</span>
+                        </label>
+                        <input type="range" class="input-slider" min="5" max="40" value="15">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">
+                            Team members involved
+                            <span class="input-value">3</span>
+                        </label>
+                        <input type="range" class="input-slider" min="1" max="10" value="3">
+                    </div>
+                </div>
+                
+                <div class="calculator-results">
+                    <h3 class="calculator-title">Your Potential Savings</h3>
+                    
+                    <div class="result-item">
+                        <span class="result-label">Time saved per month</span>
+                        <span class="result-value">450 hours</span>
+                    </div>
+                    
+                    <div class="result-item">
+                        <span class="result-label">Cost reduction</span>
+                        <span class="result-value">65%</span>
+                    </div>
+                    
+                    <div class="result-item">
+                        <span class="result-label">Faster casting</span>
+                        <span class="result-value">10x</span>
+                    </div>
+                    
+                    <div class="result-item">
+                        <span class="result-label">ROI period</span>
+                        <span class="result-value">2 months</span>
+                    </div>
+                    
+                    <div class="result-highlight">
+                        <div class="savings-amount">₹2,50,000</div>
+                        <div>Estimated annual savings</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Case Studies -->
+    <section class="case-studies">
+        <div class="annotation priority-1" style="top: 20px; left: 20px;">P1: SOCIAL PROOF</div>
+        <div class="wireframe-container">
+            <div class="section-header">
+                <h2 class="section-title">Success Stories from Production Houses</h2>
+                <p class="section-subtitle">See how leading studios transformed their casting process</p>
+            </div>
+            
+            <div class="case-study-grid">
+                <div class="case-study-card">
+                    <div class="case-study-image">
+                        <div class="annotation" style="top: 10px; right: 10px;">CASE STUDY 1</div>
+                    </div>
+                    <div class="case-study-content">
+                        <div class="case-study-logo"></div>
+                        <h3 class="case-study-title">Dharma Productions</h3>
+                        <p class="case-study-description">
+                            Reduced casting time by 75% for their latest web series, finding perfect talent matches in days instead of weeks.
+                        </p>
+                        <div class="case-study-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">75%</div>
+                                <div class="stat-label">Time Saved</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">500+</div>
+                                <div class="stat-label">Roles Cast</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="case-study-card">
+                    <div class="case-study-image">
+                        <div class="annotation" style="top: 10px; right: 10px;">CASE STUDY 2</div>
+                    </div>
+                    <div class="case-study-content">
+                        <div class="case-study-logo"></div>
+                        <h3 class="case-study-title">Excel Entertainment</h3>
+                        <p class="case-study-description">
+                            Managed 1000+ auditions seamlessly for a multi-starrer film project with real-time team collaboration.
+                        </p>
+                        <div class="case-study-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">1000+</div>
+                                <div class="stat-label">Auditions</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">10x</div>
+                                <div class="stat-label">Faster</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="case-study-card">
+                    <div class="case-study-image">
+                        <div class="annotation" style="top: 10px; right: 10px;">CASE STUDY 3</div>
+                    </div>
+                    <div class="case-study-content">
+                        <div class="case-study-logo"></div>
+                        <h3 class="case-study-title">Netflix India</h3>
+                        <p class="case-study-description">
+                            Discovered fresh talent from tier-2 cities using AI-powered search and video auditions.
+                        </p>
+                        <div class="case-study-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">30+</div>
+                                <div class="stat-label">Cities</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">95%</div>
+                                <div class="stat-label">Match Rate</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Enterprise Pricing -->
+    <section class="enterprise-pricing">
+        <div class="annotation priority-1" style="top: 20px; left: 20px;">P1: PRICING</div>
+        <div class="wireframe-container">
+            <div class="section-header">
+                <h2 class="section-title">Enterprise Pricing Plans</h2>
+                <p class="section-subtitle">Flexible plans that scale with your production needs</p>
+            </div>
+            
+            <div class="pricing-tiers">
+                <div class="enterprise-card">
+                    <h3 class="enterprise-tier">Starter</h3>
+                    <p class="enterprise-description">For small production houses and independent casting directors</p>
+                    <div class="enterprise-price">
+                        ₹9,999
+                        <div class="price-label">per month</div>
+                    </div>
+                    <ul class="enterprise-features">
+                        <li class="enterprise-feature">
+                            <div class="feature-icon"></div>
+                            <span>Up to 3 users</span>
+                        </li>
+                        <li class="enterprise-feature">
+                            <div class="feature-icon"></div>
+                            <span>5 active projects</span>
+                        </li>
+                        <li class="enterprise-feature">
+                            <div class="feature-icon"></div>
+                            <span>1000 talent searches/month</span>
+                        </li>
+                        <li class="enterprise-feature">
+                            <div class="feature-icon"></div>
+                            <span>Basic analytics</span>
+                        </li>
+                        <li class="enterprise-feature">
+                            <div class="feature-icon"></div>
+                            <span>Email support</span>
+                        </li>
+                    </ul>
+                    <button class="btn btn-secondary" style="width: 100%;">Start Free Trial</button>
+                </div>
+                
+                <div class="enterprise-card recommended">
+                    <div class="recommended-badge">Recommended</div>
+                    <h3 class="enterprise-tier">Professional</h3>
+                    <p class="enterprise-description">For established production houses with regular casting needs</p>
+                    <div class="enterprise-price">
+                        ₹24,999
+                        <div class="price-label">per month</div>
+                    </div>
+                    <ul class="enterprise-features">
+                        <li class="enterprise-feature">
+                            <div class="feature-icon"></div>
+                            <span>Up to 10 users</span>
+                        </li>
+                        <li class="enterprise-feature">
+                            <div class="feature-icon"></div>
+                            <span>Unlimited projects</span>
+                        </li>
+                        <li class="enterprise-feature">
+                            <div class="feature-icon"></div>
+                            <span>Unlimited searches</span>
+                        </li>
+                        <li class="enterprise-feature">
+                            <div class="feature-icon"></div>
+                            <span>AI-powered matching</span>
+                        </li>
+                        <li class="enterprise-feature">
+                            <div class="feature-icon"></div>
+                            <span>Advanced analytics</span>
+                        </li>
+                        <li class="enterprise-feature">
+                            <div class="feature-icon"></div>
+                            <span>Priority support</span>
+                        </li>
+                        <li class="enterprise-feature">
+                            <div class="feature-icon"></div>
+                            <span>API access</span>
+                        </li>
+                    </ul>
+                    <button class="btn btn-primary" style="width: 100%;">Start Free Trial</button>
+                </div>
+                
+                <div class="enterprise-card">
+                    <h3 class="enterprise-tier">Enterprise</h3>
+                    <p class="enterprise-description">For large studios with complex casting requirements</p>
+                    <div class="enterprise-price">
+                        Custom
+                        <div class="price-label">Let's talk</div>
+                    </div>
+                    <ul class="enterprise-features">
+                        <li class="enterprise-feature">
+                            <div class="feature-icon"></div>
+                            <span>Unlimited users</span>
+                        </li>
+                        <li class="enterprise-feature">
+                            <div class="feature-icon"></div>
+                            <span>Custom integrations</span>
+                        </li>
+                        <li class="enterprise-feature">
+                            <div class="feature-icon"></div>
+                            <span>Dedicated account manager</span>
+                        </li>
+                        <li class="enterprise-feature">
+                            <div class="feature-icon"></div>
+                            <span>On-premise deployment</span>
+                        </li>
+                        <li class="enterprise-feature">
+                            <div class="feature-icon"></div>
+                            <span>Custom training</span>
+                        </li>
+                        <li class="enterprise-feature">
+                            <div class="feature-icon"></div>
+                            <span>SLA guarantee</span>
+                        </li>
+                    </ul>
+                    <button class="btn btn-ghost" style="width: 100%;">Contact Sales</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Demo Request CTA -->
+    <section class="demo-request">
+        <div class="annotation priority-1" style="top: 20px; left: 20px;">P1: DEMO CTA</div>
+        <div class="demo-container">
+            <h2 class="demo-title">See CastMatch in Action</h2>
+            <p class="demo-subtitle">Get a personalized demo tailored to your production needs</p>
+            
+            <div class="demo-form">
+                <div class="form-grid">
+                    <input type="text" class="form-input" placeholder="Full Name">
+                    <input type="text" class="form-input" placeholder="Company Name">
+                    <input type="email" class="form-input" placeholder="Work Email">
+                    <input type="tel" class="form-input" placeholder="Phone Number">
+                    <textarea class="form-input full-width" placeholder="Tell us about your casting needs" rows="3"></textarea>
+                </div>
+                <button class="btn btn-demo">Schedule My Demo</button>
+            </div>
+            
+            <div class="demo-benefits">
+                <div class="demo-benefit">
+                    <div class="benefit-icon"></div>
+                    <span>30-minute call</span>
+                </div>
+                <div class="demo-benefit">
+                    <div class="benefit-icon"></div>
+                    <span>Personalized walkthrough</span>
+                </div>
+                <div class="demo-benefit">
+                    <div class="benefit-icon"></div>
+                    <span>Free trial access</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="annotation priority-3" style="top: 20px; left: 20px;">P3: FOOTER</div>
+        <div class="footer-content">
+            <!-- Footer content similar to main landing page -->
+        </div>
+    </footer>
+</body>
+</html>

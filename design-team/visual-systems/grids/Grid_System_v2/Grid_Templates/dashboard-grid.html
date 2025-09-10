@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CastMatch - Dashboard Grid Template v2.0</title>
+    <link rel="stylesheet" href="../castmatch-grid-system.css">
+    <style>
+        /* Dashboard Dark Theme Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0A0A0A;
+            color: #FFFFFF;
+            line-height: 1.6;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* Dashboard Container */
+        .dashboard-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Top Navigation Bar */
+        .top-nav {
+            height: 64px;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: var(--z-sticky);
+            display: flex;
+            align-items: center;
+            padding: 0 var(--spacing-4);
+        }
+        
+        .nav-brand {
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-right: auto;
+        }
+        
+        .nav-actions {
+            display: flex;
+            gap: var(--spacing-3);
+            align-items: center;
+        }
+        
+        .nav-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .nav-icon:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 107, 107, 0.3);
+        }
+        
+        /* Main Dashboard Layout */
+        .dashboard-wrapper {
+            flex: 1;
+            display: flex;
+        }
+        
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 260px;
+            background: rgba(18, 18, 18, 0.95);
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            padding: var(--spacing-4);
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+        
+        .sidebar-section {
+            margin-bottom: var(--spacing-4);
+        }
+        
+        .sidebar-title {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: rgba(255, 255, 255, 0.4);
+            margin-bottom: var(--spacing-2);
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+            padding: var(--spacing-1_5) var(--spacing-2);
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            margin-bottom: var(--spacing-0_5);
+        }
+        
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #FFFFFF;
+        }
+        
+        .nav-item.active {
+            background: rgba(255, 107, 107, 0.15);
+            color: #FF6B6B;
+            border: 1px solid rgba(255, 107, 107, 0.2);
+        }
+        
+        .nav-icon-small {
+            width: 20px;
+            height: 20px;
+            opacity: 0.8;
+        }
+        
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            padding: var(--spacing-6);
+            overflow-y: auto;
+            background: radial-gradient(ellipse at top right, rgba(255, 107, 107, 0.05) 0%, transparent 50%);
+        }
+        
+        /* Dashboard Grid Layout */
+        .dashboard-grid-layout {
+            display: grid;
+            gap: var(--spacing-4);
+            grid-template-columns: repeat(12, 1fr);
+            grid-auto-rows: minmax(120px, auto);
+        }
+        
+        /* Dashboard Cards */
+        .dashboard-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: var(--spacing-3);
+            transition: all 0.3s ease;
+        }
+        
+        .dashboard-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-3);
+        }
+        
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .card-badge {
+            padding: var(--spacing-0_5) var(--spacing-1_5);
+            background: rgba(255, 107, 107, 0.1);
+            color: #FF6B6B;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        /* Stat Cards */
+        .stat-card {
+            grid-column: span 3;
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: var(--spacing-1);
+            background: linear-gradient(135deg, #FFFFFF 0%, rgba(255, 255, 255, 0.7) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .stat-change {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-0_5);
+            margin-top: var(--spacing-2);
+            padding: var(--spacing-0_5) var(--spacing-1);
+            background: rgba(76, 175, 80, 0.1);
+            color: #4CAF50;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .stat-change.negative {
+            background: rgba(244, 67, 54, 0.1);
+            color: #F44336;
+        }
+        
+        /* Chart Card */
+        .chart-card {
+            grid-column: span 8;
+            grid-row: span 2;
+        }
+        
+        .chart-placeholder {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, transparent 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Activity Feed */
+        .activity-card {
+            grid-column: span 4;
+            grid-row: span 2;
+        }
+        
+        .activity-item {
+            display: flex;
+            gap: var(--spacing-2);
+            padding: var(--spacing-2) 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            flex-shrink: 0;
+        }
+        
+        .activity-content {
+            flex: 1;
+        }
+        
+        .activity-text {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: var(--spacing-0_5);
+        }
+        
+        .activity-time {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.4);
+        }
+        
+        /* Talent List Card */
+        .talent-list-card {
+            grid-column: span 6;
+            grid-row: span 2;
+        }
+        
+        .talent-list-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+            padding: var(--spacing-2);
+            border-radius: 8px;
+            transition: background 0.2s ease;
+        }
+        
+        .talent-list-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+        
+        .talent-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+            flex-shrink: 0;
+        }
+        
+        .talent-info {
+            flex: 1;
+        }
+        
+        .talent-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #FFFFFF;
+            margin-bottom: 2px;
+        }
+        
+        .talent-role {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .talent-rating {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-0_5);
+            color: #FFC107;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        /* Calendar Card */
+        .calendar-card {
+            grid-column: span 6;
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: var(--spacing-1);
+        }
+        
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .calendar-day:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #FFFFFF;
+        }
+        
+        .calendar-day.active {
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+            color: #FFFFFF;
+            font-weight: 600;
+        }
+        
+        /* Responsive Behavior */
+        @media screen and (max-width: 1024px) {
+            .sidebar {
+                position: fixed;
+                left: 0;
+                top: 64px;
+                bottom: 0;
+                transform: translateX(-100%);
+                z-index: var(--z-modal);
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            
+            .stat-card {
+                grid-column: span 6;
+            }
+            
+            .chart-card {
+                grid-column: span 12;
+            }
+            
+            .activity-card,
+            .talent-list-card,
+            .calendar-card {
+                grid-column: span 12;
+            }
+        }
+        
+        @media screen and (max-width: 768px) {
+            .main-content {
+                padding: var(--spacing-3);
+            }
+            
+            .stat-card {
+                grid-column: span 12;
+            }
+            
+            .dashboard-grid-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Mobile Menu Toggle */
+        .menu-toggle {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: transparent;
+            color: #FFFFFF;
+            cursor: pointer;
+        }
+        
+        @media screen and (max-width: 1024px) {
+            .menu-toggle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+            <div class="nav-brand">CastMatch</div>
+            <div class="nav-actions">
+                <div class="nav-icon">🔔</div>
+                <div class="nav-icon">👤</div>
+            </div>
+        </nav>
+        
+        <!-- Dashboard Wrapper -->
+        <div class="dashboard-wrapper">
+            <!-- Sidebar -->
+            <aside class="sidebar" id="sidebar">
+                <div class="sidebar-section">
+                    <div class="sidebar-title">Main</div>
+                    <a href="#" class="nav-item active">
+                        <span class="nav-icon-small">📊</span>
+                        Dashboard
+                    </a>
+                    <a href="#" class="nav-item">
+                        <span class="nav-icon-small">🎭</span>
+                        Talent Pool
+                    </a>
+                    <a href="#" class="nav-item">
+                        <span class="nav-icon-small">🎬</span>
+                        Productions
+                    </a>
+                    <a href="#" class="nav-item">
+                        <span class="nav-icon-small">🎤</span>
+                        Auditions
+                    </a>
+                </div>
+                
+                <div class="sidebar-section">
+                    <div class="sidebar-title">Analytics</div>
+                    <a href="#" class="nav-item">
+                        <span class="nav-icon-small">📈</span>
+                        Performance
+                    </a>
+                    <a href="#" class="nav-item">
+                        <span class="nav-icon-small">👥</span>
+                        Engagement
+                    </a>
+                    <a href="#" class="nav-item">
+                        <span class="nav-icon-small">💰</span>
+                        Revenue
+                    </a>
+                </div>
+                
+                <div class="sidebar-section">
+                    <div class="sidebar-title">Settings</div>
+                    <a href="#" class="nav-item">
+                        <span class="nav-icon-small">⚙️</span>
+                        Preferences
+                    </a>
+                    <a href="#" class="nav-item">
+                        <span class="nav-icon-small">👤</span>
+                        Profile
+                    </a>
+                </div>
+            </aside>
+            
+            <!-- Main Content -->
+            <main class="main-content">
+                <div class="dashboard-grid-layout">
+                    <!-- Stat Cards -->
+                    <div class="dashboard-card stat-card">
+                        <div class="stat-value">1,234</div>
+                        <div class="stat-label">Active Talents</div>
+                        <span class="stat-change">+12.5% ↑</span>
+                    </div>
+                    
+                    <div class="dashboard-card stat-card">
+                        <div class="stat-value">47</div>
+                        <div class="stat-label">Open Auditions</div>
+                        <span class="stat-change">+8.3% ↑</span>
+                    </div>
+                    
+                    <div class="dashboard-card stat-card">
+                        <div class="stat-value">892</div>
+                        <div class="stat-label">Matches Made</div>
+                        <span class="stat-change negative">-2.1% ↓</span>
+                    </div>
+                    
+                    <div class="dashboard-card stat-card">
+                        <div class="stat-value">98.2%</div>
+                        <div class="stat-label">Success Rate</div>
+                        <span class="stat-change">+0.8% ↑</span>
+                    </div>
+                    
+                    <!-- Chart Card -->
+                    <div class="dashboard-card chart-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Casting Performance</h3>
+                            <span class="card-badge">This Month</span>
+                        </div>
+                        <div class="chart-placeholder">
+                            [Performance Chart Visualization]
+                        </div>
+                    </div>
+                    
+                    <!-- Activity Feed -->
+                    <div class="dashboard-card activity-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Recent Activity</h3>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-avatar"></div>
+                            <div class="activity-content">
+                                <div class="activity-text">New talent application received</div>
+                                <div class="activity-time">2 minutes ago</div>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-avatar"></div>
+                            <div class="activity-content">
+                                <div class="activity-text">Audition scheduled for tomorrow</div>
+                                <div class="activity-time">15 minutes ago</div>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-avatar"></div>
+                            <div class="activity-content">
+                                <div class="activity-text">Casting call published</div>
+                                <div class="activity-time">1 hour ago</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Top Talents -->
+                    <div class="dashboard-card talent-list-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Top Rated Talents</h3>
+                        </div>
+                        <div class="talent-list-item">
+                            <div class="talent-avatar"></div>
+                            <div class="talent-info">
+                                <div class="talent-name">Priya Sharma</div>
+                                <div class="talent-role">Lead Actor • Mumbai</div>
+                            </div>
+                            <div class="talent-rating">⭐ 4.9</div>
+                        </div>
+                        <div class="talent-list-item">
+                            <div class="talent-avatar"></div>
+                            <div class="talent-info">
+                                <div class="talent-name">Arjun Mehta</div>
+                                <div class="talent-role">Supporting Actor • Delhi</div>
+                            </div>
+                            <div class="talent-rating">⭐ 4.8</div>
+                        </div>
+                        <div class="talent-list-item">
+                            <div class="talent-avatar"></div>
+                            <div class="talent-info">
+                                <div class="talent-name">Maya Singh</div>
+                                <div class="talent-role">Child Actor • Chennai</div>
+                            </div>
+                            <div class="talent-rating">⭐ 5.0</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Calendar Widget -->
+                    <div class="dashboard-card calendar-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Upcoming Auditions</h3>
+                        </div>
+                        <div class="calendar-grid">
+                            <div class="calendar-day">1</div>
+                            <div class="calendar-day">2</div>
+                            <div class="calendar-day">3</div>
+                            <div class="calendar-day">4</div>
+                            <div class="calendar-day active">5</div>
+                            <div class="calendar-day">6</div>
+                            <div class="calendar-day">7</div>
+                            <div class="calendar-day">8</div>
+                            <div class="calendar-day">9</div>
+                            <div class="calendar-day">10</div>
+                            <div class="calendar-day">11</div>
+                            <div class="calendar-day">12</div>
+                            <div class="calendar-day">13</div>
+                            <div class="calendar-day">14</div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script>
+        // Toggle Sidebar on Mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('open');
+        }
+        
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const menuToggle = document.querySelector('.menu-toggle');
+            
+            if (window.innerWidth <= 1024) {
+                if (!sidebar.contains(event.target) && !menuToggle.contains(event.target)) {
+                    sidebar.classList.remove('open');
+                }
+            }
+        });
+        
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            const sidebar = document.getElementById('sidebar');
+            if (window.innerWidth > 1024) {
+                sidebar.classList.remove('open');
+            }
+        });
+    </script>
+</body>
+</html>

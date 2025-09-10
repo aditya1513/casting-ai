@@ -1,0 +1,629 @@
+/* 
+ * CastMatch Interaction Design System - Touch & Mobile Accessibility
+ * WCAG AAA Compliant Touch Targets and Mobile Interactions
+ * 44x44px Minimum Touch Targets for Mumbai Launch
+ */
+
+/* === TOUCH TARGET SYSTEM === */
+
+:root {
+  /* Touch Target Sizes (WCAG AAA Compliant) */
+  --touch-target-minimum: 44px;      /* WCAG AAA minimum */
+  --touch-target-comfortable: 48px;   /* Comfortable for most users */
+  --touch-target-large: 56px;        /* Large targets for critical actions */
+  --touch-target-extra-large: 64px;  /* Extra large for primary CTAs */
+  
+  /* Touch Spacing */
+  --touch-spacing-minimum: 8px;      /* Minimum space between targets */
+  --touch-spacing-comfortable: 12px; /* Comfortable spacing */
+  --touch-spacing-large: 16px;       /* Large spacing for clarity */
+  
+  /* Touch Feedback */
+  --touch-feedback-scale: 0.98;
+  --touch-feedback-duration: 150ms;
+  --touch-feedback-opacity: 0.8;
+  
+  /* Mobile Breakpoints */
+  --mobile-small: 320px;             /* Very small phones */
+  --mobile-medium: 375px;            /* Standard phones */
+  --mobile-large: 414px;             /* Large phones */
+  --tablet-small: 768px;             /* Small tablets */
+}
+
+/* === UNIVERSAL TOUCH TARGET COMPLIANCE === */
+
+/* Ensure All Interactive Elements Meet Minimum Size */
+button,
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+a,
+[role="button"],
+[role="link"],
+[tabindex="0"],
+.interactive,
+.clickable,
+.touchable {
+  min-width: var(--touch-target-minimum);
+  min-height: var(--touch-target-minimum);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+/* Exception for Text Links in Paragraphs */
+p a, 
+li a, 
+span a, 
+.inline-link {
+  min-width: auto;
+  min-height: auto;
+  display: inline;
+  padding: 2px 4px;
+  margin: -2px -4px;
+}
+
+/* === BUTTON TOUCH TARGETS === */
+
+/* Primary Buttons (Large Touch Targets) */
+.btn-primary,
+.button-primary {
+  min-width: var(--touch-target-large);
+  min-height: var(--touch-target-large);
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 16px;
+  background: var(--interactive-primary);
+  color: var(--text-inverse);
+  border: none;
+  transition: all var(--touch-feedback-duration) ease-out;
+  margin: var(--touch-spacing-comfortable);
+}
+
+.btn-primary:hover,
+.button-primary:hover {
+  background: var(--interactive-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-primary:active,
+.button-primary:active {
+  transform: scale(var(--touch-feedback-scale));
+  background: var(--interactive-primary-active);
+}
+
+/* Secondary Buttons */
+.btn-secondary,
+.button-secondary {
+  min-width: var(--touch-target-comfortable);
+  min-height: var(--touch-target-comfortable);
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 16px;
+  background: var(--interactive-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-primary);
+  transition: all var(--touch-feedback-duration) ease-out;
+  margin: var(--touch-spacing-minimum);
+}
+
+.btn-secondary:hover,
+.button-secondary:hover {
+  background: var(--interactive-secondary-hover);
+  border-color: var(--border-focus);
+}
+
+.btn-secondary:active,
+.button-secondary:active {
+  transform: scale(var(--touch-feedback-scale));
+}
+
+/* Icon Buttons */
+.btn-icon,
+.icon-button {
+  min-width: var(--touch-target-minimum);
+  min-height: var(--touch-target-minimum);
+  padding: 8px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid var(--border-secondary);
+  color: var(--text-secondary);
+  transition: all var(--touch-feedback-duration) ease-out;
+  margin: var(--touch-spacing-minimum);
+}
+
+.btn-icon:hover,
+.icon-button:hover {
+  background: var(--interactive-secondary-hover);
+  color: var(--text-primary);
+  border-color: var(--border-focus);
+}
+
+.btn-icon:active,
+.icon-button:active {
+  transform: scale(var(--touch-feedback-scale));
+  background: var(--interactive-secondary-active);
+}
+
+/* === FORM INPUT TOUCH TARGETS === */
+
+/* Text Inputs */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"],
+input[type="url"],
+input[type="search"],
+textarea,
+select {
+  min-height: var(--touch-target-minimum);
+  padding: 12px 16px;
+  border: 1px solid var(--border-primary);
+  border-radius: 6px;
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-size: 16px; /* Prevents iOS zoom */
+  transition: all var(--touch-feedback-duration) ease-out;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+input:hover,
+textarea:hover,
+select:hover {
+  border-color: var(--border-focus);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 2px solid var(--focus-ring-color);
+  outline-offset: 2px;
+  border-color: var(--border-focus);
+}
+
+/* Checkboxes and Radio Buttons */
+input[type="checkbox"],
+input[type="radio"] {
+  min-width: var(--touch-target-minimum);
+  min-height: var(--touch-target-minimum);
+  margin: var(--touch-spacing-minimum);
+  cursor: pointer;
+  position: relative;
+  appearance: none;
+  background: var(--bg-surface);
+  border: 2px solid var(--border-primary);
+  transition: all var(--touch-feedback-duration) ease-out;
+}
+
+input[type="checkbox"] {
+  border-radius: 4px;
+}
+
+input[type="radio"] {
+  border-radius: 50%;
+}
+
+input[type="checkbox"]:checked,
+input[type="radio"]:checked {
+  background: var(--interactive-primary);
+  border-color: var(--interactive-primary);
+}
+
+input[type="checkbox"]:checked::after {
+  content: "✓";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--text-inverse);
+  font-weight: bold;
+  font-size: 16px;
+}
+
+input[type="radio"]:checked::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 12px;
+  height: 12px;
+  background: var(--text-inverse);
+  border-radius: 50%;
+}
+
+/* === NAVIGATION TOUCH TARGETS === */
+
+/* Navigation Links */
+.nav-link,
+.navigation-item {
+  min-height: var(--touch-target-minimum);
+  min-width: var(--touch-target-minimum);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: all var(--touch-feedback-duration) ease-out;
+  border-radius: 6px;
+  margin: 2px;
+}
+
+.nav-link:hover,
+.navigation-item:hover {
+  background: var(--interactive-secondary-hover);
+  color: var(--text-primary);
+}
+
+.nav-link:active,
+.navigation-item:active {
+  transform: scale(var(--touch-feedback-scale));
+  background: var(--interactive-secondary-active);
+}
+
+.nav-link.active,
+.navigation-item.active {
+  background: var(--interactive-primary);
+  color: var(--text-inverse);
+  font-weight: 600;
+}
+
+/* Mobile Menu Toggle */
+.menu-toggle,
+.hamburger-menu {
+  min-width: var(--touch-target-large);
+  min-height: var(--touch-target-large);
+  padding: 12px;
+  background: transparent;
+  border: 1px solid var(--border-primary);
+  border-radius: 8px;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all var(--touch-feedback-duration) ease-out;
+}
+
+.menu-toggle:hover,
+.hamburger-menu:hover {
+  background: var(--interactive-secondary-hover);
+  border-color: var(--border-focus);
+}
+
+.menu-toggle:active,
+.hamburger-menu:active {
+  transform: scale(var(--touch-feedback-scale));
+}
+
+/* === CARD TOUCH TARGETS === */
+
+.card-interactive,
+.touchable-card {
+  min-height: var(--touch-target-large);
+  padding: 16px;
+  border: 1px solid var(--border-secondary);
+  border-radius: 12px;
+  background: var(--bg-surface);
+  cursor: pointer;
+  transition: all var(--touch-feedback-duration) ease-out;
+  margin: var(--touch-spacing-comfortable);
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.card-interactive:hover,
+.touchable-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  border-color: var(--border-focus);
+}
+
+.card-interactive:active,
+.touchable-card:active {
+  transform: scale(var(--touch-feedback-scale)) translateY(-1px);
+}
+
+/* === CHAT UI TOUCH TARGETS === */
+
+/* Message Actions */
+.message-action,
+.chat-action {
+  min-width: var(--touch-target-minimum);
+  min-height: var(--touch-target-minimum);
+  padding: 8px;
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  transition: all var(--touch-feedback-duration) ease-out;
+  margin: 2px;
+}
+
+.message-action:hover,
+.chat-action:hover {
+  background: var(--interactive-secondary-hover);
+  color: var(--text-primary);
+}
+
+.message-action:active,
+.chat-action:active {
+  transform: scale(var(--touch-feedback-scale));
+  background: var(--interactive-secondary-active);
+}
+
+/* Chat Input Send Button */
+.chat-send-button {
+  min-width: var(--touch-target-comfortable);
+  min-height: var(--touch-target-comfortable);
+  padding: 12px;
+  background: var(--interactive-primary);
+  border: none;
+  border-radius: 50%;
+  color: var(--text-inverse);
+  cursor: pointer;
+  transition: all var(--touch-feedback-duration) ease-out;
+}
+
+.chat-send-button:hover {
+  background: var(--interactive-primary-hover);
+  transform: scale(1.05);
+}
+
+.chat-send-button:active {
+  transform: scale(var(--touch-feedback-scale));
+  background: var(--interactive-primary-active);
+}
+
+.chat-send-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* === TOUCH FEEDBACK ANIMATIONS === */
+
+/* Ripple Effect for Touch Feedback */
+.ripple-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple-effect::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease-out, height 0.6s ease-out;
+  pointer-events: none;
+}
+
+.ripple-effect:active::after {
+  width: 200px;
+  height: 200px;
+}
+
+/* Haptic Feedback Simulation */
+.haptic-feedback:active {
+  animation: hapticPulse var(--touch-feedback-duration) ease-out;
+}
+
+@keyframes hapticPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+/* === RESPONSIVE TOUCH TARGETS === */
+
+/* Small Mobile Devices (320px+) */
+@media (max-width: 375px) {
+  :root {
+    --touch-target-minimum: 48px;      /* Larger on small screens */
+    --touch-spacing-minimum: 12px;     /* More spacing */
+  }
+  
+  .btn-primary,
+  .button-primary {
+    min-width: var(--touch-target-extra-large);
+    min-height: var(--touch-target-extra-large);
+    font-size: 18px;
+    padding: 16px 32px;
+  }
+  
+  .nav-link,
+  .navigation-item {
+    min-height: var(--touch-target-large);
+    padding: 16px 20px;
+    font-size: 18px;
+  }
+}
+
+/* Medium Mobile Devices (375px - 414px) */
+@media (min-width: 376px) and (max-width: 414px) {
+  .btn-primary,
+  .button-primary {
+    min-width: var(--touch-target-large);
+    min-height: var(--touch-target-large);
+    padding: 14px 28px;
+  }
+}
+
+/* Large Mobile Devices (414px+) */
+@media (min-width: 415px) and (max-width: 767px) {
+  .btn-primary,
+  .button-primary {
+    min-width: var(--touch-target-comfortable);
+    min-height: var(--touch-target-comfortable);
+    padding: 12px 24px;
+  }
+}
+
+/* === TOUCH GESTURE SUPPORT === */
+
+/* Swipe Gestures */
+.swipeable {
+  touch-action: pan-x pan-y;
+  user-select: none;
+}
+
+.swipe-horizontal {
+  touch-action: pan-y;
+}
+
+.swipe-vertical {
+  touch-action: pan-x;
+}
+
+/* Long Press Support */
+.long-pressable {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* Pinch/Zoom Gestures */
+.zoomable {
+  touch-action: pinch-zoom;
+}
+
+.no-zoom {
+  touch-action: manipulation;
+}
+
+/* === ACCESSIBILITY ENHANCEMENTS === */
+
+/* High Contrast Mode Touch Targets */
+@media (prefers-contrast: high) {
+  button,
+  input,
+  select,
+  textarea,
+  [role="button"],
+  .interactive {
+    border-width: 2px;
+    border-style: solid;
+  }
+  
+  .btn-primary,
+  .button-primary {
+    border: 2px solid var(--text-inverse);
+  }
+  
+  .btn-secondary,
+  .button-secondary {
+    border: 2px solid var(--text-primary);
+  }
+}
+
+/* Reduced Motion for Touch Feedback */
+@media (prefers-reduced-motion: reduce) {
+  .ripple-effect::after,
+  .haptic-feedback,
+  button:active,
+  [role="button"]:active,
+  .interactive:active {
+    animation: none !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* === TOUCH TARGET DEBUGGING === */
+
+/* Debug Mode - Shows Touch Target Areas */
+.debug-touch-targets button,
+.debug-touch-targets [role="button"],
+.debug-touch-targets input,
+.debug-touch-targets select,
+.debug-touch-targets a,
+.debug-touch-targets .interactive {
+  outline: 2px dashed rgba(255, 0, 0, 0.5) !important;
+  outline-offset: 2px !important;
+  position: relative;
+}
+
+.debug-touch-targets button::before,
+.debug-touch-targets [role="button"]::before,
+.debug-touch-targets input::before,
+.debug-touch-targets select::before,
+.debug-touch-targets a::before,
+.debug-touch-targets .interactive::before {
+  content: attr(data-size, "44x44");
+  position: absolute;
+  top: -20px;
+  left: 0;
+  font-size: 10px;
+  color: red;
+  background: white;
+  padding: 2px 4px;
+  border-radius: 2px;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+/* === MATERIAL DESIGN TOUCH TARGETS === */
+
+/* Material Design 3.0 Touch Target Specifications */
+.md-touch-target {
+  min-width: 48px;  /* Material Design minimum */
+  min-height: 48px;
+  margin: 4px;      /* Material Design spacing */
+  border-radius: 12px; /* Material Design corner radius */
+  transition: all 200ms cubic-bezier(0.2, 0.0, 0.0, 1.0); /* Material easing */
+}
+
+/* === TOUCH TARGET VALIDATION === */
+
+/* Ensure Critical Actions Have Large Touch Targets */
+.critical-action,
+[data-priority="high"],
+.primary-cta {
+  min-width: var(--touch-target-extra-large) !important;
+  min-height: var(--touch-target-extra-large) !important;
+  margin: var(--touch-spacing-large) !important;
+}
+
+/* Warning for Small Touch Targets */
+button:not([class*="btn"]):not([class*="button"]),
+[role="button"]:not([class*="btn"]):not([class*="button"]) {
+  min-width: var(--touch-target-minimum);
+  min-height: var(--touch-target-minimum);
+  background: rgba(255, 193, 7, 0.1); /* Warning background */
+  border: 1px dashed rgba(255, 193, 7, 0.5); /* Warning border */
+}
+
+/* === PERFORMANCE OPTIMIZATIONS === */
+
+/* Optimize Touch Event Handling */
+.touch-optimized {
+  pointer-events: auto;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Prevent iOS Safari Zoom on Double Tap */
+.no-double-tap-zoom {
+  touch-action: manipulation;
+}
+
+/* Fast Touch Response */
+.fast-touch {
+  cursor: pointer;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+  tap-highlight-color: rgba(0, 0, 0, 0.1);
+}

@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CastMatch - Complete Interaction Specifications | All Interactive States & Behaviors</title>
+    <style>
+        /* Import Wireframe Standards */
+        @import url('./WIREFRAME_STANDARDS.css');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: #f0f0f0;
+            padding: 40px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: #1a1a1a;
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 18px;
+            opacity: 0.8;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .spec-section {
+            margin-bottom: 60px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 40px;
+        }
+        
+        .spec-section:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        
+        .spec-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .interaction-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-top: 20px;
+        }
+        
+        .interaction-card {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 24px;
+            position: relative;
+        }
+        
+        .interaction-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+        }
+        
+        .interaction-states {
+            margin-bottom: 20px;
+        }
+        
+        .state-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            padding: 8px 12px;
+            background: white;
+            border-radius: 4px;
+            border-left: 4px solid #ddd;
+        }
+        
+        .state-item.default { border-left-color: #3b82f6; }
+        .state-item.hover { border-left-color: #1d4ed8; }
+        .state-item.active { border-left-color: #1e40af; }
+        .state-item.focus { border-left-color: #7c3aed; }
+        .state-item.disabled { border-left-color: #9ca3af; }
+        .state-item.loading { border-left-color: #f59e0b; }
+        .state-item.error { border-left-color: #dc2626; }
+        .state-item.success { border-left-color: #16a34a; }
+        
+        .state-label {
+            font-weight: 500;
+            min-width: 80px;
+            margin-right: 12px;
+            font-size: 14px;
+        }
+        
+        .state-description {
+            color: #6b7280;
+            font-size: 14px;
+        }
+        
+        .behavior-list {
+            margin-top: 16px;
+        }
+        
+        .behavior-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+        
+        .behavior-item {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 4px;
+            padding-left: 16px;
+            position: relative;
+        }
+        
+        .behavior-item:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #9ca3af;
+        }
+        
+        .animation-specs {
+            background: #f3f4f6;
+            border-radius: 6px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+        
+        .animation-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+        
+        .animation-detail {
+            font-size: 13px;
+            color: #6b7280;
+            margin-bottom: 4px;
+            font-family: 'SF Mono', Monaco, 'Consolas', monospace;
+        }
+        
+        .responsive-notes {
+            background: #eff6ff;
+            border: 1px solid #dbeafe;
+            border-radius: 6px;
+            padding: 16px;
+            margin-top: 20px;
+        }
+        
+        .responsive-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1e40af;
+            margin-bottom: 8px;
+        }
+        
+        .responsive-item {
+            font-size: 13px;
+            color: #3730a3;
+            margin-bottom: 4px;
+        }
+        
+        .code-example {
+            background: #1f2937;
+            color: #f9fafb;
+            border-radius: 6px;
+            padding: 16px;
+            margin-top: 16px;
+            font-family: 'SF Mono', Monaco, 'Consolas', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+        }
+        
+        .accessibility-notes {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 6px;
+            padding: 16px;
+            margin-top: 20px;
+        }
+        
+        .accessibility-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #166534;
+            margin-bottom: 8px;
+        }
+        
+        .accessibility-item {
+            font-size: 13px;
+            color: #15803d;
+            margin-bottom: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎬 CastMatch - Complete Interaction Specifications</h1>
+            <p>Comprehensive interaction states, behaviors, and animations for all wireframe components</p>
+        </div>
+        
+        <div class="content">
+            <!-- NAVIGATION INTERACTIONS -->
+            <div class="spec-section">
+                <h2 class="spec-title">🧭 Navigation & Header Interactions</h2>
+                
+                <div class="interaction-grid">
+                    <div class="interaction-card">
+                        <h3 class="interaction-title">Primary Navigation Links</h3>
+                        <div class="interaction-states">
+                            <div class="state-item default">
+                                <span class="state-label">Default</span>
+                                <span class="state-description">Gray-700 text, no underline</span>
+                            </div>
+                            <div class="state-item hover">
+                                <span class="state-label">Hover</span>
+                                <span class="state-description">Gray-900 text, subtle underline fade-in</span>
+                            </div>
+                            <div class="state-item active">
+                                <span class="state-label">Active</span>
+                                <span class="state-description">Gray-900 text, solid underline, bold weight</span>
+                            </div>
+                            <div class="state-item focus">
+                                <span class="state-label">Focus</span>
+                                <span class="state-description">2px outline, keyboard navigation</span>
+                            </div>
+                        </div>
+                        <div class="animation-specs">
+                            <div class="animation-title">Animation Properties</div>
+                            <div class="animation-detail">transition: all 0.2s ease</div>
+                            <div class="animation-detail">text-underline-offset: 4px</div>
+                            <div class="animation-detail">text-decoration-thickness: 2px</div>
+                        </div>
+                    </div>
+                    
+                    <div class="interaction-card">
+                        <h3 class="interaction-title">Logo Click Interaction</h3>
+                        <div class="interaction-states">
+                            <div class="state-item default">
+                                <span class="state-label">Default</span>
+                                <span class="state-description">Standard logo display</span>
+                            </div>
+                            <div class="state-item hover">
+                                <span class="state-label">Hover</span>
+                                <span class="state-description">Subtle scale (1.05x), cursor pointer</span>
+                            </div>
+                            <div class="state-item active">
+                                <span class="state-label">Active</span>
+                                <span class="state-description">Scale down (0.95x), navigate to home</span>
+                            </div>
+                        </div>
+                        <div class="animation-specs">
+                            <div class="animation-title">Animation Properties</div>
+                            <div class="animation-detail">transform: scale(1.05)</div>
+                            <div class="animation-detail">transition: transform 0.15s ease</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- BUTTON INTERACTIONS -->
+            <div class="spec-section">
+                <h2 class="spec-title">🔘 Button Interactions</h2>
+                
+                <div class="interaction-grid">
+                    <div class="interaction-card">
+                        <h3 class="interaction-title">Primary Action Buttons</h3>
+                        <div class="interaction-states">
+                            <div class="state-item default">
+                                <span class="state-label">Default</span>
+                                <span class="state-description">Gray-900 background, white text</span>
+                            </div>
+                            <div class="state-item hover">
+                                <span class="state-label">Hover</span>
+                                <span class="state-description">Gray-800 background, subtle lift</span>
+                            </div>
+                            <div class="state-item active">
+                                <span class="state-label">Active</span>
+                                <span class="state-description">Gray-700 background, scale down</span>
+                            </div>
+                            <div class="state-item focus">
+                                <span class="state-label">Focus</span>
+                                <span class="state-description">2px ring, accessible outline</span>
+                            </div>
+                            <div class="state-item disabled">
+                                <span class="state-label">Disabled</span>
+                                <span class="state-description">Gray-300 background, gray-500 text</span>
+                            </div>
+                            <div class="state-item loading">
+                                <span class="state-label">Loading</span>
+                                <span class="state-description">Spinner animation, disabled interaction</span>
+                            </div>
+                        </div>
+                        <div class="animation-specs">
+                            <div class="animation-title">Animation Properties</div>
+                            <div class="animation-detail">transform: translateY(-2px) scale(0.98)</div>
+                            <div class="animation-detail">box-shadow: 0 4px 12px rgba(0,0,0,0.15)</div>
+                            <div class="animation-detail">transition: all 0.2s ease</div>
+                        </div>
+                        <div class="responsive-notes">
+                            <div class="responsive-title">📱 Mobile Adaptations</div>
+                            <div class="responsive-item">Touch target: minimum 44px height</div>
+                            <div class="responsive-item">Increased padding for thumb interaction</div>
+                            <div class="responsive-item">Haptic feedback on press (iOS/Android)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="interaction-card">
+                        <h3 class="interaction-title">Secondary/Ghost Buttons</h3>
+                        <div class="interaction-states">
+                            <div class="state-item default">
+                                <span class="state-label">Default</span>
+                                <span class="state-description">Transparent background, gray border</span>
+                            </div>
+                            <div class="state-item hover">
+                                <span class="state-label">Hover</span>
+                                <span class="state-description">Gray-50 background, darker border</span>
+                            </div>
+                            <div class="state-item active">
+                                <span class="state-label">Active</span>
+                                <span class="state-description">Gray-100 background, solid border</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- FORM INTERACTIONS -->
+            <div class="spec-section">
+                <h2 class="spec-title">📝 Form & Input Interactions</h2>
+                
+                <div class="interaction-grid">
+                    <div class="interaction-card">
+                        <h3 class="interaction-title">Text Input Fields</h3>
+                        <div class="interaction-states">
+                            <div class="state-item default">
+                                <span class="state-label">Default</span>
+                                <span class="state-description">Gray-300 border, placeholder text visible</span>
+                            </div>
+                            <div class="state-item focus">
+                                <span class="state-label">Focus</span>
+                                <span class="state-description">Gray-900 border, placeholder fade out</span>
+                            </div>
+                            <div class="state-item filled">
+                                <span class="state-label">Filled</span>
+                                <span class="state-description">Gray-600 border, label moves up</span>
+                            </div>
+                            <div class="state-item error">
+                                <span class="state-label">Error</span>
+                                <span class="state-description">Red-500 border, error message below</span>
+                            </div>
+                            <div class="state-item success">
+                                <span class="state-label">Success</span>
+                                <span class="state-description">Green-500 border, checkmark icon</span>
+                            </div>
+                            <div class="state-item disabled">
+                                <span class="state-label">Disabled</span>
+                                <span class="state-description">Gray-200 background, gray-400 text</span>
+                            </div>
+                        </div>
+                        <div class="animation-specs">
+                            <div class="animation-title">Animation Properties</div>
+                            <div class="animation-detail">border-color transition: 0.2s ease</div>
+                            <div class="animation-detail">label transform: translateY(-20px) scale(0.85)</div>
+                            <div class="animation-detail">placeholder opacity: 0.6 to 0</div>
+                        </div>
+                        <div class="accessibility-notes">
+                            <div class="accessibility-title">♿ Accessibility Features</div>
+                            <div class="accessibility-item">ARIA labels and descriptions</div>
+                            <div class="accessibility-item">Error announcements via screen reader</div>
+                            <div class="accessibility-item">Focus management and keyboard navigation</div>
+                            <div class="accessibility-item">High contrast mode support</div>
+                        </div>
+                    </div>
+                    
+                    <div class="interaction-card">
+                        <h3 class="interaction-title">Dropdown/Select Fields</h3>
+                        <div class="interaction-states">
+                            <div class="state-item default">
+                                <span class="state-label">Closed</span>
+                                <span class="state-description">Chevron down, no dropdown visible</span>
+                            </div>
+                            <div class="state-item active">
+                                <span class="state-label">Open</span>
+                                <span class="state-description">Chevron up, dropdown slides down</span>
+                            </div>
+                            <div class="state-item hover">
+                                <span class="state-label">Option Hover</span>
+                                <span class="state-description">Gray-50 background on option</span>
+                            </div>
+                        </div>
+                        <div class="animation-specs">
+                            <div class="animation-title">Animation Properties</div>
+                            <div class="animation-detail">dropdown: slide-down 0.15s ease-out</div>
+                            <div class="animation-detail">chevron rotation: 180deg</div>
+                            <div class="animation-detail">option highlight: fade-in 0.1s</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- CARD INTERACTIONS -->
+            <div class="spec-section">
+                <h2 class="spec-title">🃏 Card & Content Interactions</h2>
+                
+                <div class="interaction-grid">
+                    <div class="interaction-card">
+                        <h3 class="interaction-title">Talent Profile Cards</h3>
+                        <div class="interaction-states">
+                            <div class="state-item default">
+                                <span class="state-label">Default</span>
+                                <span class="state-description">White background, subtle shadow</span>
+                            </div>
+                            <div class="state-item hover">
+                                <span class="state-label">Hover</span>
+                                <span class="state-description">Lift animation, deeper shadow</span>
+                            </div>
+                            <div class="state-item active">
+                                <span class="state-label">Selected</span>
+                                <span class="state-description">Blue border, checkmark overlay</span>
+                            </div>
+                            <div class="state-item loading">
+                                <span class="state-label">Loading</span>
+                                <span class="state-description">Skeleton animation, shimmer effect</span>
+                            </div>
+                        </div>
+                        <div class="behavior-list">
+                            <div class="behavior-title">Interaction Behaviors</div>
+                            <div class="behavior-item">Click anywhere on card to view profile</div>
+                            <div class="behavior-item">Heart icon for favorites (independent click zone)</div>
+                            <div class="behavior-item">Share button opens native share dialog</div>
+                            <div class="behavior-item">Long press on mobile for context menu</div>
+                        </div>
+                        <div class="animation-specs">
+                            <div class="animation-title">Animation Properties</div>
+                            <div class="animation-detail">transform: translateY(-8px) scale(1.02)</div>
+                            <div class="animation-detail">box-shadow: 0 12px 24px rgba(0,0,0,0.15)</div>
+                            <div class="animation-detail">transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="interaction-card">
+                        <h3 class="interaction-title">Project/Casting Cards</h3>
+                        <div class="interaction-states">
+                            <div class="state-item default">
+                                <span class="state-label">Available</span>
+                                <span class="state-description">Normal state, apply button enabled</span>
+                            </div>
+                            <div class="state-item loading">
+                                <span class="state-label">Processing</span>
+                                <span class="state-description">Application in progress, loading state</span>
+                            </div>
+                            <div class="state-item success">
+                                <span class="state-label">Applied</span>
+                                <span class="state-description">Green check, "Applied" status</span>
+                            </div>
+                            <div class="state-item disabled">
+                                <span class="state-label">Closed</span>
+                                <span class="state-description">Grayed out, "Closed" status</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- SEARCH & FILTER INTERACTIONS -->
+            <div class="spec-section">
+                <h2 class="spec-title">🔍 Search & Filter Interactions</h2>
+                
+                <div class="interaction-grid">
+                    <div class="interaction-card">
+                        <h3 class="interaction-title">Search Input with Autocomplete</h3>
+                        <div class="interaction-states">
+                            <div class="state-item default">
+                                <span class="state-label">Empty</span>
+                                <span class="state-description">Search icon, placeholder text</span>
+                            </div>
+                            <div class="state-item active">
+                                <span class="state-label">Typing</span>
+                                <span class="state-description">Dropdown appears, suggestions populate</span>
+                            </div>
+                            <div class="state-item loading">
+                                <span class="state-label">Searching</span>
+                                <span class="state-description">Loading spinner, "Searching..." text</span>
+                            </div>
+                        </div>
+                        <div class="behavior-list">
+                            <div class="behavior-title">Search Behaviors</div>
+                            <div class="behavior-item">Debounced search (300ms delay)</div>
+                            <div class="behavior-item">Escape key clears search</div>
+                            <div class="behavior-item">Arrow keys navigate suggestions</div>
+                            <div class="behavior-item">Enter selects highlighted suggestion</div>
+                            <div class="behavior-item">Recent searches saved locally</div>
+                        </div>
+                    </div>
+                    
+                    <div class="interaction-card">
+                        <h3 class="interaction-title">Filter Panels</h3>
+                        <div class="interaction-states">
+                            <div class="state-item default">
+                                <span class="state-label">Collapsed</span>
+                                <span class="state-description">Filter count badge, chevron right</span>
+                            </div>
+                            <div class="state-item active">
+                                <span class="state-label">Expanded</span>
+                                <span class="state-description">Full options visible, chevron down</span>
+                            </div>
+                            <div class="state-item loading">
+                                <span class="state-label">Applying</span>
+                                <span class="state-description">Loading state while filters apply</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- MODAL & OVERLAY INTERACTIONS -->
+            <div class="spec-section">
+                <h2 class="spec-title">🪟 Modal & Overlay Interactions</h2>
+                
+                <div class="interaction-grid">
+                    <div class="interaction-card">
+                        <h3 class="interaction-title">Modal Dialogs</h3>
+                        <div class="interaction-states">
+                            <div class="state-item default">
+                                <span class="state-label">Opening</span>
+                                <span class="state-description">Backdrop fade-in, modal slide-up</span>
+                            </div>
+                            <div class="state-item active">
+                                <span class="state-label">Open</span>
+                                <span class="state-description">Full opacity, focus trapped inside</span>
+                            </div>
+                            <div class="state-item loading">
+                                <span class="state-label">Loading</span>
+                                <span class="state-description">Content loading, skeleton UI</span>
+                            </div>
+                        </div>
+                        <div class="behavior-list">
+                            <div class="behavior-title">Modal Behaviors</div>
+                            <div class="behavior-item">Escape key closes modal</div>
+                            <div class="behavior-item">Click backdrop to close (optional)</div>
+                            <div class="behavior-item">Focus returns to trigger element</div>
+                            <div class="behavior-item">Body scroll locked when open</div>
+                            <div class="behavior-item">Stacked modal support (z-index management)</div>
+                        </div>
+                        <div class="animation-specs">
+                            <div class="animation-title">Animation Properties</div>
+                            <div class="animation-detail">backdrop: opacity 0 to 0.5, 0.2s ease</div>
+                            <div class="animation-detail">modal: translateY(40px) to 0, 0.3s ease-out</div>
+                            <div class="animation-detail">scale: 0.95 to 1, spring animation</div>
+                        </div>
+                    </div>
+                    
+                    <div class="interaction-card">
+                        <h3 class="interaction-title">Toast Notifications</h3>
+                        <div class="interaction-states">
+                            <div class="state-item success">
+                                <span class="state-label">Success</span>
+                                <span class="state-description">Green background, checkmark icon</span>
+                            </div>
+                            <div class="state-item error">
+                                <span class="state-label">Error</span>
+                                <span class="state-description">Red background, X icon</span>
+                            </div>
+                            <div class="state-item loading">
+                                <span class="state-label">Info</span>
+                                <span class="state-description">Blue background, info icon</span>
+                            </div>
+                        </div>
+                        <div class="behavior-list">
+                            <div class="behavior-title">Toast Behaviors</div>
+                            <div class="behavior-item">Auto-dismiss after 4 seconds</div>
+                            <div class="behavior-item">Hover to pause auto-dismiss</div>
+                            <div class="behavior-item">Swipe to dismiss on mobile</div>
+                            <div class="behavior-item">Stack multiple toasts</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- MOBILE SPECIFIC INTERACTIONS -->
+            <div class="spec-section">
+                <h2 class="spec-title">📱 Mobile-Specific Interactions</h2>
+                
+                <div class="interaction-grid">
+                    <div class="interaction-card">
+                        <h3 class="interaction-title">Touch Gestures</h3>
+                        <div class="behavior-list">
+                            <div class="behavior-title">Swipe Gestures</div>
+                            <div class="behavior-item">Swipe left on cards for quick actions</div>
+                            <div class="behavior-item">Swipe right to go back (iOS style)</div>
+                            <div class="behavior-item">Pull to refresh on list views</div>
+                            <div class="behavior-item">Swipe up for bottom sheet modals</div>
+                        </div>
+                        <div class="behavior-list">
+                            <div class="behavior-title">Touch Feedback</div>
+                            <div class="behavior-item">Haptic feedback on important actions</div>
+                            <div class="behavior-item">Visual press states (0.95x scale)</div>
+                            <div class="behavior-item">Touch ripple effect on buttons</div>
+                        </div>
+                    </div>
+                    
+                    <div class="interaction-card">
+                        <h3 class="interaction-title">Mobile Navigation</h3>
+                        <div class="interaction-states">
+                            <div class="state-item default">
+                                <span class="state-label">Bottom Nav</span>
+                                <span class="state-description">Fixed bottom navigation bar</span>
+                            </div>
+                            <div class="state-item active">
+                                <span class="state-label">Tab Active</span>
+                                <span class="state-description">Color change, icon transform</span>
+                            </div>
+                        </div>
+                        <div class="behavior-list">
+                            <div class="behavior-title">Navigation Behaviors</div>
+                            <div class="behavior-item">Badge notifications on tabs</div>
+                            <div class="behavior-item">Smooth tab switching animation</div>
+                            <div class="behavior-item">Safe area handling for iPhone X+</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- VOICE & AI INTERACTIONS -->
+            <div class="spec-section">
+                <h2 class="spec-title">🎤 Voice & AI Interactions</h2>
+                
+                <div class="interaction-grid">
+                    <div class="interaction-card">
+                        <h3 class="interaction-title">Voice Input Interface</h3>
+                        <div class="interaction-states">
+                            <div class="state-item default">
+                                <span class="state-label">Idle</span>
+                                <span class="state-description">Mic icon, "Tap to speak" text</span>
+                            </div>
+                            <div class="state-item active">
+                                <span class="state-label">Listening</span>
+                                <span class="state-description">Pulsing animation, sound waves</span>
+                            </div>
+                            <div class="state-item loading">
+                                <span class="state-label">Processing</span>
+                                <span class="state-description">Spinner, "Processing speech..."</span>
+                            </div>
+                            <div class="state-item error">
+                                <span class="state-label">Error</span>
+                                <span class="state-description">Red state, "Couldn't understand"</span>
+                            </div>
+                        </div>
+                        <div class="behavior-list">
+                            <div class="behavior-title">Voice Behaviors</div>
+                            <div class="behavior-item">Wake word detection ("Hey CastMatch")</div>
+                            <div class="behavior-item">Automatic language detection (Hindi/English)</div>
+                            <div class="behavior-item">Voice feedback for confirmations</div>
+                            <div class="behavior-item">Background noise cancellation</div>
+                        </div>
+                    </div>
+                    
+                    <div class="interaction-card">
+                        <h3 class="interaction-title">AI Chat Interface</h3>
+                        <div class="interaction-states">
+                            <div class="state-item default">
+                                <span class="state-label">Waiting</span>
+                                <span class="state-description">Input field ready, send button</span>
+                            </div>
+                            <div class="state-item loading">
+                                <span class="state-label">AI Typing</span>
+                                <span class="state-description">Typing indicator, "AI is thinking..."</span>
+                            </div>
+                            <div class="state-item active">
+                                <span class="state-label">Response</span>
+                                <span class="state-description">Message appears with typewriter effect</span>
+                            </div>
+                        </div>
+                        <div class="behavior-list">
+                            <div class="behavior-title">Chat Behaviors</div>
+                            <div class="behavior-item">Smart suggestions appear above input</div>
+                            <div class="behavior-item">Message reactions (👍/👎 feedback)</div>
+                            <div class="behavior-item">Copy message functionality</div>
+                            <div class="behavior-item">Context awareness across conversation</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- LOADING & ERROR STATES -->
+            <div class="spec-section">
+                <h2 class="spec-title">⏳ Loading & Error States</h2>
+                
+                <div class="interaction-grid">
+                    <div class="interaction-card">
+                        <h3 class="interaction-title">Page Loading States</h3>
+                        <div class="interaction-states">
+                            <div class="state-item loading">
+                                <span class="state-label">Initial Load</span>
+                                <span class="state-description">Skeleton UI, progressive loading</span>
+                            </div>
+                            <div class="state-item loading">
+                                <span class="state-label">Infinite Scroll</span>
+                                <span class="state-description">Spinner at bottom, "Loading more..."</span>
+                            </div>
+                            <div class="state-item error">
+                                <span class="state-label">Load Error</span>
+                                <span class="state-description">Error message, retry button</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="interaction-card">
+                        <h3 class="interaction-title">Empty States</h3>
+                        <div class="behavior-list">
+                            <div class="behavior-title">Empty State Patterns</div>
+                            <div class="behavior-item">Encouraging illustration + message</div>
+                            <div class="behavior-item">Clear call-to-action button</div>
+                            <div class="behavior-item">Helpful onboarding tips</div>
+                            <div class="behavior-item">Search suggestions when no results</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- IMPLEMENTATION NOTES -->
+            <div class="spec-section">
+                <h2 class="spec-title">🛠 Implementation Guidelines</h2>
+                
+                <div class="code-example">
+/* Example CSS for Button Interactions */
+.btn-primary {
+    background: var(--gray-900);
+    color: var(--gray-0);
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: center;
+}
+
+.btn-primary:hover {
+    background: var(--gray-800);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.btn-primary:active {
+    transform: translateY(0px) scale(0.98);
+    transition-duration: 0.1s;
+}
+
+.btn-primary:focus-visible {
+    outline: 2px solid var(--gray-900);
+    outline-offset: 2px;
+}
+
+/* Loading Animation */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.loading-spinner {
+    animation: spin 1s linear infinite;
+}
+
+/* Skeleton Loading */
+@keyframes shimmer {
+    0% { background-position: -200px 0; }
+    100% { background-position: calc(200px + 100%) 0; }
+}
+
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200px 100%;
+    animation: shimmer 1.5s infinite;
+}
+                </div>
+                
+                <div class="accessibility-notes">
+                    <div class="accessibility-title">♿ Universal Accessibility Standards</div>
+                    <div class="accessibility-item">All interactive elements have minimum 44px touch target</div>
+                    <div class="accessibility-item">Focus indicators visible and high contrast (3:1 minimum)</div>
+                    <div class="accessibility-item">Screen reader support with proper ARIA labels</div>
+                    <div class="accessibility-item">Keyboard navigation support for all interactions</div>
+                    <div class="accessibility-item">Motion respects prefers-reduced-motion setting</div>
+                    <div class="accessibility-item">Color is not the only indicator of state/meaning</div>
+                    <div class="accessibility-item">Text maintains 4.5:1 contrast ratio minimum</div>
+                    <div class="accessibility-item">Error messages are descriptive and solution-oriented</div>
+                </div>
+                
+                <div class="responsive-notes">
+                    <div class="responsive-title">📱 Cross-Platform Consistency</div>
+                    <div class="responsive-item">Interaction patterns adapt to platform conventions</div>
+                    <div class="responsive-item">iOS: Swipe back gestures, modal presentations</div>
+                    <div class="responsive-item">Android: Material Design motion, ripple effects</div>
+                    <div class="responsive-item">Web: Hover states, keyboard shortcuts, right-click menus</div>
+                    <div class="responsive-item">PWA: Native-like interactions, install prompts</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

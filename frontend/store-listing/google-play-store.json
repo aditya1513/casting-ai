@@ -1,0 +1,82 @@
+{
+  "title": "CastMatch - Elite Casting Platform",
+  "shortDescription": "AI-powered casting platform for Mumbai's entertainment industry",
+  "fullDescription": "CastMatch revolutionizes the casting process for Mumbai's thriving entertainment industry. Our AI-powered platform connects talented actors with casting directors, producers, and filmmakers for OTT projects, films, and web series.\n\n🎬 KEY FEATURES:\n\n✨ AI-Powered Matching\n• Smart algorithms match talent with perfect roles\n• Personalized recommendations based on profile and experience\n• Instant notifications for relevant opportunities\n\n🎭 For Actors:\n• Create professional portfolios with photos and videos\n• Upload headshots, showreels, and performance clips\n• Track audition status and callbacks in real-time\n• Direct messaging with casting professionals\n• Offline access to your profile and auditions\n\n🎥 For Casting Directors:\n• Advanced search filters for specific requirements\n• Bulk talent management and shortlisting\n• Collaborative tools for team decisions\n• Schedule and manage auditions efficiently\n• Export talent lists and reports\n\n💬 Real-Time Communication:\n• In-app chat with read receipts\n• Video call integration for remote auditions\n• Push notifications for urgent updates\n• File sharing for scripts and documents\n\n📱 Mobile-First Experience:\n• Lightning-fast performance\n• Works offline with automatic sync\n• Progressive Web App technology\n• Optimized for Indian network conditions\n• Multi-language support (English/Hindi)\n\n🔒 Security & Privacy:\n• Secure authentication\n• Data encryption\n• Privacy controls for profiles\n• Verified casting director badges\n\n🌟 Why Choose CastMatch?\n• Trusted by Mumbai's top production houses\n• 10,000+ active talent profiles\n• 500+ casting calls monthly\n• 95% faster casting process\n• Direct connections, no middlemen\n\nJoin Mumbai's premier casting ecosystem today!",
+  "category": "BUSINESS",
+  "subcategory": "Productivity",
+  "tags": [
+    "casting",
+    "entertainment",
+    "Mumbai",
+    "Bollywood",
+    "OTT",
+    "actors",
+    "auditions",
+    "film industry",
+    "talent",
+    "networking"
+  ],
+  "contentRating": "Everyone",
+  "websiteUrl": "https://castmatch.app",
+  "email": "support@castmatch.app",
+  "phone": "+91-22-1234-5678",
+  "address": "Mumbai, Maharashtra, India",
+  "privacyPolicyUrl": "https://castmatch.app/privacy",
+  "termsOfServiceUrl": "https://castmatch.app/terms",
+  "pricing": {
+    "model": "freemium",
+    "basePlan": "Free",
+    "premiumPlans": [
+      {
+        "name": "Actor Pro",
+        "price": "₹299/month",
+        "features": [
+          "Unlimited applications",
+          "Priority visibility",
+          "Advanced analytics",
+          "Video portfolios"
+        ]
+      },
+      {
+        "name": "Casting Director Pro",
+        "price": "₹2999/month",
+        "features": [
+          "Unlimited talent search",
+          "Bulk operations",
+          "Team collaboration",
+          "API access"
+        ]
+      }
+    ]
+  },
+  "screenshots": {
+    "phone": [
+      "screenshots/phone-1-home.png",
+      "screenshots/phone-2-search.png",
+      "screenshots/phone-3-profile.png",
+      "screenshots/phone-4-chat.png",
+      "screenshots/phone-5-auditions.png"
+    ],
+    "tablet7": [
+      "screenshots/tablet7-1-dashboard.png",
+      "screenshots/tablet7-2-talent.png"
+    ],
+    "tablet10": [
+      "screenshots/tablet10-1-dashboard.png",
+      "screenshots/tablet10-2-talent.png"
+    ]
+  },
+  "featureGraphic": "graphics/feature-graphic.png",
+  "icon": "icons/playstore-icon-512.png",
+  "promoVideo": "https://youtube.com/watch?v=demo",
+  "targetCountries": ["IN"],
+  "languages": ["en-IN", "hi-IN"],
+  "minimumAndroidVersion": "5.0",
+  "targetAndroidVersion": "14.0",
+  "permissions": [
+    "Internet",
+    "Camera (for profile photos)",
+    "Storage (for media uploads)",
+    "Notifications"
+  ]
+}

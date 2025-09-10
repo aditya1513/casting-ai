@@ -1,0 +1,548 @@
+/* Enhanced CastMatch Global Styles with Typography System v1.0 */
+
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* Import Typography System */
+@import "./chat-typography.css";
+@import "./platform-typography.css";
+@import "./typography-utilities.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  /* Enhanced Typography System Tokens */
+  --font-display: 'SF Pro Display', var(--font-geist-sans), -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Inter', var(--font-geist-sans), -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', var(--font-geist-mono), 'SF Mono', Monaco, monospace;
+  
+  /* Typography Scale */
+  --font-size-display-hero: clamp(48px, 8vw, 72px);
+  --font-size-display-2xl: clamp(36px, 6vw, 60px);
+  --font-size-display-xl: clamp(30px, 5vw, 48px);
+  --font-size-section-title: clamp(24px, 4vw, 36px);
+  --font-size-heading-lg: clamp(20px, 3.5vw, 30px);
+  --font-size-heading-md: clamp(18px, 3vw, 24px);
+  --font-size-heading-sm: clamp(16px, 2.5vw, 20px);
+  --font-size-body-xl: clamp(18px, 2.5vw, 20px);
+  --font-size-body-lg: clamp(16px, 2vw, 18px);
+  --font-size-body-base: 16px; /* Never below 16px */
+  --font-size-body-sm: 14px; /* Minimum readable */
+  --font-size-label: 14px;
+  --font-size-caption: 12px;
+  --font-size-micro: 11px;
+  
+  /* Line Heights */
+  --line-height-display: 0.9;
+  --line-height-heading: 1.2;
+  --line-height-body: 1.5;
+  --line-height-body-relaxed: 1.6;
+  --line-height-tight: 1.25;
+  
+  /* Letter Spacing */
+  --letter-spacing-tight: -0.05em;
+  --letter-spacing-snug: -0.025em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.025em;
+  --letter-spacing-wider: 0.05em;
+  
+  /* Font Weights */
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  /* Mumbai Design System - Color Tokens */
+  --color-base-black: oklch(0% 0 0);
+  --color-base-white: oklch(100% 0 0);
+  --color-base-transparent: transparent;
+  
+  /* Gray Scale */
+  --color-gray-50: oklch(98% 0 0);
+  --color-gray-100: oklch(95% 0 0);
+  --color-gray-200: oklch(90% 0 0);
+  --color-gray-300: oklch(85% 0 0);
+  --color-gray-400: oklch(70% 0 0);
+  --color-gray-500: oklch(55% 0 0);
+  --color-gray-600: oklch(40% 0 0);
+  --color-gray-700: oklch(25% 0 0);
+  --color-gray-800: oklch(15% 0 0);
+  --color-gray-900: oklch(10% 0 0);
+  --color-gray-950: oklch(5% 0 0);
+  
+  /* Mumbai Saffron */
+  --color-mumbai-saffron-50: oklch(97% 0.05 65);
+  --color-mumbai-saffron-100: oklch(94% 0.08 65);
+  --color-mumbai-saffron-200: oklch(87% 0.12 65);
+  --color-mumbai-saffron-300: oklch(78% 0.15 65);
+  --color-mumbai-saffron-400: oklch(68% 0.18 65);
+  --color-mumbai-saffron-500: oklch(58% 0.21 65);
+  --color-mumbai-saffron-600: oklch(48% 0.19 65);
+  --color-mumbai-saffron-700: oklch(38% 0.17 65);
+  --color-mumbai-saffron-800: oklch(28% 0.14 65);
+  --color-mumbai-saffron-900: oklch(18% 0.11 65);
+  
+  /* Mumbai Crimson */
+  --color-mumbai-crimson-50: oklch(96% 0.06 25);
+  --color-mumbai-crimson-100: oklch(92% 0.10 25);
+  --color-mumbai-crimson-200: oklch(84% 0.15 25);
+  --color-mumbai-crimson-300: oklch(74% 0.20 25);
+  --color-mumbai-crimson-400: oklch(64% 0.25 25);
+  --color-mumbai-crimson-500: oklch(54% 0.28 25);
+  --color-mumbai-crimson-600: oklch(44% 0.25 25);
+  --color-mumbai-crimson-700: oklch(34% 0.22 25);
+  --color-mumbai-crimson-800: oklch(24% 0.18 25);
+  --color-mumbai-crimson-900: oklch(14% 0.14 25);
+  
+  /* Mumbai Gold */
+  --color-mumbai-gold-50: oklch(97% 0.04 85);
+  --color-mumbai-gold-100: oklch(94% 0.07 85);
+  --color-mumbai-gold-200: oklch(88% 0.11 85);
+  --color-mumbai-gold-300: oklch(80% 0.15 85);
+  --color-mumbai-gold-400: oklch(70% 0.19 85);
+  --color-mumbai-gold-500: oklch(60% 0.22 85);
+  --color-mumbai-gold-600: oklch(50% 0.20 85);
+  --color-mumbai-gold-700: oklch(40% 0.18 85);
+  --color-mumbai-gold-800: oklch(30% 0.15 85);
+  --color-mumbai-gold-900: oklch(20% 0.12 85);
+  
+  /* Electric Blue */
+  --color-neon-electric-blue-50: oklch(95% 0.08 220);
+  --color-neon-electric-blue-100: oklch(90% 0.12 220);
+  --color-neon-electric-blue-200: oklch(82% 0.18 220);
+  --color-neon-electric-blue-300: oklch(74% 0.22 220);
+  --color-neon-electric-blue-400: oklch(66% 0.26 220);
+  --color-neon-electric-blue-500: oklch(58% 0.30 220);
+  --color-neon-electric-blue-600: oklch(50% 0.27 220);
+  --color-neon-electric-blue-700: oklch(42% 0.24 220);
+  --color-neon-electric-blue-800: oklch(34% 0.20 220);
+  --color-neon-electric-blue-900: oklch(26% 0.16 220);
+  
+  /* Neon Magenta */
+  --color-neon-magenta-50: oklch(96% 0.07 350);
+  --color-neon-magenta-100: oklch(91% 0.11 350);
+  --color-neon-magenta-200: oklch(83% 0.17 350);
+  --color-neon-magenta-300: oklch(75% 0.23 350);
+  --color-neon-magenta-400: oklch(67% 0.28 350);
+  --color-neon-magenta-500: oklch(59% 0.33 350);
+  --color-neon-magenta-600: oklch(51% 0.30 350);
+  --color-neon-magenta-700: oklch(43% 0.26 350);
+  --color-neon-magenta-800: oklch(35% 0.22 350);
+  --color-neon-magenta-900: oklch(27% 0.18 350);
+  
+  /* Glassmorphism */
+  --color-glassmorphism-backdrop-light: oklch(100% 0 0 / 0.1);
+  --color-glassmorphism-backdrop-medium: oklch(100% 0 0 / 0.2);
+  --color-glassmorphism-backdrop-heavy: oklch(100% 0 0 / 0.3);
+  --color-glassmorphism-border-subtle: oklch(100% 0 0 / 0.1);
+  --color-glassmorphism-border-default: oklch(100% 0 0 / 0.2);
+  --color-glassmorphism-border-strong: oklch(100% 0 0 / 0.3);
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+
+  /* Mumbai Design System - Dark Mode Semantic Colors */
+  --color-semantic-dark-mode-background-primary: var(--color-base-black);
+  --color-semantic-dark-mode-background-secondary: var(--color-gray-900);
+  --color-semantic-dark-mode-background-tertiary: var(--color-gray-800);
+  --color-semantic-dark-mode-background-elevated: var(--color-gray-700);
+  --color-semantic-dark-mode-background-overlay: oklch(0% 0 0 / 0.8);
+  
+  --color-semantic-dark-mode-text-primary: var(--color-base-white);
+  --color-semantic-dark-mode-text-secondary: var(--color-gray-300);
+  --color-semantic-dark-mode-text-tertiary: var(--color-gray-500);
+  --color-semantic-dark-mode-text-inverse: var(--color-base-black);
+  --color-semantic-dark-mode-text-disabled: var(--color-gray-600);
+  
+  --color-semantic-dark-mode-border-subtle: var(--color-gray-800);
+  --color-semantic-dark-mode-border-default: var(--color-gray-700);
+  --color-semantic-dark-mode-border-strong: var(--color-gray-600);
+  --color-semantic-dark-mode-border-focus: var(--color-neon-electric-blue-500);
+  
+  --color-semantic-dark-mode-accent-primary: var(--color-mumbai-saffron-400);
+  --color-semantic-dark-mode-accent-secondary: var(--color-neon-electric-blue-500);
+  --color-semantic-dark-mode-accent-tertiary: var(--color-mumbai-gold-500);
+  --color-semantic-dark-mode-accent-danger: var(--color-mumbai-crimson-500);
+  --color-semantic-dark-mode-accent-warning: var(--color-mumbai-gold-400);
+  --color-semantic-dark-mode-accent-success: oklch(70% 0.15 140);
+  --color-semantic-dark-mode-accent-info: var(--color-neon-electric-blue-400);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Enhanced base typography with improved performance */
+  html {
+    font-size: 16px; /* Never allow below 16px */
+    line-height: 1.5;
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  /* Ensure proper font loading */
+  .fonts-loading body {
+    visibility: hidden;
+  }
+
+  .fonts-loading .text-content {
+    visibility: visible;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  .fonts-loaded .text-content {
+    font-family: var(--font-body);
+  }
+
+  /* Performance optimizations for typography */
+  .text-display-hero,
+  .text-display-2xl,
+  .text-display-xl,
+  .text-section-title {
+    font-display: swap;
+    will-change: auto;
+    contain: layout style;
+  }
+
+  /* Enhanced accessibility support */
+  @media (prefers-contrast: high) {
+    .text-display-hero,
+    .text-display-2xl,
+    .text-display-xl,
+    .text-section-title,
+    .text-heading-lg,
+    .text-heading-md,
+    .text-heading-sm {
+      color: #FFFFFF !important;
+      text-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* Print optimizations */
+  @media print {
+    .text-display-hero,
+    .text-display-2xl,
+    .text-display-xl {
+      color: #000000 !important;
+      font-size: 24px !important;
+    }
+    
+    .text-body-base,
+    .text-body-lg {
+      color: #333333 !important;
+      font-size: 12px !important;
+      line-height: 1.4 !important;
+    }
+  }
+
+  /* ================================================
+     ENHANCED TALENT CARD COMPONENT STYLES
+     ================================================ */
+
+  /* Base TalentCard Styles with improved typography */
+  .talent-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    background: var(--color-semantic-dark-mode-background-tertiary);
+    border: 1px solid var(--color-semantic-dark-mode-border-subtle);
+    border-radius: 12px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Enhanced typography support */
+    font-family: var(--font-body);
+    
+    /* OLED Optimization */
+    backdrop-filter: blur(20px);
+    background: linear-gradient(
+      135deg,
+      var(--color-glassmorphism-backdrop-light),
+      var(--color-glassmorphism-backdrop-medium)
+    );
+    
+    /* Performance Optimization */
+    contain: layout style;
+    will-change: transform;
+    transform: translateZ(0);
+  }
+
+  /* Enhanced talent card typography */
+  .talent-card__name {
+    margin: 0 0 4px 0;
+    @apply talent-name-primary;
+  }
+
+  .talent-card__details {
+    margin: 0;
+    @apply talent-experience;
+  }
+
+  .talent-card__tag {
+    @apply talent-skills-tag;
+  }
+
+  /* ================================================
+     CHAT INTERFACE ENHANCEMENTS
+     ================================================ */
+
+  /* Chat container with proper typography foundation */
+  .chat-container {
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    contain: layout style;
+  }
+
+  /* ================================================
+     FORM ENHANCEMENTS
+     ================================================ */
+
+  /* Enhanced form typography */
+  .form-container {
+    font-family: var(--font-body);
+  }
+
+  .form-container input,
+  .form-container textarea,
+  .form-container select {
+    font-family: inherit;
+    font-size: var(--font-size-body-base);
+    line-height: var(--line-height-body);
+  }
+
+  .form-container input::placeholder,
+  .form-container textarea::placeholder {
+    font-family: inherit;
+    color: var(--color-semantic-dark-mode-text-tertiary);
+    opacity: 0.7;
+  }
+
+  /* ================================================
+     BUTTON ENHANCEMENTS
+     ================================================ */
+
+  .button {
+    font-family: var(--font-body);
+    font-size: var(--font-size-body-base);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-tight);
+    letter-spacing: 0.01em;
+  }
+
+  .button--sm {
+    font-size: var(--font-size-body-sm);
+  }
+
+  .button--lg {
+    font-size: var(--font-size-body-lg);
+  }
+
+  /* ================================================
+     NAVIGATION ENHANCEMENTS
+     ================================================ */
+
+  .nav-container {
+    font-family: var(--font-body);
+  }
+
+  .nav-link {
+    @apply nav-primary;
+  }
+
+  .nav-link--secondary {
+    @apply nav-secondary;
+  }
+
+  /* ================================================
+     LOADING STATES
+     ================================================ */
+
+  /* Enhanced loading text shimmer */
+  .loading-text {
+    background: linear-gradient(90deg, 
+      var(--color-semantic-dark-mode-background-tertiary) 25%, 
+      var(--color-semantic-dark-mode-background-elevated) 50%, 
+      var(--color-semantic-dark-mode-background-tertiary) 75%
+    );
+    background-size: 200% 100%;
+    animation: loading-shimmer 2s infinite;
+    color: transparent;
+    border-radius: 4px;
+    font-family: var(--font-body);
+  }
+
+  @keyframes loading-shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* ================================================
+     FOCUS MANAGEMENT
+     ================================================ */
+
+  /* Enhanced focus styles for typography elements */
+  .text-content:focus,
+  .chat-message:focus,
+  .form-input:focus,
+  .button:focus {
+    outline: 2px solid var(--color-semantic-dark-mode-border-focus);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  .text-content:focus:not(:focus-visible),
+  .chat-message:focus:not(:focus-visible),
+  .form-input:focus:not(:focus-visible),
+  .button:focus:not(:focus-visible) {
+    outline: none;
+  }
+}
+
+/* Mumbai Design System specific enhancements */
+@layer components {
+  .mumbai-accent-primary {
+    color: var(--color-mumbai-saffron-400);
+  }
+  
+  .mumbai-accent-secondary {
+    color: var(--color-neon-electric-blue-400);
+  }
+  
+  .mumbai-accent-gold {
+    color: var(--color-mumbai-gold-500);
+  }
+  
+  .mumbai-accent-crimson {
+    color: var(--color-mumbai-crimson-500);
+  }
+}

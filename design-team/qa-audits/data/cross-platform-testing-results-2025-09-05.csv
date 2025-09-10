@@ -1,0 +1,27 @@
+Platform,Browser,Version,Device,Accessibility_Score,Performance_Score,Visual_Consistency,Issues_Found,Grade,Status
+Desktop,Chrome,118.0,MacBook Pro M1,87,89,95,3,A-,PASS
+Desktop,Firefox,119.0,MacBook Pro M1,91,85,92,2,A-,PASS
+Desktop,Safari,17.0,MacBook Pro M1,89,88,94,4,B+,PASS_WITH_FIXES
+Desktop,Edge,118.0,Surface Pro,85,87,90,5,B+,CONDITIONAL
+Desktop,Chrome,118.0,ThinkPad X1,83,84,91,6,B,NEEDS_IMPROVEMENT
+Mobile,Safari,17.0,iPhone 14 Pro,81,79,88,8,B,NEEDS_IMPROVEMENT
+Mobile,Chrome,118.0,iPhone 14 Pro,84,82,89,7,B+,PASS_WITH_FIXES
+Mobile,Chrome,118.0,Pixel 7 Pro,86,85,91,5,B+,PASS_WITH_FIXES
+Mobile,Samsung Internet,22.0,Galaxy S23,79,77,86,12,C+,NEEDS_MAJOR_FIXES
+Tablet,Safari,17.0,iPad Pro 12.9,88,91,93,4,A-,PASS
+Tablet,Chrome,118.0,iPad Pro 12.9,89,89,94,3,A-,PASS
+Desktop,Chrome,118.0,4K Monitor,92,91,96,2,A,PASS
+Desktop,Firefox,119.0,Ultrawide,90,88,93,3,A-,PASS
+Mobile,Safari,16.6,iPhone 12,78,74,85,14,C+,NEEDS_MAJOR_FIXES
+Mobile,Chrome,117.0,OnePlus 11,82,81,88,9,B,NEEDS_IMPROVEMENT
+Accessibility,NVDA,2023.2,Windows 11,76,N/A,N/A,18,C+,CRITICAL_FIXES_NEEDED
+Accessibility,JAWS,2023,Windows 11,74,N/A,N/A,21,C,CRITICAL_FIXES_NEEDED
+Accessibility,VoiceOver,macOS 14,MacBook Pro,82,N/A,N/A,12,B,NEEDS_IMPROVEMENT
+Accessibility,TalkBack,Android 14,Pixel 7,79,N/A,N/A,15,C+,CRITICAL_FIXES_NEEDED
+Performance,Slow 3G,Throttled,Generic,N/A,68,N/A,8,C,NEEDS_OPTIMIZATION
+Performance,Fast 3G,Throttled,Generic,N/A,76,N/A,5,B-,NEEDS_IMPROVEMENT
+Performance,4G LTE,Throttled,Generic,N/A,84,N/A,2,B+,PASS_WITH_FIXES
+High_Contrast,Chrome,118.0,Windows 11,89,87,78,6,B,NEEDS_IMPROVEMENT
+Dark_Mode,Chrome,118.0,macOS,94,89,97,1,A,PASS
+Light_Mode,Chrome,118.0,macOS,91,89,95,2,A-,PASS
+Reduced_Motion,Safari,17.0,macOS,88,92,94,3,A-,PASS

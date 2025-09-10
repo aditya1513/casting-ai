@@ -1,0 +1,462 @@
+/*
+ * CastMatch Chat Typography System v1.0
+ * Specialized typography for chat interfaces and messaging
+ * Optimized for entertainment industry conversations
+ */
+
+/* ================================================
+   CHAT MESSAGE TYPOGRAPHY HIERARCHY
+   ================================================ */
+
+/* Base Chat Container */
+.chat-container {
+  font-family: 'Inter', var(--font-geist-sans), -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* User Messages - Sender's own messages */
+.chat-message-user {
+  font-size: clamp(14px, 2.5vw, 16px);
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0;
+  color: var(--color-base-white);
+  font-family: 'Inter', var(--font-geist-sans);
+  
+  /* Optimization for user readability */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  
+  /* Performance optimization */
+  contain: layout style;
+}
+
+/* AI Messages - Assistant responses */
+.chat-message-ai {
+  font-size: clamp(14px, 2.5vw, 16px);
+  font-weight: 400;
+  line-height: 1.6; /* Slightly increased for AI responses */
+  letter-spacing: 0.01em; /* Subtle spacing for clarity */
+  color: var(--color-semantic-dark-mode-text-primary);
+  font-family: 'Inter', var(--font-geist-sans);
+  
+  /* Enhanced readability for longer AI responses */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  text-align: left;
+  
+  /* Mumbai accent for AI personality */
+  border-left: 2px solid var(--color-mumbai-saffron-400);
+  padding-left: 12px;
+  margin-left: 2px;
+}
+
+/* AI Message - Code blocks within messages */
+.chat-message-ai code {
+  font-family: 'JetBrains Mono', var(--font-geist-mono), monospace;
+  font-size: 13px;
+  background: var(--color-semantic-dark-mode-background-elevated);
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: var(--color-neon-electric-blue-400);
+}
+
+/* AI Message - Pre-formatted blocks */
+.chat-message-ai pre {
+  font-family: 'JetBrains Mono', var(--font-geist-mono), monospace;
+  font-size: 13px;
+  line-height: 1.4;
+  background: var(--color-semantic-dark-mode-background-elevated);
+  padding: 12px;
+  border-radius: 8px;
+  margin: 8px 0;
+  overflow-x: auto;
+  color: var(--color-semantic-dark-mode-text-primary);
+  border: 1px solid var(--color-semantic-dark-mode-border-subtle);
+}
+
+/* System Messages - Status updates, notifications */
+.chat-message-system {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: 0.025em;
+  color: var(--color-semantic-dark-mode-text-tertiary);
+  font-family: 'Inter', var(--font-geist-sans);
+  text-transform: uppercase;
+  text-align: center;
+  
+  /* Visual hierarchy separation */
+  opacity: 0.8;
+  font-style: italic;
+}
+
+/* ================================================
+   MESSAGE METADATA TYPOGRAPHY
+   ================================================ */
+
+/* Timestamps */
+.chat-timestamp {
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.25;
+  color: var(--color-semantic-dark-mode-text-tertiary);
+  font-family: 'Inter', var(--font-geist-sans);
+  
+  /* Tabular figures for consistent alignment */
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+  
+  /* Subtle opacity for hierarchy */
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.chat-timestamp:hover {
+  opacity: 1;
+}
+
+/* Sender Names */
+.chat-sender-name {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.25;
+  color: var(--color-semantic-dark-mode-text-secondary);
+  font-family: 'Inter', var(--font-geist-sans);
+  
+  /* Entertainment industry role indicators */
+  margin-bottom: 4px;
+}
+
+.chat-sender-name--casting-director {
+  color: var(--color-mumbai-saffron-400);
+}
+
+.chat-sender-name--talent {
+  color: var(--color-neon-electric-blue-400);
+}
+
+.chat-sender-name--producer {
+  color: var(--color-mumbai-gold-500);
+}
+
+.chat-sender-name--ai-assistant {
+  color: var(--color-neon-magenta-400);
+}
+
+/* Role badges */
+.chat-role-badge {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 12px;
+  margin-left: 8px;
+  
+  /* Inline with sender name */
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.chat-role-badge--casting {
+  background: var(--color-mumbai-saffron-900);
+  color: var(--color-mumbai-saffron-400);
+  border: 1px solid var(--color-mumbai-saffron-800);
+}
+
+.chat-role-badge--talent {
+  background: var(--color-neon-electric-blue-900);
+  color: var(--color-neon-electric-blue-400);
+  border: 1px solid var(--color-neon-electric-blue-800);
+}
+
+.chat-role-badge--ai {
+  background: var(--color-neon-magenta-900);
+  color: var(--color-neon-magenta-400);
+  border: 1px solid var(--color-neon-magenta-800);
+}
+
+/* ================================================
+   INTERACTIVE ELEMENTS TYPOGRAPHY
+   ================================================ */
+
+/* Typing Indicator */
+.chat-typing {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.25;
+  color: var(--color-semantic-dark-mode-text-tertiary);
+  font-style: italic;
+  font-family: 'Inter', var(--font-geist-sans);
+  
+  /* Animation support */
+  opacity: 0.7;
+}
+
+.chat-typing::after {
+  content: "...";
+  animation: typing-dots 1.4s infinite;
+  margin-left: 4px;
+}
+
+@keyframes typing-dots {
+  0%, 20% { opacity: 0; }
+  50% { opacity: 1; }
+  80%, 100% { opacity: 0; }
+}
+
+/* Message Actions (Reply, React, etc.) */
+.chat-message-action {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.25;
+  color: var(--color-semantic-dark-mode-text-tertiary);
+  font-family: 'Inter', var(--font-geist-sans);
+  text-transform: capitalize;
+  
+  /* Interactive states */
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.chat-message-action:hover {
+  color: var(--color-mumbai-saffron-400);
+}
+
+.chat-message-action:active {
+  color: var(--color-mumbai-saffron-300);
+}
+
+/* Message Status Indicators */
+.chat-status-sent {
+  color: var(--color-semantic-dark-mode-text-tertiary);
+}
+
+.chat-status-delivered {
+  color: var(--color-mumbai-saffron-500);
+}
+
+.chat-status-read {
+  color: var(--color-neon-electric-blue-500);
+}
+
+/* ================================================
+   SPECIAL MESSAGE TYPES
+   ================================================ */
+
+/* Casting Brief Messages */
+.chat-message-casting-brief {
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--color-semantic-dark-mode-text-primary);
+  
+  /* Enhanced formatting for casting details */
+  background: linear-gradient(
+    135deg,
+    var(--color-semantic-dark-mode-background-tertiary),
+    var(--color-semantic-dark-mode-background-elevated)
+  );
+  border: 1px solid var(--color-mumbai-saffron-800);
+  border-left: 4px solid var(--color-mumbai-saffron-500);
+  padding: 16px;
+  border-radius: 8px;
+  margin: 8px 0;
+}
+
+/* Audition Details */
+.chat-message-audition-details {
+  font-family: 'Inter', var(--font-geist-sans);
+}
+
+.chat-audition-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-mumbai-saffron-400);
+  margin-bottom: 8px;
+}
+
+.chat-audition-info {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--color-semantic-dark-mode-text-secondary);
+}
+
+.chat-audition-deadline {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-mumbai-crimson-400);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  margin-top: 8px;
+}
+
+/* Portfolio/Reel Sharing Messages */
+.chat-message-portfolio {
+  border: 1px solid var(--color-neon-electric-blue-800);
+  border-left: 4px solid var(--color-neon-electric-blue-500);
+  background: var(--color-semantic-dark-mode-background-elevated);
+  padding: 12px;
+  border-radius: 6px;
+}
+
+.chat-portfolio-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-neon-electric-blue-400);
+  margin-bottom: 4px;
+}
+
+.chat-portfolio-description {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--color-semantic-dark-mode-text-secondary);
+}
+
+/* ================================================
+   RESPONSIVE CHAT TYPOGRAPHY
+   ================================================ */
+
+/* Mobile Optimizations */
+@media (max-width: 48rem) {
+  .chat-message-user,
+  .chat-message-ai {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  
+  .chat-sender-name {
+    font-size: 12px;
+  }
+  
+  .chat-timestamp {
+    font-size: 10px;
+  }
+  
+  .chat-role-badge {
+    font-size: 9px;
+    padding: 1px 4px;
+  }
+}
+
+/* Large Desktop Optimizations */
+@media (min-width: 80rem) {
+  .chat-message-user,
+  .chat-message-ai {
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  
+  .chat-message-ai {
+    max-width: 75ch; /* Optimal reading width */
+  }
+  
+  .chat-sender-name {
+    font-size: 14px;
+  }
+  
+  .chat-timestamp {
+    font-size: 12px;
+  }
+}
+
+/* ================================================
+   ACCESSIBILITY ENHANCEMENTS
+   ================================================ */
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .chat-message-user,
+  .chat-message-ai {
+    color: #FFFFFF !important;
+    background: #000000 !important;
+  }
+  
+  .chat-message-system {
+    color: #FFFF00 !important;
+  }
+  
+  .chat-timestamp,
+  .chat-sender-name {
+    color: #CCCCCC !important;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .chat-typing::after {
+    animation: none;
+    content: "...";
+  }
+  
+  .chat-message-action {
+    transition: none;
+  }
+  
+  .chat-timestamp {
+    transition: none;
+  }
+}
+
+/* Large Text Support */
+@media (prefers-reduced-data: no-preference) {
+  .chat-message-user,
+  .chat-message-ai {
+    font-size: clamp(16px, 3vw, 20px);
+  }
+}
+
+/* Focus Management */
+.chat-message:focus,
+.chat-message-action:focus {
+  outline: 2px solid var(--color-semantic-dark-mode-border-focus);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.chat-message:focus:not(:focus-visible),
+.chat-message-action:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ================================================
+   PERFORMANCE OPTIMIZATIONS
+   ================================================ */
+
+/* Font Loading Optimization */
+.chat-container {
+  font-display: swap;
+}
+
+/* GPU Acceleration for Smooth Scrolling */
+.chat-message-user,
+.chat-message-ai,
+.chat-message-system {
+  will-change: auto;
+  transform: translateZ(0);
+}
+
+/* Content Containment */
+.chat-message {
+  contain: layout style;
+}
+
+/* Efficient Text Rendering */
+.chat-message-ai,
+.chat-message-user {
+  text-rendering: optimizeSpeed;
+}
+
+@media (min-width: 48rem) {
+  .chat-message-ai,
+  .chat-message-user {
+    text-rendering: optimizeLegibility;
+  }
+}

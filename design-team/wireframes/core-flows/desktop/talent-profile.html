@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talent Profile - Desktop Wireframe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #212529;
+            line-height: 1.5;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Navigation */
+        .nav-header {
+            background: white;
+            border-bottom: 1px solid #dee2e6;
+            height: 64px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .breadcrumb a {
+            color: #6366f1;
+            text-decoration: none;
+        }
+
+        /* Profile Header */
+        .profile-header {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            margin: 24px 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .profile-top {
+            display: grid;
+            grid-template-columns: 160px 1fr auto;
+            gap: 32px;
+            align-items: start;
+        }
+
+        .profile-avatar {
+            width: 160px;
+            height: 160px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            position: relative;
+        }
+
+        .verification-badge {
+            position: absolute;
+            bottom: -8px;
+            right: -8px;
+            width: 40px;
+            height: 40px;
+            background: #10b981;
+            border: 3px solid white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-name {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .profile-title {
+            font-size: 18px;
+            color: #6c757d;
+            margin-bottom: 16px;
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: 32px;
+            margin-bottom: 16px;
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: #212529;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .profile-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            padding: 6px 12px;
+            background: #f1f3f5;
+            border-radius: 16px;
+            font-size: 13px;
+            color: #495057;
+        }
+
+        .tag.primary {
+            background: #e7f5ff;
+            color: #1c7ed6;
+            font-weight: 500;
+        }
+
+        .profile-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: #6366f1;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #495057;
+            border: 1px solid #dee2e6;
+        }
+
+        .btn-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* Tab Navigation */
+        .tabs {
+            background: white;
+            border-radius: 12px;
+            padding: 0;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .tab-list {
+            display: flex;
+            border-bottom: 1px solid #dee2e6;
+            padding: 0 24px;
+        }
+
+        .tab-item {
+            padding: 16px 24px;
+            color: #6c757d;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .tab-item.active {
+            color: #6366f1;
+            border-bottom-color: #6366f1;
+        }
+
+        .tab-badge {
+            position: absolute;
+            top: 12px;
+            right: 8px;
+            background: #ef4444;
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        /* Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 8fr 4fr;
+            gap: 24px;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-action {
+            font-size: 13px;
+            color: #6366f1;
+            text-decoration: none;
+        }
+
+        /* Portfolio Grid */
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .portfolio-item {
+            aspect-ratio: 4/3;
+            background: #e9ecef;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .portfolio-item:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .portfolio-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            padding: 12px;
+            color: white;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Experience Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 32px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 8px;
+            bottom: 8px;
+            width: 2px;
+            background: #dee2e6;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -28px;
+            top: 4px;
+            width: 16px;
+            height: 16px;
+            background: white;
+            border: 2px solid #6366f1;
+            border-radius: 50%;
+        }
+
+        .timeline-content {
+            background: #f8f9fa;
+            padding: 16px;
+            border-radius: 8px;
+        }
+
+        .timeline-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .timeline-subtitle {
+            font-size: 13px;
+            color: #6c757d;
+            margin-bottom: 8px;
+        }
+
+        .timeline-description {
+            font-size: 14px;
+            color: #495057;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Availability Calendar */
+        .calendar-widget {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .calendar-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 8px;
+        }
+
+        .calendar-btn {
+            width: 28px;
+            height: 28px;
+            border: 1px solid #dee2e6;
+            background: white;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .calendar-day.available {
+            background: #d1fae5;
+            color: #10b981;
+            font-weight: 500;
+        }
+
+        .calendar-day.busy {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+        /* Contact Card */
+        .contact-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f3f5;
+        }
+
+        .contact-item:last-child {
+            border-bottom: none;
+        }
+
+        .contact-icon {
+            width: 32px;
+            height: 32px;
+            background: #f1f3f5;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .contact-info {
+            flex: 1;
+        }
+
+        .contact-label {
+            font-size: 11px;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .contact-value {
+            font-size: 14px;
+            color: #212529;
+        }
+
+        /* Similar Talents */
+        .similar-talents {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .talent-mini-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f3f5;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .talent-mini-card:hover {
+            background: #f8f9fa;
+            margin: 0 -8px;
+            padding: 12px 8px;
+        }
+
+        .talent-mini-avatar {
+            width: 48px;
+            height: 48px;
+            background: #e9ecef;
+            border-radius: 12px;
+        }
+
+        .talent-mini-info {
+            flex: 1;
+        }
+
+        .talent-mini-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .talent-mini-role {
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .match-percentage {
+            font-size: 13px;
+            font-weight: 600;
+            color: #10b981;
+        }
+
+        /* Annotations */
+        .annotation {
+            position: absolute;
+            background: #ffd43b;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <header class="nav-header">
+        <div class="container">
+            <div class="nav-content">
+                <div class="breadcrumb">
+                    <a href="#">Home</a>
+                    <span>›</span>
+                    <a href="#">Talents</a>
+                    <span>›</span>
+                    <span>Ananya Sharma</span>
+                </div>
+                <div style="display: flex; gap: 12px;">
+                    <button class="btn btn-secondary">Share Profile</button>
+                    <button class="btn btn-secondary">Download CV</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="profile-top">
+                <div class="profile-avatar">
+                    <div class="verification-badge">✓</div>
+                </div>
+                <div class="profile-info">
+                    <h1 class="profile-name">
+                        Ananya Sharma
+                        <span style="font-size: 14px; background: #10b981; color: white; padding: 4px 8px; border-radius: 12px;">PRO</span>
+                    </h1>
+                    <p class="profile-title">Lead Actress • Mumbai, Maharashtra</p>
+                    <div class="profile-stats">
+                        <div class="stat">
+                            <span class="stat-value">127</span>
+                            <span class="stat-label">Projects</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value">4.8</span>
+                            <span class="stat-label">Rating</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value">98%</span>
+                            <span class="stat-label">Response</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value">8</span>
+                            <span class="stat-label">Years Exp</span>
+                        </div>
+                    </div>
+                    <div class="profile-tags">
+                        <span class="tag primary">Hindi</span>
+                        <span class="tag primary">English</span>
+                        <span class="tag">Classical Dance</span>
+                        <span class="tag">Method Acting</span>
+                        <span class="tag">Theatre</span>
+                        <span class="tag">Singing</span>
+                    </div>
+                </div>
+                <div class="profile-actions">
+                    <button class="btn btn-primary btn-icon">
+                        <span>💬</span>
+                        <span>Message</span>
+                    </button>
+                    <button class="btn btn-secondary btn-icon">
+                        <span>📅</span>
+                        <span>Schedule Audition</span>
+                    </button>
+                    <button class="btn btn-secondary btn-icon">
+                        <span>❤️</span>
+                        <span>Save to List</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tabs">
+            <div class="tab-list">
+                <a href="#" class="tab-item active">Overview</a>
+                <a href="#" class="tab-item">Portfolio</a>
+                <a href="#" class="tab-item">Experience</a>
+                <a href="#" class="tab-item">
+                    Reviews
+                    <span class="tab-badge">12</span>
+                </a>
+                <a href="#" class="tab-item">Documents</a>
+                <a href="#" class="tab-item">Availability</a>
+            </div>
+        </div>
+
+        <!-- Content Grid -->
+        <div class="content-grid">
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- About Section -->
+                <div class="section-card">
+                    <h2 class="section-title">About</h2>
+                    <p style="color: #495057; line-height: 1.7;">
+                        Versatile actress with 8+ years of experience in Bollywood films, web series, and theatre. 
+                        Trained in method acting at the National School of Drama and specializing in intense dramatic 
+                        roles. Fluent in Hindi, English, and Marathi with basic proficiency in Tamil. Known for 
+                        dedication to character preparation and professional work ethic.
+                    </p>
+                    <div style="margin-top: 16px; display: flex; gap: 24px; font-size: 14px;">
+                        <div><strong>Age:</strong> 28 years</div>
+                        <div><strong>Height:</strong> 5'6"</div>
+                        <div><strong>Languages:</strong> Hindi, English, Marathi</div>
+                    </div>
+                </div>
+
+                <!-- Portfolio Section -->
+                <div class="section-card">
+                    <h2 class="section-title">
+                        Portfolio
+                        <a href="#" class="section-action">View All →</a>
+                    </h2>
+                    <div class="portfolio-grid">
+                        <div class="portfolio-item">
+                            <div class="portfolio-overlay">Feature Film - Lead Role</div>
+                        </div>
+                        <div class="portfolio-item">
+                            <div class="portfolio-overlay">Web Series - Netflix</div>
+                        </div>
+                        <div class="portfolio-item">
+                            <div class="portfolio-overlay">TV Commercial</div>
+                        </div>
+                        <div class="portfolio-item">
+                            <div class="portfolio-overlay">Theatre Production</div>
+                        </div>
+                        <div class="portfolio-item">
+                            <div class="portfolio-overlay">Music Video</div>
+                        </div>
+                        <div class="portfolio-item">
+                            <div class="portfolio-overlay">Short Film</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Experience Timeline -->
+                <div class="section-card">
+                    <h2 class="section-title">Recent Experience</h2>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Mumbai Dreams - Lead Role</div>
+                                <div class="timeline-subtitle">Feature Film • 2024</div>
+                                <div class="timeline-description">
+                                    Played the protagonist in this critically acclaimed drama about Mumbai's film industry.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Sacred Games Season 3</div>
+                                <div class="timeline-subtitle">Netflix Original • 2023</div>
+                                <div class="timeline-description">
+                                    Recurring role as a police inspector in the award-winning series.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Hamlet - Theatre Production</div>
+                                <div class="timeline-subtitle">Prithvi Theatre • 2023</div>
+                                <div class="timeline-description">
+                                    Portrayed Ophelia in the modern adaptation of Shakespeare's classic.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Availability Calendar -->
+                <div class="calendar-widget">
+                    <div class="calendar-header">
+                        <h3 class="calendar-title">Availability</h3>
+                        <div class="calendar-nav">
+                            <button class="calendar-btn">‹</button>
+                            <button class="calendar-btn">›</button>
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-bottom: 12px; font-size: 14px; color: #6c757d;">
+                        December 2024
+                    </div>
+                    <div class="calendar-grid">
+                        <div class="calendar-day">S</div>
+                        <div class="calendar-day">M</div>
+                        <div class="calendar-day">T</div>
+                        <div class="calendar-day">W</div>
+                        <div class="calendar-day">T</div>
+                        <div class="calendar-day">F</div>
+                        <div class="calendar-day">S</div>
+                        <div class="calendar-day available">1</div>
+                        <div class="calendar-day available">2</div>
+                        <div class="calendar-day busy">3</div>
+                        <div class="calendar-day busy">4</div>
+                        <div class="calendar-day available">5</div>
+                        <div class="calendar-day available">6</div>
+                        <div class="calendar-day available">7</div>
+                    </div>
+                    <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #dee2e6;">
+                        <div style="display: flex; gap: 16px; font-size: 12px;">
+                            <div style="display: flex; align-items: center; gap: 4px;">
+                                <span style="width: 12px; height: 12px; background: #d1fae5; border-radius: 2px;"></span>
+                                <span>Available</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 4px;">
+                                <span style="width: 12px; height: 12px; background: #fee2e2; border-radius: 2px;"></span>
+                                <span>Busy</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Information -->
+                <div class="contact-card">
+                    <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 16px;">Contact Information</h3>
+                    <div class="contact-item">
+                        <div class="contact-icon">📧</div>
+                        <div class="contact-info">
+                            <div class="contact-label">Email</div>
+                            <div class="contact-value">Contact via CastMatch</div>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">📱</div>
+                        <div class="contact-info">
+                            <div class="contact-label">Phone</div>
+                            <div class="contact-value">+91 98XXX XXXXX</div>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">📍</div>
+                        <div class="contact-info">
+                            <div class="contact-label">Location</div>
+                            <div class="contact-value">Andheri West, Mumbai</div>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">🏢</div>
+                        <div class="contact-info">
+                            <div class="contact-label">Agency</div>
+                            <div class="contact-value">Star Talent Management</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Similar Talents -->
+                <div class="similar-talents">
+                    <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 16px;">Similar Talents</h3>
+                    <div class="talent-mini-card">
+                        <div class="talent-mini-avatar"></div>
+                        <div class="talent-mini-info">
+                            <div class="talent-mini-name">Priya Mehta</div>
+                            <div class="talent-mini-role">Lead Actress</div>
+                        </div>
+                        <div class="match-percentage">92% Match</div>
+                    </div>
+                    <div class="talent-mini-card">
+                        <div class="talent-mini-avatar"></div>
+                        <div class="talent-mini-info">
+                            <div class="talent-mini-name">Kavya Singh</div>
+                            <div class="talent-mini-role">Supporting Actress</div>
+                        </div>
+                        <div class="match-percentage">88% Match</div>
+                    </div>
+                    <div class="talent-mini-card">
+                        <div class="talent-mini-avatar"></div>
+                        <div class="talent-mini-info">
+                            <div class="talent-mini-name">Neha Kapoor</div>
+                            <div class="talent-mini-role">Theatre Artist</div>
+                        </div>
+                        <div class="match-percentage">85% Match</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Annotations -->
+    <div class="annotation" style="top: 120px; left: 200px;">Verified Profile Badge</div>
+    <div class="annotation" style="top: 250px; right: 200px;">Quick Action CTAs</div>
+    <div class="annotation" style="top: 450px; left: 100px;">Progressive Disclosure Tabs</div>
+    <div class="annotation" style="bottom: 300px; right: 100px;">Real-time Availability</div>
+</body>
+</html>

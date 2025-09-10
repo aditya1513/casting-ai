@@ -1,0 +1,31 @@
+# Development Dockerfile for CastMatch Frontend
+# Optimized for development with hot reloading and fast compilation
+
+FROM node:18-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies for better performance
+RUN apk add --no-cache libc6-compat
+
+# Copy package files first for better Docker layer caching
+COPY package*.json ./
+
+# Install dependencies with npm cache for faster rebuilds
+RUN npm ci
+
+# Copy the rest of the application
+COPY . .
+
+# Set development environment
+ENV NODE_ENV=development
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV PORT=3000
+ENV HOSTNAME=0.0.0.0
+
+# Expose the development port
+EXPOSE 3000
+
+# Use npm run dev for hot reloading (with longer timeout to handle compilation)
+CMD ["npm", "run", "dev"]

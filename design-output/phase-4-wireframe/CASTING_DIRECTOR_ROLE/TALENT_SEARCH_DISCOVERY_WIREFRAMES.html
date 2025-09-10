@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CastMatch - Talent Search & Discovery Wireframes</title>
+    <link rel="stylesheet" href="../SYSTEM_DOCUMENTATION/WIREFRAME_STANDARDS_GRAYSCALE.css">
+    <style>
+        /* Low-Fidelity Wireframe Styles - Grayscale Only */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: var(--font-family);
+            background: var(--white);
+            color: var(--dark);
+            line-height: var(--line-height);
+        }
+        
+        /* Simple Layout Structure */
+        .wireframe-container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            display: flex;
+            gap: var(--spacing-lg);
+            padding: var(--spacing-lg);
+        }
+        
+        /* Simple Sidebar Filters */
+        .filter-sidebar {
+            width: var(--sidebar-width);
+            background: var(--white);
+            border: var(--border-width) solid var(--medium-light);
+            border-radius: var(--radius-sm);
+            padding: var(--spacing-lg);
+            height: fit-content;
+            position: sticky;
+            top: var(--spacing-lg);
+        }
+        
+        .filter-section {
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-lg);
+            border-bottom: var(--border-width) solid var(--light-gray);
+        }
+        
+        .filter-section:last-child {
+            border-bottom: none;
+        }
+        
+        .filter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            cursor: pointer;
+        }
+        
+        .filter-title {
+            font-weight: 600;
+            font-size: var(--font-size-sm);
+            text-transform: uppercase;
+            color: var(--medium-dark);
+            letter-spacing: 0.5px;
+        }
+        
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+        }
+        
+        /* Simple Search Bar */
+        .search-header {
+            background: var(--white);
+            border: var(--border-width) solid var(--medium-light);
+            border-radius: var(--radius-sm);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .search-bar-advanced {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .search-input-group {
+            flex: 1;
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: var(--spacing-md) var(--spacing-md) var(--spacing-md) 44px;
+            border: var(--border-width) solid var(--medium-light);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-base);
+            height: 48px;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: var(--spacing-md);
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            background: var(--medium);
+            border-radius: 2px;
+        }
+        
+        .ai-toggle {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-md) var(--spacing-lg);
+            background: var(--medium-dark);
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            height: 48px;
+        }
+        
+        /* Simple Quick Filters */
+        .quick-filters {
+            display: flex;
+            gap: var(--spacing-sm);
+            flex-wrap: wrap;
+        }
+        
+        .filter-chip {
+            padding: var(--spacing-xs) var(--spacing-md);
+            background: var(--light-gray);
+            border: var(--border-width) solid var(--medium-light);
+            border-radius: 12px;
+            font-size: var(--font-size-sm);
+            cursor: pointer;
+        }
+        
+        .filter-chip.active {
+            background: var(--medium-dark);
+            color: var(--white);
+            border-color: var(--medium-dark);
+        }
+        
+        .filter-chip.ai-suggested {
+            background: var(--white);
+            border-color: var(--medium-dark);
+            position: relative;
+        }
+        
+        /* Simple Results Header */
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .results-count {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            color: var(--black);
+        }
+        
+        .view-controls {
+            display: flex;
+            gap: var(--spacing-md);
+            align-items: center;
+        }
+        
+        .sort-dropdown {
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: var(--border-width) solid var(--medium-light);
+            border-radius: var(--radius-sm);
+            background: var(--white);
+            font-size: var(--font-size-base);
+        }
+        
+        .view-toggle {
+            display: flex;
+            gap: 4px;
+            border: var(--border-width) solid var(--medium-light);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+        }
+        
+        .view-btn {
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--white);
+            border: none;
+            cursor: pointer;
+        }
+        
+        .view-btn.active {
+            background: var(--medium-dark);
+            color: var(--white);
+        }
+        
+        /* Simple Talent Grid */
+        .talent-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .talent-card {
+            background: var(--white);
+            border: var(--border-width) solid var(--medium-light);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .talent-image {
+            width: 100%;
+            height: 180px;
+            background: var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--medium);
+            font-size: var(--font-size-sm);
+        }
+        
+        .talent-info {
+            padding: var(--spacing-md);
+        }
+        
+        .talent-name {
+            font-size: var(--font-size-md);
+            font-weight: 600;
+            color: var(--black);
+            margin-bottom: 4px;
+        }
+        
+        .talent-role {
+            color: var(--medium-dark);
+            font-size: var(--font-size-sm);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .talent-meta {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .meta-item {
+            color: var(--medium);
+            font-size: var(--font-size-sm);
+        }
+        
+        .talent-tags {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .tag {
+            padding: 2px 8px;
+            background: var(--light-gray);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-sm);
+            color: var(--medium-dark);
+        }
+        
+        .talent-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+            padding-top: var(--spacing-sm);
+            border-top: var(--border-width) solid var(--light-gray);
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: var(--spacing-sm);
+            background: var(--white);
+            border: var(--border-width) solid var(--medium-light);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-sm);
+            cursor: pointer;
+        }
+        
+        .action-btn.primary {
+            background: var(--medium-dark);
+            color: var(--white);
+            border-color: var(--medium-dark);
+        }
+        
+        /* Simple Match Score */
+        .match-score {
+            position: absolute;
+            top: var(--spacing-sm);
+            right: var(--spacing-sm);
+            background: var(--white);
+            padding: 4px 8px;
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            border: var(--border-width) solid var(--medium-dark);
+        }
+        
+        /* Simple Filter Components */
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .checkbox {
+            width: 16px;
+            height: 16px;
+            border: var(--border-width) solid var(--medium);
+            border-radius: 2px;
+            background: var(--white);
+        }
+        
+        .checkbox.checked {
+            background: var(--medium-dark);
+        }
+        
+        .range-slider {
+            margin: var(--spacing-md) 0;
+        }
+        
+        .slider-track {
+            height: 4px;
+            background: var(--light-gray);
+            border-radius: 2px;
+            margin: var(--spacing-md) 0;
+        }
+        
+        .slider-fill {
+            height: 100%;
+            width: 60%;
+            background: var(--medium-dark);
+            border-radius: 2px;
+        }
+        
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: var(--font-size-sm);
+            color: var(--medium);
+        }
+        
+        /* Simple Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-2xl);
+        }
+        
+        .page-btn {
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--white);
+            border: var(--border-width) solid var(--medium-light);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            min-width: 40px;
+            text-align: center;
+        }
+        
+        .page-btn.active {
+            background: var(--medium-dark);
+            color: var(--white);
+            border-color: var(--medium-dark);
+        }
+        
+        .page-btn:disabled {
+            background: var(--light-gray);
+            color: var(--medium-light);
+            cursor: not-allowed;
+        }
+        
+        /* Simple AI Suggestions Panel */
+        .ai-suggestions {
+            background: var(--light-gray);
+            border: var(--border-width) solid var(--medium-light);
+            border-radius: var(--radius-sm);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .ai-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+            font-weight: 600;
+            color: var(--black);
+        }
+        
+        .ai-icon {
+            width: 20px;
+            height: 20px;
+            background: var(--medium-dark);
+            border-radius: 2px;
+        }
+        
+        .suggestion-pills {
+            display: flex;
+            gap: var(--spacing-sm);
+            flex-wrap: wrap;
+        }
+        
+        .suggestion-pill {
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--white);
+            border: var(--border-width) solid var(--medium);
+            border-radius: 12px;
+            font-size: var(--font-size-sm);
+            cursor: pointer;
+        }
+        
+        /* Simple List View Alternative */
+        .talent-list {
+            background: var(--white);
+            border: var(--border-width) solid var(--medium-light);
+            border-radius: var(--radius-sm);
+        }
+        
+        .list-header {
+            display: grid;
+            grid-template-columns: 60px 2fr 1fr 1fr 1fr 120px;
+            padding: var(--spacing-md);
+            background: var(--light-gray);
+            border-bottom: var(--border-width) solid var(--medium-light);
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            color: var(--medium-dark);
+        }
+        
+        .list-item {
+            display: grid;
+            grid-template-columns: 60px 2fr 1fr 1fr 1fr 120px;
+            padding: var(--spacing-md);
+            border-bottom: var(--border-width) solid var(--light-gray);
+            align-items: center;
+        }
+        
+        .list-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--medium-light);
+            border-radius: 50%;
+        }
+        
+        /* Simple Annotations */
+        .annotation {
+            position: absolute;
+            background: var(--light-gray);
+            padding: var(--spacing-sm) var(--spacing-md);
+            font-size: var(--font-size-sm);
+            border-radius: var(--radius-sm);
+            z-index: 100;
+            border: var(--border-width) solid var(--medium);
+        }
+        
+        /* Save Search */
+        .save-search-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-md);
+            background: var(--light-gray);
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .wireframe-container {
+                flex-direction: column;
+            }
+            
+            .filter-sidebar {
+                width: 100%;
+                position: static;
+            }
+            
+            .talent-grid {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .talent-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .list-header,
+            .list-item {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-sm);
+            }
+        }
+        
+        /* Headings */
+        h1, h2, h3 {
+            color: var(--black);
+            line-height: var(--line-height-heading);
+        }
+        
+        h1 { font-size: var(--font-size-2xl); }
+        h2 { font-size: var(--font-size-xl); }
+        h3 { font-size: var(--font-size-lg); }
+        
+        p {
+            color: var(--medium-dark);
+            line-height: var(--line-height);
+        }
+        
+        small {
+            color: var(--medium);
+        }
+    </style>
+</head>
+<body>
+    <div class="wireframe-container">
+        <!-- Filter Sidebar -->
+        <aside class="filter-sidebar">
+            <h3 style="margin-bottom: var(--spacing-lg);">Filters</h3>
+            
+            <!-- Role Type Filter -->
+            <div class="filter-section">
+                <div class="filter-header">
+                    <span class="filter-title">Role Type</span>
+                    <span style="color: var(--medium);">▼</span>
+                </div>
+                <div class="checkbox-group">
+                    <label class="checkbox-item">
+                        <span class="checkbox checked"></span>
+                        <span>Lead Actor</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <span class="checkbox"></span>
+                        <span>Supporting Actor</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <span class="checkbox"></span>
+                        <span>Character Artist</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <span class="checkbox"></span>
+                        <span>Junior Artist</span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Age Range Filter -->
+            <div class="filter-section">
+                <div class="filter-header">
+                    <span class="filter-title">Age Range</span>
+                    <span style="color: var(--medium);">▼</span>
+                </div>
+                <div class="range-slider">
+                    <div class="slider-labels">
+                        <span>18</span>
+                        <span>65</span>
+                    </div>
+                    <div class="slider-track">
+                        <div class="slider-fill"></div>
+                    </div>
+                    <div style="text-align: center; margin-top: 8px; color: var(--medium-dark);">
+                        25 - 35 years
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Location Filter -->
+            <div class="filter-section">
+                <div class="filter-header">
+                    <span class="filter-title">Location</span>
+                    <span style="color: var(--medium);">▼</span>
+                </div>
+                <div class="checkbox-group">
+                    <label class="checkbox-item">
+                        <span class="checkbox checked"></span>
+                        <span>Mumbai</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <span class="checkbox"></span>
+                        <span>Delhi</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <span class="checkbox"></span>
+                        <span>Bangalore</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <span class="checkbox"></span>
+                        <span>Chennai</span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Language Filter -->
+            <div class="filter-section">
+                <div class="filter-header">
+                    <span class="filter-title">Languages</span>
+                    <span style="color: var(--medium);">▼</span>
+                </div>
+                <div class="checkbox-group">
+                    <label class="checkbox-item">
+                        <span class="checkbox checked"></span>
+                        <span>Hindi</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <span class="checkbox checked"></span>
+                        <span>English</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <span class="checkbox"></span>
+                        <span>Marathi</span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Experience Filter -->
+            <div class="filter-section">
+                <div class="filter-header">
+                    <span class="filter-title">Experience</span>
+                    <span style="color: var(--medium);">▼</span>
+                </div>
+                <div class="checkbox-group">
+                    <label class="checkbox-item">
+                        <span class="checkbox"></span>
+                        <span>Fresher (0-1 year)</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <span class="checkbox checked"></span>
+                        <span>Experienced (2-5 years)</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <span class="checkbox"></span>
+                        <span>Veteran (5+ years)</span>
+                    </label>
+                </div>
+            </div>
+            
+            <button style="width: 100%; padding: var(--spacing-md); background: var(--medium-dark); color: var(--white); border: none; border-radius: var(--radius-sm); margin-top: var(--spacing-md);">
+                Apply Filters
+            </button>
+            
+            <button style="width: 100%; padding: var(--spacing-md); background: var(--white); color: var(--medium-dark); border: var(--border-width) solid var(--medium-light); border-radius: var(--radius-sm); margin-top: var(--spacing-sm);">
+                Clear All
+            </button>
+        </aside>
+        
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <h1 style="margin-bottom: var(--spacing-lg);">Talent Search & Discovery</h1>
+            
+            <!-- Search Header -->
+            <div class="search-header">
+                <div class="search-bar-advanced">
+                    <div class="search-input-group">
+                        <span class="search-icon"></span>
+                        <input type="text" class="search-input" placeholder="Search by name, skills, or characteristics...">
+                    </div>
+                    <button class="ai-toggle">
+                        <span>AI Search</span>
+                    </button>
+                </div>
+                
+                <!-- Quick Filters -->
+                <div class="quick-filters">
+                    <span class="filter-chip active">Lead Role</span>
+                    <span class="filter-chip">Mumbai</span>
+                    <span class="filter-chip">25-35 years</span>
+                    <span class="filter-chip ai-suggested">AI: High Match</span>
+                    <span class="filter-chip">Available Now</span>
+                    <span class="filter-chip">+ Add Filter</span>
+                </div>
+            </div>
+            
+            <!-- AI Suggestions Panel -->
+            <div class="ai-suggestions">
+                <div class="ai-header">
+                    <span class="ai-icon"></span>
+                    <span>AI Recommendations for "Mumbai Dreams - Lead Actor"</span>
+                </div>
+                <div class="suggestion-pills">
+                    <span class="suggestion-pill">Strong emotional range</span>
+                    <span class="suggestion-pill">Dance skills</span>
+                    <span class="suggestion-pill">Previous drama experience</span>
+                    <span class="suggestion-pill">Age 28-32</span>
+                </div>
+            </div>
+            
+            <!-- Save Search Bar -->
+            <div class="save-search-bar">
+                <span style="color: var(--medium-dark);">Current search: Lead actors in Mumbai, 25-35 years</span>
+                <button style="padding: var(--spacing-sm) var(--spacing-md); background: var(--white); border: var(--border-width) solid var(--medium); border-radius: var(--radius-sm);">
+                    Save Search
+                </button>
+            </div>
+            
+            <!-- Results Header -->
+            <div class="results-header">
+                <div class="results-count">
+                    347 Talents Found
+                    <span style="font-size: var(--font-size-base); color: var(--medium); font-weight: normal; margin-left: 8px;">
+                        (89 AI matched)
+                    </span>
+                </div>
+                <div class="view-controls">
+                    <select class="sort-dropdown">
+                        <option>Best Match</option>
+                        <option>Newest First</option>
+                        <option>Experience</option>
+                        <option>Availability</option>
+                    </select>
+                    <div class="view-toggle">
+                        <button class="view-btn active">Grid</button>
+                        <button class="view-btn">List</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Talent Grid -->
+            <div class="talent-grid">
+                <!-- Talent Card 1 -->
+                <div class="talent-card">
+                    <div style="position: relative;">
+                        <div class="talent-image">Profile Photo</div>
+                        <span class="match-score">95% Match</span>
+                    </div>
+                    <div class="talent-info">
+                        <div class="talent-name">Arjun Kapoor</div>
+                        <div class="talent-role">Lead Actor</div>
+                        <div class="talent-meta">
+                            <span class="meta-item">28 yrs</span>
+                            <span class="meta-item">Mumbai</span>
+                            <span class="meta-item">5+ yrs exp</span>
+                        </div>
+                        <div class="talent-tags">
+                            <span class="tag">Drama</span>
+                            <span class="tag">Action</span>
+                            <span class="tag">Dance</span>
+                        </div>
+                        <div class="talent-actions">
+                            <button class="action-btn">View Profile</button>
+                            <button class="action-btn primary">Shortlist</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Talent Card 2 -->
+                <div class="talent-card">
+                    <div style="position: relative;">
+                        <div class="talent-image">Profile Photo</div>
+                        <span class="match-score">88% Match</span>
+                    </div>
+                    <div class="talent-info">
+                        <div class="talent-name">Priya Sharma</div>
+                        <div class="talent-role">Lead Actress</div>
+                        <div class="talent-meta">
+                            <span class="meta-item">26 yrs</span>
+                            <span class="meta-item">Mumbai</span>
+                            <span class="meta-item">3 yrs exp</span>
+                        </div>
+                        <div class="talent-tags">
+                            <span class="tag">Drama</span>
+                            <span class="tag">Romance</span>
+                            <span class="tag">Classical Dance</span>
+                        </div>
+                        <div class="talent-actions">
+                            <button class="action-btn">View Profile</button>
+                            <button class="action-btn primary">Shortlist</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Talent Card 3 -->
+                <div class="talent-card">
+                    <div style="position: relative;">
+                        <div class="talent-image">Profile Photo</div>
+                        <span class="match-score">82% Match</span>
+                    </div>
+                    <div class="talent-info">
+                        <div class="talent-name">Rahul Verma</div>
+                        <div class="talent-role">Supporting Actor</div>
+                        <div class="talent-meta">
+                            <span class="meta-item">32 yrs</span>
+                            <span class="meta-item">Delhi</span>
+                            <span class="meta-item">7 yrs exp</span>
+                        </div>
+                        <div class="talent-tags">
+                            <span class="tag">Comedy</span>
+                            <span class="tag">Drama</span>
+                            <span class="tag">Theatre</span>
+                        </div>
+                        <div class="talent-actions">
+                            <button class="action-btn">View Profile</button>
+                            <button class="action-btn primary">Shortlist</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Additional talent cards would continue... -->
+            </div>
+            
+            <!-- Pagination -->
+            <div class="pagination">
+                <button class="page-btn" disabled>Previous</button>
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">3</button>
+                <button class="page-btn">4</button>
+                <button class="page-btn">5</button>
+                <span style="color: var(--medium);">...</span>
+                <button class="page-btn">20</button>
+                <button class="page-btn">Next</button>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Annotations -->
+    <div class="annotation" style="top: 150px; left: 50px;">
+        AI-powered search with natural language
+    </div>
+    
+    <div class="annotation" style="top: 300px; left: 300px;">
+        Smart filter suggestions based on project
+    </div>
+    
+    <div class="annotation" style="top: 500px; right: 50px;">
+        Match percentage using AI algorithm
+    </div>
+</body>
+</html>

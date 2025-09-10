@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎭 Talent Role Wireframes - CastMatch</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 36px;
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 18px;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 30px;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .navigation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        
+        .wireframe-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 16px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .wireframe-card:hover {
+            transform: translateY(-8px);
+            border-color: #667eea;
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.15);
+        }
+        
+        .wireframe-number {
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: #667eea;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .wireframe-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+            margin-top: 10px;
+        }
+        
+        .wireframe-description {
+            color: #6b7280;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .wireframe-features {
+            margin-bottom: 20px;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #4b5563;
+        }
+        
+        .feature-item:before {
+            content: "✓";
+            background: #10b981;
+            color: white;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 8px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+        
+        .wireframe-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .wireframe-button:hover {
+            background: #5a67d8;
+        }
+        
+        .user-journey {
+            background: #f0f9ff;
+            border: 2px solid #bfdbfe;
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .journey-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1e40af;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        
+        .journey-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .journey-step {
+            background: white;
+            border: 1px solid #dbeafe;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .journey-step:not(:last-child):after {
+            content: "→";
+            position: absolute;
+            right: -25px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            color: #3b82f6;
+            font-weight: bold;
+        }
+        
+        .step-number {
+            background: #3b82f6;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .step-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e40af;
+            margin-bottom: 8px;
+        }
+        
+        .step-description {
+            font-size: 14px;
+            color: #6b7280;
+            line-height: 1.4;
+        }
+        
+        .footer {
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+            padding: 30px 40px;
+            text-align: center;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+        
+        .footer-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+        
+        .footer-link:hover {
+            color: #5a67d8;
+        }
+        
+        .mumbai-note {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .mumbai-note h3 {
+            color: #92400e;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+        
+        .mumbai-note p {
+            color: #78350f;
+            margin: 0;
+        }
+        
+        @media (max-width: 768px) {
+            .stats {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .navigation-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .journey-steps {
+                grid-template-columns: 1fr;
+            }
+            
+            .journey-step:not(:last-child):after {
+                content: "↓";
+                right: 50%;
+                top: auto;
+                bottom: -25px;
+                transform: translateX(50%);
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎭 Talent Role Wireframes</h1>
+            <p>Complete wireframe collection for actors, musicians, dancers, and performers using CastMatch to find opportunities and manage their careers.</p>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-number">8</div>
+                    <div class="stat-label">Wireframes</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Complete</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">Mumbai</div>
+                    <div class="stat-label">Optimized</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="mumbai-note">
+                <h3>🏙️ Mumbai Entertainment Industry Focus</h3>
+                <p>All wireframes include Hindi/English language support, UPI payments, Aadhaar verification, and Bollywood industry-specific features.</p>
+            </div>
+            
+            <div class="user-journey">
+                <h2 class="journey-title">🎯 Complete Talent User Journey</h2>
+                <div class="journey-steps">
+                    <div class="journey-step">
+                        <div class="step-number">1</div>
+                        <div class="step-title">Discovery</div>
+                        <div class="step-description">Land on talent page, learn about opportunities</div>
+                    </div>
+                    <div class="journey-step">
+                        <div class="step-number">2</div>
+                        <div class="step-title">Onboarding</div>
+                        <div class="step-description">Register, create profile, upload portfolio</div>
+                    </div>
+                    <div class="journey-step">
+                        <div class="step-number">3</div>
+                        <div class="step-title">Browse</div>
+                        <div class="step-description">Discover casting calls and opportunities</div>
+                    </div>
+                    <div class="journey-step">
+                        <div class="step-number">4</div>
+                        <div class="step-title">Apply</div>
+                        <div class="step-description">Submit applications with portfolio</div>
+                    </div>
+                    <div class="journey-step">
+                        <div class="step-number">5</div>
+                        <div class="step-title">Manage</div>
+                        <div class="step-description">Track applications and schedule auditions</div>
+                    </div>
+                    <div class="journey-step">
+                        <div class="step-number">6</div>
+                        <div class="step-title">Success</div>
+                        <div class="step-description">Book roles and build career</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="navigation-grid">
+                <div class="wireframe-card" onclick="window.open('TALENT_LANDING_WIREFRAMES.html', '_blank')">
+                    <div class="wireframe-number">1</div>
+                    <div class="wireframe-title">Talent Landing Page</div>
+                    <div class="wireframe-description">Marketing landing page specifically designed for talent with success stories, portfolio examples, and getting started guidance.</div>
+                    <div class="wireframe-features">
+                        <div class="feature-item">Success stories and testimonials</div>
+                        <div class="feature-item">Portfolio showcase examples</div>
+                        <div class="feature-item">Talent-focused pricing plans</div>
+                        <div class="feature-item">Featured casting opportunities</div>
+                    </div>
+                    <a href="TALENT_LANDING_WIREFRAMES.html" class="wireframe-button">View Wireframe</a>
+                </div>
+                
+                <div class="wireframe-card" onclick="window.open('ONBOARDING_TALENT_WIREFRAMES.html', '_blank')">
+                    <div class="wireframe-number">2</div>
+                    <div class="wireframe-title">Talent Onboarding</div>
+                    <div class="wireframe-description">Complete 5-step registration flow including profile setup, skills selection, portfolio upload, and verification.</div>
+                    <div class="wireframe-features">
+                        <div class="feature-item">5-step guided registration</div>
+                        <div class="feature-item">Skills and specialization selection</div>
+                        <div class="feature-item">Portfolio upload tools</div>
+                        <div class="feature-item">Profile verification process</div>
+                    </div>
+                    <a href="ONBOARDING_TALENT_WIREFRAMES.html" class="wireframe-button">View Wireframe</a>
+                </div>
+                
+                <div class="wireframe-card" onclick="window.open('TALENT_DASHBOARD_WIREFRAMES.html', '_blank')">
+                    <div class="wireframe-number">3</div>
+                    <div class="wireframe-title">Talent Dashboard</div>
+                    <div class="wireframe-description">Personal command center with application status, recommendations, profile analytics, and communication hub.</div>
+                    <div class="wireframe-features">
+                        <div class="feature-item">Application status overview</div>
+                        <div class="feature-item">AI-powered opportunity recommendations</div>
+                        <div class="feature-item">Profile views and engagement stats</div>
+                        <div class="feature-item">Messages and notifications center</div>
+                    </div>
+                    <a href="TALENT_DASHBOARD_WIREFRAMES.html" class="wireframe-button">View Wireframe</a>
+                </div>
+                
+                <div class="wireframe-card" onclick="window.open('DISCOVER_BROWSE_WIREFRAMES.html', '_blank')">
+                    <div class="wireframe-number">4</div>
+                    <div class="wireframe-title">Discover & Browse</div>
+                    <div class="wireframe-description">Advanced browsing interface for finding casting opportunities with filters, categories, and personalized recommendations.</div>
+                    <div class="wireframe-features">
+                        <div class="feature-item">Category-based browsing (Film, TV, Theatre)</div>
+                        <div class="feature-item">Location and preference filtering</div>
+                        <div class="feature-item">Trending and featured opportunities</div>
+                        <div class="feature-item">Quick apply functionality</div>
+                    </div>
+                    <a href="DISCOVER_BROWSE_WIREFRAMES.html" class="wireframe-button">View Wireframe</a>
+                </div>
+                
+                <div class="wireframe-card" onclick="window.open('TALENT_PORTFOLIO_WIREFRAMES.html', '_blank')">
+                    <div class="wireframe-number">5</div>
+                    <div class="wireframe-title">Portfolio Management</div>
+                    <div class="wireframe-description">Comprehensive media gallery for managing headshots, video reels, audio samples, and portfolio analytics.</div>
+                    <div class="wireframe-features">
+                        <div class="feature-item">Headshot and photo gallery</div>
+                        <div class="feature-item">Video reel upload and organization</div>
+                        <div class="feature-item">Audio sample recording tools</div>
+                        <div class="feature-item">Portfolio analytics and insights</div>
+                    </div>
+                    <a href="TALENT_PORTFOLIO_WIREFRAMES.html" class="wireframe-button">View Wireframe</a>
+                </div>
+                
+                <div class="wireframe-card" onclick="window.open('TALENT_APPLICATIONS_WIREFRAMES.html', '_blank')">
+                    <div class="wireframe-number">6</div>
+                    <div class="wireframe-title">Application Tracking</div>
+                    <div class="wireframe-description">Complete application lifecycle management with status tracking, feedback collection, and success analytics.</div>
+                    <div class="wireframe-features">
+                        <div class="feature-item">Real-time application status</div>
+                        <div class="feature-item">Feedback and notes from casting directors</div>
+                        <div class="feature-item">Application history and archive</div>
+                        <div class="feature-item">Success rate analytics</div>
+                    </div>
+                    <a href="TALENT_APPLICATIONS_WIREFRAMES.html" class="wireframe-button">View Wireframe</a>
+                </div>
+                
+                <div class="wireframe-card" onclick="window.open('TALENT_CALENDAR_WIREFRAMES.html', '_blank')">
+                    <div class="wireframe-number">7</div>
+                    <div class="wireframe-title">Calendar & Schedule</div>
+                    <div class="wireframe-description">Smart scheduling system for managing auditions, availability, and calendar integration with conflict detection.</div>
+                    <div class="wireframe-features">
+                        <div class="feature-item">Personal calendar with bookings</div>
+                        <div class="feature-item">Availability management</div>
+                        <div class="feature-item">Conflict detection and resolution</div>
+                        <div class="feature-item">External calendar integration</div>
+                    </div>
+                    <a href="TALENT_CALENDAR_WIREFRAMES.html" class="wireframe-button">View Wireframe</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <div class="footer-links">
+                <a href="../SYSTEM_DOCUMENTATION/COMPLETE_WIREFRAME_SYSTEM.html" class="footer-link">🏠 Master Navigation</a>
+                <a href="../CASTING_DIRECTOR_ROLE/index.html" class="footer-link">🎬 Casting Director Role</a>
+                <a href="../PRODUCER_ROLE/index.html" class="footer-link">🏢 Producer Role</a>
+                <a href="../ADMIN_ROLE/index.html" class="footer-link">👑 Admin Role</a>
+                <a href="../SHARED_EXPERIENCES/index.html" class="footer-link">🌐 Shared Experiences</a>
+                <a href="README.md" class="footer-link">📚 Documentation</a>
+            </div>
+            <p style="color: #6b7280; margin: 0;">Part of the CastMatch Role-Based Wireframe Organization System</p>
+        </div>
+    </div>
+</body>
+</html>

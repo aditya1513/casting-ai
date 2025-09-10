@@ -1,0 +1,514 @@
+# Prometheus Alerting Rules for CastMatch Production
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: castmatch-production-alerts
+  namespace: castmatch-production
+  labels:
+    app: castmatch
+    prometheus: production
+spec:
+  groups:
+  # Infrastructure Alerts
+  - name: infrastructure.rules
+    interval: 30s
+    rules:
+    - alert: NodeDown
+      expr: up{job="node-exporter"} == 0
+      for: 1m
+      labels:
+        severity: critical
+        service: infrastructure
+      annotations:
+        summary: "Node {{ $labels.instance }} is down"
+        description: "Node {{ $labels.instance }} has been down for more than 1 minute"
+        runbook_url: "https://github.com/castmatch/runbooks/blob/main/node-down.md"
+
+    - alert: HighCPUUsage
+      expr: 100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 85
+      for: 5m
+      labels:
+        severity: warning
+        service: infrastructure
+      annotations:
+        summary: "High CPU usage on {{ $labels.instance }}"
+        description: "CPU usage is above 85% for more than 5 minutes on {{ $labels.instance }}"
+
+    - alert: HighMemoryUsage
+      expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 90
+      for: 5m
+      labels:
+        severity: critical
+        service: infrastructure
+      annotations:
+        summary: "High memory usage on {{ $labels.instance }}"
+        description: "Memory usage is above 90% for more than 5 minutes on {{ $labels.instance }}"
+
+    - alert: DiskSpaceLow
+      expr: (1 - (node_filesystem_avail_bytes / node_filesystem_size_bytes)) * 100 > 85
+      for: 5m
+      labels:
+        severity: warning
+        service: infrastructure
+      annotations:
+        summary: "Disk space low on {{ $labels.instance }}"
+        description: "Disk usage is above 85% on {{ $labels.instance }}"
+
+  # Kubernetes Alerts
+  - name: kubernetes.rules
+    interval: 30s
+    rules:
+    - alert: PodCrashLooping
+      expr: increase(kube_pod_container_status_restarts_total[15m]) > 5
+      for: 1m
+      labels:
+        severity: critical
+        service: kubernetes
+      annotations:
+        summary: "Pod {{ $labels.namespace }}/{{ $labels.pod }} is crash looping"
+        description: "Pod {{ $labels.namespace }}/{{ $labels.pod }} has restarted more than 5 times in the last 15 minutes"
+
+    - alert: PodNotReady
+      expr: kube_pod_status_ready{condition="false"} == 1
+      for: 10m
+      labels:
+        severity: warning
+        service: kubernetes
+      annotations:
+        summary: "Pod {{ $labels.namespace }}/{{ $labels.pod }} is not ready"
+        description: "Pod {{ $labels.namespace }}/{{ $labels.pod }} has been not ready for more than 10 minutes"
+
+    - alert: DeploymentReplicasMismatch
+      expr: kube_deployment_spec_replicas != kube_deployment_status_available_replicas
+      for: 5m
+      labels:
+        severity: warning
+        service: kubernetes
+      annotations:
+        summary: "Deployment {{ $labels.namespace }}/{{ $labels.deployment }} has mismatched replicas"
+        description: "Deployment {{ $labels.namespace }}/{{ $labels.deployment }} has {{ $value }} available replicas, but {{ $labels.spec_replicas }} are desired"
+
+    - alert: NodeNotReady
+      expr: kube_node_status_condition{condition="Ready",status="true"} == 0
+      for: 5m
+      labels:
+        severity: critical
+        service: kubernetes
+      annotations:
+        summary: "Node {{ $labels.node }} is not ready"
+        description: "Node {{ $labels.node }} has been not ready for more than 5 minutes"
+
+  # Application Alerts
+  - name: application.rules
+    interval: 30s
+    rules:
+    - alert: HighErrorRate
+      expr: |
+        (
+          sum(rate(http_requests_total{status=~"5.."}[5m])) by (service, method, endpoint)
+          /
+          sum(rate(http_requests_total[5m])) by (service, method, endpoint)
+        ) * 100 > 5
+      for: 2m
+      labels:
+        severity: critical
+        service: application
+      annotations:
+        summary: "High error rate for {{ $labels.service }}"
+        description: "Error rate is above 5% for {{ $labels.service }} {{ $labels.method }} {{ $labels.endpoint }}"
+
+    - alert: HighResponseTime
+      expr: histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le, service, method, endpoint)) > 2
+      for: 5m
+      labels:
+        severity: warning
+        service: application
+      annotations:
+        summary: "High response time for {{ $labels.service }}"
+        description: "95th percentile response time is above 2 seconds for {{ $labels.service }} {{ $labels.method }} {{ $labels.endpoint }}"
+
+    - alert: ApplicationDown
+      expr: up{job=~"castmatch-.*"} == 0
+      for: 1m
+      labels:
+        severity: critical
+        service: application
+      annotations:
+        summary: "Application {{ $labels.job }} is down"
+        description: "Application {{ $labels.job }} has been down for more than 1 minute"
+
+    - alert: DatabaseConnectionsHigh
+      expr: pg_stat_activity_count > 80
+      for: 5m
+      labels:
+        severity: warning
+        service: database
+      annotations:
+        summary: "High database connections"
+        description: "Database has {{ $value }} active connections, which is above the threshold"
+
+    - alert: QueueDepthHigh
+      expr: redis_list_length{list="queue:jobs"} > 1000
+      for: 5m
+      labels:
+        severity: warning
+        service: queue
+      annotations:
+        summary: "High queue depth"
+        description: "Job queue has {{ $value }} pending jobs"
+
+  # AI Service Specific Alerts
+  - name: ai-service.rules
+    interval: 30s
+    rules:
+    - alert: AIServiceResponseTime
+      expr: histogram_quantile(0.95, sum(rate(ai_request_duration_seconds_bucket[5m])) by (le, model)) > 10
+      for: 5m
+      labels:
+        severity: warning
+        service: ai-service
+      annotations:
+        summary: "AI service high response time"
+        description: "AI service response time for {{ $labels.model }} is above 10 seconds"
+
+    - alert: AIModelLoadFailed
+      expr: ai_model_load_failures_total > 3
+      for: 1m
+      labels:
+        severity: critical
+        service: ai-service
+      annotations:
+        summary: "AI model load failures"
+        description: "AI model has failed to load {{ $value }} times in the last minute"
+
+    - alert: GPUUtilizationHigh
+      expr: nvidia_gpu_utilization > 95
+      for: 10m
+      labels:
+        severity: warning
+        service: ai-service
+      annotations:
+        summary: "High GPU utilization"
+        description: "GPU utilization is above 95% for more than 10 minutes"
+
+  # Business Metrics Alerts
+  - name: business.rules
+    interval: 60s
+    rules:
+    - alert: LowUserSignups
+      expr: increase(user_signups_total[1h]) < 10
+      for: 2h
+      labels:
+        severity: warning
+        service: business
+      annotations:
+        summary: "Low user signups"
+        description: "Only {{ $value }} user signups in the last hour, which is below normal"
+
+    - alert: HighChurnRate
+      expr: (user_cancellations_total / user_signups_total) * 100 > 20
+      for: 1h
+      labels:
+        severity: warning
+        service: business
+      annotations:
+        summary: "High user churn rate"
+        description: "User churn rate is {{ $value }}%, which is above the 20% threshold"
+
+    - alert: PaymentFailures
+      expr: increase(payment_failures_total[15m]) > 5
+      for: 1m
+      labels:
+        severity: critical
+        service: business
+      annotations:
+        summary: "High payment failure rate"
+        description: "{{ $value }} payment failures in the last 15 minutes"
+
+  # Security Alerts
+  - name: security.rules
+    interval: 30s
+    rules:
+    - alert: TooManyFailedLogins
+      expr: increase(failed_login_attempts_total[5m]) > 50
+      for: 1m
+      labels:
+        severity: warning
+        service: security
+      annotations:
+        summary: "Too many failed login attempts"
+        description: "{{ $value }} failed login attempts in the last 5 minutes"
+
+    - alert: SuspiciousActivity
+      expr: rate(suspicious_activity_total[5m]) > 0.1
+      for: 2m
+      labels:
+        severity: critical
+        service: security
+      annotations:
+        summary: "Suspicious activity detected"
+        description: "Suspicious activity rate is {{ $value }} per second"
+
+    - alert: CertificateExpiringSoon
+      expr: (cert_expiry_timestamp - time()) / 86400 < 30
+      for: 1h
+      labels:
+        severity: warning
+        service: security
+      annotations:
+        summary: "Certificate expiring soon"
+        description: "Certificate {{ $labels.cert_name }} expires in {{ $value }} days"
+
+---
+# ServiceMonitor for CastMatch Backend
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: castmatch-backend-monitor
+  namespace: castmatch-production
+  labels:
+    app: castmatch
+    service: backend
+spec:
+  selector:
+    matchLabels:
+      app: castmatch
+      service: backend
+  endpoints:
+  - port: metrics
+    interval: 30s
+    path: /metrics
+    honorLabels: true
+
+---
+# ServiceMonitor for CastMatch AI Service
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: castmatch-ai-service-monitor
+  namespace: castmatch-production
+  labels:
+    app: castmatch
+    service: ai-service
+spec:
+  selector:
+    matchLabels:
+      app: castmatch
+      service: ai-service
+  endpoints:
+  - port: metrics
+    interval: 30s
+    path: /metrics
+    honorLabels: true
+
+---
+# ServiceMonitor for PostgreSQL
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: postgresql-monitor
+  namespace: castmatch-production
+  labels:
+    app: postgresql
+spec:
+  selector:
+    matchLabels:
+      app: postgresql
+  endpoints:
+  - port: metrics
+    interval: 30s
+    path: /metrics
+
+---
+# ServiceMonitor for Redis
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: redis-monitor
+  namespace: castmatch-production
+  labels:
+    app: redis
+spec:
+  selector:
+    matchLabels:
+      app: redis
+  endpoints:
+  - port: metrics
+    interval: 30s
+    path: /metrics
+
+---
+# Alert Manager Configuration
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: castmatch-alertmanager-config
+  namespace: castmatch-production
+spec:
+  route:
+    groupBy: ['alertname', 'cluster', 'service']
+    groupWait: 10s
+    groupInterval: 10s
+    repeatInterval: 1h
+    receiver: 'default'
+    routes:
+    - match:
+        severity: critical
+      receiver: 'critical-alerts'
+      repeatInterval: 15m
+    - match:
+        severity: warning
+      receiver: 'warning-alerts'
+      repeatInterval: 1h
+    - match:
+        service: security
+      receiver: 'security-alerts'
+      repeatInterval: 5m
+
+  receivers:
+  - name: 'default'
+    slackConfigs:
+    - apiURL:
+        key: url
+        name: slack-webhook
+      channel: '#alerts'
+      title: 'CastMatch Alert'
+      text: '{{ range .Alerts }}{{ .Annotations.summary }}{{ end }}'
+
+  - name: 'critical-alerts'
+    slackConfigs:
+    - apiURL:
+        key: url
+        name: slack-webhook
+      channel: '#critical-alerts'
+      title: '🚨 CRITICAL: CastMatch Alert'
+      text: '{{ range .Alerts }}{{ .Annotations.summary }}\n{{ .Annotations.description }}{{ end }}'
+    pagerdutyConfigs:
+    - routingKey:
+        key: routing-key
+        name: pagerduty-key
+      description: '{{ range .Alerts }}{{ .Annotations.summary }}{{ end }}'
+
+  - name: 'warning-alerts'
+    slackConfigs:
+    - apiURL:
+        key: url
+        name: slack-webhook
+      channel: '#alerts'
+      title: '⚠️ WARNING: CastMatch Alert'
+      text: '{{ range .Alerts }}{{ .Annotations.summary }}{{ end }}'
+
+  - name: 'security-alerts'
+    slackConfigs:
+    - apiURL:
+        key: url
+        name: slack-webhook
+      channel: '#security-alerts'
+      title: '🔒 SECURITY: CastMatch Alert'
+      text: '{{ range .Alerts }}{{ .Annotations.summary }}\n{{ .Annotations.description }}{{ end }}'
+    emailConfigs:
+    - to: 'security@castmatch.com'
+      from: 'alerts@castmatch.com'
+      smarthost: 'smtp.sendgrid.net:587'
+      authUsername: 'apikey'
+      authPassword:
+        key: api-key
+        name: sendgrid-secret
+      subject: 'SECURITY ALERT: {{ range .Alerts }}{{ .Annotations.summary }}{{ end }}'
+      body: |
+        {{ range .Alerts }}
+        Alert: {{ .Annotations.summary }}
+        Description: {{ .Annotations.description }}
+        Severity: {{ .Labels.severity }}
+        Time: {{ .StartsAt }}
+        {{ end }}
+
+---
+# Grafana Dashboard ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: castmatch-dashboard
+  namespace: castmatch-production
+  labels:
+    grafana_dashboard: "1"
+data:
+  castmatch-overview.json: |
+    {
+      "dashboard": {
+        "id": null,
+        "title": "CastMatch Production Overview",
+        "tags": ["castmatch", "production"],
+        "timezone": "UTC",
+        "refresh": "30s",
+        "time": {
+          "from": "now-1h",
+          "to": "now"
+        },
+        "panels": [
+          {
+            "id": 1,
+            "title": "Request Rate",
+            "type": "stat",
+            "targets": [
+              {
+                "expr": "sum(rate(http_requests_total[5m]))",
+                "legendFormat": "Requests/sec"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": {
+                "unit": "reqps"
+              }
+            },
+            "gridPos": {"h": 8, "w": 6, "x": 0, "y": 0}
+          },
+          {
+            "id": 2,
+            "title": "Error Rate",
+            "type": "stat",
+            "targets": [
+              {
+                "expr": "sum(rate(http_requests_total{status=~\"5..\"}[5m])) / sum(rate(http_requests_total[5m])) * 100",
+                "legendFormat": "Error Rate %"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": {
+                "unit": "percent"
+              }
+            },
+            "gridPos": {"h": 8, "w": 6, "x": 6, "y": 0}
+          },
+          {
+            "id": 3,
+            "title": "Response Time (95th percentile)",
+            "type": "stat",
+            "targets": [
+              {
+                "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))",
+                "legendFormat": "95th percentile"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": {
+                "unit": "s"
+              }
+            },
+            "gridPos": {"h": 8, "w": 6, "x": 12, "y": 0}
+          },
+          {
+            "id": 4,
+            "title": "Active Users",
+            "type": "stat",
+            "targets": [
+              {
+                "expr": "active_users_total",
+                "legendFormat": "Active Users"
+              }
+            ],
+            "gridPos": {"h": 8, "w": 6, "x": 18, "y": 0}
+          }
+        ]
+      }
+    }

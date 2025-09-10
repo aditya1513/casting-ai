@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CastMatch - Talent Onboarding Flow Wireframes</title>
+    <style>
+        /* Design System - Grayscale Foundation */
+        :root {
+            /* Grayscale Palette */
+            --gray-0: #FFFFFF;
+            --gray-50: #F8F9FA;
+            --gray-100: #F1F3F4;
+            --gray-200: #E8EAED;
+            --gray-300: #DADCE0;
+            --gray-400: #BDC1C6;
+            --gray-500: #9AA0A6;
+            --gray-600: #80868B;
+            --gray-700: #5F6368;
+            --gray-800: #3C4043;
+            --gray-900: #202124;
+            --black: #000000;
+            
+            /* Semantic Colors */
+            --surface: var(--gray-0);
+            --surface-variant: var(--gray-50);
+            --background: var(--gray-100);
+            --border: var(--gray-300);
+            --border-light: var(--gray-200);
+            --text-primary: var(--gray-900);
+            --text-secondary: var(--gray-700);
+            --text-tertiary: var(--gray-600);
+            --text-disabled: var(--gray-500);
+            
+            /* Success States */
+            --success-bg: var(--gray-100);
+            --success-border: var(--gray-400);
+            --success-text: var(--gray-800);
+            
+            /* Layout Tokens */
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --spacing-2xl: 48px;
+            --spacing-3xl: 64px;
+            
+            /* Typography Scale */
+            --font-xs: 12px;
+            --font-sm: 14px;
+            --font-base: 16px;
+            --font-lg: 18px;
+            --font-xl: 20px;
+            --font-2xl: 24px;
+            --font-3xl: 32px;
+            --font-4xl: 40px;
+            
+            /* Border Radius */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-full: 9999px;
+            
+            /* Shadows */
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.07);
+            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+            --shadow-xl: 0 20px 25px rgba(0,0,0,0.15);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--gray-50);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        
+        /* Container System */
+        .wireframe-container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: var(--spacing-2xl);
+        }
+        
+        .wireframe-header {
+            text-align: center;
+            padding: var(--spacing-3xl) 0;
+            border-bottom: 2px solid var(--border);
+            margin-bottom: var(--spacing-3xl);
+        }
+        
+        .wireframe-title {
+            font-size: var(--font-4xl);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .wireframe-subtitle {
+            font-size: var(--font-lg);
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Screen Section */
+        .screen-section {
+            margin-bottom: var(--spacing-3xl);
+            padding: var(--spacing-2xl);
+            background: var(--surface);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .screen-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-xl);
+            padding-bottom: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .screen-title {
+            font-size: var(--font-2xl);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .screen-meta {
+            display: flex;
+            gap: var(--spacing-lg);
+            font-size: var(--font-sm);
+            color: var(--text-tertiary);
+        }
+        
+        /* Progress Indicator */
+        .progress-container {
+            padding: var(--spacing-xl) 0;
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .progress-line {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--border);
+            z-index: 1;
+        }
+        
+        .progress-line-active {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            height: 2px;
+            background: var(--gray-800);
+            z-index: 2;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-step {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            flex: 1;
+        }
+        
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            background: var(--surface);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--spacing-sm);
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .step-circle.active {
+            background: var(--gray-800);
+            color: var(--gray-0);
+            border-color: var(--gray-800);
+        }
+        
+        .step-circle.completed {
+            background: var(--gray-700);
+            color: var(--gray-0);
+            border-color: var(--gray-700);
+        }
+        
+        .step-label {
+            font-size: var(--font-sm);
+            color: var(--text-tertiary);
+        }
+        
+        .step-label.active {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        
+        /* Form Container */
+        .onboarding-form {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: var(--spacing-xl);
+        }
+        
+        .form-header {
+            text-align: center;
+            margin-bottom: var(--spacing-2xl);
+        }
+        
+        .form-title {
+            font-size: var(--font-2xl);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .form-description {
+            font-size: var(--font-base);
+            color: var(--text-secondary);
+        }
+        
+        /* Form Elements */
+        .form-group {
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .form-label {
+            display: block;
+            font-size: var(--font-sm);
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .form-label-required {
+            color: var(--gray-800);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: var(--spacing-md);
+            font-size: var(--font-base);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--surface);
+            transition: border-color 0.2s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--gray-600);
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: var(--spacing-md);
+            font-size: var(--font-base);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--surface);
+            cursor: pointer;
+        }
+        
+        .form-textarea {
+            width: 100%;
+            padding: var(--spacing-md);
+            font-size: var(--font-base);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--surface);
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .form-helper {
+            font-size: var(--font-sm);
+            color: var(--text-tertiary);
+            margin-top: var(--spacing-xs);
+        }
+        
+        .form-error {
+            font-size: var(--font-sm);
+            color: var(--gray-800);
+            margin-top: var(--spacing-xs);
+        }
+        
+        /* Input Groups */
+        .input-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-md);
+        }
+        
+        .input-with-unit {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+        
+        .unit-label {
+            padding: var(--spacing-md);
+            background: var(--gray-100);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            font-size: var(--font-sm);
+            color: var(--text-secondary);
+        }
+        
+        /* Media Upload */
+        .upload-container {
+            border: 2px dashed var(--border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-2xl);
+            text-align: center;
+            background: var(--surface-variant);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .upload-container:hover {
+            border-color: var(--gray-600);
+            background: var(--gray-100);
+        }
+        
+        .upload-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--gray-300);
+            border-radius: var(--radius-md);
+            margin: 0 auto var(--spacing-md);
+        }
+        
+        .upload-title {
+            font-size: var(--font-base);
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .upload-subtitle {
+            font-size: var(--font-sm);
+            color: var(--text-tertiary);
+        }
+        
+        /* Media Grid */
+        .media-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-lg);
+        }
+        
+        .media-item {
+            position: relative;
+            background: var(--gray-200);
+            border-radius: var(--radius-md);
+            aspect-ratio: 1;
+            overflow: hidden;
+        }
+        
+        .media-item-main {
+            border: 2px solid var(--gray-800);
+        }
+        
+        .media-remove {
+            position: absolute;
+            top: var(--spacing-sm);
+            right: var(--spacing-sm);
+            width: 24px;
+            height: 24px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: var(--radius-full);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .media-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: var(--spacing-sm);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            font-size: var(--font-xs);
+            text-align: center;
+        }
+        
+        /* Skills Tags */
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .skill-tag {
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--gray-100);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-full);
+            font-size: var(--font-sm);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .skill-tag:hover {
+            background: var(--gray-200);
+        }
+        
+        .skill-tag.selected {
+            background: var(--gray-800);
+            color: var(--gray-0);
+            border-color: var(--gray-800);
+        }
+        
+        .add-skill-input {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+        
+        /* Privacy Settings */
+        .privacy-option {
+            display: flex;
+            align-items: start;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+            background: var(--surface-variant);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-md);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .privacy-option:hover {
+            background: var(--gray-100);
+        }
+        
+        .privacy-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        
+        .privacy-checkbox.checked {
+            background: var(--gray-800);
+            border-color: var(--gray-800);
+        }
+        
+        .privacy-content {
+            flex: 1;
+        }
+        
+        .privacy-title {
+            font-size: var(--font-base);
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .privacy-desc {
+            font-size: var(--font-sm);
+            color: var(--text-secondary);
+        }
+        
+        /* Verification Upload */
+        .verification-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .verification-card {
+            padding: var(--spacing-lg);
+            background: var(--surface-variant);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            text-align: center;
+        }
+        
+        .verification-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--gray-300);
+            border-radius: var(--radius-md);
+            margin: 0 auto var(--spacing-md);
+        }
+        
+        .verification-title {
+            font-size: var(--font-base);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .verification-status {
+            font-size: var(--font-sm);
+            color: var(--text-tertiary);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .verification-status.uploaded {
+            color: var(--success-text);
+        }
+        
+        /* Action Buttons */
+        .form-actions {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-2xl);
+            padding-top: var(--spacing-xl);
+            border-top: 1px solid var(--border-light);
+        }
+        
+        .btn-primary {
+            flex: 1;
+            padding: var(--spacing-md);
+            background: var(--gray-800);
+            color: var(--gray-0);
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: var(--font-base);
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .btn-primary:hover {
+            background: var(--gray-900);
+        }
+        
+        .btn-primary:disabled {
+            background: var(--gray-400);
+            cursor: not-allowed;
+        }
+        
+        .btn-secondary {
+            padding: var(--spacing-md) var(--spacing-xl);
+            background: var(--surface);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            font-size: var(--font-base);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-secondary:hover {
+            background: var(--gray-100);
+        }
+        
+        .btn-text {
+            padding: var(--spacing-md);
+            background: transparent;
+            color: var(--text-secondary);
+            border: none;
+            font-size: var(--font-sm);
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        
+        /* Success State */
+        .success-container {
+            text-align: center;
+            padding: var(--spacing-3xl);
+        }
+        
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--gray-800);
+            border-radius: var(--radius-full);
+            margin: 0 auto var(--spacing-xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 40px;
+        }
+        
+        .success-title {
+            font-size: var(--font-3xl);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .success-message {
+            font-size: var(--font-lg);
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-2xl);
+        }
+        
+        .success-actions {
+            display: flex;
+            gap: var(--spacing-md);
+            justify-content: center;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .wireframe-container {
+                padding: var(--spacing-lg);
+            }
+            
+            .progress-steps {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .progress-line {
+                display: none;
+            }
+            
+            .progress-step {
+                margin-bottom: var(--spacing-md);
+            }
+            
+            .input-group {
+                grid-template-columns: 1fr;
+            }
+            
+            .verification-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn-secondary {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .media-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .success-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wireframe-container">
+        <!-- Header -->
+        <div class="wireframe-header">
+            <h1 class="wireframe-title">Talent Onboarding Flow</h1>
+            <p class="wireframe-subtitle">Complete 5-step talent profile setup flow with personal details, physical attributes, professional info, media upload, and verification</p>
+        </div>
+        
+        <!-- Screen 1: Personal Details -->
+        <div class="screen-section">
+            <div class="screen-header">
+                <h2 class="screen-title">Step 1: Personal Details</h2>
+                <div class="screen-meta">
+                    <span>Required Information</span>
+                    <span>Auto-save Enabled</span>
+                    <span>Mobile Optimized</span>
+                </div>
+            </div>
+            
+            <!-- Progress Indicator -->
+            <div class="progress-container">
+                <div class="progress-steps">
+                    <div class="progress-line"></div>
+                    <div class="progress-line-active" style="width: 0%;"></div>
+                    
+                    <div class="progress-step">
+                        <div class="step-circle active">1</div>
+                        <div class="step-label active">Personal</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-circle">2</div>
+                        <div class="step-label">Physical</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-circle">3</div>
+                        <div class="step-label">Professional</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-circle">4</div>
+                        <div class="step-label">Media</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-circle">5</div>
+                        <div class="step-label">Verification</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Form Content -->
+            <div class="onboarding-form">
+                <div class="form-header">
+                    <h3 class="form-title">Let's Get to Know You</h3>
+                    <p class="form-description">Please provide your basic information to create your talent profile</p>
+                </div>
+                
+                <div class="input-group">
+                    <div class="form-group">
+                        <label class="form-label">First Name <span class="form-label-required">*</span></label>
+                        <input type="text" class="form-input" placeholder="Enter your first name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Last Name <span class="form-label-required">*</span></label>
+                        <input type="text" class="form-input" placeholder="Enter your last name">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Stage Name (Optional)</label>
+                    <input type="text" class="form-input" placeholder="Professional name if different">
+                    <div class="form-helper">This is the name that will be displayed on your profile</div>
+                </div>
+                
+                <div class="input-group">
+                    <div class="form-group">
+                        <label class="form-label">Date of Birth <span class="form-label-required">*</span></label>
+                        <input type="date" class="form-input">
+                        <div class="form-helper">We'll only show your age range publicly</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Gender <span class="form-label-required">*</span></label>
+                        <select class="form-select">
+                            <option>Select gender</option>
+                            <option>Male</option>
+                            <option>Female</option>
+                            <option>Non-binary</option>
+                            <option>Prefer not to say</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Phone Number <span class="form-label-required">*</span></label>
+                    <input type="tel" class="form-input" placeholder="+91 98765 43210">
+                    <div class="form-helper">We'll use this for important updates and audition notifications</div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">WhatsApp Number</label>
+                    <input type="tel" class="form-input" placeholder="+91 98765 43210">
+                    <div class="form-helper">For quick communication with casting directors</div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Current Location <span class="form-label-required">*</span></label>
+                    <div class="input-group">
+                        <select class="form-select">
+                            <option>Select city</option>
+                            <option>Mumbai</option>
+                            <option>Delhi</option>
+                            <option>Bangalore</option>
+                            <option>Chennai</option>
+                            <option>Kolkata</option>
+                            <option>Hyderabad</option>
+                            <option>Pune</option>
+                        </select>
+                        <input type="text" class="form-input" placeholder="Area/Locality">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Bio <span class="form-label-required">*</span></label>
+                    <textarea class="form-textarea" placeholder="Tell us about yourself, your passion for acting, and what makes you unique (minimum 50 words)"></textarea>
+                    <div class="form-helper">0/500 characters</div>
+                </div>
+                
+                <div class="form-actions">
+                    <button class="btn-text">Save & Exit</button>
+                    <button class="btn-primary">Continue to Physical Attributes</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Screen 2: Physical Attributes -->
+        <div class="screen-section">
+            <div class="screen-header">
+                <h2 class="screen-title">Step 2: Physical Attributes</h2>
+                <div class="screen-meta">
+                    <span>Casting Requirements</span>
+                    <span>Help Tooltips</span>
+                    <span>Privacy Protected</span>
+                </div>
+            </div>
+            
+            <!-- Progress Indicator -->
+            <div class="progress-container">
+                <div class="progress-steps">
+                    <div class="progress-line"></div>
+                    <div class="progress-line-active" style="width: 25%;"></div>
+                    
+                    <div class="progress-step">
+                        <div class="step-circle completed">✓</div>
+                        <div class="step-label">Personal</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-circle active">2</div>
+                        <div class="step-label active">Physical</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-circle">3</div>
+                        <div class="step-label">Professional</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-circle">4</div>
+                        <div class="step-label">Media</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-circle">5</div>
+                        <div class="step-label">Verification</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Form Content -->
+            <div class="onboarding-form">
+                <div class="form-header">
+                    <h3 class="form-title">Physical Characteristics</h3>
+                    <p class="form-description">These details help casting directors find the right fit for their roles</p>
+                </div>
+                
+                <div class="input-group">
+                    <div class="form-group">
+                        <label class="form-label">Height <span class="form-label-required">*</span></label>
+                        <div class="input-with-unit">
+                            <input type="number" class="form-input" placeholder="170">
+                            <span class="unit-label">cm</span>
+                        </div>
+                        <div class="form-helper">Or 5'7" in feet</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Weight <span class="form-label-required">*</span></label>
+                        <div class="input-with-unit">
+                            <input type="number" class="form-input" placeholder="65">
+                            <span class="unit-label">kg</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <div class="form-group">
+                        <label class="form-label">Build Type <span class="form-label-required">*</span></label>
+                        <select class="form-select">
+                            <option>Select build</option>
+                            <option>Slim</option>
+                            <option>Athletic</option>
+                            <option>Average</option>
+                            <option>Muscular</option>
+                            <option>Heavy</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Complexion <span class="form-label-required">*</span></label>
+                        <select class="form-select">
+                            <option>Select complexion</option>
+                            <option>Very Fair</option>
+                            <option>Fair</option>
+                            <option>Wheatish</option>
+                            <option>Dusky</option>
+                            <option>Dark</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <div class="form-group">
+                        <label class="form-label">Hair Color <span class="form-label-required">*</span></label>
+                        <select class="form-select">
+                            <option>Select hair color</option>
+                            <option>Black</option>
+                            <option>Brown</option>
+                            <option>Dark Brown</option>
+                            <option>Light Brown</option>
+                            <option>Blonde</option>
+                            <option>Grey</option>
+                            <option>White</option>
+                            <option>Colored/Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Hair Length <span class="form-label-required">*</span></label>
+                        <select class="form-select">
+                            <option>Select hair length</option>
+                            <option>Bald</option>
+                            <option>Very Short</option>
+                            <option>Short</option>
+                            <option>Medium</option>
+                            <option>Long</option>
+                            <option>Very Long</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <div class="form-group">
+                        <label class="form-label">Eye Color <span class="form-label-required">*</span></label>
+                        <select class="form-select">
+                            <option>Select eye color</option>
+                            <option>Black</option>
+                            <option>Brown</option>
+                            <option>Hazel</option>
+                            <option>Green</option>
+                            <option>Blue</option>
+                            <option>Grey</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Facial Hair</label>
+                        <select class="form-select">
+                            <option>Select facial hair</option>
+                            <option>Clean Shaven</option>
+                            <option>Stubble</option>
+                            <option>Mustache</option>
+                            <option>Beard</option>
+                            <option>Goatee</option>
+                            <option>Full Beard</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Distinguishing Features</label>
+                    <textarea class="form-textarea" placeholder="Tattoos, scars, birthmarks, piercings, or any unique features"></textarea>
+                    <div class="form-helper">This helps for specific role requirements</div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Willing to Change Appearance?</label>
+                    <div class="skills-container">
+                        <div class="skill-tag">Cut Hair</div>
+                        <div class="skill-tag">Grow Hair</div>
+                        <div class="skill-tag">Color Hair</div>
+                        <div class="skill-tag">Gain Weight</div>
+                        <div class="skill-tag">Lose Weight</div>
+                        <div class="skill-tag">Grow Beard</div>
+                        <div class="skill-tag">Shave Beard</div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button class="btn-secondary">Back</button>
+                    <button class="btn-primary">Continue to Professional Info</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Screen 3: Professional Information -->
+        <div class="screen-section">
+            <div class="screen-header">
+                <h2 class="screen-title">Step 3: Professional Information</h2>
+                <div class="screen-meta">
+                    <span>Skills & Experience</span>
+                    <span>AI Suggestions</span>
+                    <span>Industry Standards</span>
+                </div>
+            </div>
+            
+            <!-- Progress Indicator -->
+            <div class="progress-container">
+                <div class="progress-steps">
+                    <div class="progress-line"></div>
+                    <div class="progress-line-active" style="width: 50%;"></div>
+                    
+                    <div class="progress-step">
+                        <div class="step-circle completed">✓</div>
+                        <div class="step-label">Personal</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-circle completed">✓</div>
+                        <div class="step-label">Physical</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-circle active">3</div>
+                        <div class="step-label active">Professional</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-circle">4</div>
+                        <div class="step-label">Media</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-circle">5</div>
+                        <div class="step-label">Verification</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Form Content -->
+            <div class="onboarding-form">
+                <div class="form-header">
+                    <h3 class="form-title">Your Professional Journey</h3>
+                    <p class="form-description">Showcase your experience, skills, and training</p>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Experience Level <span class="form-label-required">*</span></label>
+                    <select class="form-select">
+                        <option>Select experience level</option>
+                        <option>Fresher (No experience)</option>
+                        <option>Beginner (0-2 years)</option>
+                        <option>Intermediate (3-5 years)</option>
+                        <option>Experienced (6-10 years)</option>
+                        <option>Senior (10+ years)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Primary Category <span class="form-label-required">*</span></label>
+                    <select class="form-select">
+                        <option>Select primary category</option>
+                        <option>Film Actor</option>
+                        <option>TV Actor</option>
+                        <option>Theatre Actor</option>
+                        <option>Model</option>
+                        <option>Dancer</option>
+                        <option>Singer</option>
+                        <option>Voice Artist</option>
+                        <option>Stand-up Comedian</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Languages Known <span class="form-label-required">*</span></label>
+                    <div class="skills-container">
+                        <div class="skill-tag selected">Hindi</div>
+                        <div class="skill-tag selected">English</div>
+                        <div class="skill-tag">Marathi</div>
+                        <div class="skill-tag">Gujarati</div>
+                        <div class="skill-tag">Punjabi</div>
+                        <div class="skill-tag">Bengali</div>
+                        <div class="skill-tag">Tamil</div>
+                        <div class="skill-tag">Telugu</div>
+                        <div class="skill-tag">Kannada</div>
+                        <div class="skill-tag">Malayalam</div>
+                    </div>
+                    <div class="add-skill-input">
+                        <input type="text" class="form-input" placeholder="Add other languages">
+                        <button class="btn-secondary">Add</button>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Special Skills</label>
+                    <div class="skills-container">
+                        <div class="skill-tag">Dancing</div>
+                        <div class="skill-tag">Singing</div>
+                        <div class="skill-tag">Martial Arts</div>
+                        <div class="skill-tag">Horse Riding</div>
+                        <div class="skill-tag">Swimming</div>
+                        <div class="skill-tag">Driving</div>
+                        <div class="skill-tag">Bike Riding</div>
+                        <div class="skill-tag">Yoga</div>
+                        <div class="skill-tag">Musical Instruments</div>
+                        <div class="skill-tag">Sports</div>
+                    </div>
+                    <div class="add-skill-input">
+                        <input type="text" class="form-input" placeholder="Add your special skills">
+                        <button class="btn-secondary">Add</button>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Acting Training</label>
+                    <textarea class="form-textarea" placeholder="List your acting schools, workshops, or training programs"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Notable Work</label>
+                    <textarea class="form-textarea" placeholder="List your films, TV shows, theatre productions, or other significant work"></textarea>
+                </div>
+                
+                <div class="input-group">
+                    <div class="form-group">
+                        <label class="form-label">Union/Association</label>
+                        <select class="form-select">
+                            <option>None</option>
+                            <option>CINTAA</option>
+                            <option>FWICE</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Available From</label>
+                        <input type="date" class="form-input">
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button class="btn-secondary">Back</button>
+                    <button class="btn-primary">Continue to Media Upload</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Screen 4: Media Upload -->
+        <div class="screen-section">
+            <div class="screen-header">
+                <h2 class="screen-title">Step 4: Media Upload</h2>
+                <div class="screen-meta">
+                    <span>Portfolio Creation</span>
+                    <span>Auto-Optimization</span>
+                    <span>Cloud Storage</span>
+                </div>
+            </div>
+            
+            <!-- Progress Indicator -->
+            <div class="progress-container">
+                <div class="progress-steps">
+                    <div class="progress-line"></div>
+                    <div class="progress-line-active" style="width: 75%;"></div>
+                    
+                    <div class="progress-step">
+                        <div class="step-circle completed">✓</div>
+                        <div class="step-label">Personal</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-circle completed">✓</div>
+                        <div class="step-label">Physical</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-circle completed">✓</div>
+                        <div class="step-label">Professional</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-circle active">4</div>
+                        <div class="step-label active">Media</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-circle">5</div>
+                        <div class="step-label">Verification</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Form Content -->
+            <div class="onboarding-form">
+                <div class="form-header">
+                    <h3 class="form-title">Showcase Your Talent</h3>
+                    <p class="form-description">Upload photos and videos that best represent you</p>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Headshot <span class="form-label-required">*</span></label>
+                    <div class="upload-container">
+                        <div class="upload-icon"></div>
+                        <div class="upload-title">Upload Headshot</div>
+                        <div class="upload-subtitle">Clear front-facing photo • JPG, PNG • Max 5MB</div>
+                    </div>
+                    <div class="form-helper">This will be your primary profile photo</div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Additional Photos</label>
+                    <div class="media-grid">
+                        <div class="media-item media-item-main">
+                            <div class="media-label">Headshot</div>
+                        </div>
+                        <div class="media-item">
+                            <div class="media-remove">×</div>
+                            <div class="media-label">Full Body</div>
+                        </div>
+                        <div class="media-item">
+                            <div class="media-remove">×</div>
+                            <div class="media-label">Side Profile</div>
+                        </div>
+                        <div class="upload-container" style="aspect-ratio: 1; padding: 16px;">
+                            <div style="font-size: 24px; margin-bottom: 8px;">+</div>
+                            <div style="font-size: 12px;">Add Photo</div>
+                        </div>
+                    </div>
+                    <div class="form-helper">Upload up to 10 photos showcasing different looks</div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Performance Reel</label>
+                    <div class="upload-container">
+                        <div class="upload-icon"></div>
+                        <div class="upload-title">Upload Your Demo Reel</div>
+                        <div class="upload-subtitle">MP4, MOV • Max 100MB • 2-3 minutes recommended</div>
+                    </div>
+                    <div class="form-helper">Showcase your best performances and range</div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Introduction Video</label>
+                    <div class="upload-container">
+                        <div class="upload-icon"></div>
+                        <div class="upload-title">Record or Upload Introduction</div>
+                        <div class="upload-subtitle">30-60 seconds • Tell us about yourself</div>
+                    </div>
+                    <div class="form-helper">A personal introduction helps casting directors connect with you</div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Additional Media</label>
+                    <div class="media-grid">
+                        <div class="media-item">
+                            <div class="media-remove">×</div>
+                            <div class="media-label">Dance Video</div>
+                        </div>
+                        <div class="media-item">
+                            <div class="media-remove">×</div>
+                            <div class="media-label">Voice Sample</div>
+                        </div>
+                        <div class="upload-container" style="aspect-ratio: 1; padding: 16px;">
+                            <div style="font-size: 24px; margin-bottom: 8px;">+</div>
+                            <div style="font-size: 12px;">Add Media</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button class="btn-secondary">Back</button>
+                    <button class="btn-text">Skip for Now</button>
+                    <button class="btn-primary">Continue to Verification</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Screen 5: Verification & Privacy -->
+        <div class="screen-section">
+            <div class="screen-header">
+                <h2 class="screen-title">Step 5: Verification & Privacy</h2>
+                <div class="screen-meta">
+                    <span>Identity Verification</span>
+                    <span>Privacy Controls</span>
+                    <span>Final Review</span>
+                </div>
+            </div>
+            
+            <!-- Progress Indicator -->
+            <div class="progress-container">
+                <div class="progress-steps">
+                    <div class="progress-line"></div>
+                    <div class="progress-line-active" style="width: 100%;"></div>
+                    
+                    <div class="progress-step">
+                        <div class="step-circle completed">✓</div>
+                        <div class="step-label">Personal</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-circle completed">✓</div>
+                        <div class="step-label">Physical</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-circle completed">✓</div>
+                        <div class="step-label">Professional</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-circle completed">✓</div>
+                        <div class="step-label">Media</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-circle active">5</div>
+                        <div class="step-label active">Verification</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Form Content -->
+            <div class="onboarding-form">
+                <div class="form-header">
+                    <h3 class="form-title">Verify Your Identity</h3>
+                    <p class="form-description">Build trust with casting directors through verification</p>
+                </div>
+                
+                <div class="verification-grid">
+                    <div class="verification-card">
+                        <div class="verification-icon"></div>
+                        <div class="verification-title">Government ID</div>
+                        <div class="verification-status">Not Uploaded</div>
+                        <button class="btn-secondary">Upload Aadhaar/PAN</button>
+                    </div>
+                    <div class="verification-card">
+                        <div class="verification-icon"></div>
+                        <div class="verification-title">Selfie Verification</div>
+                        <div class="verification-status">Not Completed</div>
+                        <button class="btn-secondary">Take Selfie</button>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Professional References (Optional)</label>
+                    <input type="text" class="form-input" placeholder="Director/Producer name and contact">
+                    <div class="form-helper">Add references to boost your credibility</div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Privacy Settings</label>
+                    
+                    <div class="privacy-option">
+                        <div class="privacy-checkbox checked"></div>
+                        <div class="privacy-content">
+                            <div class="privacy-title">Public Profile</div>
+                            <div class="privacy-desc">Your profile is visible to all casting directors</div>
+                        </div>
+                    </div>
+                    
+                    <div class="privacy-option">
+                        <div class="privacy-checkbox checked"></div>
+                        <div class="privacy-content">
+                            <div class="privacy-title">Show Contact Information</div>
+                            <div class="privacy-desc">Verified casting directors can see your phone and email</div>
+                        </div>
+                    </div>
+                    
+                    <div class="privacy-option">
+                        <div class="privacy-checkbox"></div>
+                        <div class="privacy-content">
+                            <div class="privacy-title">Anonymous Browsing</div>
+                            <div class="privacy-desc">Browse other profiles without showing your visit</div>
+                        </div>
+                    </div>
+                    
+                    <div class="privacy-option">
+                        <div class="privacy-checkbox checked"></div>
+                        <div class="privacy-content">
+                            <div class="privacy-title">Receive Notifications</div>
+                            <div class="privacy-desc">Get alerts for new opportunities and messages</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Terms & Conditions</label>
+                    <div class="privacy-option">
+                        <div class="privacy-checkbox checked"></div>
+                        <div class="privacy-content">
+                            <div class="privacy-desc">
+                                I agree to CastMatch's <a href="#" style="color: var(--gray-800);">Terms of Service</a> and <a href="#" style="color: var(--gray-800);">Privacy Policy</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button class="btn-secondary">Back</button>
+                    <button class="btn-primary">Complete Profile Setup</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Success Screen -->
+        <div class="screen-section">
+            <div class="screen-header">
+                <h2 class="screen-title">Profile Creation Complete!</h2>
+                <div class="screen-meta">
+                    <span>Success State</span>
+                    <span>Next Actions</span>
+                    <span>Onboarding Complete</span>
+                </div>
+            </div>
+            
+            <div class="success-container">
+                <div class="success-icon">✓</div>
+                <h2 class="success-title">Welcome to CastMatch!</h2>
+                <p class="success-message">
+                    Your talent profile has been created successfully. You're now ready to explore opportunities and connect with casting directors.
+                </p>
+                
+                <div style="padding: 24px; background: var(--gray-100); border-radius: 12px; margin-bottom: 32px;">
+                    <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 16px;">Profile Completion Status</h4>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <span>Profile Strength</span>
+                        <span style="font-weight: 600;">85% Complete</span>
+                    </div>
+                    <div style="height: 8px; background: var(--gray-300); border-radius: 4px; overflow: hidden;">
+                        <div style="width: 85%; height: 100%; background: var(--gray-800);"></div>
+                    </div>
+                    <p style="font-size: 14px; color: var(--text-secondary); margin-top: 12px;">
+                        Complete verification to reach 100% and get priority visibility
+                    </p>
+                </div>
+                
+                <div class="success-actions">
+                    <button class="btn-secondary">View Profile</button>
+                    <button class="btn-primary">Browse Opportunities</button>
+                </div>
+                
+                <div style="margin-top: 32px; padding-top: 32px; border-top: 1px solid var(--border-light);">
+                    <h4 style="font-size: 16px; font-weight: 600; margin-bottom: 16px;">Recommended Next Steps</h4>
+                    <ul style="list-style: none; padding: 0; text-align: left; max-width: 400px; margin: 0 auto;">
+                        <li style="margin-bottom: 12px; display: flex; align-items: start;">
+                            <span style="margin-right: 12px;">📸</span>
+                            <span>Upload more photos to showcase your versatility</span>
+                        </li>
+                        <li style="margin-bottom: 12px; display: flex; align-items: start;">
+                            <span style="margin-right: 12px;">✅</span>
+                            <span>Complete identity verification for the verified badge</span>
+                        </li>
+                        <li style="margin-bottom: 12px; display: flex; align-items: start;">
+                            <span style="margin-right: 12px;">🎬</span>
+                            <span>Add a demo reel to increase profile views by 3x</span>
+                        </li>
+                        <li style="margin-bottom: 12px; display: flex; align-items: start;">
+                            <span style="margin-right: 12px;">🔍</span>
+                            <span>Start browsing and applying for relevant roles</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

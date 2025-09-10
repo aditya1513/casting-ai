@@ -1,0 +1,20 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "TEAMID.com.castmatch.app",
+        "paths": [
+          "*",
+          "/"
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": ["TEAMID.com.castmatch.app"]
+  },
+  "appclips": {
+    "apps": ["TEAMID.com.castmatch.app.Clip"]
+  }
+}

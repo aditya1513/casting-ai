@@ -1,0 +1,20 @@
+{
+  "locks": {},
+  "history": [],
+  "rules": {
+    "description": "File-level locks to prevent editing conflicts between Claude windows",
+    "usage": {
+      "lock": "Add file path with window ID before editing",
+      "unlock": "Remove entry when done editing",
+      "check": "Always check before editing a file"
+    },
+    "example": {
+      "src/services/vector.service.ts": {
+        "window": 1,
+        "task": "qdrant-migration",
+        "locked_at": "2025-01-09T10:00:00Z",
+        "expected_duration": "2 hours"
+      }
+    }
+  }
+}

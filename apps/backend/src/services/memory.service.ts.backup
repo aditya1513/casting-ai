@@ -1,0 +1,511 @@
+/**
+ * Memory System Service
+ * Manages Short-Term Memory (STM) and Long-Term Memory (LTM) for AI interactions
+ */
+
+import { eq, and, desc, gte, or, sql } from 'drizzle-orm';
+import { db } from '../config/database';
+import { memories, type Memory, type NewMemory } from '../models/schema';
+import { CacheManager } from '../config/redis';
+import { logger } from '../utils/logger';
+import { AppError } from '../utils/errors';
+
+interface CreateMemoryInput {
+  userId: string;
+  conversationId?: string;
+  type: 'short_term' | 'long_term' | 'episodic' | 'semantic';
+  category?: string;
+  key: string;
+  value: any;
+  embedding?: number[];
+  importance?: number;
+  expiresAt?: Date;
+}
+
+interface MemorySearchOptions {
+  userId: string;
+  conversationId?: string;
+  type?: 'short_term' | 'long_term' | 'episodic' | 'semantic';
+  category?: string;
+  limit?: number;
+  includeExpired?: boolean;
+}
+
+interface MemoryContext {
+  preferences: Record<string, any>;
+  requirements: Record<string, any>;
+  history: any[];
+  context: Record<string, any>;
+}
+
+export class MemoryService {
+  private readonly STM_TTL = 30 * 60; // 30 minutes in seconds
+  private readonly LTM_IMPORTANCE_THRESHOLD = 0.7;
+  private readonly MAX_STM_ITEMS = 100;
+  
+  /**
+   * Store a memory item
+   */
+  async storeMemory(input: CreateMemoryInput): Promise<Memory> {
+    try {
+      const {
+        userId,
+        conversationId,
+        type,
+        category,
+        key,
+        value,
+        embedding,
+        importance = 1.0,
+      } = input;
+      
+      // Set expiry for STM items
+      let expiresAt = input.expiresAt;
+      if (type === 'short_term' && !expiresAt) {
+        expiresAt = new Date(Date.now() + this.STM_TTL * 1000);
+      }
+      
+      // Check if memory with same key exists for user
+      const existingMemory = await this.getMemoryByKey(userId, key);
+      
+      if (existingMemory) {
+        // Update existing memory
+        const [updatedMemory] = await db
+          .update(memories)
+          .set({
+            value,
+            embedding,
+            importance: importance.toString(),
+            accessCount: sql`${memories.accessCount} + 1`,
+            lastAccessedAt: new Date(),
+            updatedAt: new Date(),
+            expiresAt,
+          })
+          .where(eq(memories.id, existingMemory.id))
+          .returning();
+        
+        logger.info(`Memory updated: ${key} for user ${userId}`);
+        return updatedMemory;
+      }
+      
+      // Create new memory
+      const [memory] = await db
+        .insert(memories)
+        .values({
+          userId,
+          conversationId,
+          type: type as any,
+          category,
+          key,
+          value,
+          embedding,
+          importance: importance.toString(),
+          expiresAt,
+          accessCount: 0,
+        })
+        .returning();
+      
+      // Store in Redis cache for quick access (STM only)
+      if (type === 'short_term') {
+        await CacheManager.set(
+          `stm:${userId}:${key}`,
+          memory,
+          this.STM_TTL
+        );
+      }
+      
+      logger.info(`Memory stored: ${key} for user ${userId}`);
+      return memory;
+    } catch (error) {
+      logger.error('Error storing memory:', error);
+      throw new AppError('Failed to store memory', 500);
+    }
+  }
+  
+  /**
+   * Retrieve memory by key
+   */
+  async getMemoryByKey(userId: string, key: string): Promise<Memory | null> {
+    try {
+      // Check Redis cache first for STM
+      const cached = await CacheManager.get<Memory>(`stm:${userId}:${key}`);
+      if (cached) {
+        return cached;
+      }
+      
+      // Get from database
+      const [memory] = await db
+        .select()
+        .from(memories)
+        .where(
+          and(
+            eq(memories.userId, userId),
+            eq(memories.key, key)
+          )
+        )
+        .limit(1);
+      
+      if (memory) {
+        // Update access count and last accessed
+        await db
+          .update(memories)
+          .set({
+            accessCount: sql`${memories.accessCount} + 1`,
+            lastAccessedAt: new Date(),
+          })
+          .where(eq(memories.id, memory.id));
+      }
+      
+      return memory || null;
+    } catch (error) {
+      logger.error('Error retrieving memory:', error);
+      throw new AppError('Failed to retrieve memory', 500);
+    }
+  }
+  
+  /**
+   * Search memories
+   */
+  async searchMemories(options: MemorySearchOptions): Promise<Memory[]> {
+    try {
+      const {
+        userId,
+        conversationId,
+        type,
+        category,
+        limit = 50,
+        includeExpired = false,
+      } = options;
+      
+      // Build query conditions
+      const conditions = [eq(memories.userId, userId)];
+      
+      if (conversationId) {
+        conditions.push(eq(memories.conversationId, conversationId));
+      }
+      
+      if (type) {
+        conditions.push(eq(memories.type, type as any));
+      }
+      
+      if (category) {
+        conditions.push(eq(memories.category, category));
+      }
+      
+      if (!includeExpired) {
+        conditions.push(
+          or(
+            memories.expiresAt === null,
+            gte(memories.expiresAt, new Date())
+          )!
+        );
+      }
+      
+      const results = await db
+        .select()
+        .from(memories)
+        .where(and(...conditions))
+        .orderBy(desc(memories.importance), desc(memories.lastAccessedAt))
+        .limit(limit);
+      
+      return results;
+    } catch (error) {
+      logger.error('Error searching memories:', error);
+      throw new AppError('Failed to search memories', 500);
+    }
+  }
+  
+  /**
+   * Get user's memory context
+   */
+  async getUserContext(userId: string, conversationId?: string): Promise<MemoryContext> {
+    try {
+      const conditions = [eq(memories.userId, userId)];
+      if (conversationId) {
+        conditions.push(eq(memories.conversationId, conversationId));
+      }
+      
+      // Get all relevant memories
+      const userMemories = await db
+        .select()
+        .from(memories)
+        .where(
+          and(
+            ...conditions,
+            or(
+              memories.expiresAt === null,
+              gte(memories.expiresAt, new Date())
+            )!
+          )
+        )
+        .orderBy(desc(memories.importance), desc(memories.lastAccessedAt));
+      
+      // Organize memories by category
+      const context: MemoryContext = {
+        preferences: {},
+        requirements: {},
+        history: [],
+        context: {},
+      };
+      
+      for (const memory of userMemories) {
+        if (memory.category === 'preference') {
+          context.preferences[memory.key] = memory.value;
+        } else if (memory.category === 'requirement') {
+          context.requirements[memory.key] = memory.value;
+        } else if (memory.type === 'episodic') {
+          context.history.push({
+            key: memory.key,
+            value: memory.value,
+            timestamp: memory.createdAt,
+          });
+        } else {
+          context.context[memory.key] = memory.value;
+        }
+      }
+      
+      return context;
+    } catch (error) {
+      logger.error('Error getting user context:', error);
+      throw new AppError('Failed to get user context', 500);
+    }
+  }
+  
+  /**
+   * Promote STM to LTM based on importance
+   */
+  async promoteToLongTerm(memoryId: string): Promise<Memory> {
+    try {
+      const [memory] = await db
+        .select()
+        .from(memories)
+        .where(eq(memories.id, memoryId))
+        .limit(1);
+      
+      if (!memory) {
+        throw new AppError('Memory not found', 404);
+      }
+      
+      // Update memory type and remove expiry
+      const [updatedMemory] = await db
+        .update(memories)
+        .set({
+          type: 'long_term',
+          expiresAt: null,
+          importance: sql`GREATEST(${memories.importance}, ${this.LTM_IMPORTANCE_THRESHOLD})`,
+          updatedAt: new Date(),
+        })
+        .where(eq(memories.id, memoryId))
+        .returning();
+      
+      // Remove from Redis STM cache
+      await CacheManager.delete(`stm:${memory.userId}:${memory.key}`);
+      
+      logger.info(`Memory promoted to LTM: ${memory.key}`);
+      return updatedMemory;
+    } catch (error) {
+      logger.error('Error promoting memory to LTM:', error);
+      throw error instanceof AppError ? error : new AppError('Failed to promote memory', 500);
+    }
+  }
+  
+  /**
+   * Clean up expired memories
+   */
+  async cleanupExpiredMemories(): Promise<number> {
+    try {
+      const result = await db
+        .delete(memories)
+        .where(
+          and(
+            memories.expiresAt !== null,
+            memories.expiresAt < new Date()
+          )!
+        );
+      
+      const deletedCount = result.length || 0;
+      logger.info(`Cleaned up ${deletedCount} expired memories`);
+      return deletedCount;
+    } catch (error) {
+      logger.error('Error cleaning up expired memories:', error);
+      return 0;
+    }
+  }
+  
+  /**
+   * Consolidate STM items based on patterns
+   */
+  async consolidateMemories(userId: string): Promise<void> {
+    try {
+      // Get all STM items for user
+      const stmItems = await this.searchMemories({
+        userId,
+        type: 'short_term',
+        limit: this.MAX_STM_ITEMS,
+      });
+      
+      // Group by category and analyze patterns
+      const categoryGroups = new Map<string, Memory[]>();
+      for (const item of stmItems) {
+        if (item.category) {
+          if (!categoryGroups.has(item.category)) {
+            categoryGroups.set(item.category, []);
+          }
+          categoryGroups.get(item.category)!.push(item);
+        }
+      }
+      
+      // Consolidate frequent patterns into semantic memories
+      for (const [category, items] of categoryGroups) {
+        if (items.length >= 3) {
+          // Extract common patterns
+          const patterns = this.extractPatterns(items);
+          
+          if (patterns.length > 0) {
+            // Create semantic memory from patterns
+            await this.storeMemory({
+              userId,
+              type: 'semantic',
+              category,
+              key: `pattern_${category}_${Date.now()}`,
+              value: {
+                patterns,
+                sourceCount: items.length,
+                extractedAt: new Date(),
+              },
+              importance: 0.8,
+            });
+          }
+        }
+      }
+      
+      // Remove old STM items if over limit
+      if (stmItems.length > this.MAX_STM_ITEMS) {
+        const toDelete = stmItems
+          .sort((a, b) => {
+            const importanceA = parseFloat(a.importance || '0');
+            const importanceB = parseFloat(b.importance || '0');
+            return importanceA - importanceB;
+          })
+          .slice(0, stmItems.length - this.MAX_STM_ITEMS);
+        
+        for (const item of toDelete) {
+          await db.delete(memories).where(eq(memories.id, item.id));
+        }
+      }
+    } catch (error) {
+      logger.error('Error consolidating memories:', error);
+      // Non-critical error, don't throw
+    }
+  }
+  
+  /**
+   * Extract patterns from memory items
+   */
+  private extractPatterns(items: Memory[]): any[] {
+    const patterns: any[] = [];
+    const valueFrequency = new Map<string, number>();
+    
+    // Count value frequencies
+    for (const item of items) {
+      const valueStr = JSON.stringify(item.value);
+      valueFrequency.set(valueStr, (valueFrequency.get(valueStr) || 0) + 1);
+    }
+    
+    // Extract frequent patterns
+    for (const [value, frequency] of valueFrequency) {
+      if (frequency >= 2) {
+        patterns.push({
+          value: JSON.parse(value),
+          frequency,
+          confidence: frequency / items.length,
+        });
+      }
+    }
+    
+    return patterns;
+  }
+  
+  /**
+   * Update memory importance based on access patterns
+   */
+  async updateImportance(memoryId: string, delta: number): Promise<void> {
+    try {
+      await db
+        .update(memories)
+        .set({
+          importance: sql`LEAST(9.99, GREATEST(0, ${memories.importance} + ${delta}))`,
+          updatedAt: new Date(),
+        })
+        .where(eq(memories.id, memoryId));
+    } catch (error) {
+      logger.error('Error updating memory importance:', error);
+      // Non-critical error, don't throw
+    }
+  }
+  
+  /**
+   * Get memory statistics for a user
+   */
+  async getMemoryStats(userId: string): Promise<{
+    totalMemories: number;
+    shortTermCount: number;
+    longTermCount: number;
+    episodicCount: number;
+    semanticCount: number;
+    averageImportance: number;
+    totalAccessCount: number;
+  }> {
+    try {
+      const stats = await db
+        .select({
+          totalMemories: sql`count(*)::int`,
+          shortTermCount: sql`sum(case when ${memories.type} = 'short_term' then 1 else 0 end)::int`,
+          longTermCount: sql`sum(case when ${memories.type} = 'long_term' then 1 else 0 end)::int`,
+          episodicCount: sql`sum(case when ${memories.type} = 'episodic' then 1 else 0 end)::int`,
+          semanticCount: sql`sum(case when ${memories.type} = 'semantic' then 1 else 0 end)::int`,
+          averageImportance: sql`avg(${memories.importance})::float`,
+          totalAccessCount: sql`sum(${memories.accessCount})::int`,
+        })
+        .from(memories)
+        .where(eq(memories.userId, userId));
+      
+      return stats[0] || {
+        totalMemories: 0,
+        shortTermCount: 0,
+        longTermCount: 0,
+        episodicCount: 0,
+        semanticCount: 0,
+        averageImportance: 0,
+        totalAccessCount: 0,
+      };
+    } catch (error) {
+      logger.error('Error getting memory stats:', error);
+      throw new AppError('Failed to get memory statistics', 500);
+    }
+  }
+  
+  /**
+   * Clear all memories for a user (used for testing or reset)
+   */
+  async clearUserMemories(userId: string, type?: string): Promise<void> {
+    try {
+      const conditions = [eq(memories.userId, userId)];
+      if (type) {
+        conditions.push(eq(memories.type, type as any));
+      }
+      
+      await db.delete(memories).where(and(...conditions));
+      
+      // Clear Redis cache
+      await CacheManager.deletePattern(`stm:${userId}:*`);
+      
+      logger.info(`Memories cleared for user ${userId}`);
+    } catch (error) {
+      logger.error('Error clearing user memories:', error);
+      throw new AppError('Failed to clear memories', 500);
+    }
+  }
+}
+
+export const memoryService = new MemoryService();

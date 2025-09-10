@@ -1,0 +1,21 @@
+# Docker Compose Override for Development
+# This file is automatically loaded by docker-compose and overrides settings in docker-compose.yml
+# Use this for development-specific configurations
+
+services:
+  postgres:
+    # For development, use trust authentication for easier local development
+    # This allows connections without password from localhost
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+    # Additional logging for debugging
+    command: 
+      - "postgres"
+      - "-c"
+      - "log_statement=all"
+      - "-c"
+      - "log_connections=on"
+      - "-c"
+      - "log_disconnections=on"
+      - "-c"
+      - "shared_preload_libraries=pg_stat_statements"

@@ -1,0 +1,57 @@
+{
+  "active_chains": [
+    {
+      "id": "infrastructure_to_ai",
+      "source": "devops-infrastructure-developer",
+      "target": "ai-ml-developer",
+      "trigger": "GPU setup + Redis stabilization complete",
+      "action": "Share connection configs, enable AI services",
+      "status": "IN_PROGRESS",
+      "timeline": "Week 1 end",
+      "priority": "CRITICAL"
+    },
+    {
+      "id": "backend_to_frontend",
+      "source": "backend-api-developer", 
+      "target": "frontend-ui-developer",
+      "trigger": "Conversation APIs with memory ready",
+      "action": "Share TypeScript interfaces, API contracts",
+      "status": "WAITING",
+      "timeline": "Week 2 Day 3",
+      "priority": "HIGH"
+    },
+    {
+      "id": "ai_to_backend",
+      "source": "ai-ml-developer",
+      "target": "backend-api-developer", 
+      "trigger": "Claude integration + memory system ready",
+      "action": "Connect services, share configurations",
+      "status": "BLOCKED",
+      "timeline": "Week 2 Day 5",
+      "priority": "CRITICAL"
+    },
+    {
+      "id": "design_to_frontend",
+      "source": "visual-systems-architect",
+      "target": "frontend-ui-developer",
+      "trigger": "Design tokens and component specs ready", 
+      "action": "Share Tailwind configs, implement design system",
+      "status": "IN_PROGRESS",
+      "timeline": "Week 4-5",
+      "priority": "MEDIUM"
+    }
+  ],
+  "pending_chains": [
+    {
+      "id": "all_to_testing",
+      "sources": ["backend-api-developer", "frontend-ui-developer", "ai-ml-developer"],
+      "target": "testing-qa-developer",
+      "trigger": "Core APIs and UI components stable",
+      "action": "Comprehensive test suite activation",
+      "status": "WAITING",
+      "timeline": "Week 3",
+      "priority": "HIGH"
+    }
+  ],
+  "last_updated": "'$(date -u +"%Y-%m-%dT%H:%M:%SZ")'"
+}

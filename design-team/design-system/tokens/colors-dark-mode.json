@@ -1,0 +1,556 @@
+{
+  "$schema": "https://schemas.design-tokens.org/DTCG/draft",
+  "color": {
+    "base": {
+      "black": {
+        "$type": "color",
+        "$value": "oklch(0% 0 0)",
+        "$description": "True black for OLED optimization - saves 60% battery"
+      },
+      "white": {
+        "$type": "color", 
+        "$value": "oklch(100% 0 0)",
+        "$description": "Pure white for high contrast"
+      },
+      "transparent": {
+        "$type": "color",
+        "$value": "transparent",
+        "$description": "Fully transparent"
+      }
+    },
+    "gray": {
+      "50": {
+        "$type": "color",
+        "$value": "oklch(98% 0 0)",
+        "$description": "Lightest gray - barely visible on white"
+      },
+      "100": {
+        "$type": "color", 
+        "$value": "oklch(95% 0 0)",
+        "$description": "Very light gray"
+      },
+      "200": {
+        "$type": "color",
+        "$value": "oklch(90% 0 0)", 
+        "$description": "Light gray"
+      },
+      "300": {
+        "$type": "color",
+        "$value": "oklch(85% 0 0)",
+        "$description": "Medium-light gray"
+      },
+      "400": {
+        "$type": "color",
+        "$value": "oklch(70% 0 0)",
+        "$description": "Medium gray - text on light backgrounds"
+      },
+      "500": {
+        "$type": "color",
+        "$value": "oklch(55% 0 0)",
+        "$description": "True medium gray - accessible on both modes"
+      },
+      "600": {
+        "$type": "color",
+        "$value": "oklch(40% 0 0)", 
+        "$description": "Dark gray - subtle text on dark backgrounds"
+      },
+      "700": {
+        "$type": "color",
+        "$value": "oklch(25% 0 0)",
+        "$description": "Very dark gray"
+      },
+      "800": {
+        "$type": "color",
+        "$value": "oklch(15% 0 0)",
+        "$description": "Near black - elevated surfaces"
+      },
+      "900": {
+        "$type": "color",
+        "$value": "oklch(10% 0 0)",
+        "$description": "Almost black - subtle elevation"
+      },
+      "950": {
+        "$type": "color",
+        "$value": "oklch(5% 0 0)",
+        "$description": "Darkest gray - highest elevation"
+      }
+    },
+    "mumbai": {
+      "saffron": {
+        "50": {
+          "$type": "color",
+          "$value": "oklch(97% 0.05 65)",
+          "$description": "Lightest saffron tint"
+        },
+        "100": {
+          "$type": "color",
+          "$value": "oklch(94% 0.08 65)", 
+          "$description": "Very light saffron"
+        },
+        "200": {
+          "$type": "color",
+          "$value": "oklch(87% 0.12 65)",
+          "$description": "Light saffron" 
+        },
+        "300": {
+          "$type": "color",
+          "$value": "oklch(78% 0.15 65)",
+          "$description": "Medium-light saffron"
+        },
+        "400": {
+          "$type": "color", 
+          "$value": "oklch(68% 0.18 65)",
+          "$description": "Medium saffron"
+        },
+        "500": {
+          "$type": "color",
+          "$value": "oklch(58% 0.21 65)", 
+          "$description": "True saffron - brand primary"
+        },
+        "600": {
+          "$type": "color",
+          "$value": "oklch(48% 0.19 65)",
+          "$description": "Dark saffron"
+        },
+        "700": {
+          "$type": "color",
+          "$value": "oklch(38% 0.17 65)",
+          "$description": "Very dark saffron"
+        },
+        "800": {
+          "$type": "color",
+          "$value": "oklch(28% 0.14 65)",
+          "$description": "Darkest saffron"
+        },
+        "900": {
+          "$type": "color",
+          "$value": "oklch(18% 0.11 65)",
+          "$description": "Deep saffron shadow"
+        }
+      },
+      "crimson": {
+        "50": {
+          "$type": "color",
+          "$value": "oklch(96% 0.06 25)",
+          "$description": "Lightest crimson tint"
+        },
+        "100": {
+          "$type": "color", 
+          "$value": "oklch(92% 0.10 25)",
+          "$description": "Very light crimson"
+        },
+        "200": {
+          "$type": "color",
+          "$value": "oklch(84% 0.15 25)",
+          "$description": "Light crimson"
+        },
+        "300": {
+          "$type": "color", 
+          "$value": "oklch(74% 0.20 25)",
+          "$description": "Medium-light crimson"
+        },
+        "400": {
+          "$type": "color",
+          "$value": "oklch(64% 0.25 25)", 
+          "$description": "Medium crimson"
+        },
+        "500": {
+          "$type": "color",
+          "$value": "oklch(54% 0.28 25)",
+          "$description": "True crimson - Bollywood red"
+        },
+        "600": {
+          "$type": "color",
+          "$value": "oklch(44% 0.25 25)",
+          "$description": "Dark crimson"
+        },
+        "700": {
+          "$type": "color",
+          "$value": "oklch(34% 0.22 25)", 
+          "$description": "Very dark crimson"
+        },
+        "800": {
+          "$type": "color",
+          "$value": "oklch(24% 0.18 25)",
+          "$description": "Darkest crimson"
+        },
+        "900": {
+          "$type": "color",
+          "$value": "oklch(14% 0.14 25)",
+          "$description": "Deep crimson shadow"
+        }
+      },
+      "gold": {
+        "50": {
+          "$type": "color",
+          "$value": "oklch(97% 0.04 85)",
+          "$description": "Lightest gold tint"
+        },
+        "100": {
+          "$type": "color",
+          "$value": "oklch(94% 0.07 85)",
+          "$description": "Very light gold"
+        },
+        "200": {
+          "$type": "color",
+          "$value": "oklch(88% 0.11 85)",
+          "$description": "Light gold"
+        },
+        "300": {
+          "$type": "color",
+          "$value": "oklch(80% 0.15 85)",
+          "$description": "Medium-light gold"
+        },
+        "400": {
+          "$type": "color",
+          "$value": "oklch(70% 0.19 85)",
+          "$description": "Medium gold"
+        },
+        "500": {
+          "$type": "color",
+          "$value": "oklch(60% 0.22 85)",
+          "$description": "True gold - luxury accent"
+        },
+        "600": {
+          "$type": "color", 
+          "$value": "oklch(50% 0.20 85)",
+          "$description": "Dark gold"
+        },
+        "700": {
+          "$type": "color",
+          "$value": "oklch(40% 0.18 85)",
+          "$description": "Very dark gold"
+        },
+        "800": {
+          "$type": "color",
+          "$value": "oklch(30% 0.15 85)",
+          "$description": "Darkest gold"
+        },
+        "900": {
+          "$type": "color",
+          "$value": "oklch(20% 0.12 85)",
+          "$description": "Deep gold shadow"
+        }
+      }
+    },
+    "neon": {
+      "electric-blue": {
+        "50": {
+          "$type": "color",
+          "$value": "oklch(95% 0.08 220)",
+          "$description": "Lightest electric blue"
+        },
+        "100": {
+          "$type": "color",
+          "$value": "oklch(90% 0.12 220)",
+          "$description": "Very light electric blue"
+        },
+        "200": {
+          "$type": "color", 
+          "$value": "oklch(82% 0.18 220)",
+          "$description": "Light electric blue"
+        },
+        "300": {
+          "$type": "color",
+          "$value": "oklch(74% 0.22 220)",
+          "$description": "Medium-light electric blue"
+        },
+        "400": {
+          "$type": "color",
+          "$value": "oklch(66% 0.26 220)",
+          "$description": "Medium electric blue"
+        },
+        "500": {
+          "$type": "color",
+          "$value": "oklch(58% 0.30 220)",
+          "$description": "True electric blue - tech accent"
+        },
+        "600": {
+          "$type": "color",
+          "$value": "oklch(50% 0.27 220)",
+          "$description": "Dark electric blue"
+        },
+        "700": {
+          "$type": "color",
+          "$value": "oklch(42% 0.24 220)",
+          "$description": "Very dark electric blue"
+        },
+        "800": {
+          "$type": "color",
+          "$value": "oklch(34% 0.20 220)",
+          "$description": "Darkest electric blue"
+        },
+        "900": {
+          "$type": "color",
+          "$value": "oklch(26% 0.16 220)",
+          "$description": "Deep electric blue"
+        }
+      },
+      "magenta": {
+        "50": {
+          "$type": "color",
+          "$value": "oklch(96% 0.07 350)",
+          "$description": "Lightest magenta"
+        },
+        "100": {
+          "$type": "color",
+          "$value": "oklch(91% 0.11 350)",
+          "$description": "Very light magenta"
+        },
+        "200": {
+          "$type": "color",
+          "$value": "oklch(83% 0.17 350)",
+          "$description": "Light magenta"
+        },
+        "300": {
+          "$type": "color",
+          "$value": "oklch(75% 0.23 350)",
+          "$description": "Medium-light magenta"
+        },
+        "400": {
+          "$type": "color",
+          "$value": "oklch(67% 0.28 350)",
+          "$description": "Medium magenta"
+        },
+        "500": {
+          "$type": "color", 
+          "$value": "oklch(59% 0.33 350)",
+          "$description": "True magenta - creative accent"
+        },
+        "600": {
+          "$type": "color",
+          "$value": "oklch(51% 0.30 350)",
+          "$description": "Dark magenta"
+        },
+        "700": {
+          "$type": "color",
+          "$value": "oklch(43% 0.26 350)",
+          "$description": "Very dark magenta"
+        },
+        "800": {
+          "$type": "color",
+          "$value": "oklch(35% 0.22 350)",
+          "$description": "Darkest magenta"
+        },
+        "900": {
+          "$type": "color",
+          "$value": "oklch(27% 0.18 350)",
+          "$description": "Deep magenta shadow"
+        }
+      }
+    },
+    "semantic": {
+      "dark-mode": {
+        "background": {
+          "primary": {
+            "$type": "color",
+            "$value": "{color.base.black}",
+            "$description": "Primary background - true black for OLED"
+          },
+          "secondary": {
+            "$type": "color",
+            "$value": "{color.gray.900}",
+            "$description": "Secondary background - subtle elevation"
+          },
+          "tertiary": {
+            "$type": "color",
+            "$value": "{color.gray.800}",
+            "$description": "Tertiary background - card surfaces"
+          },
+          "elevated": {
+            "$type": "color",
+            "$value": "{color.gray.700}",
+            "$description": "Elevated surfaces - modals, tooltips"
+          },
+          "overlay": {
+            "$type": "color",
+            "$value": "oklch(0% 0 0 / 0.8)",
+            "$description": "Overlay background - 80% opacity"
+          }
+        },
+        "text": {
+          "primary": {
+            "$type": "color",
+            "$value": "{color.base.white}",
+            "$description": "Primary text - highest contrast (21:1)"
+          },
+          "secondary": {
+            "$type": "color",
+            "$value": "{color.gray.300}",
+            "$description": "Secondary text - medium contrast (7:1)" 
+          },
+          "tertiary": {
+            "$type": "color",
+            "$value": "{color.gray.500}",
+            "$description": "Tertiary text - lower contrast (4.5:1)"
+          },
+          "inverse": {
+            "$type": "color",
+            "$value": "{color.base.black}",
+            "$description": "Inverse text - on light backgrounds"
+          },
+          "disabled": {
+            "$type": "color",
+            "$value": "{color.gray.600}",
+            "$description": "Disabled text - 3:1 contrast"
+          }
+        },
+        "border": {
+          "subtle": {
+            "$type": "color",
+            "$value": "{color.gray.800}",
+            "$description": "Subtle borders - barely visible separation"
+          },
+          "default": {
+            "$type": "color",
+            "$value": "{color.gray.700}",
+            "$description": "Default borders - clear separation"
+          },
+          "strong": {
+            "$type": "color",
+            "$value": "{color.gray.600}",
+            "$description": "Strong borders - emphasized separation"
+          },
+          "focus": {
+            "$type": "color",
+            "$value": "{color.neon.electric-blue.500}",
+            "$description": "Focus indicators - accessibility"
+          }
+        },
+        "accent": {
+          "primary": {
+            "$type": "color",
+            "$value": "{color.mumbai.saffron.400}",
+            "$description": "Primary accent - Mumbai saffron"
+          },
+          "secondary": {
+            "$type": "color",
+            "$value": "{color.neon.electric-blue.500}",
+            "$description": "Secondary accent - modern tech"
+          },
+          "tertiary": {
+            "$type": "color",
+            "$value": "{color.mumbai.gold.500}",
+            "$description": "Tertiary accent - luxury gold"
+          },
+          "danger": {
+            "$type": "color",
+            "$value": "{color.mumbai.crimson.500}",
+            "$description": "Danger/error - vibrant crimson"
+          },
+          "warning": {
+            "$type": "color", 
+            "$value": "{color.mumbai.gold.400}",
+            "$description": "Warning - attention gold"
+          },
+          "success": {
+            "$type": "color",
+            "$value": "oklch(70% 0.15 140)",
+            "$description": "Success - vibrant green"
+          },
+          "info": {
+            "$type": "color",
+            "$value": "{color.neon.electric-blue.400}",
+            "$description": "Info - electric blue"
+          }
+        }
+      }
+    },
+    "glassmorphism": {
+      "backdrop": {
+        "light": {
+          "$type": "color",
+          "$value": "oklch(100% 0 0 / 0.1)",
+          "$description": "Light glassmorphism backdrop - 10% white"
+        },
+        "medium": {
+          "$type": "color",
+          "$value": "oklch(100% 0 0 / 0.2)",
+          "$description": "Medium glassmorphism backdrop - 20% white"
+        },
+        "heavy": {
+          "$type": "color",
+          "$value": "oklch(100% 0 0 / 0.3)",
+          "$description": "Heavy glassmorphism backdrop - 30% white"
+        }
+      },
+      "border": {
+        "subtle": {
+          "$type": "color",
+          "$value": "oklch(100% 0 0 / 0.1)",
+          "$description": "Subtle glassmorphism border"
+        },
+        "default": {
+          "$type": "color",
+          "$value": "oklch(100% 0 0 / 0.2)",
+          "$description": "Default glassmorphism border"
+        },
+        "strong": {
+          "$type": "color",
+          "$value": "oklch(100% 0 0 / 0.3)",
+          "$description": "Strong glassmorphism border"
+        }
+      }
+    }
+  },
+  "gradient": {
+    "mumbai-sunset": {
+      "$type": "gradient",
+      "$value": {
+        "type": "linear",
+        "angle": "135deg",
+        "stops": [
+          {
+            "position": "0%",
+            "color": "{color.mumbai.saffron.500}"
+          },
+          {
+            "position": "50%", 
+            "color": "{color.mumbai.crimson.500}"
+          },
+          {
+            "position": "100%",
+            "color": "{color.mumbai.gold.600}"
+          }
+        ]
+      },
+      "$description": "Mumbai sunset gradient - warm brand feeling"
+    },
+    "electric-aurora": {
+      "$type": "gradient", 
+      "$value": {
+        "type": "linear",
+        "angle": "45deg",
+        "stops": [
+          {
+            "position": "0%",
+            "color": "{color.neon.electric-blue.500}"
+          },
+          {
+            "position": "100%",
+            "color": "{color.neon.magenta.500}"
+          }
+        ]
+      },
+      "$description": "Electric aurora gradient - modern tech feeling"
+    },
+    "cinematic-depth": {
+      "$type": "gradient",
+      "$value": {
+        "type": "radial", 
+        "position": "center",
+        "stops": [
+          {
+            "position": "0%",
+            "color": "{color.gray.800}"
+          },
+          {
+            "position": "100%",
+            "color": "{color.base.black}"
+          }
+        ]
+      },
+      "$description": "Cinematic depth gradient - dramatic spotlight effect"
+    }
+  }
+}

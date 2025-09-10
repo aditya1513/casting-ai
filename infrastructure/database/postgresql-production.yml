@@ -1,0 +1,139 @@
+# PostgreSQL Production Configuration for CastMatch
+# This configuration provides high availability, performance, and security
+
+version: '3.8'
+
+services:
+  # Primary PostgreSQL Database
+  postgres-primary:
+    image: postgres:16-alpine
+    container_name: castmatch-postgres-primary
+    environment:
+      POSTGRES_DB: castmatch_production
+      POSTGRES_USER: castmatch_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_INITDB_ARGS: "--auth-local=trust --auth-host=md5"
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./pg_hba.conf:/etc/postgresql/pg_hba.conf
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "3"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U castmatch_user -d castmatch_production"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # PgBouncer Connection Pooler
+  pgbouncer:
+    image: pgbouncer/pgbouncer:latest
+    container_name: castmatch-pgbouncer
+    environment:
+      DATABASES_HOST: postgres-primary
+      DATABASES_PORT: 5432
+      DATABASES_USER: castmatch_user
+      DATABASES_PASSWORD: ${POSTGRES_PASSWORD}
+      DATABASES_DBNAME: castmatch_production
+      POOL_MODE: transaction
+      LISTEN_PORT: 6432
+      MAX_CLIENT_CONN: 1000
+      DEFAULT_POOL_SIZE: 20
+      MIN_POOL_SIZE: 5
+      RESERVE_POOL_SIZE: 5
+      SERVER_RESET_QUERY: DISCARD ALL
+      SERVER_IDLE_TIMEOUT: 600
+      CLIENT_IDLE_TIMEOUT: 0
+      ADMIN_USERS: castmatch_admin
+    ports:
+      - "6432:6432"
+    depends_on:
+      postgres-primary:
+        condition: service_healthy
+    restart: unless-stopped
+    volumes:
+      - ./pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini
+      - ./userlist.txt:/etc/pgbouncer/userlist.txt
+    healthcheck:
+      test: ["CMD-SHELL", "psql -h localhost -p 6432 -U castmatch_user -d castmatch_production -c 'SELECT 1'"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # PostgreSQL Read Replica (Optional for scaling)
+  postgres-replica:
+    image: postgres:16-alpine
+    container_name: castmatch-postgres-replica
+    environment:
+      POSTGRES_USER: replicator
+      POSTGRES_PASSWORD: ${REPLICA_PASSWORD}
+      PGUSER: postgres
+      POSTGRES_DB: castmatch_production
+      POSTGRES_MASTER_SERVICE: postgres-primary
+    command: |
+      bash -c "
+      until pg_basebackup --pgdata=/var/lib/postgresql/data -R --slot=replica_1 --host=postgres-primary --port=5432 --username=replicator
+      do
+        echo 'Waiting for primary to connect...'
+        sleep 1s
+      done
+      echo 'Backup done, starting replica...'
+      postgres
+      "
+    volumes:
+      - postgres_replica_data:/var/lib/postgresql/data
+    depends_on:
+      postgres-primary:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Redis for Caching and Sessions
+  redis:
+    image: redis:7-alpine
+    container_name: castmatch-redis
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/castmatch/data/postgres
+  postgres_replica_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/castmatch/data/postgres-replica
+  redis_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/castmatch/data/redis
+
+networks:
+  default:
+    name: castmatch-network
+    driver: bridge

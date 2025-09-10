@@ -1,0 +1,430 @@
+# Prometheus Alert Rules for CastMatch
+# Comprehensive alerting for authentication, performance, and infrastructure
+
+groups:
+  # Authentication and Security Alerts
+  - name: authentication
+    interval: 30s
+    rules:
+      # High authentication failure rate
+      - alert: HighAuthFailureRate
+        expr: |
+          (
+            increase(castmatch_auth_failures_total[5m]) /
+            increase(castmatch_auth_attempts_total[5m])
+          ) > 0.1
+        for: 2m
+        labels:
+          severity: warning
+          service: authentication
+        annotations:
+          summary: "High authentication failure rate detected"
+          description: "Authentication failure rate is {{ $value | humanizePercentage }} over the last 5 minutes"
+          runbook_url: "https://docs.castmatch.com/runbooks/auth-failures"
+
+      # Critical authentication failure rate
+      - alert: CriticalAuthFailureRate
+        expr: |
+          (
+            increase(castmatch_auth_failures_total[5m]) /
+            increase(castmatch_auth_attempts_total[5m])
+          ) > 0.3
+        for: 1m
+        labels:
+          severity: critical
+          service: authentication
+        annotations:
+          summary: "Critical authentication failure rate"
+          description: "Authentication failure rate is {{ $value | humanizePercentage }} - possible attack"
+          runbook_url: "https://docs.castmatch.com/runbooks/auth-failures"
+
+      # OAuth provider failures
+      - alert: OAuthProviderDown
+        expr: probe_success{job="oauth-providers"} == 0
+        for: 5m
+        labels:
+          severity: critical
+          service: oauth
+        annotations:
+          summary: "OAuth provider is down"
+          description: "OAuth provider {{ $labels.instance }} has been down for more than 5 minutes"
+          runbook_url: "https://docs.castmatch.com/runbooks/oauth-failures"
+
+      # Suspicious login patterns
+      - alert: SuspiciousLoginPattern
+        expr: increase(castmatch_auth_attempts_total{result="failure"}[1h]) > 100
+        for: 0s
+        labels:
+          severity: warning
+          service: security
+        annotations:
+          summary: "Suspicious login pattern detected"
+          description: "More than 100 failed login attempts in the last hour"
+          runbook_url: "https://docs.castmatch.com/runbooks/security-incidents"
+
+      # CSRF attack detection
+      - alert: CSRFAttackDetected
+        expr: increase(castmatch_csrf_failures_total[5m]) > 50
+        for: 0s
+        labels:
+          severity: critical
+          service: security
+        annotations:
+          summary: "Potential CSRF attack detected"
+          description: "{{ $value }} CSRF validation failures in 5 minutes"
+          runbook_url: "https://docs.castmatch.com/runbooks/csrf-attacks"
+
+      # Rate limiting triggered frequently
+      - alert: ExcessiveRateLimiting
+        expr: increase(castmatch_rate_limit_exceeded_total[10m]) > 1000
+        for: 2m
+        labels:
+          severity: warning
+          service: rate-limiting
+        annotations:
+          summary: "Excessive rate limiting detected"
+          description: "Rate limiting has been triggered {{ $value }} times in 10 minutes"
+          runbook_url: "https://docs.castmatch.com/runbooks/rate-limiting"
+
+  # Application Performance Alerts
+  - name: performance
+    interval: 30s
+    rules:
+      # High response time
+      - alert: HighResponseTime
+        expr: histogram_quantile(0.95, castmatch_http_request_duration_seconds_bucket) > 2
+        for: 5m
+        labels:
+          severity: warning
+          service: api
+        annotations:
+          summary: "High API response time"
+          description: "95th percentile response time is {{ $value }}s"
+          runbook_url: "https://docs.castmatch.com/runbooks/performance"
+
+      # Critical response time
+      - alert: CriticalResponseTime
+        expr: histogram_quantile(0.95, castmatch_http_request_duration_seconds_bucket) > 5
+        for: 2m
+        labels:
+          severity: critical
+          service: api
+        annotations:
+          summary: "Critical API response time"
+          description: "95th percentile response time is {{ $value }}s"
+          runbook_url: "https://docs.castmatch.com/runbooks/performance"
+
+      # High error rate
+      - alert: HighErrorRate
+        expr: |
+          (
+            increase(castmatch_http_requests_total{status=~"5.."}[5m]) /
+            increase(castmatch_http_requests_total[5m])
+          ) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+          service: api
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is {{ $value | humanizePercentage }} over 5 minutes"
+          runbook_url: "https://docs.castmatch.com/runbooks/errors"
+
+      # Critical error rate
+      - alert: CriticalErrorRate
+        expr: |
+          (
+            increase(castmatch_http_requests_total{status=~"5.."}[5m]) /
+            increase(castmatch_http_requests_total[5m])
+          ) > 0.15
+        for: 2m
+        labels:
+          severity: critical
+          service: api
+        annotations:
+          summary: "Critical error rate"
+          description: "Error rate is {{ $value | humanizePercentage }} over 5 minutes"
+          runbook_url: "https://docs.castmatch.com/runbooks/errors"
+
+      # Database connection pool exhaustion
+      - alert: DatabaseConnectionPoolExhausted
+        expr: |
+          (
+            pgbouncer_pools_server_active_connections /
+            pgbouncer_pools_maxwait_us
+          ) > 0.9
+        for: 2m
+        labels:
+          severity: critical
+          service: database
+        annotations:
+          summary: "Database connection pool nearly exhausted"
+          description: "Database connection pool is {{ $value | humanizePercentage }} full"
+          runbook_url: "https://docs.castmatch.com/runbooks/database"
+
+      # High memory usage
+      - alert: HighMemoryUsage
+        expr: |
+          (
+            1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)
+          ) > 0.85
+        for: 10m
+        labels:
+          severity: warning
+          service: infrastructure
+        annotations:
+          summary: "High memory usage"
+          description: "Memory usage is {{ $value | humanizePercentage }}"
+          runbook_url: "https://docs.castmatch.com/runbooks/resources"
+
+      # Critical memory usage
+      - alert: CriticalMemoryUsage
+        expr: |
+          (
+            1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)
+          ) > 0.95
+        for: 2m
+        labels:
+          severity: critical
+          service: infrastructure
+        annotations:
+          summary: "Critical memory usage"
+          description: "Memory usage is {{ $value | humanizePercentage }}"
+          runbook_url: "https://docs.castmatch.com/runbooks/resources"
+
+  # Infrastructure Alerts
+  - name: infrastructure
+    interval: 30s
+    rules:
+      # Service down
+      - alert: ServiceDown
+        expr: up == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: "{{ $labels.job }}"
+        annotations:
+          summary: "Service is down"
+          description: "{{ $labels.job }} service has been down for more than 1 minute"
+          runbook_url: "https://docs.castmatch.com/runbooks/service-down"
+
+      # High CPU usage
+      - alert: HighCPUUsage
+        expr: 100 - (avg by (instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 10m
+        labels:
+          severity: warning
+          service: infrastructure
+        annotations:
+          summary: "High CPU usage"
+          description: "CPU usage is {{ $value }}% on {{ $labels.instance }}"
+          runbook_url: "https://docs.castmatch.com/runbooks/resources"
+
+      # Critical CPU usage
+      - alert: CriticalCPUUsage
+        expr: 100 - (avg by (instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 95
+        for: 2m
+        labels:
+          severity: critical
+          service: infrastructure
+        annotations:
+          summary: "Critical CPU usage"
+          description: "CPU usage is {{ $value }}% on {{ $labels.instance }}"
+          runbook_url: "https://docs.castmatch.com/runbooks/resources"
+
+      # High disk usage
+      - alert: HighDiskUsage
+        expr: |
+          (
+            1 - (node_filesystem_avail_bytes{fstype!="tmpfs"} / node_filesystem_size_bytes{fstype!="tmpfs"})
+          ) > 0.85
+        for: 5m
+        labels:
+          severity: warning
+          service: infrastructure
+        annotations:
+          summary: "High disk usage"
+          description: "Disk usage is {{ $value | humanizePercentage }} on {{ $labels.instance }}:{{ $labels.mountpoint }}"
+          runbook_url: "https://docs.castmatch.com/runbooks/storage"
+
+      # Critical disk usage
+      - alert: CriticalDiskUsage
+        expr: |
+          (
+            1 - (node_filesystem_avail_bytes{fstype!="tmpfs"} / node_filesystem_size_bytes{fstype!="tmpfs"})
+          ) > 0.95
+        for: 1m
+        labels:
+          severity: critical
+          service: infrastructure
+        annotations:
+          summary: "Critical disk usage"
+          description: "Disk usage is {{ $value | humanizePercentage }} on {{ $labels.instance }}:{{ $labels.mountpoint }}"
+          runbook_url: "https://docs.castmatch.com/runbooks/storage"
+
+      # Load average high
+      - alert: HighLoadAverage
+        expr: node_load15 > 2 * count(count(node_cpu_seconds_total) by (cpu))
+        for: 10m
+        labels:
+          severity: warning
+          service: infrastructure
+        annotations:
+          summary: "High load average"
+          description: "Load average is {{ $value }} on {{ $labels.instance }}"
+          runbook_url: "https://docs.castmatch.com/runbooks/performance"
+
+  # Database Alerts
+  - name: database
+    interval: 30s
+    rules:
+      # Database down
+      - alert: DatabaseDown
+        expr: pg_up == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: database
+        annotations:
+          summary: "Database is down"
+          description: "PostgreSQL database is not responding"
+          runbook_url: "https://docs.castmatch.com/runbooks/database-down"
+
+      # High database connections
+      - alert: HighDatabaseConnections
+        expr: |
+          (
+            pg_stat_activity_count / pg_settings_max_connections
+          ) > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          service: database
+        annotations:
+          summary: "High database connection usage"
+          description: "Database connection usage is {{ $value | humanizePercentage }}"
+          runbook_url: "https://docs.castmatch.com/runbooks/database"
+
+      # Long running queries
+      - alert: LongRunningQueries
+        expr: pg_stat_activity_max_tx_duration > 300
+        for: 0s
+        labels:
+          severity: warning
+          service: database
+        annotations:
+          summary: "Long running database query"
+          description: "Query has been running for {{ $value }} seconds"
+          runbook_url: "https://docs.castmatch.com/runbooks/slow-queries"
+
+      # Database replication lag
+      - alert: DatabaseReplicationLag
+        expr: pg_stat_replication_lag_bytes > 104857600  # 100MB
+        for: 5m
+        labels:
+          severity: warning
+          service: database
+        annotations:
+          summary: "High database replication lag"
+          description: "Replication lag is {{ $value | humanizeBytes }}"
+          runbook_url: "https://docs.castmatch.com/runbooks/replication"
+
+      # Critical replication lag
+      - alert: CriticalDatabaseReplicationLag
+        expr: pg_stat_replication_lag_bytes > 1073741824  # 1GB
+        for: 2m
+        labels:
+          severity: critical
+          service: database
+        annotations:
+          summary: "Critical database replication lag"
+          description: "Replication lag is {{ $value | humanizeBytes }}"
+          runbook_url: "https://docs.castmatch.com/runbooks/replication"
+
+  # SSL Certificate Alerts
+  - name: ssl-certificates
+    interval: 1h
+    rules:
+      # Certificate expiring soon
+      - alert: SSLCertificateExpiringSoon
+        expr: probe_ssl_earliest_cert_expiry - time() < 30 * 24 * 3600  # 30 days
+        for: 1h
+        labels:
+          severity: warning
+          service: ssl
+        annotations:
+          summary: "SSL certificate expiring soon"
+          description: "SSL certificate for {{ $labels.instance }} expires in {{ $value | humanizeDuration }}"
+          runbook_url: "https://docs.castmatch.com/runbooks/ssl-renewal"
+
+      # Certificate expiring very soon
+      - alert: SSLCertificateExpiringVerySoon
+        expr: probe_ssl_earliest_cert_expiry - time() < 7 * 24 * 3600  # 7 days
+        for: 1h
+        labels:
+          severity: critical
+          service: ssl
+        annotations:
+          summary: "SSL certificate expiring very soon"
+          description: "SSL certificate for {{ $labels.instance }} expires in {{ $value | humanizeDuration }}"
+          runbook_url: "https://docs.castmatch.com/runbooks/ssl-renewal"
+
+      # SSL certificate invalid
+      - alert: SSLCertificateInvalid
+        expr: probe_ssl_cert_not_after - probe_ssl_cert_not_before <= 0
+        for: 1h
+        labels:
+          severity: critical
+          service: ssl
+        annotations:
+          summary: "SSL certificate is invalid"
+          description: "SSL certificate for {{ $labels.instance }} is invalid"
+          runbook_url: "https://docs.castmatch.com/runbooks/ssl-issues"
+
+  # Business Logic Alerts
+  - name: business-metrics
+    interval: 1m
+    rules:
+      # Low user registration rate
+      - alert: LowUserRegistrationRate
+        expr: increase(castmatch_user_registrations_total[1h]) < 1
+        for: 2h
+        labels:
+          severity: warning
+          service: business
+        annotations:
+          summary: "Low user registration rate"
+          description: "Less than 1 user registration in the last hour"
+          runbook_url: "https://docs.castmatch.com/runbooks/business-metrics"
+
+      # Email delivery failures
+      - alert: EmailDeliveryFailures
+        expr: |
+          (
+            increase(castmatch_email_failures_total[10m]) /
+            increase(castmatch_email_sent_total[10m])
+          ) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+          service: email
+        annotations:
+          summary: "High email delivery failure rate"
+          description: "Email delivery failure rate is {{ $value | humanizePercentage }}"
+          runbook_url: "https://docs.castmatch.com/runbooks/email-delivery"
+
+      # File upload failures
+      - alert: FileUploadFailures
+        expr: |
+          (
+            increase(castmatch_file_upload_failures_total[10m]) /
+            increase(castmatch_file_uploads_total[10m])
+          ) > 0.2
+        for: 5m
+        labels:
+          severity: warning
+          service: file-storage
+        annotations:
+          summary: "High file upload failure rate"
+          description: "File upload failure rate is {{ $value | humanizePercentage }}"
+          runbook_url: "https://docs.castmatch.com/runbooks/file-uploads"

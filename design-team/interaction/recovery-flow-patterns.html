@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CastMatch - Recovery Flow Patterns</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8fafc;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 48px;
+            padding: 32px 0;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border-radius: 16px;
+        }
+
+        .flow-diagram {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .flow-header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .flow-steps {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 24px;
+            margin-bottom: 32px;
+            position: relative;
+        }
+
+        .flow-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+
+        .step-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .step-circle.detect { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .step-circle.analyze { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .step-circle.respond { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+        .step-circle.recover { background: linear-gradient(135deg, #10b981, #059669); }
+        .step-circle.learn { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+
+        .step-circle::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            border-radius: 50%;
+            animation: rotate 3s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .step-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .step-description {
+            font-size: 14px;
+            color: #6b7280;
+            line-height: 1.4;
+        }
+
+        .flow-arrows {
+            position: absolute;
+            top: 40px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #e5e7eb 0%, #3b82f6 50%, #e5e7eb 100%);
+            z-index: -1;
+        }
+
+        .recovery-scenarios {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .scenario-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .scenario-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px -8px rgba(0, 0, 0, 0.2);
+        }
+
+        .scenario-header {
+            padding: 20px 24px;
+            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .scenario-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+
+        .scenario-subtitle {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .scenario-content {
+            padding: 24px;
+        }
+
+        .recovery-timeline {
+            margin-bottom: 24px;
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 16px;
+            position: relative;
+        }
+
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 36px;
+            bottom: -16px;
+            width: 2px;
+            background: #e5e7eb;
+        }
+
+        .timeline-item:last-child::before {
+            display: none;
+        }
+
+        .timeline-dot {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+
+        .timeline-content {
+            flex: 1;
+            padding-top: 4px;
+        }
+
+        .timeline-title {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+
+        .timeline-description {
+            font-size: 14px;
+            color: #6b7280;
+            line-height: 1.4;
+        }
+
+        .timeline-time {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 4px;
+        }
+
+        .success-metrics {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .metric-item {
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #059669;
+        }
+
+        .metric-label {
+            font-size: 11px;
+            color: #065f46;
+            text-transform: uppercase;
+        }
+
+        .failure-points {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .failure-points h4 {
+            color: #991b1b;
+            margin-bottom: 8px;
+        }
+
+        .failure-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+            font-size: 14px;
+            color: #991b1b;
+        }
+
+        .interactive-flow {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border: 2px solid #f59e0b;
+            border-radius: 16px;
+            padding: 32px;
+            margin-top: 32px;
+        }
+
+        .flow-simulator {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 32px;
+            align-items: start;
+        }
+
+        .error-triggers {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .trigger-button {
+            width: 100%;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            background: #f9fafb;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+        }
+
+        .trigger-button:hover {
+            background: #f3f4f6;
+            border-color: #9ca3af;
+        }
+
+        .trigger-button.active {
+            background: #dbeafe;
+            border-color: #3b82f6;
+            color: #1d4ed8;
+        }
+
+        .recovery-visualization {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            min-height: 400px;
+            position: relative;
+        }
+
+        .recovery-stage {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .recovery-stage.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .stage-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .stage-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .stage-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .recovery-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .action-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .action-card:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+            transform: translateY(-1px);
+        }
+
+        .action-title {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 4px;
+        }
+
+        .action-description {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .progress-indicator {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 16px 0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            width: 0%;
+            transition: width 2s ease;
+        }
+
+        .best-practices {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin-top: 32px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .practices-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-top: 24px;
+        }
+
+        .practice-card {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .practice-card:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 8px 25px -8px rgba(59, 130, 246, 0.25);
+        }
+
+        .practice-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .practice-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .practice-title {
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .practice-description {
+            color: #6b7280;
+            margin-bottom: 16px;
+        }
+
+        .practice-checklist {
+            list-style: none;
+            padding: 0;
+        }
+
+        .practice-checklist li {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #374151;
+        }
+
+        .practice-checklist li::before {
+            content: '✓';
+            color: #10b981;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+
+            .flow-steps {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .flow-arrows {
+                display: none;
+            }
+
+            .recovery-scenarios {
+                grid-template-columns: 1fr;
+            }
+
+            .flow-simulator {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .recovery-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>CastMatch Recovery Flow Patterns</h1>
+            <p>Intelligent error recovery workflows that restore user confidence</p>
+        </div>
+
+        <!-- Master Recovery Flow -->
+        <div class="flow-diagram">
+            <div class="flow-header">
+                <h2>🔄 Universal Error Recovery Framework</h2>
+                <p>Every error follows this 5-stage recovery pattern</p>
+            </div>
+
+            <div class="flow-steps">
+                <div class="flow-arrows"></div>
+                
+                <div class="flow-step">
+                    <div class="step-circle detect">1</div>
+                    <div class="step-title">Detect</div>
+                    <div class="step-description">Monitor system health and user actions to identify issues immediately</div>
+                </div>
+
+                <div class="flow-step">
+                    <div class="step-circle analyze">2</div>
+                    <div class="step-title">Analyze</div>
+                    <div class="step-description">Classify error type, severity, and determine best recovery strategy</div>
+                </div>
+
+                <div class="flow-step">
+                    <div class="step-circle respond">3</div>
+                    <div class="step-title">Respond</div>
+                    <div class="step-description">Show contextual error message with clear next steps</div>
+                </div>
+
+                <div class="flow-step">
+                    <div class="step-circle recover">4</div>
+                    <div class="step-title">Recover</div>
+                    <div class="step-description">Execute recovery actions and restore user workflow</div>
+                </div>
+
+                <div class="flow-step">
+                    <div class="step-circle learn">5</div>
+                    <div class="step-title">Learn</div>
+                    <div class="step-description">Log patterns and improve future recovery experiences</div>
+                </div>
+            </div>
+
+            <div class="success-metrics">
+                <h4 style="text-align: center; color: #059669; margin-bottom: 12px;">🎯 Target Recovery Metrics</h4>
+                <div class="metrics-grid">
+                    <div class="metric-item">
+                        <div class="metric-value">90%</div>
+                        <div class="metric-label">Recovery Rate</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value">< 30s</div>
+                        <div class="metric-label">Recovery Time</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value">85%</div>
+                        <div class="metric-label">User Satisfaction</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recovery Scenarios -->
+        <div class="recovery-scenarios">
+            <!-- Network Recovery -->
+            <div class="scenario-card">
+                <div class="scenario-header">
+                    <div class="scenario-title">🌐 Network Connection Recovery</div>
+                    <div class="scenario-subtitle">Automatic reconnection with user notification</div>
+                </div>
+                <div class="scenario-content">
+                    <div class="recovery-timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-dot">1</div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Connection Lost Detected</div>
+                                <div class="timeline-description">Monitor detects failed API calls and network timeouts</div>
+                                <div class="timeline-time">0-2 seconds</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot">2</div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">User Notification</div>
+                                <div class="timeline-description">Show "Connection lost" banner with retry countdown</div>
+                                <div class="timeline-time">2-3 seconds</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot">3</div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Automatic Retry</div>
+                                <div class="timeline-description">Retry with exponential backoff: 1s, 3s, 9s</div>
+                                <div class="timeline-time">3-15 seconds</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot">4</div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Connection Restored</div>
+                                <div class="timeline-description">Resume user workflow from exact position</div>
+                                <div class="timeline-time">15-30 seconds</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="success-metrics">
+                        <div class="metrics-grid">
+                            <div class="metric-item">
+                                <div class="metric-value">94%</div>
+                                <div class="metric-label">Auto Recovery</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value">12s</div>
+                                <div class="metric-label">Avg Recovery</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value">88%</div>
+                                <div class="metric-label">User Satisfaction</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="failure-points">
+                        <h4>⚠️ Potential Failure Points</h4>
+                        <div class="failure-item">🔸 Multiple rapid disconnections → frustration</div>
+                        <div class="failure-item">🔸 Long reconnection time → user abandonment</div>
+                        <div class="failure-item">🔸 Data loss during offline period</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Recovery -->
+            <div class="scenario-card">
+                <div class="scenario-header">
+                    <div class="scenario-title">📝 Form Submission Recovery</div>
+                    <div class="scenario-subtitle">Preserve user data and provide clear validation</div>
+                </div>
+                <div class="scenario-content">
+                    <div class="recovery-timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-dot">1</div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Validation Error Detected</div>
+                                <div class="timeline-description">Form submission fails due to invalid or missing data</div>
+                                <div class="timeline-time">0-1 seconds</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot">2</div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Preserve Form State</div>
+                                <div class="timeline-description">Save all user input to prevent data loss</div>
+                                <div class="timeline-time">1 second</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot">3</div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Show Specific Errors</div>
+                                <div class="timeline-description">Highlight fields with issues and provide correction guidance</div>
+                                <div class="timeline-time">1-2 seconds</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot">4</div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Guide Correction</div>
+                                <div class="timeline-description">Auto-focus first error field and offer suggestions</div>
+                                <div class="timeline-time">2-3 seconds</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="success-metrics">
+                        <div class="metrics-grid">
+                            <div class="metric-item">
+                                <div class="metric-value">96%</div>
+                                <div class="metric-label">Data Preserved</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value">78%</div>
+                                <div class="metric-label">Correction Rate</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value">3.2s</div>
+                                <div class="metric-label">Error Display</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="failure-points">
+                        <h4>⚠️ Potential Failure Points</h4>
+                        <div class="failure-item">🔸 Generic error messages → confusion</div>
+                        <div class="failure-item">🔸 Page refresh → data loss</div>
+                        <div class="failure-item">🔸 Multiple validation rounds → fatigue</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Authentication Recovery -->
+            <div class="scenario-card">
+                <div class="scenario-header">
+                    <div class="scenario-title">🔐 Authentication Recovery</div>
+                    <div class="scenario-subtitle">Seamless re-authentication with context preservation</div>
+                </div>
+                <div class="scenario-content">
+                    <div class="recovery-timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-dot">1</div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Session Expiry Detected</div>
+                                <div class="timeline-description">API returns 401 unauthorized response</div>
+                                <div class="timeline-time">0 seconds</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot">2</div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Save Current Context</div>
+                                <div class="timeline-description">Store user's current page, form data, and navigation state</div>
+                                <div class="timeline-time">1 second</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot">3</div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Show Re-auth Modal</div>
+                                <div class="timeline-description">Overlay login form without page redirect</div>
+                                <div class="timeline-time">1-2 seconds</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot">4</div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Restore User Session</div>
+                                <div class="timeline-description">Return user to exact previous state after login</div>
+                                <div class="timeline-time">2-5 seconds</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="success-metrics">
+                        <div class="metrics-grid">
+                            <div class="metric-item">
+                                <div class="metric-value">92%</div>
+                                <div class="metric-label">Context Restored</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value">85%</div>
+                                <div class="metric-label">Re-auth Rate</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value">8s</div>
+                                <div class="metric-label">Recovery Time</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- File Upload Recovery -->
+            <div class="scenario-card">
+                <div class="scenario-header">
+                    <div class="scenario-title">📎 File Upload Recovery</div>
+                    <div class="scenario-subtitle">Resume interrupted uploads with progress tracking</div>
+                </div>
+                <div class="scenario-content">
+                    <div class="recovery-timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-dot">1</div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Upload Failure Detected</div>
+                                <div class="timeline-description">Network interruption or server error during upload</div>
+                                <div class="timeline-time">0 seconds</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot">2</div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Save Upload State</div>
+                                <div class="timeline-description">Record uploaded chunks and file metadata</div>
+                                <div class="timeline-time">1 second</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot">3</div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Offer Resume Options</div>
+                                <div class="timeline-description">Show resume button with upload progress</div>
+                                <div class="timeline-time">2 seconds</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot">4</div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Resume Upload</div>
+                                <div class="timeline-description">Continue from last successful chunk</div>
+                                <div class="timeline-time">3+ seconds</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="success-metrics">
+                        <div class="metrics-grid">
+                            <div class="metric-item">
+                                <div class="metric-value">89%</div>
+                                <div class="metric-label">Resume Success</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value">65%</div>
+                                <div class="metric-label">Data Saved</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value">4.8s</div>
+                                <div class="metric-label">Resume Time</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interactive Flow Simulator -->
+        <div class="interactive-flow">
+            <h2 style="text-align: center; color: #92400e; margin-bottom: 24px;">🎮 Interactive Recovery Simulator</h2>
+            <p style="text-align: center; color: #92400e; margin-bottom: 32px;">
+                Click on different error types to see the recovery flow in action
+            </p>
+
+            <div class="flow-simulator">
+                <div class="error-triggers">
+                    <h3 style="margin-bottom: 16px; color: #1f2937;">Select Error Type</h3>
+                    <button class="trigger-button active" data-scenario="network">
+                        🌐 Network Connection Lost
+                    </button>
+                    <button class="trigger-button" data-scenario="validation">
+                        📝 Form Validation Failed
+                    </button>
+                    <button class="trigger-button" data-scenario="auth">
+                        🔐 Session Expired
+                    </button>
+                    <button class="trigger-button" data-scenario="upload">
+                        📎 File Upload Failed
+                    </button>
+                    <button class="trigger-button" data-scenario="server">
+                        ⚠️ Server Error
+                    </button>
+                </div>
+
+                <div class="recovery-visualization">
+                    <div class="recovery-stage active" data-stage="network">
+                        <div class="stage-header">
+                            <div class="stage-icon">🌐</div>
+                            <div class="stage-title">Network Recovery in Progress</div>
+                        </div>
+                        <div style="color: #6b7280; margin-bottom: 16px;">
+                            Connection lost detected. Initiating automatic recovery sequence...
+                        </div>
+                        <div class="progress-indicator">
+                            <div class="progress-bar" style="width: 0%;" data-progress="75"></div>
+                        </div>
+                        <div class="recovery-actions">
+                            <div class="action-card">
+                                <div class="action-title">🔄 Auto Retry</div>
+                                <div class="action-description">Automatically retrying connection every 3 seconds</div>
+                            </div>
+                            <div class="action-card">
+                                <div class="action-title">📱 Offline Mode</div>
+                                <div class="action-description">Browse cached content while reconnecting</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="recovery-stage" data-stage="validation">
+                        <div class="stage-header">
+                            <div class="stage-icon">📝</div>
+                            <div class="stage-title">Form Error Recovery</div>
+                        </div>
+                        <div style="color: #6b7280; margin-bottom: 16px;">
+                            Form validation failed. Preserving your data and highlighting issues...
+                        </div>
+                        <div class="recovery-actions">
+                            <div class="action-card">
+                                <div class="action-title">💾 Data Preserved</div>
+                                <div class="action-description">All your input has been automatically saved</div>
+                            </div>
+                            <div class="action-card">
+                                <div class="action-title">🎯 Error Guidance</div>
+                                <div class="action-description">Specific fixes suggested for each field</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="recovery-stage" data-stage="auth">
+                        <div class="stage-header">
+                            <div class="stage-icon">🔐</div>
+                            <div class="stage-title">Authentication Recovery</div>
+                        </div>
+                        <div style="color: #6b7280; margin-bottom: 16px;">
+                            Session expired. Saving your current work and requesting re-authentication...
+                        </div>
+                        <div class="recovery-actions">
+                            <div class="action-card">
+                                <div class="action-title">🔒 Quick Re-login</div>
+                                <div class="action-description">Log in without losing your current page</div>
+                            </div>
+                            <div class="action-card">
+                                <div class="action-title">📍 Context Preserved</div>
+                                <div class="action-description">Return exactly where you left off</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="recovery-stage" data-stage="upload">
+                        <div class="stage-header">
+                            <div class="stage-icon">📎</div>
+                            <div class="stage-title">Upload Recovery</div>
+                        </div>
+                        <div style="color: #6b7280; margin-bottom: 16px;">
+                            Upload interrupted. Your progress has been saved and can be resumed...
+                        </div>
+                        <div class="recovery-actions">
+                            <div class="action-card">
+                                <div class="action-title">⏯️ Resume Upload</div>
+                                <div class="action-description">Continue from where upload stopped</div>
+                            </div>
+                            <div class="action-card">
+                                <div class="action-title">📊 Progress Saved</div>
+                                <div class="action-description">65% of your file has been uploaded</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="recovery-stage" data-stage="server">
+                        <div class="stage-header">
+                            <div class="stage-icon">⚠️</div>
+                            <div class="stage-title">Server Error Recovery</div>
+                        </div>
+                        <div style="color: #6b7280; margin-bottom: 16px;">
+                            Server temporarily unavailable. Team notified and alternative options provided...
+                        </div>
+                        <div class="recovery-actions">
+                            <div class="action-card">
+                                <div class="action-title">📞 Support Contacted</div>
+                                <div class="action-description">Technical team automatically notified</div>
+                            </div>
+                            <div class="action-card">
+                                <div class="action-title">🔄 Alternative Path</div>
+                                <div class="action-description">Suggested workarounds available</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Best Practices -->
+        <div class="best-practices">
+            <h2 style="text-align: center; margin-bottom: 16px;">🏆 Recovery Flow Best Practices</h2>
+            <p style="text-align: center; color: #6b7280; margin-bottom: 24px;">
+                Essential principles for building resilient user experiences
+            </p>
+
+            <div class="practices-grid">
+                <div class="practice-card">
+                    <div class="practice-header">
+                        <div class="practice-icon">⚡</div>
+                        <div class="practice-title">Fail Fast, Recover Faster</div>
+                    </div>
+                    <div class="practice-description">
+                        Detect errors immediately and begin recovery within 2 seconds
+                    </div>
+                    <ul class="practice-checklist">
+                        <li>Monitor all API calls and user actions</li>
+                        <li>Set aggressive timeouts (5s for critical actions)</li>
+                        <li>Use circuit breakers for external services</li>
+                        <li>Implement health checks every 30 seconds</li>
+                    </ul>
+                </div>
+
+                <div class="practice-card">
+                    <div class="practice-header">
+                        <div class="practice-icon">💾</div>
+                        <div class="practice-title">Preserve User State</div>
+                    </div>
+                    <div class="practice-description">
+                        Never lose user data or context during error recovery
+                    </div>
+                    <ul class="practice-checklist">
+                        <li>Auto-save form data every 30 seconds</li>
+                        <li>Store navigation state in session storage</li>
+                        <li>Backup user preferences locally</li>
+                        <li>Queue failed actions for retry</li>
+                    </ul>
+                </div>
+
+                <div class="practice-card">
+                    <div class="practice-header">
+                        <div class="practice-icon">🎯</div>
+                        <div class="practice-title">Contextual Communication</div>
+                    </div>
+                    <div class="practice-description">
+                        Explain what happened and what the user should do next
+                    </div>
+                    <ul class="practice-checklist">
+                        <li>Use plain language, not technical jargon</li>
+                        <li>Provide specific actions, not generic suggestions</li>
+                        <li>Show progress during recovery attempts</li>
+                        <li>Estimate recovery time when possible</li>
+                    </ul>
+                </div>
+
+                <div class="practice-card">
+                    <div class="practice-header">
+                        <div class="practice-icon">🔄</div>
+                        <div class="practice-title">Smart Retry Logic</div>
+                    </div>
+                    <div class="practice-description">
+                        Implement intelligent retry patterns that don't overwhelm systems
+                    </div>
+                    <ul class="practice-checklist">
+                        <li>Use exponential backoff with jitter</li>
+                        <li>Limit retry attempts (max 3 for user actions)</li>
+                        <li>Differentiate retry strategies by error type</li>
+                        <li>Allow manual retry after auto-attempts fail</li>
+                    </ul>
+                </div>
+
+                <div class="practice-card">
+                    <div class="practice-header">
+                        <div class="practice-icon">📱</div>
+                        <div class="practice-title">Mobile-First Recovery</div>
+                    </div>
+                    <div class="practice-description">
+                        Design recovery flows for mobile constraints first
+                    </div>
+                    <ul class="practice-checklist">
+                        <li>Use 48px minimum touch targets for actions</li>
+                        <li>Handle intermittent connectivity gracefully</li>
+                        <li>Optimize for one-handed operation</li>
+                        <li>Consider battery and data usage impact</li>
+                    </ul>
+                </div>
+
+                <div class="practice-card">
+                    <div class="practice-header">
+                        <div class="practice-icon">📊</div>
+                        <div class="practice-title">Measure & Improve</div>
+                    </div>
+                    <div class="practice-description">
+                        Track recovery success and continuously optimize flows
+                    </div>
+                    <ul class="practice-checklist">
+                        <li>Monitor error rates and recovery success</li>
+                        <li>Track user satisfaction after errors</li>
+                        <li>A/B test different recovery messages</li>
+                        <li>Analyze abandonment patterns post-error</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Interactive recovery simulator
+        document.addEventListener('DOMContentLoaded', function() {
+            const triggerButtons = document.querySelectorAll('.trigger-button');
+            const recoveryStages = document.querySelectorAll('.recovery-stage');
+            const progressBars = document.querySelectorAll('.progress-bar');
+
+            triggerButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Update active button
+                    triggerButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // Show corresponding recovery stage
+                    const scenario = this.dataset.scenario;
+                    recoveryStages.forEach(stage => {
+                        stage.classList.remove('active');
+                        if (stage.dataset.stage === scenario) {
+                            stage.classList.add('active');
+                        }
+                    });
+
+                    // Animate progress bar
+                    setTimeout(() => {
+                        const activeProgressBar = document.querySelector('.recovery-stage.active .progress-bar');
+                        if (activeProgressBar) {
+                            const targetProgress = activeProgressBar.dataset.progress || '90';
+                            activeProgressBar.style.width = targetProgress + '%';
+                        }
+                    }, 500);
+                });
+            });
+
+            // Initialize first scenario
+            const firstProgressBar = document.querySelector('.recovery-stage.active .progress-bar');
+            if (firstProgressBar) {
+                setTimeout(() => {
+                    firstProgressBar.style.width = '75%';
+                }, 1000);
+            }
+
+            // Simulate recovery completion
+            setInterval(() => {
+                const activeProgressBar = document.querySelector('.recovery-stage.active .progress-bar');
+                if (activeProgressBar && parseFloat(activeProgressBar.style.width) > 0) {
+                    const currentWidth = parseFloat(activeProgressBar.style.width);
+                    if (currentWidth < 100) {
+                        activeProgressBar.style.width = Math.min(currentWidth + 5, 100) + '%';
+                    } else {
+                        // Reset for demo
+                        setTimeout(() => {
+                            activeProgressBar.style.width = '20%';
+                        }, 2000);
+                    }
+                }
+            }, 1000);
+
+            // Add hover effects to action cards
+            document.querySelectorAll('.action-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    // Simulate action execution
+                    const originalBg = this.style.background;
+                    this.style.background = 'linear-gradient(135deg, #dcfce7, #bbf7d0)';
+                    this.style.borderColor = '#16a34a';
+                    
+                    // Add checkmark
+                    const title = this.querySelector('.action-title');
+                    if (!title.textContent.includes('✓')) {
+                        title.textContent = '✓ ' + title.textContent;
+                    }
+                    
+                    setTimeout(() => {
+                        this.style.background = originalBg;
+                        this.style.borderColor = '#cbd5e1';
+                        title.textContent = title.textContent.replace('✓ ', '');
+                    }, 2000);
+                });
+            });
+
+            // Animate step circles
+            setInterval(() => {
+                document.querySelectorAll('.step-circle').forEach((circle, index) => {
+                    setTimeout(() => {
+                        circle.style.transform = 'scale(1.1)';
+                        setTimeout(() => {
+                            circle.style.transform = 'scale(1)';
+                        }, 200);
+                    }, index * 100);
+                });
+            }, 5000);
+        });
+    </script>
+</body>
+</html>

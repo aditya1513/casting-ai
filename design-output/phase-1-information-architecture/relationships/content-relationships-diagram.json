@@ -1,0 +1,351 @@
+{
+  "relationship_map": {
+    "version": "1.0.0",
+    "created": "2025-09-08",
+    "description": "Content relationships and dependencies in CastMatch AI"
+  },
+  "core_relationships": {
+    "project_centric": {
+      "project": {
+        "has_many": [
+          "roles",
+          "auditions",
+          "conversations",
+          "team_members",
+          "decisions",
+          "documents",
+          "schedules"
+        ],
+        "belongs_to": [
+          "production_house",
+          "casting_director"
+        ],
+        "related_to": [
+          "similar_projects",
+          "industry_trends",
+          "budget_templates"
+        ]
+      },
+      "roles": {
+        "belongs_to": "project",
+        "has_many": [
+          "auditions",
+          "talent_submissions",
+          "character_requirements"
+        ],
+        "matched_with": "talent_profiles"
+      }
+    },
+    "talent_centric": {
+      "talent_profile": {
+        "has_many": [
+          "auditions",
+          "bookings",
+          "media_files",
+          "availability_slots",
+          "reviews"
+        ],
+        "belongs_to": [
+          "talent_agency",
+          "union"
+        ],
+        "associated_with": [
+          "skills",
+          "languages",
+          "genres",
+          "locations"
+        ],
+        "connected_to": [
+          "similar_talents",
+          "co_actors",
+          "directors_worked_with"
+        ]
+      },
+      "auditions": {
+        "belongs_to": [
+          "talent",
+          "project",
+          "role"
+        ],
+        "has_one": [
+          "schedule_slot",
+          "location",
+          "feedback_form"
+        ],
+        "generates": [
+          "callback",
+          "selection",
+          "rejection"
+        ]
+      }
+    },
+    "conversation_centric": {
+      "conversation": {
+        "belongs_to": "user",
+        "related_to": [
+          "project",
+          "talent_search",
+          "audition_planning",
+          "decision_making"
+        ],
+        "contains": [
+          "messages",
+          "ai_responses",
+          "attachments",
+          "action_items"
+        ],
+        "triggers": [
+          "tasks",
+          "notifications",
+          "calendar_events"
+        ]
+      },
+      "ai_memory": {
+        "learns_from": [
+          "conversations",
+          "decisions",
+          "user_preferences"
+        ],
+        "influences": [
+          "recommendations",
+          "search_results",
+          "workflow_suggestions"
+        ],
+        "connected_to": [
+          "user_profile",
+          "project_history",
+          "talent_interactions"
+        ]
+      }
+    },
+    "workflow_centric": {
+      "decision": {
+        "requires": [
+          "approver",
+          "talent",
+          "role",
+          "rationale"
+        ],
+        "affects": [
+          "project_status",
+          "talent_availability",
+          "budget"
+        ],
+        "triggers": [
+          "notifications",
+          "contract_generation",
+          "calendar_updates"
+        ],
+        "documented_in": [
+          "conversation",
+          "project_history",
+          "audit_trail"
+        ]
+      },
+      "schedule": {
+        "belongs_to": [
+          "project",
+          "audition",
+          "user"
+        ],
+        "conflicts_with": [
+          "other_schedules",
+          "talent_availability",
+          "venue_bookings"
+        ],
+        "syncs_with": [
+          "google_calendar",
+          "team_calendars",
+          "production_schedule"
+        ]
+      }
+    }
+  },
+  "dependency_chains": {
+    "casting_workflow": [
+      {
+        "step": 1,
+        "entity": "project",
+        "creates": "roles"
+      },
+      {
+        "step": 2,
+        "entity": "roles",
+        "triggers": "talent_search"
+      },
+      {
+        "step": 3,
+        "entity": "talent_search",
+        "generates": "talent_matches"
+      },
+      {
+        "step": 4,
+        "entity": "talent_matches",
+        "leads_to": "audition_scheduling"
+      },
+      {
+        "step": 5,
+        "entity": "auditions",
+        "produces": "feedback"
+      },
+      {
+        "step": 6,
+        "entity": "feedback",
+        "informs": "decisions"
+      },
+      {
+        "step": 7,
+        "entity": "decisions",
+        "results_in": "selections"
+      },
+      {
+        "step": 8,
+        "entity": "selections",
+        "generates": "contracts"
+      }
+    ],
+    "communication_flow": [
+      {
+        "step": 1,
+        "entity": "user_intent",
+        "captured_by": "conversation"
+      },
+      {
+        "step": 2,
+        "entity": "conversation",
+        "processed_by": "ai_engine"
+      },
+      {
+        "step": 3,
+        "entity": "ai_engine",
+        "accesses": "relevant_content"
+      },
+      {
+        "step": 4,
+        "entity": "relevant_content",
+        "generates": "ai_response"
+      },
+      {
+        "step": 5,
+        "entity": "ai_response",
+        "may_trigger": "actions"
+      },
+      {
+        "step": 6,
+        "entity": "actions",
+        "updates": "system_state"
+      }
+    ]
+  },
+  "relationship_rules": {
+    "cardinality": {
+      "one_to_one": [
+        "user:primary_account",
+        "audition:feedback_form",
+        "decision:approval_record"
+      ],
+      "one_to_many": [
+        "project:roles",
+        "talent:auditions",
+        "user:conversations",
+        "role:applicants"
+      ],
+      "many_to_many": [
+        "talents:projects",
+        "users:teams",
+        "skills:talents",
+        "conversations:participants"
+      ]
+    },
+    "cascade_rules": {
+      "delete_cascade": [
+        "project → roles",
+        "project → auditions",
+        "user → conversations"
+      ],
+      "update_cascade": [
+        "talent_rate → project_budget",
+        "schedule_change → notifications",
+        "decision → talent_status"
+      ],
+      "restrict": [
+        "active_project_deletion",
+        "confirmed_audition_changes",
+        "approved_decision_modification"
+      ]
+    },
+    "validation_rules": {
+      "required_relationships": [
+        "audition_must_have_talent",
+        "role_must_belong_to_project",
+        "decision_must_have_approver"
+      ],
+      "conditional_relationships": [
+        "callback_requires_initial_audition",
+        "selection_requires_feedback",
+        "contract_requires_approval"
+      ]
+    }
+  },
+  "data_flow_patterns": {
+    "ingestion_points": {
+      "conversation_interface": {
+        "inputs": ["user_queries", "commands", "preferences"],
+        "outputs": ["ai_responses", "actions", "suggestions"]
+      },
+      "profile_uploads": {
+        "inputs": ["talent_data", "media_files", "documents"],
+        "outputs": ["processed_profiles", "indexed_content"]
+      },
+      "external_integrations": {
+        "inputs": ["calendar_sync", "email_import", "whatsapp_messages"],
+        "outputs": ["unified_timeline", "consolidated_communications"]
+      }
+    },
+    "processing_nodes": {
+      "ai_engine": {
+        "processes": ["natural_language", "intent_recognition", "context_building"],
+        "enriches": ["recommendations", "insights", "predictions"]
+      },
+      "matching_algorithm": {
+        "analyzes": ["requirements", "profiles", "availability"],
+        "produces": ["ranked_matches", "compatibility_scores"]
+      },
+      "workflow_engine": {
+        "orchestrates": ["task_sequences", "approvals", "notifications"],
+        "maintains": ["state_consistency", "audit_trails"]
+      }
+    },
+    "output_channels": {
+      "user_interface": {
+        "displays": ["conversations", "search_results", "dashboards"],
+        "enables": ["interactions", "decisions", "navigation"]
+      },
+      "notifications": {
+        "delivers": ["alerts", "reminders", "updates"],
+        "through": ["in_app", "email", "whatsapp", "push"]
+      },
+      "reports": {
+        "generates": ["analytics", "summaries", "exports"],
+        "formats": ["pdf", "excel", "dashboards"]
+      }
+    }
+  },
+  "context_propagation": {
+    "conversation_context": {
+      "carries": ["project_focus", "current_task", "user_preferences"],
+      "persists_across": ["messages", "sessions", "devices"],
+      "influences": ["ai_responses", "suggestions", "search_results"]
+    },
+    "project_context": {
+      "includes": ["requirements", "timeline", "team", "budget"],
+      "affects": ["talent_search", "scheduling", "decisions"],
+      "shared_with": ["team_members", "stakeholders"]
+    },
+    "user_context": {
+      "maintains": ["role", "permissions", "preferences", "history"],
+      "customizes": ["interface", "recommendations", "workflows"],
+      "learns_from": ["interactions", "decisions", "feedback"]
+    }
+  }
+}

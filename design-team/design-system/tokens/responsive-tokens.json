@@ -1,0 +1,650 @@
+{
+  "$schema": "https://schemas.design-tokens.org/DTCG/draft",
+  "$description": "Responsive Design Tokens - Mobile-First Approach for CastMatch",
+  "version": "2.0.0-responsive",
+  "metadata": {
+    "approach": "mobile-first",
+    "touch_targets": "44px minimum",
+    "container_queries": true,
+    "fluid_typography": true,
+    "performance_optimized": true
+  },
+  "breakpoint": {
+    "mobile": {
+      "$type": "dimension",
+      "$value": "320px",
+      "$description": "Mobile breakpoint - minimum supported width"
+    },
+    "mobile-lg": {
+      "$type": "dimension",
+      "$value": "425px",
+      "$description": "Large mobile breakpoint"
+    },
+    "tablet": {
+      "$type": "dimension",
+      "$value": "768px",
+      "$description": "Tablet breakpoint"
+    },
+    "tablet-lg": {
+      "$type": "dimension",
+      "$value": "1024px",
+      "$description": "Large tablet/small desktop"
+    },
+    "desktop": {
+      "$type": "dimension",
+      "$value": "1440px",
+      "$description": "Desktop breakpoint"
+    },
+    "desktop-xl": {
+      "$type": "dimension",
+      "$value": "1920px",
+      "$description": "Large desktop breakpoint"
+    }
+  },
+  "spacing": {
+    "fluid": {
+      "xs": {
+        "$type": "dimension",
+        "$value": "clamp(0.25rem, 0.5vw, 0.5rem)",
+        "$description": "Extra small fluid spacing (4px-8px)"
+      },
+      "sm": {
+        "$type": "dimension", 
+        "$value": "clamp(0.5rem, 1vw, 0.75rem)",
+        "$description": "Small fluid spacing (8px-12px)"
+      },
+      "md": {
+        "$type": "dimension",
+        "$value": "clamp(0.75rem, 2vw, 1rem)",
+        "$description": "Medium fluid spacing (12px-16px)"
+      },
+      "lg": {
+        "$type": "dimension",
+        "$value": "clamp(1rem, 2.5vw, 1.5rem)",
+        "$description": "Large fluid spacing (16px-24px)"
+      },
+      "xl": {
+        "$type": "dimension",
+        "$value": "clamp(1.5rem, 3vw, 2rem)",
+        "$description": "Extra large fluid spacing (24px-32px)"
+      },
+      "2xl": {
+        "$type": "dimension",
+        "$value": "clamp(2rem, 4vw, 3rem)",
+        "$description": "2X large fluid spacing (32px-48px)"
+      },
+      "3xl": {
+        "$type": "dimension",
+        "$value": "clamp(2.5rem, 5vw, 4rem)",
+        "$description": "3X large fluid spacing (40px-64px)"
+      },
+      "4xl": {
+        "$type": "dimension",
+        "$value": "clamp(3rem, 6vw, 5rem)",
+        "$description": "4X large fluid spacing (48px-80px)"
+      }
+    },
+    "touch": {
+      "minimum": {
+        "$type": "dimension",
+        "$value": "44px",
+        "$description": "Minimum touch target - WCAG AA compliance"
+      },
+      "comfortable": {
+        "$type": "dimension",
+        "$value": "48px",
+        "$description": "Comfortable touch target - recommended size"
+      },
+      "generous": {
+        "$type": "dimension",
+        "$value": "56px",
+        "$description": "Generous touch target - premium experience"
+      }
+    },
+    "container": {
+      "mobile": {
+        "$type": "dimension",
+        "$value": "calc(100vw - 2rem)",
+        "$description": "Mobile container - 16px side margins"
+      },
+      "tablet": {
+        "$type": "dimension",
+        "$value": "calc(100vw - 4rem)",
+        "$description": "Tablet container - 32px side margins"
+      },
+      "desktop": {
+        "$type": "dimension",
+        "$value": "min(calc(100vw - 6rem), 1200px)",
+        "$description": "Desktop container - max width with margins"
+      },
+      "desktop-wide": {
+        "$type": "dimension",
+        "$value": "min(calc(100vw - 8rem), 1400px)",
+        "$description": "Wide desktop container - premium layouts"
+      }
+    }
+  },
+  "typography": {
+    "fluid": {
+      "display-xl": {
+        "$type": "dimension",
+        "$value": "clamp(3rem, 8vw, 6rem)",
+        "$description": "Extra large display text (48px-96px)"
+      },
+      "display-lg": {
+        "$type": "dimension",
+        "$value": "clamp(2.5rem, 6vw, 4.5rem)",
+        "$description": "Large display text (40px-72px)"
+      },
+      "display-md": {
+        "$type": "dimension",
+        "$value": "clamp(2rem, 5vw, 3.5rem)",
+        "$description": "Medium display text (32px-56px)"
+      },
+      "display-sm": {
+        "$type": "dimension",
+        "$value": "clamp(1.75rem, 4vw, 2.5rem)",
+        "$description": "Small display text (28px-40px)"
+      },
+      "heading-xl": {
+        "$type": "dimension",
+        "$value": "clamp(1.5rem, 3vw, 2rem)",
+        "$description": "Extra large heading (24px-32px)"
+      },
+      "heading-lg": {
+        "$type": "dimension",
+        "$value": "clamp(1.25rem, 2.5vw, 1.75rem)",
+        "$description": "Large heading (20px-28px)"
+      },
+      "heading-md": {
+        "$type": "dimension",
+        "$value": "clamp(1.125rem, 2vw, 1.5rem)",
+        "$description": "Medium heading (18px-24px)"
+      },
+      "heading-sm": {
+        "$type": "dimension",
+        "$value": "clamp(1rem, 1.5vw, 1.25rem)",
+        "$description": "Small heading (16px-20px)"
+      },
+      "body-lg": {
+        "$type": "dimension",
+        "$value": "clamp(1rem, 1.25vw, 1.125rem)",
+        "$description": "Large body text (16px-18px)"
+      },
+      "body-md": {
+        "$type": "dimension",
+        "$value": "clamp(0.875rem, 1vw, 1rem)",
+        "$description": "Medium body text (14px-16px)"
+      },
+      "body-sm": {
+        "$type": "dimension",
+        "$value": "clamp(0.75rem, 0.875vw, 0.875rem)",
+        "$description": "Small body text (12px-14px)"
+      },
+      "caption": {
+        "$type": "dimension",
+        "$value": "clamp(0.625rem, 0.75vw, 0.75rem)",
+        "$description": "Caption text (10px-12px)"
+      }
+    },
+    "line-height": {
+      "display": {
+        "$type": "number",
+        "$value": "1.1",
+        "$description": "Tight line height for display text"
+      },
+      "heading": {
+        "$type": "number",
+        "$value": "1.25",
+        "$description": "Balanced line height for headings"
+      },
+      "body": {
+        "$type": "number",
+        "$value": "1.6",
+        "$description": "Comfortable line height for body text"
+      },
+      "loose": {
+        "$type": "number",
+        "$value": "1.8",
+        "$description": "Loose line height for enhanced readability"
+      }
+    }
+  },
+  "component": {
+    "button": {
+      "height": {
+        "sm": {
+          "$type": "dimension",
+          "$value": "clamp(2rem, 4vw, 2.25rem)",
+          "$description": "Small button height (32px-36px)"
+        },
+        "md": {
+          "$type": "dimension",
+          "$value": "clamp(2.5rem, 5vw, 2.75rem)",
+          "$description": "Medium button height (40px-44px)"
+        },
+        "lg": {
+          "$type": "dimension",
+          "$value": "clamp(2.75rem, 5.5vw, 3rem)",
+          "$description": "Large button height (44px-48px)"
+        },
+        "xl": {
+          "$type": "dimension",
+          "$value": "clamp(3rem, 6vw, 3.5rem)",
+          "$description": "Extra large button height (48px-56px)"
+        }
+      },
+      "padding": {
+        "sm": {
+          "$type": "dimension",
+          "$value": "clamp(0.5rem, 1vw, 0.75rem) clamp(0.75rem, 1.5vw, 1rem)",
+          "$description": "Small button padding"
+        },
+        "md": {
+          "$type": "dimension",
+          "$value": "clamp(0.75rem, 1.5vw, 1rem) clamp(1rem, 2vw, 1.25rem)",
+          "$description": "Medium button padding"
+        },
+        "lg": {
+          "$type": "dimension",
+          "$value": "clamp(1rem, 2vw, 1.25rem) clamp(1.25rem, 2.5vw, 1.5rem)",
+          "$description": "Large button padding"
+        },
+        "xl": {
+          "$type": "dimension",
+          "$value": "clamp(1.25rem, 2.5vw, 1.5rem) clamp(1.5rem, 3vw, 2rem)",
+          "$description": "Extra large button padding"
+        }
+      },
+      "border-radius": {
+        "sm": {
+          "$type": "dimension",
+          "$value": "clamp(0.25rem, 0.5vw, 0.375rem)",
+          "$description": "Small button border radius"
+        },
+        "md": {
+          "$type": "dimension",
+          "$value": "clamp(0.375rem, 0.75vw, 0.5rem)",
+          "$description": "Medium button border radius"
+        },
+        "lg": {
+          "$type": "dimension",
+          "$value": "clamp(0.5rem, 1vw, 0.75rem)",
+          "$description": "Large button border radius"
+        },
+        "xl": {
+          "$type": "dimension",
+          "$value": "clamp(0.75rem, 1.5vw, 1rem)",
+          "$description": "Extra large button border radius"
+        }
+      }
+    },
+    "card": {
+      "padding": {
+        "sm": {
+          "$type": "dimension",
+          "$value": "clamp(0.75rem, 1.5vw, 1rem)",
+          "$description": "Small card padding"
+        },
+        "md": {
+          "$type": "dimension",
+          "$value": "clamp(1rem, 2vw, 1.5rem)",
+          "$description": "Medium card padding"
+        },
+        "lg": {
+          "$type": "dimension",
+          "$value": "clamp(1.5rem, 3vw, 2rem)",
+          "$description": "Large card padding"
+        },
+        "xl": {
+          "$type": "dimension",
+          "$value": "clamp(2rem, 4vw, 2.5rem)",
+          "$description": "Extra large card padding"
+        }
+      },
+      "border-radius": {
+        "sm": {
+          "$type": "dimension",
+          "$value": "clamp(0.375rem, 0.75vw, 0.5rem)",
+          "$description": "Small card border radius"
+        },
+        "md": {
+          "$type": "dimension",
+          "$value": "clamp(0.5rem, 1vw, 0.75rem)",
+          "$description": "Medium card border radius"
+        },
+        "lg": {
+          "$type": "dimension",
+          "$value": "clamp(0.75rem, 1.5vw, 1rem)",
+          "$description": "Large card border radius"
+        },
+        "xl": {
+          "$type": "dimension",
+          "$value": "clamp(1rem, 2vw, 1.5rem)",
+          "$description": "Extra large card border radius"
+        }
+      },
+      "gap": {
+        "sm": {
+          "$type": "dimension",
+          "$value": "clamp(0.5rem, 1vw, 0.75rem)",
+          "$description": "Small card content gap"
+        },
+        "md": {
+          "$type": "dimension",
+          "$value": "clamp(0.75rem, 1.5vw, 1rem)",
+          "$description": "Medium card content gap"
+        },
+        "lg": {
+          "$type": "dimension",
+          "$value": "clamp(1rem, 2vw, 1.5rem)",
+          "$description": "Large card content gap"
+        }
+      }
+    },
+    "input": {
+      "height": {
+        "sm": {
+          "$type": "dimension",
+          "$value": "clamp(2.25rem, 4.5vw, 2.5rem)",
+          "$description": "Small input height (36px-40px)"
+        },
+        "md": {
+          "$type": "dimension",
+          "$value": "clamp(2.75rem, 5.5vw, 3rem)",
+          "$description": "Medium input height (44px-48px)"
+        },
+        "lg": {
+          "$type": "dimension",
+          "$value": "clamp(3rem, 6vw, 3.5rem)",
+          "$description": "Large input height (48px-56px)"
+        }
+      },
+      "padding": {
+        "sm": {
+          "$type": "dimension",
+          "$value": "clamp(0.5rem, 1vw, 0.75rem)",
+          "$description": "Small input padding"
+        },
+        "md": {
+          "$type": "dimension",
+          "$value": "clamp(0.75rem, 1.5vw, 1rem)",
+          "$description": "Medium input padding"
+        },
+        "lg": {
+          "$type": "dimension",
+          "$value": "clamp(1rem, 2vw, 1.25rem)",
+          "$description": "Large input padding"
+        }
+      }
+    },
+    "modal": {
+      "width": {
+        "sm": {
+          "$type": "dimension",
+          "$value": "min(90vw, 400px)",
+          "$description": "Small modal width"
+        },
+        "md": {
+          "$type": "dimension",
+          "$value": "min(90vw, 600px)",
+          "$description": "Medium modal width"
+        },
+        "lg": {
+          "$type": "dimension",
+          "$value": "min(95vw, 800px)",
+          "$description": "Large modal width"
+        },
+        "xl": {
+          "$type": "dimension",
+          "$value": "min(95vw, 1200px)",
+          "$description": "Extra large modal width"
+        }
+      },
+      "max-height": {
+        "$type": "dimension",
+        "$value": "min(90vh, calc(100vh - 2rem))",
+        "$description": "Modal maximum height with safe margins"
+      },
+      "padding": {
+        "$type": "dimension",
+        "$value": "clamp(1rem, 2vw, 1.5rem)",
+        "$description": "Modal content padding"
+      }
+    },
+    "sidebar": {
+      "width": {
+        "sm": {
+          "$type": "dimension",
+          "$value": "clamp(240px, 25vw, 280px)",
+          "$description": "Small sidebar width"
+        },
+        "md": {
+          "$type": "dimension",
+          "$value": "clamp(280px, 30vw, 320px)",
+          "$description": "Medium sidebar width"
+        },
+        "lg": {
+          "$type": "dimension",
+          "$value": "clamp(320px, 35vw, 400px)",
+          "$description": "Large sidebar width"
+        }
+      },
+      "mobile-width": {
+        "$type": "dimension",
+        "$value": "min(85vw, 320px)",
+        "$description": "Mobile sidebar width"
+      }
+    },
+    "navigation": {
+      "height": {
+        "mobile": {
+          "$type": "dimension",
+          "$value": "clamp(3.5rem, 7vw, 4rem)",
+          "$description": "Mobile navigation height (56px-64px)"
+        },
+        "desktop": {
+          "$type": "dimension",
+          "$value": "clamp(4rem, 5vw, 5rem)",
+          "$description": "Desktop navigation height (64px-80px)"
+        }
+      },
+      "padding": {
+        "mobile": {
+          "$type": "dimension",
+          "$value": "clamp(0.75rem, 1.5vw, 1rem)",
+          "$description": "Mobile navigation padding"
+        },
+        "desktop": {
+          "$type": "dimension",
+          "$value": "clamp(1rem, 2vw, 1.5rem)",
+          "$description": "Desktop navigation padding"
+        }
+      }
+    }
+  },
+  "animation": {
+    "duration": {
+      "fast": {
+        "$type": "duration",
+        "$value": "150ms",
+        "$description": "Fast animation - hover effects"
+      },
+      "normal": {
+        "$type": "duration", 
+        "$value": "250ms",
+        "$description": "Normal animation - transitions"
+      },
+      "slow": {
+        "$type": "duration",
+        "$value": "400ms",
+        "$description": "Slow animation - complex transitions"
+      },
+      "reduced": {
+        "$type": "duration",
+        "$value": "0ms",
+        "$description": "No animation - prefers-reduced-motion"
+      }
+    },
+    "easing": {
+      "ease-out": {
+        "$type": "cubicBezier",
+        "$value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "$description": "Smooth ease-out for natural feel"
+      },
+      "ease-in": {
+        "$type": "cubicBezier",
+        "$value": "cubic-bezier(0.7, 0, 0.84, 0)",
+        "$description": "Gentle ease-in for subtle entrances"
+      },
+      "ease-in-out": {
+        "$type": "cubicBezier",
+        "$value": "cubic-bezier(0.87, 0, 0.13, 1)",
+        "$description": "Balanced ease-in-out for smooth transitions"
+      },
+      "bounce": {
+        "$type": "cubicBezier",
+        "$value": "cubic-bezier(0.68, -0.6, 0.32, 1.6)",
+        "$description": "Playful bounce for attention-grabbing effects"
+      }
+    }
+  },
+  "shadow": {
+    "elevation": {
+      "xs": {
+        "$type": "shadow",
+        "$value": [
+          {
+            "offsetX": "0px",
+            "offsetY": "1px", 
+            "blur": "2px",
+            "color": "{color.semantic.dark-mode.shadow.sm}"
+          }
+        ],
+        "$description": "Extra small shadow - subtle elevation"
+      },
+      "sm": {
+        "$type": "shadow",
+        "$value": [
+          {
+            "offsetX": "0px",
+            "offsetY": "2px",
+            "blur": "4px", 
+            "color": "{color.semantic.dark-mode.shadow.sm}"
+          }
+        ],
+        "$description": "Small shadow - card elevation"
+      },
+      "md": {
+        "$type": "shadow",
+        "$value": [
+          {
+            "offsetX": "0px",
+            "offsetY": "4px",
+            "blur": "8px",
+            "color": "{color.semantic.dark-mode.shadow.md}"
+          }
+        ],
+        "$description": "Medium shadow - prominent elevation"
+      },
+      "lg": {
+        "$type": "shadow",
+        "$value": [
+          {
+            "offsetX": "0px",
+            "offsetY": "8px",
+            "blur": "16px",
+            "color": "{color.semantic.dark-mode.shadow.lg}"
+          }
+        ],
+        "$description": "Large shadow - modal/overlay elevation"
+      },
+      "xl": {
+        "$type": "shadow",
+        "$value": [
+          {
+            "offsetX": "0px",
+            "offsetY": "16px",
+            "blur": "32px",
+            "color": "{color.semantic.dark-mode.shadow.xl}"
+          }
+        ],
+        "$description": "Extra large shadow - maximum elevation"
+      }
+    },
+    "glow": {
+      "sm": {
+        "$type": "shadow",
+        "$value": [
+          {
+            "offsetX": "0px",
+            "offsetY": "0px",
+            "blur": "4px",
+            "color": "{color.neon.electric-blue.500}"
+          }
+        ],
+        "$description": "Small glow effect - subtle accent"
+      },
+      "md": {
+        "$type": "shadow",
+        "$value": [
+          {
+            "offsetX": "0px", 
+            "offsetY": "0px",
+            "blur": "8px",
+            "color": "{color.neon.electric-blue.500}"
+          }
+        ],
+        "$description": "Medium glow effect - focus states"
+      },
+      "lg": {
+        "$type": "shadow",
+        "$value": [
+          {
+            "offsetX": "0px",
+            "offsetY": "0px", 
+            "blur": "16px",
+            "color": "{color.neon.electric-blue.500}"
+          }
+        ],
+        "$description": "Large glow effect - prominent highlights"
+      }
+    }
+  },
+  "grid": {
+    "columns": {
+      "mobile": {
+        "$type": "number",
+        "$value": "4",
+        "$description": "Mobile grid columns"
+      },
+      "tablet": {
+        "$type": "number",
+        "$value": "8",
+        "$description": "Tablet grid columns"
+      },
+      "desktop": {
+        "$type": "number",
+        "$value": "12",
+        "$description": "Desktop grid columns"
+      }
+    },
+    "gap": {
+      "mobile": {
+        "$type": "dimension",
+        "$value": "clamp(0.75rem, 2vw, 1rem)",
+        "$description": "Mobile grid gap"
+      },
+      "tablet": {
+        "$type": "dimension",
+        "$value": "clamp(1rem, 2.5vw, 1.5rem)",
+        "$description": "Tablet grid gap"
+      },
+      "desktop": {
+        "$type": "dimension", 
+        "$value": "clamp(1.5rem, 3vw, 2rem)",
+        "$description": "Desktop grid gap"
+      }
+    }
+  }
+}

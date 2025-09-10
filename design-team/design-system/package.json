@@ -1,0 +1,31 @@
+{
+  "name": "@castmatch/design-system",
+  "version": "1.0.0",
+  "description": "CastMatch Design System - Comprehensive token system for visual consistency",
+  "main": "dist/tokens.js",
+  "types": "dist/tokens.d.ts",
+  "scripts": {
+    "build": "node build.js",
+    "watch": "nodemon -w tokens -e json --exec npm run build",
+    "validate": "node validate.js",
+    "docs": "node generate-docs.js"
+  },
+  "files": [
+    "dist/",
+    "tokens/",
+    "README.md"
+  ],
+  "keywords": [
+    "design-system",
+    "tokens",
+    "castmatch",
+    "ui",
+    "css",
+    "design-tokens"
+  ],
+  "author": "CastMatch",
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

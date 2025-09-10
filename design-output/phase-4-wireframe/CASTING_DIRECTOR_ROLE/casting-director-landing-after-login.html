@@ -1,0 +1,2182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CastMatch AI - Professional Casting Dashboard</title>
+    <style>
+        /* SOPHISTICATED GRAYSCALE DESIGN SYSTEM */
+        :root {
+            /* Professional Grayscale Palette */
+            --white: #FFFFFF;
+            --gray-50: #FAFAFA;
+            --gray-100: #F5F5F5;
+            --gray-200: #E5E5E5;
+            --gray-300: #D4D4D4;
+            --gray-400: #A3A3A3;
+            --gray-500: #737373;
+            --gray-600: #525252;
+            --gray-700: #404040;
+            --gray-800: #262626;
+            --gray-900: #171717;
+            --black: #000000;
+            
+            /* Professional Spacing System */
+            --spacing-2: 2px;
+            --spacing-4: 4px;
+            --spacing-8: 8px;
+            --spacing-12: 12px;
+            --spacing-16: 16px;
+            --spacing-20: 20px;
+            --spacing-24: 24px;
+            --spacing-32: 32px;
+            --spacing-40: 40px;
+            --spacing-48: 48px;
+            --spacing-60: 60px;
+            --spacing-72: 72px;
+            --spacing-80: 80px;
+            
+            /* Sophisticated Typography Scale */
+            --font-primary: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', system-ui, sans-serif;
+            --font-mono: 'SF Mono', 'Monaco', 'Consolas', monospace;
+            
+            /* Hero Headlines (32-48px) */
+            --font-hero-xl: 48px;
+            --font-hero-lg: 40px;
+            --font-hero: 32px;
+            
+            /* Section Headlines (24-28px) */
+            --font-section-lg: 28px;
+            --font-section: 24px;
+            
+            /* Card Titles (16-18px) */
+            --font-card-lg: 18px;
+            --font-card: 16px;
+            
+            /* Body Text (14-16px) */
+            --font-body-lg: 16px;
+            --font-body: 14px;
+            
+            /* Small Text (12-14px) */
+            --font-small: 13px;
+            --font-xs: 12px;
+            --font-micro: 11px;
+            
+            /* Optimized Line Heights */
+            --line-height-tight: 1.2;
+            --line-height-normal: 1.5;
+            --line-height-relaxed: 1.6;
+            --line-height-loose: 1.75;
+            
+            /* Font Weights */
+            --font-weight-light: 300;
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 600;
+            --font-weight-bold: 700;
+            --font-weight-extrabold: 800;
+            
+            /* Letter Spacing */
+            --letter-spacing-tight: -0.025em;
+            --letter-spacing-normal: 0;
+            --letter-spacing-wide: 0.025em;
+            --letter-spacing-wider: 0.05em;
+            
+            /* Professional Borders & Radius */
+            --border-width: 1px;
+            --border-width-2: 2px;
+            --radius-xs: 2px;
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-2xl: 24px;
+            --radius-full: 9999px;
+            
+            /* Professional Layout Architecture */
+            --sidebar-width: 280px;
+            --sidebar-collapsed-width: 60px;
+            --main-max-width: 1440px;
+            --conversation-max-width: 700px;
+            --input-max-width: 700px;
+            --header-height: 60px;
+            --input-area-height: 80px;
+            --mobile-nav-height: 60px;
+            
+            /* Touch Targets */
+            --touch-target-min: 44px;
+            --touch-target-ideal: 48px;
+            --touch-target-large: 60px;
+            
+            /* Grid System */
+            --grid-cols-mobile: 2;
+            --grid-cols-tablet: 3;
+            --grid-cols-desktop: 4;
+            --grid-gap: 24px;
+            
+            /* Z-Index Stack */
+            --z-index-base: 1;
+            --z-index-nav: 100;
+            --z-index-header: 200;
+            --z-index-input: 300;
+            --z-index-modal: 1000;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-primary);
+            font-size: var(--font-body);
+            line-height: var(--line-height-relaxed);
+            color: var(--gray-900);
+            background: var(--gray-50);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            font-weight: var(--font-weight-normal);
+        }
+        
+        /* Professional Dashboard Container */
+        .dashboard-container {
+            display: flex;
+            height: 100vh;
+            background: var(--white);
+            overflow: hidden;
+        }
+        
+        /* FIXED SIDEBAR NAVIGATION - 280px */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--white);
+            border-right: var(--border-width) solid var(--gray-200);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+        
+        /* Collapsed sidebar state */
+        .sidebar.collapsed {
+            width: var(--sidebar-collapsed-width);
+            overflow: hidden;
+        }
+        
+        .sidebar.collapsed .sidebar-nav {
+            overflow: hidden;
+        }
+        
+        .sidebar.collapsed .sidebar-nav::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .sidebar.collapsed .brand-name,
+        .sidebar.collapsed .nav-section-title,
+        .sidebar.collapsed .nav-item span,
+        .sidebar.collapsed .recent-chat-item,
+        .sidebar.collapsed .profile-info {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .sidebar.collapsed .sidebar-brand {
+            justify-content: center;
+            padding: 0 var(--spacing-12);
+        }
+        
+        .sidebar.collapsed .brand-content {
+            justify-content: center;
+        }
+        
+        .sidebar.collapsed .sidebar-brand {
+            padding: 0 var(--spacing-12);
+        }
+        
+        .sidebar.collapsed .sidebar-toggle {
+            right: var(--spacing-14);
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .sidebar.collapsed .sidebar-toggle:hover {
+            transform: translateY(-50%) scale(1.05);
+        }
+        
+        .sidebar.collapsed .sidebar-toggle:active {
+            transform: translateY(-50%) scale(0.95);
+        }
+        
+        .sidebar.collapsed .sidebar-toggle:focus {
+            transform: translateY(-50%) scale(1.05);
+        }
+        
+        .sidebar.collapsed .nav-item {
+            justify-content: center;
+            padding: var(--spacing-8) var(--spacing-12);
+        }
+        
+        .sidebar.collapsed .new-chat-button span {
+            display: none;
+        }
+        
+        .sidebar.collapsed .new-chat-button {
+            width: 36px;
+            height: 36px;
+            margin: 0 auto var(--spacing-20);
+            border-radius: var(--radius-full);
+        }
+        
+        /* Logo & Brand Area - Consistent 60px height */
+        .sidebar-brand {
+            height: var(--header-height);
+            padding: 0 var(--spacing-24);
+            padding-right: var(--spacing-60); /* Space for toggle button */
+            border-bottom: var(--border-width) solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-12);
+            position: relative;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        
+        .brand-content {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-12);
+            max-width: calc(100% - 48px); /* Reserve space for toggle */
+            overflow: hidden;
+        }
+        
+        .brand-logo {
+            width: 36px;
+            height: 36px;
+            background: var(--gray-900);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: 700;
+            font-size: var(--font-card);
+        }
+        
+        .brand-name {
+            font-size: var(--font-card-lg);
+            font-weight: var(--font-weight-semibold);
+            color: var(--gray-900);
+            line-height: var(--line-height-tight);
+            letter-spacing: var(--letter-spacing-tight);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        /* Primary Navigation - Consistent spacing */
+        .sidebar-nav {
+            flex: 1;
+            padding: var(--spacing-16);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* Internet Explorer 10+ */
+        }
+        
+        /* Hide scrollbar for WebKit browsers */
+        .sidebar-nav::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .sidebar-nav::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .sidebar-nav::-webkit-scrollbar-thumb {
+            background: var(--gray-300);
+            border-radius: var(--radius-full);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        /* Show scrollbar when scrolling */
+        .sidebar-nav.scrolling::-webkit-scrollbar-thumb {
+            opacity: 1;
+        }
+        
+        /* Desktop hover support */
+        @media (hover: hover) {
+            .sidebar-nav:hover::-webkit-scrollbar-thumb {
+                opacity: 0.6;
+            }
+            
+            .sidebar-nav:hover::-webkit-scrollbar-thumb:hover {
+                background: var(--gray-400);
+                opacity: 1;
+            }
+        }
+        
+        .nav-section {
+            margin-bottom: var(--spacing-32);
+        }
+        
+        .nav-section:last-child {
+            margin-bottom: 0;
+        }
+        
+        .nav-section:first-child {
+            margin-top: 0;
+        }
+        
+        .nav-section-title {
+            font-size: var(--font-xs);
+            font-weight: var(--font-weight-semibold);
+            color: var(--gray-500);
+            text-transform: uppercase;
+            letter-spacing: var(--letter-spacing-wider);
+            margin-bottom: var(--spacing-12);
+            padding: 0 var(--spacing-12);
+            line-height: var(--line-height-tight);
+        }
+        
+        /* New Chat Button - Prominent CTA */
+        .new-chat-button {
+            width: 100%;
+            height: var(--touch-target-large);
+            background: var(--gray-900);
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-12);
+            font-size: var(--font-body);
+            font-weight: var(--font-weight-semibold);
+            cursor: pointer;
+            transition: all 0.15s ease;
+            margin-bottom: var(--spacing-24);
+            flex-shrink: 0;
+            line-height: var(--line-height-tight);
+            letter-spacing: var(--letter-spacing-wide);
+        }
+        
+        .new-chat-button:hover {
+            background: var(--black);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .new-chat-button:focus {
+            outline: 2px solid var(--gray-400);
+            outline-offset: 2px;
+        }
+        
+        .new-chat-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .new-chat-icon {
+            width: 20px;
+            height: 20px;
+            background: var(--white);
+            border-radius: var(--radius-xs);
+            position: relative;
+        }
+        
+        .new-chat-icon::before,
+        .new-chat-icon::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            background: var(--gray-900);
+            border-radius: 1px;
+        }
+        
+        .new-chat-icon::before {
+            width: 12px;
+            height: 2px;
+            transform: translate(-50%, -50%);
+        }
+        
+        .new-chat-icon::after {
+            width: 2px;
+            height: 12px;
+            transform: translate(-50%, -50%);
+        }
+        
+        .nav-item {
+            min-height: var(--touch-target-ideal);
+            padding: var(--spacing-8) var(--spacing-16);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.15s ease;
+            margin-bottom: var(--spacing-4);
+            font-size: var(--font-body);
+            font-weight: var(--font-weight-medium);
+            color: var(--gray-700);
+            line-height: var(--line-height-normal);
+        }
+        
+        .nav-item:hover {
+            background: var(--gray-100);
+            color: var(--gray-900);
+            transform: translateX(2px);
+        }
+        
+        .nav-item:active {
+            transform: translateX(0);
+            background: var(--gray-200);
+        }
+        
+        .nav-item:focus {
+            outline: 2px solid var(--gray-400);
+            outline-offset: 2px;
+            background: var(--gray-100);
+            color: var(--gray-900);
+            transform: translateX(2px);
+        }
+        
+        .nav-item.active {
+            background: var(--gray-900);
+            color: var(--white);
+            font-weight: var(--font-weight-semibold);
+        }
+        
+        .nav-item.active:focus {
+            outline-color: var(--white);
+        }
+        
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            background: currentColor;
+            border-radius: var(--radius-xs);
+        }
+        
+        /* Project Status Badge Component */
+        .project-status-badge {
+            font-size: var(--font-micro);
+            padding: var(--spacing-4) var(--spacing-12);
+            border-radius: var(--radius-full);
+            margin-left: auto;
+            font-weight: var(--font-weight-medium);
+            line-height: 1;
+            text-transform: uppercase;
+            letter-spacing: var(--letter-spacing-wide);
+            transition: all 0.15s ease;
+        }
+        
+        .project-status-badge.active {
+            background: var(--gray-900);
+            color: var(--white);
+        }
+        
+        .project-status-badge.pre-production {
+            background: var(--gray-200);
+            color: var(--gray-700);
+        }
+        
+        .project-status-badge.planned {
+            background: var(--gray-100);
+            color: var(--gray-600);
+        }
+        
+        /* Recent Chats Section */
+        .recent-chat-item {
+            padding: var(--spacing-12);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.15s ease;
+            margin-bottom: var(--spacing-8);
+            border: var(--border-width) solid transparent;
+        }
+        
+        .recent-chat-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .recent-chat-item:hover {
+            background: var(--gray-100);
+            border-color: var(--gray-200);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+        
+        .recent-chat-item:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+        }
+        
+        .recent-chat-item.active {
+            background: var(--gray-50);
+            border-color: var(--gray-300);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+        }
+        
+        .recent-chat-item:focus {
+            outline: 2px solid var(--gray-400);
+            outline-offset: 2px;
+            background: var(--gray-100);
+            transform: translateY(-1px);
+        }
+        
+        .recent-chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--spacing-4);
+        }
+        
+        .recent-chat-title {
+            font-size: var(--font-small);
+            font-weight: var(--font-weight-medium);
+            color: var(--gray-900);
+            line-height: var(--line-height-normal);
+            flex: 1;
+            margin-right: var(--spacing-8);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .recent-chat-time {
+            font-size: var(--font-xs);
+            color: var(--gray-500);
+            flex-shrink: 0;
+        }
+        
+        .recent-chat-project {
+            font-size: var(--font-xs);
+            color: var(--gray-600);
+            margin-bottom: var(--spacing-2);
+        }
+        
+        .recent-chat-preview {
+            font-size: var(--font-xs);
+            color: var(--gray-500);
+            line-height: var(--line-height-normal);
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            font-weight: var(--font-weight-normal);
+        }
+        
+        .chat-status-indicator {
+            width: 8px;
+            height: 8px;
+            background: var(--gray-700);
+            border-radius: var(--radius-full);
+            margin-right: var(--spacing-8);
+            flex-shrink: 0;
+        }
+        
+        .chat-status-indicator.unread {
+            background: var(--gray-900);
+        }
+        
+        /* User Profile Area - Consistent 80px height */
+        .sidebar-profile {
+            height: var(--spacing-80);
+            padding: var(--spacing-16) var(--spacing-24);
+            border-top: var(--border-width) solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-12);
+            flex-shrink: 0;
+            margin-top: auto;
+        }
+        
+        .profile-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--gray-300);
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: var(--font-weight-semibold);
+            font-size: var(--font-small);
+            color: var(--gray-700);
+        }
+        
+        .profile-info {
+            flex: 1;
+        }
+        
+        .profile-name {
+            font-size: var(--font-body);
+            font-weight: var(--font-weight-semibold);
+            color: var(--gray-900);
+            line-height: var(--line-height-tight);
+        }
+        
+        .profile-role {
+            font-size: var(--font-xs);
+            color: var(--gray-500);
+            line-height: var(--line-height-normal);
+            font-weight: var(--font-weight-normal);
+        }
+        
+        /* Collapse Toggle - Fixed Position */
+        .sidebar-toggle {
+            width: 32px;
+            height: 32px;
+            background: var(--gray-100);
+            border: var(--border-width) solid var(--gray-200);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            position: absolute;
+            right: var(--spacing-16);
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10;
+        }
+        
+        .sidebar-toggle:hover {
+            background: var(--gray-200);
+            border-color: var(--gray-300);
+            transform: translateY(-50%) scale(1.05);
+        }
+        
+        .sidebar-toggle:active {
+            transform: translateY(-50%) scale(0.95);
+            background: var(--gray-300);
+        }
+        
+        .sidebar-toggle:focus {
+            outline: 2px solid var(--gray-400);
+            outline-offset: 2px;
+            transform: translateY(-50%) scale(1.05);
+        }
+        
+        .sidebar.collapsed .sidebar-toggle .toggle-icon {
+            transform: rotate(-135deg);
+        }
+        
+        .toggle-icon {
+            width: 8px;
+            height: 8px;
+            border-left: 2px solid var(--gray-600);
+            border-bottom: 2px solid var(--gray-600);
+            transform: rotate(45deg);
+        }
+        
+        /* MAIN CONTENT AREA */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: calc(100vw - var(--sidebar-width));
+            transition: max-width 0.3s ease;
+        }
+        
+        .sidebar.collapsed + .main-content {
+            max-width: calc(100vw - var(--sidebar-collapsed-width));
+        }
+        
+        
+        /* Content Grid Container */
+        .content-container {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+        
+        /* ENHANCED CONVERSATION INTERFACE - Centered */
+        .conversation-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--white);
+            align-items: center;
+            overflow-y: auto;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* Internet Explorer 10+ */
+            padding-bottom: var(--spacing-20);
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+        
+        /* Hide scrollbar completely */
+        .conversation-area::-webkit-scrollbar {
+            display: none;
+        }
+        
+        
+        
+        /* Conversation Header with Project Context */
+        .conversation-header {
+            background: var(--gray-50);
+            border-bottom: var(--border-width) solid var(--gray-200);
+            padding: var(--spacing-16) var(--spacing-24);
+            width: 100%;
+            position: sticky;
+            top: 0;
+            z-index: var(--z-index-header);
+            flex-shrink: 0;
+        }
+        
+        .conversation-project {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-12);
+            margin-bottom: var(--spacing-4);
+        }
+        
+        .project-status {
+            display: inline-flex;
+            align-items: center;
+            padding: var(--spacing-4) var(--spacing-12);
+            background: var(--gray-900);
+            color: var(--white);
+            border-radius: var(--radius-full);
+            font-size: var(--font-xs);
+            font-weight: var(--font-weight-medium);
+            line-height: var(--line-height-tight);
+            letter-spacing: var(--letter-spacing-wide);
+        }
+        
+        .conversation-title {
+            font-size: var(--font-card-lg);
+            font-weight: var(--font-weight-semibold);
+            color: var(--gray-900);
+            line-height: var(--line-height-tight);
+            letter-spacing: var(--letter-spacing-tight);
+        }
+        
+        .conversation-meta {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-16);
+            font-size: var(--font-small);
+            color: var(--gray-600);
+            line-height: var(--line-height-normal);
+            font-weight: var(--font-weight-normal);
+        }
+        
+        /* Messages Container */
+        .messages-container {
+            padding: var(--spacing-32);
+            padding-bottom: var(--spacing-32); /* Base spacing for messages */
+            background: var(--white);
+            width: 100%;
+            max-width: var(--conversation-max-width);
+            min-height: 0; /* Allow flex shrinking */
+        }
+        
+        /* Bottom spacer to ensure scrollable space above fixed input */
+        .bottom-spacer {
+            height: calc(var(--input-area-height) + var(--spacing-80));
+            flex-shrink: 0;
+        }
+
+        /* Professional Message Bubbles */
+        .message {
+            margin-bottom: var(--spacing-32);
+            display: flex;
+            gap: var(--spacing-16);
+        }
+        
+        .message:last-child {
+            margin-bottom: 0;
+        }
+        
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--gray-200);
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: var(--font-weight-semibold);
+            font-size: var(--font-small);
+            color: var(--gray-700);
+            flex-shrink: 0;
+        }
+        
+        .message-ai .message-avatar {
+            background: var(--gray-900);
+            color: var(--white);
+        }
+        
+        .message-content {
+            flex: 1;
+            max-width: 100%;
+        }
+        
+        .message-author {
+            font-size: var(--font-small);
+            font-weight: var(--font-weight-semibold);
+            color: var(--gray-700);
+            margin-bottom: var(--spacing-4);
+            line-height: var(--line-height-tight);
+        }
+        
+        .message-timestamp {
+            font-size: var(--font-xs);
+            color: var(--gray-500);
+            margin-left: var(--spacing-8);
+            font-weight: var(--font-weight-normal);
+            line-height: var(--line-height-normal);
+        }
+        
+        .message-text {
+            font-size: var(--font-body);
+            color: var(--gray-900);
+            line-height: var(--line-height-relaxed);
+            font-weight: var(--font-weight-normal);
+        }
+        
+        /* Rich Message Support - Embedded Talent Cards */
+        .embedded-talent-card {
+            background: var(--gray-50);
+            border: var(--border-width) solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-16);
+            margin-top: var(--spacing-12);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .embedded-talent-card:hover {
+            background: var(--white);
+            border-color: var(--gray-300);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        }
+        
+        .embedded-talent-card:active {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+        
+        .embedded-talent-card:focus {
+            outline: 2px solid var(--gray-400);
+            outline-offset: 2px;
+            transform: translateY(-2px);
+        }
+        
+        .talent-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: var(--spacing-12);
+        }
+        
+        .talent-profile {
+            display: flex;
+            gap: var(--spacing-12);
+        }
+        
+        .talent-headshot {
+            width: 60px;
+            height: 60px;
+            background: var(--gray-300);
+            border-radius: var(--radius-md);
+        }
+        
+        .talent-info {
+            flex: 1;
+        }
+        
+        .talent-name {
+            font-size: var(--font-card);
+            font-weight: var(--font-weight-semibold);
+            color: var(--gray-900);
+            margin-bottom: var(--spacing-2);
+            line-height: var(--line-height-tight);
+            letter-spacing: var(--letter-spacing-tight);
+        }
+        
+        .talent-role {
+            font-size: var(--font-small);
+            color: var(--gray-600);
+            margin-bottom: var(--spacing-4);
+            line-height: var(--line-height-normal);
+            font-weight: var(--font-weight-normal);
+        }
+        
+        .talent-availability {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-4);
+            font-size: var(--font-xs);
+            color: var(--gray-600);
+        }
+        
+        .availability-indicator {
+            width: 8px;
+            height: 8px;
+            background: var(--gray-400);
+            border-radius: var(--radius-full);
+        }
+        
+        .availability-indicator.available {
+            background: var(--gray-700);
+        }
+        
+        .talent-match-score {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+        
+        .match-percentage {
+            font-size: var(--font-section);
+            font-weight: var(--font-weight-bold);
+            color: var(--gray-900);
+            line-height: var(--line-height-tight);
+        }
+        
+        .match-label {
+            font-size: var(--font-xs);
+            color: var(--gray-500);
+        }
+        
+        .talent-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--spacing-16);
+            padding-top: var(--spacing-12);
+            border-top: var(--border-width) solid var(--gray-200);
+        }
+        
+        .metric-item {
+            text-align: center;
+        }
+        
+        .metric-value {
+            font-size: var(--font-card);
+            font-weight: var(--font-weight-semibold);
+            color: var(--gray-900);
+            display: block;
+            line-height: var(--line-height-tight);
+        }
+        
+        .metric-label {
+            font-size: var(--font-xs);
+            color: var(--gray-500);
+            display: block;
+            margin-top: var(--spacing-2);
+            line-height: var(--line-height-normal);
+            font-weight: var(--font-weight-normal);
+        }
+        
+        /* Quick Reply Options */
+        .quick-actions {
+            display: flex;
+            gap: var(--spacing-8);
+            margin-top: var(--spacing-16);
+        }
+        
+        .quick-action-btn {
+            padding: var(--spacing-8) var(--spacing-16);
+            background: var(--white);
+            border: var(--border-width) solid var(--gray-300);
+            border-radius: var(--radius-md);
+            font-size: var(--font-small);
+            font-weight: var(--font-weight-medium);
+            color: var(--gray-700);
+            cursor: pointer;
+            transition: all 0.15s ease;
+            line-height: var(--line-height-normal);
+            letter-spacing: var(--letter-spacing-normal);
+        }
+        
+        .quick-action-btn:hover {
+            background: var(--gray-100);
+            border-color: var(--gray-400);
+            color: var(--gray-900);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+        
+        .quick-action-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+        }
+        
+        .quick-action-btn:focus {
+            outline: 2px solid var(--gray-400);
+            outline-offset: 2px;
+            transform: translateY(-1px);
+        }
+        
+        /* Premium Voice Input Area - Fixed Bottom */
+        .input-area {
+            padding: var(--spacing-20) var(--spacing-24);
+            position: fixed;
+            bottom: 0;
+            left: var(--sidebar-width);
+            right: 0;
+            z-index: var(--z-index-input);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: left 0.3s ease;
+            min-height: var(--input-area-height);
+        }
+        
+        .sidebar.collapsed ~ .main-content .input-area {
+            left: var(--sidebar-collapsed-width);
+        }
+        
+        /* Ensure input area stays centered when sidebar is collapsed */
+        .sidebar.collapsed + .main-content .input-area {
+            left: var(--sidebar-collapsed-width);
+        }
+        
+        /* Input area content wrapper */
+        .input-area-content {
+            width: 100%;
+            max-width: var(--input-max-width);
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        
+        .input-controls {
+            display: flex;
+            gap: 0;
+            align-items: center;
+            width: 100%;
+        }
+        
+        /* Attachment Button - Inside Input */
+        .attachment-button {
+            position: absolute;
+            left: var(--spacing-12);
+            top: 50%;
+            transform: translateY(-50%);
+            width: 32px;
+            height: 32px;
+            background: transparent;
+            border: none;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            z-index: 5;
+        }
+        
+        .attachment-button:hover {
+            background: var(--gray-200);
+            transform: scale(1.1);
+        }
+        
+        .attachment-button:active {
+            transform: scale(0.95);
+            background: var(--gray-300);
+        }
+        
+        .attachment-button:focus {
+            outline: 2px solid var(--gray-400);
+            outline-offset: 2px;
+            transform: scale(1.1);
+        }
+        
+        .attachment-icon {
+            width: 16px;
+            height: 16px;
+            background: var(--gray-600);
+            border-radius: var(--radius-xs);
+            position: relative;
+        }
+        
+        .attachment-icon::before,
+        .attachment-icon::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            background: var(--gray-100);
+            border-radius: 1px;
+        }
+        
+        .attachment-icon::before {
+            width: 10px;
+            height: 2px;
+            transform: translate(-50%, -50%);
+        }
+        
+        .attachment-icon::after {
+            width: 2px;
+            height: 10px;
+            transform: translate(-50%, -50%);
+        }
+        
+        /* Right side controls container - Inside Input */
+        .right-controls {
+            position: absolute;
+            right: var(--spacing-12);
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            gap: var(--spacing-8);
+            align-items: center;
+            z-index: 5;
+        }
+        
+        /* Voice Button - Inside Input */
+        .voice-button {
+            width: 32px;
+            height: 32px;
+            background: transparent;
+            border: none;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            position: relative;
+            flex-shrink: 0;
+        }
+        
+        .voice-button:hover {
+            background: var(--gray-200);
+            transform: scale(1.1);
+        }
+        
+        .voice-button:active {
+            transform: scale(0.9);
+            background: var(--gray-300);
+        }
+        
+        .voice-button:focus {
+            outline: 2px solid var(--gray-400);
+            outline-offset: 2px;
+            transform: scale(1.1);
+        }
+        
+        /* Recording state with enhanced visual feedback */
+        .voice-button.recording {
+            background: var(--gray-900);
+            color: var(--white);
+            box-shadow: 0 0 0 2px rgba(38, 38, 38, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .voice-button.recording:hover {
+            background: var(--black);
+        }
+        
+        .voice-indicator {
+            position: absolute;
+            inset: -4px;
+            border: 2px solid var(--gray-400);
+            border-radius: var(--radius-full);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .voice-button.recording .voice-indicator {
+            opacity: 1;
+        }
+        
+        .voice-icon {
+            width: 16px;
+            height: 16px;
+            position: relative;
+        }
+        
+        /* Microphone capsule */
+        .voice-icon::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 50%;
+            width: 6px;
+            height: 10px;
+            background: var(--gray-600);
+            border-radius: 3px;
+            transform: translateX(-50%);
+        }
+        
+        /* Microphone stand/base */
+        .voice-icon::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 12px;
+            height: 2px;
+            background: var(--gray-600);
+            border-radius: 1px;
+            transform: translateX(-50%);
+            box-shadow: 0 -2px 0 var(--gray-600);
+        }
+        
+        /* Text Input with Voice Transcription */
+        .text-input-container {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: var(--gray-50);
+            border: var(--border-width) solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            transition: all 0.15s ease;
+            min-height: 80px;
+        }
+        
+        .text-input-container:hover {
+            border-color: var(--gray-300);
+            background: var(--white);
+        }
+        
+        .text-input-container:focus-within {
+            background: var(--white);
+            border-color: var(--gray-400);
+            box-shadow: 0 0 0 3px rgba(163, 163, 163, 0.1);
+            transform: translateY(-1px);
+        }
+        
+        .text-input-container.has-text {
+            border-color: var(--gray-300);
+            background: var(--white);
+        }
+        
+        .text-input {
+            flex: 1;
+            min-height: 80px;
+            max-height: 140px;
+            padding: var(--spacing-16) var(--spacing-60);
+            background: transparent;
+            border: none;
+            font-size: var(--font-body);
+            font-family: var(--font-primary);
+            font-weight: var(--font-weight-normal);
+            line-height: var(--line-height-normal);
+            resize: none;
+            outline: none;
+        }
+        
+        
+        /* Voice Transcription Display */
+        .voice-transcription {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            right: 0;
+            background: var(--gray-900);
+            color: var(--white);
+            padding: var(--spacing-12) var(--spacing-16);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-8);
+            font-size: var(--font-small);
+            display: none;
+        }
+        
+        .voice-transcription.active {
+            display: block;
+        }
+        
+        .waveform {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+            height: 20px;
+            margin-top: var(--spacing-8);
+        }
+        
+        .waveform-bar {
+            width: 3px;
+            background: var(--white);
+            border-radius: var(--radius-xs);
+            animation: wave 1s ease-in-out infinite;
+        }
+        
+        .waveform-bar:nth-child(2) { animation-delay: 0.1s; }
+        .waveform-bar:nth-child(3) { animation-delay: 0.2s; }
+        .waveform-bar:nth-child(4) { animation-delay: 0.3s; }
+        .waveform-bar:nth-child(5) { animation-delay: 0.4s; }
+        
+        @keyframes wave {
+            0%, 100% { height: 4px; }
+            50% { height: 20px; }
+        }
+        
+        .send-button {
+            width: 32px;
+            height: 32px;
+            background: var(--gray-900);
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            flex-shrink: 0;
+        }
+        
+        .send-button:hover {
+            background: var(--black);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .send-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .send-button:focus {
+            outline: 2px solid var(--gray-400);
+            outline-offset: 2px;
+            transform: translateY(-1px);
+        }
+        
+        /* Disabled state for send button */
+        .send-button:disabled {
+            background: var(--gray-300);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .send-button:disabled:hover {
+            background: var(--gray-300);
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .send-icon {
+            width: 16px;
+            height: 16px;
+            position: relative;
+        }
+        
+        .send-icon::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-left: 6px solid var(--white);
+            border-top: 4px solid transparent;
+            border-bottom: 4px solid transparent;
+            transform: translate(-40%, -50%);
+        }
+        
+        
+        
+        /* Mobile Responsive - Bottom Tab Navigation */
+        @media (max-width: 768px) {
+            .dashboard-container {
+                flex-direction: column;
+                height: 100vh;
+                height: 100dvh; /* Dynamic viewport height for mobile browsers */
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .main-content {
+                max-width: 100%;
+                flex: 1;
+                overflow: hidden;
+            }
+            
+            .conversation-area {
+                max-width: 100%;
+                flex: 1;
+            }
+            
+            .conversation-header {
+                padding: var(--spacing-12) var(--spacing-16);
+            }
+            
+            .messages-container {
+                padding: var(--spacing-16);
+                padding-bottom: calc(var(--input-area-height) + var(--mobile-nav-height) + var(--spacing-20));
+                max-width: 100%;
+            }
+            
+            .input-area {
+                padding: var(--spacing-16);
+                left: 0;
+                bottom: var(--mobile-nav-height);
+            }
+            
+            .input-area-content {
+                max-width: 100%;
+                padding: 0 var(--spacing-8);
+            }
+            
+            /* Mobile Bottom Navigation - Consistent height */
+            .mobile-nav {
+                display: flex;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: var(--mobile-nav-height);
+                background: var(--white);
+                border-top: var(--border-width) solid var(--gray-200);
+                z-index: var(--z-index-modal);
+            }
+            
+            .mobile-nav-item {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: var(--spacing-4);
+                font-size: var(--font-micro);
+                color: var(--gray-600);
+                cursor: pointer;
+            }
+            
+            .mobile-nav-item:hover {
+                background: var(--gray-100);
+                border-radius: var(--radius-md);
+            }
+            
+            .mobile-nav-item:active {
+                background: var(--gray-200);
+                transform: scale(0.95);
+            }
+            
+            .mobile-nav-item.active {
+                color: var(--gray-900);
+                font-weight: 600;
+                background: var(--gray-100);
+                border-radius: var(--radius-md);
+            }
+            
+            .mobile-nav-item:focus {
+                outline: 2px solid var(--gray-400);
+                outline-offset: 2px;
+                border-radius: var(--radius-md);
+            }
+            
+            .mobile-nav-icon {
+                width: 24px;
+                height: 24px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .mobile-nav-icon svg {
+                width: 20px;
+                height: 20px;
+                fill: currentColor;
+            }
+            
+            /* Mobile FAB and layout adjustments */
+            .new-chat-button {
+                position: fixed;
+                bottom: calc(var(--mobile-nav-height) + var(--input-area-height) + var(--spacing-16));
+                right: var(--spacing-16);
+                width: var(--touch-target-large);
+                height: var(--touch-target-large);
+                border-radius: var(--radius-full);
+                z-index: calc(var(--z-index-modal) - 1);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                margin-bottom: 0;
+            }
+            
+            .new-chat-button span {
+                display: none;
+            }
+            
+            .new-chat-icon {
+                width: 24px;
+                height: 24px;
+            }
+            
+            .mobile-nav {
+                display: flex !important;
+            }
+            
+            /* Adjust embedded talent cards for mobile */
+            .embedded-talent-card {
+                padding: var(--spacing-12);
+            }
+            
+            .talent-metrics {
+                grid-template-columns: repeat(2, 1fr);
+                gap: var(--spacing-12);
+            }
+            
+            .quick-actions {
+                flex-wrap: wrap;
+                gap: var(--spacing-4);
+            }
+            
+            .quick-action-btn {
+                font-size: var(--font-xs);
+                padding: var(--spacing-6) var(--spacing-12);
+            }
+        }
+        
+        /* Tablet responsive adjustments */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .sidebar {
+                width: 240px;
+            }
+            
+            .sidebar-brand,
+            .sidebar-nav,
+            .sidebar-profile {
+                padding-left: var(--spacing-16);
+                padding-right: var(--spacing-16);
+            }
+            
+            .conversation-header {
+                padding: var(--spacing-12) var(--spacing-20);
+            }
+            
+            .messages-container {
+                padding: var(--spacing-24);
+                padding-bottom: calc(var(--input-area-height) + var(--spacing-32));
+                max-width: 100%;
+            }
+            
+            .input-area {
+                padding: var(--spacing-16) var(--spacing-20);
+                left: 240px;
+            }
+        }
+        
+        /* Small mobile devices */
+        @media (max-width: 480px) {
+            .conversation-header {
+                padding: var(--spacing-8) var(--spacing-12);
+            }
+            
+            .conversation-title {
+                font-size: var(--font-card);
+            }
+            
+            .messages-container {
+                padding: var(--spacing-12);
+            }
+            
+            .message {
+                gap: var(--spacing-12);
+                margin-bottom: var(--spacing-24);
+            }
+            
+            .message-avatar {
+                width: 32px;
+                height: 32px;
+                font-size: var(--font-xs);
+            }
+            
+            .talent-card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--spacing-8);
+            }
+            
+            .talent-profile {
+                width: 100%;
+            }
+            
+            .talent-match-score {
+                align-items: flex-start;
+            }
+            
+            .talent-metrics {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+    </style>
+</head>
+<body>
+    <!-- Professional Dashboard Container -->
+    <div class="dashboard-container">
+        
+        <!-- FIXED SIDEBAR NAVIGATION -->
+        <aside class="sidebar" role="navigation" aria-label="Main navigation">
+            <!-- Logo & Brand Area -->
+            <div class="sidebar-brand">
+                <div class="brand-content">
+                    <div class="brand-logo" aria-label="CastMatch AI Logo">CM</div>
+                    <div class="brand-name">CastMatch AI</div>
+                </div>
+                <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle sidebar navigation" aria-expanded="true">
+                    <div class="toggle-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                </button>
+            </div>
+            
+            <!-- Primary Navigation -->
+            <nav class="sidebar-nav">
+                <!-- New Conversation CTA -->
+                <button class="new-chat-button" aria-label="Start new AI conversation">
+                    <div class="new-chat-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 5v14m-7-7h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <span>Start New Conversation</span>
+                </button>
+                
+                <!-- Active Projects -->
+                <div class="nav-section" role="group" aria-labelledby="active-projects-heading">
+                    <div class="nav-section-title" id="active-projects-heading">Active Projects</div>
+                    <div class="nav-item" role="button" tabindex="0" aria-label="Mumbai Dreams project, currently active">
+                        <span>Mumbai Dreams</span>
+                        <span class="project-status-badge active" aria-label="Status: Active">Active</span>
+                    </div>
+                    <div class="nav-item" role="button" tabindex="0" aria-label="Sacred Games Season 3 project, in pre-production">
+                        <span>Sacred Games S3</span>
+                        <span class="project-status-badge pre-production" aria-label="Status: Pre-production">Pre-prod</span>
+                    </div>
+                    <div class="nav-item" role="button" tabindex="0" aria-label="Rocket Boys Season 2 project, planned">
+                        <span>Rocket Boys S2</span>
+                        <span class="project-status-badge planned" aria-label="Status: Planned">Planned</span>
+                    </div>
+                </div>
+                
+                <!-- Recent Conversations -->
+                <div class="nav-section" role="group" aria-labelledby="recent-chats-heading">
+                    <div class="nav-section-title" id="recent-chats-heading">Recent Chats</div>
+                    
+                    <div class="recent-chat-item active" role="button" tabindex="0" aria-label="Recent chat: Lead Character Casting discussion for Mumbai Dreams, 2 hours ago, currently active">
+                        <div class="recent-chat-header">
+                            <div class="recent-chat-title">Lead Character Casting - Meera & Arjun</div>
+                            <div class="recent-chat-time" aria-label="2 hours ago">2h ago</div>
+                        </div>
+                        <div class="recent-chat-project">Mumbai Dreams</div>
+                        <div class="recent-chat-preview">I need a male lead similar to late Irrfan Khan's intensity...</div>
+                    </div>
+                    
+                    <div class="recent-chat-item" role="button" tabindex="0" aria-label="Recent chat: Supporting Cast Discussion for Mumbai Dreams, 1 day ago">
+                        <div class="recent-chat-header">
+                            <div class="recent-chat-title">Supporting Cast Discussion</div>
+                            <div class="recent-chat-time" aria-label="1 day ago">1d ago</div>
+                        </div>
+                        <div class="recent-chat-project">Mumbai Dreams</div>
+                        <div class="recent-chat-preview">Looking for character actors for taxi driver role...</div>
+                    </div>
+                    
+                    <div class="recent-chat-item" role="button" tabindex="0" aria-label="Recent chat: Budget Constraints & Casting for Sacred Games S3, 3 days ago">
+                        <div class="recent-chat-header">
+                            <div class="recent-chat-title">Budget Constraints & Casting</div>
+                            <div class="recent-chat-time" aria-label="3 days ago">3d ago</div>
+                        </div>
+                        <div class="recent-chat-project">Sacred Games S3</div>
+                        <div class="recent-chat-preview">How can we optimize casting within ₹50L budget?</div>
+                    </div>
+                    
+                    <div class="recent-chat-item" role="button" tabindex="0" aria-label="Recent chat: Regional Actor Requirements for Rocket Boys S2, 5 days ago">
+                        <div class="recent-chat-header">
+                            <div class="recent-chat-title">Regional Actor Requirements</div>
+                            <div class="recent-chat-time" aria-label="5 days ago">5d ago</div>
+                        </div>
+                        <div class="recent-chat-project">Rocket Boys S2</div>
+                        <div class="recent-chat-preview">Need Tamil-speaking actors for South India sequences...</div>
+                    </div>
+                    
+                    <div class="recent-chat-item" role="button" tabindex="0" aria-label="Recent chat: Voice Over Artists Discussion, 1 week ago">
+                        <div class="recent-chat-header">
+                            <div class="recent-chat-title">Voice Over Artists Discussion</div>
+                            <div class="recent-chat-time" aria-label="1 week ago">1w ago</div>
+                        </div>
+                        <div class="recent-chat-project">Mumbai Dreams</div>
+                        <div class="recent-chat-preview">Looking for Hindi and Marathi voice over talent...</div>
+                    </div>
+                    
+                    <div class="recent-chat-item" role="button" tabindex="0" aria-label="Recent chat: Child Actor Auditions, 1 week ago">
+                        <div class="recent-chat-header">
+                            <div class="recent-chat-title">Child Actor Auditions</div>
+                            <div class="recent-chat-time" aria-label="1 week ago">1w ago</div>
+                        </div>
+                        <div class="recent-chat-project">Sacred Games S3</div>
+                        <div class="recent-chat-preview">Need child actors aged 8-12 for flashback scenes...</div>
+                    </div>
+                    
+                    <div class="recent-chat-item" role="button" tabindex="0" aria-label="Recent chat: Background Dancers Casting, 2 weeks ago">
+                        <div class="recent-chat-header">
+                            <div class="recent-chat-title">Background Dancers Casting</div>
+                            <div class="recent-chat-time" aria-label="2 weeks ago">2w ago</div>
+                        </div>
+                        <div class="recent-chat-project">Mumbai Dreams</div>
+                        <div class="recent-chat-preview">Casting call for classical dance background performers...</div>
+                    </div>
+                </div>
+            </nav>
+            
+            <!-- User Profile Area -->
+            <div class="sidebar-profile" role="button" tabindex="0" aria-label="User profile: Meera Khanna, Casting Director">
+                <div class="profile-avatar" aria-label="User avatar">MK</div>
+                <div class="profile-info">
+                    <div class="profile-name">Meera Khanna</div>
+                    <div class="profile-role">Casting Director</div>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- MAIN CONTENT AREA -->
+        <div class="main-content">
+            
+            <!-- Content Container -->
+            <div class="content-container">
+                <!-- ENHANCED CONVERSATION INTERFACE -->
+                <div class="conversation-area" role="main" aria-label="Conversation area">
+                    <!-- Conversation Header -->
+                    <div class="conversation-header" role="banner">
+                        <div class="conversation-project">
+                            <span class="project-status" aria-label="Project status: Active Casting">Active</span>
+                            <span>Mumbai Dreams</span>
+                        </div>
+                        <h2 class="conversation-title">Lead Character Casting</h2>
+                    </div>
+                    
+                    <!-- Messages Container -->
+                    <div class="messages-container" role="log" aria-label="Conversation messages" aria-live="polite">
+                        <!-- User Message -->
+                        <div class="message message-user" role="article" aria-labelledby="msg1-author">
+                            <div class="message-avatar" aria-label="Meera Khanna avatar">MK</div>
+                            <div class="message-content">
+                                <div class="message-author" id="msg1-author">
+                                    Meera Khanna
+                                    <span class="message-timestamp" aria-label="sent at 10:32 AM">10:32 AM</span>
+                                </div>
+                                <div class="message-text">
+                                    I need a male lead similar to late Irrfan Khan's intensity - someone who can carry both vulnerability and strength. Budget is ₹15 lakhs for the entire project. Must be available for 45-day schedule starting November. Preference for actors comfortable with sync sound and method preparation.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- AI Response with Rich Content -->
+                        <div class="message message-ai" role="article" aria-labelledby="msg2-author">
+                            <div class="message-avatar" aria-label="CastMatch AI avatar">AI</div>
+                            <div class="message-content">
+                                <div class="message-author" id="msg2-author">
+                                    CastMatch AI
+                                    <span class="message-timestamp" aria-label="sent at 10:32 AM">10:32 AM</span>
+                                </div>
+                                <div class="message-text">
+                                    I've analyzed 127 profiles matching your criteria. Here are the top 3 matches who embody that Irrfan Khan intensity you're looking for:
+                                </div>
+                                
+                                <!-- Embedded Talent Card 1 -->
+                                <div class="embedded-talent-card">
+                                    <div class="talent-card-header">
+                                        <div class="talent-profile">
+                                            <div class="talent-headshot"></div>
+                                            <div class="talent-info">
+                                                <div class="talent-name">Vikram Massey</div>
+                                                <div class="talent-role">NSD Graduate • Method Actor</div>
+                                                <div class="talent-availability">
+                                                    <span class="availability-indicator available"></span>
+                                                    <span>Available November onwards</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="talent-match-score">
+                                            <div class="match-percentage">94%</div>
+                                            <div class="match-label">Match Score</div>
+                                        </div>
+                                    </div>
+                                    <div class="talent-metrics">
+                                        <div class="metric-item">
+                                            <span class="metric-value">₹12L</span>
+                                            <span class="metric-label">Quote</span>
+                                        </div>
+                                        <div class="metric-item">
+                                            <span class="metric-value">87%</span>
+                                            <span class="metric-label">Success Rate</span>
+                                        </div>
+                                        <div class="metric-item">
+                                            <span class="metric-value">23</span>
+                                            <span class="metric-label">Projects</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Embedded Talent Card 2 -->
+                                <div class="embedded-talent-card">
+                                    <div class="talent-card-header">
+                                        <div class="talent-profile">
+                                            <div class="talent-headshot"></div>
+                                            <div class="talent-info">
+                                                <div class="talent-name">Arjun Mathur</div>
+                                                <div class="talent-role">FTII Alumni • International Projects</div>
+                                                <div class="talent-availability">
+                                                    <span class="availability-indicator available"></span>
+                                                    <span>Free from October 15</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="talent-match-score">
+                                            <div class="match-percentage">89%</div>
+                                            <div class="match-label">Match Score</div>
+                                        </div>
+                                    </div>
+                                    <div class="talent-metrics">
+                                        <div class="metric-item">
+                                            <span class="metric-value">₹14L</span>
+                                            <span class="metric-label">Quote</span>
+                                        </div>
+                                        <div class="metric-item">
+                                            <span class="metric-value">92%</span>
+                                            <span class="metric-label">Success Rate</span>
+                                        </div>
+                                        <div class="metric-item">
+                                            <span class="metric-value">31</span>
+                                            <span class="metric-label">Projects</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="quick-actions" role="group" aria-label="Quick actions for talent recommendations">
+                                    <button class="quick-action-btn" aria-label="View all matching talent profiles">View All Profiles</button>
+                                    <button class="quick-action-btn" aria-label="Schedule look tests for selected talents">Schedule Look Tests</button>
+                                    <button class="quick-action-btn" aria-label="Save talents to casting shortlist">Save to Shortlist</button>
+                                    <button class="quick-action-btn" aria-label="Share talent recommendations with director">Share with Director</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Director Input -->
+                        <div class="message message-user" role="article" aria-labelledby="msg3-author">
+                            <div class="message-avatar" aria-label="Rajesh Kumar avatar">RK</div>
+                            <div class="message-content">
+                                <div class="message-author" id="msg3-author">
+                                    Rajesh Kumar (Director)
+                                    <span class="message-timestamp" aria-label="sent at 10:45 AM">10:45 AM</span>
+                                </div>
+                                <div class="message-text">
+                                    Vikram looks perfect! Can we see his work from "A Death in the Gunj"? Also need a female lead - thinking someone like Radhika Apte but younger, similar depth. Character is a journalist from South Mumbai who goes to rural Maharashtra.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- AI Response -->
+                        <div class="message message-ai" role="article" aria-labelledby="msg4-author">
+                            <div class="message-avatar" aria-label="CastMatch AI avatar">AI</div>
+                            <div class="message-content">
+                                <div class="message-author" id="msg4-author">
+                                    CastMatch AI
+                                    <span class="message-timestamp" aria-label="sent at 10:46 AM">10:46 AM</span>
+                                </div>
+                                <div class="message-text">
+                                    I'm pulling up Vikram's scenes from "A Death in the Gunj" - his portrayal of vulnerability there aligns perfectly with your vision. 
+                                    
+                                    For the female journalist role with Radhika Apte's depth, I have excellent matches:
+                                </div>
+                                
+                                <!-- Female Lead Recommendations -->
+                                <div class="embedded-talent-card">
+                                    <div class="talent-card-header">
+                                        <div class="talent-profile">
+                                            <div class="talent-headshot"></div>
+                                            <div class="talent-info">
+                                                <div class="talent-name">Sobhita Dhulipala</div>
+                                                <div class="talent-role">Made in Heaven • The Night Manager</div>
+                                                <div class="talent-availability">
+                                                    <span class="availability-indicator available"></span>
+                                                    <span>November dates open</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="talent-match-score">
+                                            <div class="match-percentage">91%</div>
+                                            <div class="match-label">Match Score</div>
+                                        </div>
+                                    </div>
+                                    <div class="talent-metrics">
+                                        <div class="metric-item">
+                                            <span class="metric-value">₹10L</span>
+                                            <span class="metric-label">Quote</span>
+                                        </div>
+                                        <div class="metric-item">
+                                            <span class="metric-value">South Mumbai</span>
+                                            <span class="metric-label">Background</span>
+                                        </div>
+                                        <div class="metric-item">
+                                            <span class="metric-value">Fluent</span>
+                                            <span class="metric-label">Marathi</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="quick-actions" role="group" aria-label="Quick actions for talent recommendations">
+                                    <button class="quick-action-btn" aria-label="View Vikram's acting reel">📹 View Vikram's Reel</button>
+                                    <button class="quick-action-btn" aria-label="Book look test at Film City">📅 Book Look Test - Film City</button>
+                                    <button class="quick-action-btn" aria-label="Generate detailed budget breakdown">💰 Generate Budget Breakdown</button>
+                                    <button class="quick-action-btn" aria-label="Schedule chemistry read between leads">🎭 Schedule Chemistry Read</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Bottom spacer to prevent content being hidden by fixed input -->
+                        <div class="bottom-spacer" aria-hidden="true"></div>
+                    </div>
+                    
+                    <!-- Premium Voice Input Area -->
+                    <div class="input-area" role="form" aria-label="Message input form">
+                        <div class="input-area-content">
+                            <div class="voice-transcription" role="status" aria-live="polite" aria-label="Voice transcription display">
+                                <div>Listening... "Find me actors who've worked with Anurag Kashyap"</div>
+                                <div class="waveform" aria-label="Voice recording indicator">
+                                    <div class="waveform-bar" aria-hidden="true"></div>
+                                    <div class="waveform-bar" aria-hidden="true"></div>
+                                    <div class="waveform-bar" aria-hidden="true"></div>
+                                    <div class="waveform-bar" aria-hidden="true"></div>
+                                    <div class="waveform-bar" aria-hidden="true"></div>
+                                </div>
+                            </div>
+                            <div class="input-controls">
+                                <div class="text-input-container">
+                                    <button class="attachment-button" aria-label="Attach files" title="Attach files">
+                                        <div class="attachment-icon" aria-hidden="true">
+                                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66L9.64 16.2a2 2 0 0 1-2.83-2.83l8.49-8.49" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>
+                                        </div>
+                                    </button>
+                                    <textarea class="text-input" 
+                                             placeholder="Ask about talents, schedule auditions, check availability..." 
+                                             aria-label="Type your message" 
+                                             rows="1" 
+                                             resize="none"></textarea>
+                                    <div class="right-controls">
+                                        <button class="voice-button" aria-label="Record voice message" title="Record voice message" aria-pressed="false">
+                                            <div class="voice-indicator" aria-hidden="true"></div>
+                                            <div class="voice-icon" aria-hidden="true">
+                                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" fill="currentColor"/>
+                                                    <path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                </svg>
+                                            </div>
+                                        </button>
+                                        <button class="send-button" aria-label="Send message" title="Send message">
+                                            <div class="send-icon" aria-hidden="true">
+                                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="m22 2-7 20-4-9-9-4z" fill="currentColor"/>
+                                                    <path d="m22 2-7 20-4-9-9-4 20-7z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                </svg>
+                                            </div>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Bottom Navigation (Hidden on Desktop) -->
+        <nav class="mobile-nav" style="display: none;" role="navigation" aria-label="Mobile navigation">
+            <div class="mobile-nav-item active" role="button" tabindex="0" aria-label="Chat, currently active" aria-current="page">
+                <div class="mobile-nav-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" fill="currentColor"/>
+                    </svg>
+                </div>
+                <span>Chat</span>
+            </div>
+            <div class="mobile-nav-item" role="button" tabindex="0" aria-label="Search talents">
+                <div class="mobile-nav-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
+                        <path d="m21 21-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <span>Search</span>
+            </div>
+            <div class="mobile-nav-item" role="button" tabindex="0" aria-label="Calendar and scheduling">
+                <div class="mobile-nav-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
+                        <line x1="16" y1="2" x2="16" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <line x1="8" y1="2" x2="8" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </div>
+                <span>Calendar</span>
+            </div>
+            <div class="mobile-nav-item" role="button" tabindex="0" aria-label="Projects management">
+                <div class="mobile-nav-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <span>Projects</span>
+            </div>
+            <div class="mobile-nav-item" role="button" tabindex="0" aria-label="User profile">
+                <div class="mobile-nav-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </div>
+                <span>Profile</span>
+            </div>
+        </nav>
+    </div>
+    
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const toggle = document.querySelector('.sidebar-toggle');
+            sidebar.classList.toggle('collapsed');
+            
+            // Update aria-expanded attribute
+            const isCollapsed = sidebar.classList.contains('collapsed');
+            toggle.setAttribute('aria-expanded', !isCollapsed);
+        }
+        
+        // Sidebar scrollbar visibility management
+        function initSidebarScroll() {
+            const sidebarNav = document.querySelector('.sidebar-nav');
+            let scrollTimeout;
+            
+            if (sidebarNav) {
+                // Show scrollbar when scrolling
+                sidebarNav.addEventListener('scroll', function() {
+                    this.classList.add('scrolling');
+                    
+                    // Clear existing timeout
+                    clearTimeout(scrollTimeout);
+                    
+                    // Hide scrollbar after 1.5 seconds of no scrolling
+                    scrollTimeout = setTimeout(() => {
+                        this.classList.remove('scrolling');
+                    }, 1500);
+                });
+                
+                // Show scrollbar on mouse enter (desktop only)
+                if (window.matchMedia('(hover: hover)').matches) {
+                    sidebarNav.addEventListener('mouseenter', function() {
+                        this.classList.add('scrolling');
+                    });
+                    
+                    sidebarNav.addEventListener('mouseleave', function() {
+                        clearTimeout(scrollTimeout);
+                        setTimeout(() => {
+                            this.classList.remove('scrolling');
+                        }, 300);
+                    });
+                }
+            }
+        }
+        
+        // Enhanced interactive feedback
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize sidebar scroll behavior
+            initSidebarScroll();
+            // Add button press animation
+            const buttons = document.querySelectorAll('button, .nav-item, .recent-chat-item, .embedded-talent-card');
+            
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    this.classList.add('btn-press');
+                    setTimeout(() => {
+                        this.classList.remove('btn-press');
+                    }, 100);
+                });
+            });
+            
+            // Voice button recording state toggle
+            const voiceButton = document.querySelector('.voice-button');
+            if (voiceButton) {
+                voiceButton.addEventListener('click', function() {
+                    this.classList.toggle('recording');
+                    const isRecording = this.classList.contains('recording');
+                    this.setAttribute('aria-pressed', isRecording);
+                    
+                    // Auto-stop recording after 5 seconds for demo
+                    if (isRecording) {
+                        setTimeout(() => {
+                            this.classList.remove('recording');
+                            this.setAttribute('aria-pressed', 'false');
+                        }, 5000);
+                    }
+                });
+            }
+            
+            // Text input state management
+            const textInput = document.querySelector('.text-input');
+            const textContainer = document.querySelector('.text-input-container');
+            
+            if (textInput && textContainer) {
+                textInput.addEventListener('input', function() {
+                    if (this.value.trim()) {
+                        textContainer.classList.add('has-text');
+                    } else {
+                        textContainer.classList.remove('has-text');
+                    }
+                });
+                
+                // Auto-resize textarea
+                textInput.addEventListener('input', function() {
+                    this.style.height = 'auto';
+                    this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+                });
+            }
+            
+            // Smooth scroll to new messages
+            const conversationArea = document.querySelector('.conversation-area');
+            if (conversationArea) {
+                conversationArea.classList.add('auto-scroll');
+            }
+            
+            // Add fade-in animation to messages
+            const messages = document.querySelectorAll('.message');
+            messages.forEach((message, index) => {
+                message.style.animationDelay = `${index * 0.1}s`;
+                message.classList.add('loading');
+            });
+        });
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Ctrl/Cmd + K to focus search
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                const textInput = document.querySelector('.text-input');
+                if (textInput) {
+                    textInput.focus();
+                }
+            }
+            
+            // Escape to collapse sidebar on mobile
+            if (e.key === 'Escape') {
+                const sidebar = document.querySelector('.sidebar');
+                if (window.innerWidth <= 768 && !sidebar.classList.contains('collapsed')) {
+                    toggleSidebar();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

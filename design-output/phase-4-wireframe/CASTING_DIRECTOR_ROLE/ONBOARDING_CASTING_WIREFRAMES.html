@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../SYSTEM_DOCUMENTATION/WIREFRAME_STANDARDS_GRAYSCALE.css">
+    <title>CastMatch - Casting Director Onboarding Flow Wireframes</title>
+    <style>
+        /* Use standard grayscale variables from WIREFRAME_STANDARDS_GRAYSCALE.css */
+        /* Additional semantic mappings */
+        :root {
+            --surface: var(--white);
+            --surface-variant: var(--light-gray);
+            --background: var(--light-gray);
+            --border: var(--medium-light);
+            --border-light: var(--medium-light);
+            --text-primary: var(--black);
+            --text-secondary: var(--dark);
+            --text-tertiary: var(--medium-dark);
+            --text-disabled: var(--medium);
+            
+            /* Interactive States */
+            --hover-bg: var(--light-gray);
+            --active-bg: var(--medium-light);
+            --focus-ring: var(--dark);
+            
+            /* Typography Scale */
+            --font-xs: 12px;
+            --font-sm: 14px;
+            --font-base: 16px;
+            --font-lg: 18px;
+            --font-xl: 20px;
+            --font-2xl: 24px;
+            --font-3xl: 32px;
+            --font-4xl: 40px;
+            
+            /* Border Radius */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-full: 9999px;
+            
+            /* Shadows */
+            --shadow-sm: 1px solid var(--medium-light);
+            --shadow-md: 2px solid var(--medium-light);
+            --shadow-lg: 2px solid var(--medium);
+            --shadow-xl: 3px solid var(--medium);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-primary);
+            background: var(--gray-50);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        
+        /* Container System */
+        .wireframe-container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: var(--spacing-2xl);
+        }
+        
+        .wireframe-header {
+            text-align: center;
+            padding: var(--spacing-3xl) 0;
+            border-bottom: 2px solid var(--border);
+            margin-bottom: var(--spacing-3xl);
+        }
+        
+        .wireframe-title {
+            font-size: var(--font-4xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .wireframe-subtitle {
+            font-size: var(--font-lg);
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Screen Section */
+        .screen-section {
+            margin-bottom: var(--spacing-3xl);
+            padding: var(--spacing-2xl);
+            background: var(--surface);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .screen-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-xl);
+            padding-bottom: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .screen-title {
+            font-size: var(--font-2xl);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+        }
+        
+        .screen-meta {
+            display: flex;
+            gap: var(--spacing-lg);
+            font-size: var(--font-sm);
+            color: var(--text-tertiary);
+        }
+        
+        /* Project Type Selection */
+        .project-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-2xl);
+        }
+        
+        .project-type-card {
+            padding: var(--spacing-xl);
+            background: var(--surface);
+            border: var(--border-width-2) solid var(--border-light);
+            border-radius: var(--radius-lg);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .project-type-card:hover {
+            background: var(--gray-50);
+            border-color: var(--gray-400);
+            transform: translateY(-2px);
+        }
+        
+        .project-type-card.selected {
+            background: var(--gray-100);
+            border-color: var(--gray-800);
+        }
+        
+        .project-type-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--gray-200);
+            border-radius: var(--radius-md);
+            margin: 0 auto var(--spacing-md);
+        }
+        
+        .project-type-title {
+            font-size: var(--font-lg);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .project-type-desc {
+            font-size: var(--font-sm);
+            color: var(--text-tertiary);
+        }
+        
+        /* Progress Bar */
+        .progress-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-2xl);
+            position: relative;
+        }
+        
+        .progress-line {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--border);
+            z-index: 1;
+        }
+        
+        .progress-line-active {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            height: 2px;
+            background: var(--gray-800);
+            z-index: 2;
+            transition: width 0.3s;
+        }
+        
+        .progress-step {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            flex: 1;
+        }
+        
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: var(--surface);
+            border: var(--border-width-2) solid var(--border);
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--spacing-sm);
+            font-weight: var(--font-weight-semibold);
+        }
+        
+        .step-number.active {
+            background: var(--gray-800);
+            color: var(--gray-0);
+            border-color: var(--gray-800);
+        }
+        
+        .step-number.completed {
+            background: var(--gray-700);
+            color: var(--gray-0);
+            border-color: var(--gray-700);
+        }
+        
+        .step-title {
+            font-size: var(--font-sm);
+            color: var(--text-tertiary);
+        }
+        
+        .step-title.active {
+            color: var(--text-primary);
+            font-weight: var(--font-weight-semibold);
+        }
+        
+        /* Form Sections */
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: var(--spacing-xl);
+        }
+        
+        .form-header {
+            margin-bottom: var(--spacing-2xl);
+        }
+        
+        .form-title {
+            font-size: var(--font-2xl);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .form-subtitle {
+            font-size: var(--font-base);
+            color: var(--text-secondary);
+        }
+        
+        .form-group {
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .form-label {
+            display: block;
+            font-size: var(--font-sm);
+            font-weight: var(--font-weight-medium);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .form-required {
+            color: var(--gray-800);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: var(--spacing-md);
+            font-size: var(--font-base);
+            border: var(--border-width) solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--surface);
+            transition: border-color 0.2s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--gray-600);
+        }
+        
+        .form-textarea {
+            width: 100%;
+            padding: var(--spacing-md);
+            font-size: var(--font-base);
+            border: var(--border-width) solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--surface);
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: var(--spacing-md);
+            font-size: var(--font-base);
+            border: var(--border-width) solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--surface);
+            cursor: pointer;
+        }
+        
+        .form-helper {
+            font-size: var(--font-sm);
+            color: var(--text-tertiary);
+            margin-top: var(--spacing-xs);
+        }
+        
+        /* Two Column Layout */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-lg);
+        }
+        
+        /* Role Cards */
+        .role-card {
+            padding: var(--spacing-lg);
+            background: var(--surface-variant);
+            border: var(--border-width) solid var(--border-light);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .role-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .role-title {
+            font-size: var(--font-lg);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+        }
+        
+        .role-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+        
+        .role-action-btn {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            background: var(--surface);
+            border: var(--border-width) solid var(--border);
+            border-radius: var(--radius-md);
+            font-size: var(--font-sm);
+            cursor: pointer;
+        }
+        
+        .add-role-btn {
+            width: 100%;
+            padding: var(--spacing-md);
+            background: var(--surface);
+            border: var(--border-width-2) dashed var(--border);
+            border-radius: var(--radius-lg);
+            font-size: var(--font-base);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .add-role-btn:hover {
+            background: var(--gray-100);
+            border-color: var(--gray-600);
+        }
+        
+        /* Date Time Picker */
+        .datetime-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .time-slot {
+            padding: var(--spacing-md);
+            background: var(--surface);
+            border: var(--border-width) solid var(--border);
+            border-radius: var(--radius-md);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .time-slot:hover {
+            background: var(--gray-100);
+        }
+        
+        .time-slot.selected {
+            background: var(--gray-800);
+            color: var(--gray-0);
+            border-color: var(--gray-800);
+        }
+        
+        .time-slot-time {
+            font-size: var(--font-base);
+            font-weight: var(--font-weight-medium);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .time-slot-availability {
+            font-size: var(--font-sm);
+            opacity: 0.8;
+        }
+        
+        /* Review Section */
+        .review-section {
+            padding: var(--spacing-xl);
+            background: var(--surface-variant);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .review-title {
+            font-size: var(--font-lg);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .review-item {
+            display: flex;
+            justify-content: space-between;
+            padding: var(--spacing-sm) 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .review-item:last-child {
+            border-bottom: none;
+        }
+        
+        .review-label {
+            font-size: var(--font-sm);
+            color: var(--text-tertiary);
+        }
+        
+        .review-value {
+            font-size: var(--font-sm);
+            color: var(--text-primary);
+            font-weight: var(--font-weight-medium);
+        }
+        
+        /* Budget Slider */
+        .budget-slider {
+            margin: var(--spacing-lg) 0;
+        }
+        
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .slider-track {
+            height: 8px;
+            background: var(--gray-200);
+            border-radius: var(--radius-sm);
+            position: relative;
+        }
+        
+        .slider-fill {
+            height: 100%;
+            background: var(--gray-800);
+            border-radius: var(--radius-sm);
+            width: 60%;
+        }
+        
+        .slider-thumb {
+            width: 24px;
+            height: 24px;
+            background: var(--gray-800);
+            border: 3px solid var(--surface);
+            border-radius: var(--radius-full);
+            position: absolute;
+            top: -8px;
+            left: 60%;
+            transform: translateX(-50%);
+            box-shadow: var(--shadow-md);
+        }
+        
+        /* Settings Grid */
+        .settings-grid {
+            display: grid;
+            gap: var(--spacing-lg);
+        }
+        
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-md);
+            background: var(--surface-variant);
+            border-radius: var(--radius-md);
+        }
+        
+        .setting-info {
+            flex: 1;
+        }
+        
+        .setting-title {
+            font-size: var(--font-base);
+            font-weight: var(--font-weight-medium);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .setting-desc {
+            font-size: var(--font-sm);
+            color: var(--text-secondary);
+        }
+        
+        .toggle-switch {
+            width: 48px;
+            height: 24px;
+            background: var(--gray-300);
+            border-radius: var(--radius-full);
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .toggle-switch.active {
+            background: var(--gray-800);
+        }
+        
+        .toggle-thumb {
+            width: 20px;
+            height: 20px;
+            background: var(--surface);
+            border-radius: var(--radius-full);
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.2s;
+        }
+        
+        .toggle-switch.active .toggle-thumb {
+            transform: translateX(24px);
+        }
+        
+        /* Action Buttons */
+        .form-actions {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-2xl);
+            padding-top: var(--spacing-xl);
+            border-top: 1px solid var(--border-light);
+        }
+        
+        .btn-primary {
+            flex: 1;
+            padding: var(--spacing-md);
+            background: var(--gray-800);
+            color: var(--gray-0);
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: var(--font-base);
+            font-weight: var(--font-weight-semibold);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .btn-primary:hover {
+            background: var(--gray-900);
+        }
+        
+        .btn-secondary {
+            padding: var(--spacing-md) var(--spacing-xl);
+            background: var(--surface);
+            color: var(--text-primary);
+            border: var(--border-width) solid var(--border);
+            border-radius: var(--radius-md);
+            font-size: var(--font-base);
+            font-weight: var(--font-weight-semibold);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-secondary:hover {
+            background: var(--gray-100);
+        }
+        
+        .btn-outline {
+            padding: var(--spacing-md);
+            background: transparent;
+            color: var(--text-secondary);
+            border: var(--border-width) solid var(--border);
+            border-radius: var(--radius-md);
+            font-size: var(--font-base);
+            cursor: pointer;
+        }
+        
+        /* Dashboard Preview */
+        .dashboard-preview {
+            padding: var(--spacing-2xl);
+            background: var(--surface-variant);
+            border-radius: var(--radius-lg);
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .dashboard-title {
+            font-size: var(--font-2xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-primary);
+        }
+        
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-2xl);
+        }
+        
+        .stat-card {
+            padding: var(--spacing-lg);
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: var(--font-3xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .stat-label {
+            font-size: var(--font-sm);
+            color: var(--text-tertiary);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .wireframe-container {
+                padding: var(--spacing-lg);
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .project-types {
+                grid-template-columns: 1fr;
+            }
+            
+            .progress-bar {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .progress-line {
+                display: none;
+            }
+            
+            .datetime-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .dashboard-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn-secondary {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wireframe-container">
+        <!-- Header -->
+        <div class="wireframe-header">
+            <h1 class="wireframe-title">Casting Director Onboarding</h1>
+            <p class="wireframe-subtitle">Complete setup flow for casting directors including project type selection, project details, role creation, audition settings, and final review</p>
+        </div>
+        
+        <!-- Screen 1: Project Type Selection -->
+        <div class="screen-section">
+            <div class="screen-header">
+                <h2 class="screen-title">Step 1: Project Type Selection</h2>
+                <div class="screen-meta">
+                    <span>Initial Setup</span>
+                    <span>Industry Categories</span>
+                    <span>Quick Start</span>
+                </div>
+            </div>
+            
+            <div class="form-container">
+                <div class="form-header">
+                    <h3 class="form-title">What Type of Project Are You Casting For?</h3>
+                    <p class="form-subtitle">Select the category that best describes your production</p>
+                </div>
+                
+                <div class="project-types">
+                    <div class="project-type-card selected">
+                        <div class="project-type-icon"></div>
+                        <div class="project-type-title">Feature Film</div>
+                        <div class="project-type-desc">Full-length cinema production</div>
+                    </div>
+                    <div class="project-type-card">
+                        <div class="project-type-icon"></div>
+                        <div class="project-type-title">Web Series</div>
+                        <div class="project-type-desc">OTT platform series</div>
+                    </div>
+                    <div class="project-type-card">
+                        <div class="project-type-icon"></div>
+                        <div class="project-type-title">TV Serial</div>
+                        <div class="project-type-desc">Television daily shows</div>
+                    </div>
+                    <div class="project-type-card">
+                        <div class="project-type-icon"></div>
+                        <div class="project-type-title">Advertisement</div>
+                        <div class="project-type-desc">Commercial & brand films</div>
+                    </div>
+                    <div class="project-type-card">
+                        <div class="project-type-icon"></div>
+                        <div class="project-type-title">Music Video</div>
+                        <div class="project-type-desc">Song & album videos</div>
+                    </div>
+                    <div class="project-type-card">
+                        <div class="project-type-icon"></div>
+                        <div class="project-type-title">Theatre</div>
+                        <div class="project-type-desc">Stage productions</div>
+                    </div>
+                    <div class="project-type-card">
+                        <div class="project-type-icon"></div>
+                        <div class="project-type-title">Short Film</div>
+                        <div class="project-type-desc">Independent shorts</div>
+                    </div>
+                    <div class="project-type-card">
+                        <div class="project-type-icon"></div>
+                        <div class="project-type-title">Documentary</div>
+                        <div class="project-type-desc">Non-fiction productions</div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button class="btn-outline">Skip Setup</button>
+                    <button class="btn-primary">Continue with Feature Film</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Screen 2: Project Details -->
+        <div class="screen-section">
+            <div class="screen-header">
+                <h2 class="screen-title">Step 2: Project Details</h2>
+                <div class="screen-meta">
+                    <span>Basic Information</span>
+                    <span>Auto-Save</span>
+                    <span>Draft Mode</span>
+                </div>
+            </div>
+            
+            <!-- Progress Bar -->
+            <div class="progress-bar">
+                <div class="progress-line"></div>
+                <div class="progress-line-active" style="width: 25%;"></div>
+                
+                <div class="progress-step">
+                    <div class="step-number completed">✓</div>
+                    <div class="step-title">Project Type</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-number active">2</div>
+                    <div class="step-title active">Project Details</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-number">3</div>
+                    <div class="step-title">Roles</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-number">4</div>
+                    <div class="step-title">Audition</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-number">5</div>
+                    <div class="step-title">Review</div>
+                </div>
+            </div>
+            
+            <div class="form-container">
+                <div class="form-header">
+                    <h3 class="form-title">Tell Us About Your Project</h3>
+                    <p class="form-subtitle">This information will be visible to talents applying for roles</p>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Project Title <span class="form-required">*</span></label>
+                    <input type="text" class="form-input" placeholder="Enter the name of your production">
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Production House <span class="form-required">*</span></label>
+                        <input type="text" class="form-input" placeholder="Production company name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Director</label>
+                        <input type="text" class="form-input" placeholder="Director's name">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Project Description <span class="form-required">*</span></label>
+                    <textarea class="form-textarea" placeholder="Provide a brief synopsis of your project (minimum 100 characters)"></textarea>
+                    <div class="form-helper">0/500 characters</div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Genre <span class="form-required">*</span></label>
+                        <select class="form-select">
+                            <option>Select genre</option>
+                            <option>Drama</option>
+                            <option>Comedy</option>
+                            <option>Action</option>
+                            <option>Romance</option>
+                            <option>Thriller</option>
+                            <option>Horror</option>
+                            <option>Sci-Fi</option>
+                            <option>Documentary</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Language <span class="form-required">*</span></label>
+                        <select class="form-select">
+                            <option>Select language</option>
+                            <option>Hindi</option>
+                            <option>English</option>
+                            <option>Marathi</option>
+                            <option>Tamil</option>
+                            <option>Telugu</option>
+                            <option>Bengali</option>
+                            <option>Gujarati</option>
+                            <option>Punjabi</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Shooting Start Date <span class="form-required">*</span></label>
+                        <input type="date" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Shooting End Date</label>
+                        <input type="date" class="form-input">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Shooting Location(s) <span class="form-required">*</span></label>
+                        <input type="text" class="form-input" placeholder="Mumbai, Pune">
+                        <div class="form-helper">Separate multiple locations with commas</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Budget Range</label>
+                        <select class="form-select">
+                            <option>Select budget range</option>
+                            <option>Under ₹50 Lakhs</option>
+                            <option>₹50 Lakhs - ₹1 Crore</option>
+                            <option>₹1 - 5 Crores</option>
+                            <option>₹5 - 10 Crores</option>
+                            <option>Above ₹10 Crores</option>
+                            <option>Prefer not to say</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button class="btn-secondary">Back</button>
+                    <button class="btn-outline">Save as Draft</button>
+                    <button class="btn-primary">Continue to Roles</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Screen 3: Role Creation -->
+        <div class="screen-section">
+            <div class="screen-header">
+                <h2 class="screen-title">Step 3: Define Roles</h2>
+                <div class="screen-meta">
+                    <span>Multiple Roles</span>
+                    <span>Detailed Requirements</span>
+                    <span>AI Suggestions</span>
+                </div>
+            </div>
+            
+            <!-- Progress Bar -->
+            <div class="progress-bar">
+                <div class="progress-line"></div>
+                <div class="progress-line-active" style="width: 50%;"></div>
+                
+                <div class="progress-step">
+                    <div class="step-number completed">✓</div>
+                    <div class="step-title">Project Type</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-number completed">✓</div>
+                    <div class="step-title">Project Details</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-number active">3</div>
+                    <div class="step-title active">Roles</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-number">4</div>
+                    <div class="step-title">Audition</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-number">5</div>
+                    <div class="step-title">Review</div>
+                </div>
+            </div>
+            
+            <div class="form-container">
+                <div class="form-header">
+                    <h3 class="form-title">Create Roles for Your Project</h3>
+                    <p class="form-subtitle">Define the characters you're looking to cast</p>
+                </div>
+                
+                <!-- Role 1 -->
+                <div class="role-card">
+                    <div class="role-header">
+                        <div class="role-title">Role 1: Lead Actor</div>
+                        <div class="role-actions">
+                            <button class="role-action-btn">Duplicate</button>
+                            <button class="role-action-btn">Remove</button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Role Name <span class="form-required">*</span></label>
+                            <input type="text" class="form-input" placeholder="e.g., Lead Hero, Protagonist">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Screen Time</label>
+                            <select class="form-select">
+                                <option>Lead Role</option>
+                                <option>Supporting Role</option>
+                                <option>Character Role</option>
+                                <option>Cameo</option>
+                                <option>Junior Artist</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Character Description <span class="form-required">*</span></label>
+                        <textarea class="form-textarea" placeholder="Describe the character's personality, background, and role in the story"></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Age Range <span class="form-required">*</span></label>
+                            <div style="display: flex; gap: var(--spacing-sm); align-items: center;">
+                                <input type="number" class="form-input" placeholder="25" style="width: 80px;">
+                                <span>to</span>
+                                <input type="number" class="form-input" placeholder="35" style="width: 80px;">
+                                <span>years</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Gender <span class="form-required">*</span></label>
+                            <select class="form-select">
+                                <option>Male</option>
+                                <option>Female</option>
+                                <option>Any</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Required Skills</label>
+                        <input type="text" class="form-input" placeholder="e.g., Dancing, Horse riding, Martial arts">
+                        <div class="form-helper">Separate skills with commas</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Compensation Range</label>
+                        <div class="budget-slider">
+                            <div class="slider-labels">
+                                <span>₹10,000</span>
+                                <span>₹5,00,000+</span>
+                            </div>
+                            <div class="slider-track">
+                                <div class="slider-fill"></div>
+                                <div class="slider-thumb"></div>
+                            </div>
+                        </div>
+                        <div class="form-helper">₹50,000 - ₹2,00,000 per day</div>
+                    </div>
+                </div>
+                
+                <!-- Role 2 -->
+                <div class="role-card">
+                    <div class="role-header">
+                        <div class="role-title">Role 2: Supporting Actress</div>
+                        <div class="role-actions">
+                            <button class="role-action-btn">Duplicate</button>
+                            <button class="role-action-btn">Remove</button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Role Name <span class="form-required">*</span></label>
+                            <input type="text" class="form-input" placeholder="e.g., Best Friend, Sister">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Screen Time</label>
+                            <select class="form-select">
+                                <option>Lead Role</option>
+                                <option selected>Supporting Role</option>
+                                <option>Character Role</option>
+                                <option>Cameo</option>
+                                <option>Junior Artist</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Add Role Button -->
+                <button class="add-role-btn">+ Add Another Role</button>
+                
+                <div class="form-actions">
+                    <button class="btn-secondary">Back</button>
+                    <button class="btn-outline">Save Roles</button>
+                    <button class="btn-primary">Continue to Audition Settings</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Screen 4: Audition Settings -->
+        <div class="screen-section">
+            <div class="screen-header">
+                <h2 class="screen-title">Step 4: Audition Settings</h2>
+                <div class="screen-meta">
+                    <span>Schedule Management</span>
+                    <span>Auto-Response</span>
+                    <span>Calendar Sync</span>
+                </div>
+            </div>
+            
+            <!-- Progress Bar -->
+            <div class="progress-bar">
+                <div class="progress-line"></div>
+                <div class="progress-line-active" style="width: 75%;"></div>
+                
+                <div class="progress-step">
+                    <div class="step-number completed">✓</div>
+                    <div class="step-title">Project Type</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-number completed">✓</div>
+                    <div class="step-title">Project Details</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-number completed">✓</div>
+                    <div class="step-title">Roles</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-number active">4</div>
+                    <div class="step-title active">Audition</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-number">5</div>
+                    <div class="step-title">Review</div>
+                </div>
+            </div>
+            
+            <div class="form-container">
+                <div class="form-header">
+                    <h3 class="form-title">Configure Audition Process</h3>
+                    <p class="form-subtitle">Set up how you want to conduct auditions</p>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Audition Type <span class="form-required">*</span></label>
+                    <div class="project-types" style="grid-template-columns: 1fr 1fr 1fr;">
+                        <div class="project-type-card selected">
+                            <div class="project-type-icon" style="width: 48px; height: 48px;"></div>
+                            <div class="project-type-title" style="font-size: var(--font-size-base);">In-Person</div>
+                            <div class="project-type-desc" style="font-size: var(--font-size-xs);">Physical auditions</div>
+                        </div>
+                        <div class="project-type-card">
+                            <div class="project-type-icon" style="width: 48px; height: 48px;"></div>
+                            <div class="project-type-title" style="font-size: var(--font-size-base);">Video Call</div>
+                            <div class="project-type-desc" style="font-size: var(--font-size-xs);">Live virtual auditions</div>
+                        </div>
+                        <div class="project-type-card">
+                            <div class="project-type-icon" style="width: 48px; height: 48px;"></div>
+                            <div class="project-type-title" style="font-size: var(--font-size-base);">Self Tape</div>
+                            <div class="project-type-desc" style="font-size: var(--font-size-xs);">Recorded submissions</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Audition Location</label>
+                        <input type="text" class="form-input" placeholder="Studio address or online platform">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Application Deadline <span class="form-required">*</span></label>
+                        <input type="datetime-local" class="form-input">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Audition Schedule</label>
+                    <div class="datetime-grid">
+                        <div class="time-slot selected">
+                            <div class="time-slot-time">Jan 15, 10:00 AM</div>
+                            <div class="time-slot-availability">Available</div>
+                        </div>
+                        <div class="time-slot selected">
+                            <div class="time-slot-time">Jan 15, 2:00 PM</div>
+                            <div class="time-slot-availability">Available</div>
+                        </div>
+                        <div class="time-slot">
+                            <div class="time-slot-time">Jan 16, 10:00 AM</div>
+                            <div class="time-slot-availability">Available</div>
+                        </div>
+                        <div class="time-slot">
+                            <div class="time-slot-time">Jan 16, 2:00 PM</div>
+                            <div class="time-slot-availability">Available</div>
+                        </div>
+                        <div class="time-slot">
+                            <div class="time-slot-time">Jan 17, 10:00 AM</div>
+                            <div class="time-slot-availability">Available</div>
+                        </div>
+                        <div class="time-slot">
+                            <div class="time-slot-time">Jan 17, 2:00 PM</div>
+                            <div class="time-slot-availability">Available</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Audition Requirements</label>
+                    <textarea class="form-textarea" placeholder="What should talents prepare? Any specific scenes, monologues, or materials?"></textarea>
+                </div>
+                
+                <div class="settings-grid">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-title">Auto-Response</div>
+                            <div class="setting-desc">Send automatic confirmation to applicants</div>
+                        </div>
+                        <div class="toggle-switch active">
+                            <div class="toggle-thumb"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-title">Calendar Integration</div>
+                            <div class="setting-desc">Sync auditions with Google Calendar</div>
+                        </div>
+                        <div class="toggle-switch active">
+                            <div class="toggle-thumb"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-title">SMS Notifications</div>
+                            <div class="setting-desc">Send SMS reminders to shortlisted talents</div>
+                        </div>
+                        <div class="toggle-switch">
+                            <div class="toggle-thumb"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-title">Team Collaboration</div>
+                            <div class="setting-desc">Allow team members to review applications</div>
+                        </div>
+                        <div class="toggle-switch active">
+                            <div class="toggle-thumb"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button class="btn-secondary">Back</button>
+                    <button class="btn-primary">Review & Publish</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Screen 5: Review & Publish -->
+        <div class="screen-section">
+            <div class="screen-header">
+                <h2 class="screen-title">Step 5: Review & Publish</h2>
+                <div class="screen-meta">
+                    <span>Final Review</span>
+                    <span>Preview Mode</span>
+                    <span>Publish Options</span>
+                </div>
+            </div>
+            
+            <!-- Progress Bar -->
+            <div class="progress-bar">
+                <div class="progress-line"></div>
+                <div class="progress-line-active" style="width: 100%;"></div>
+                
+                <div class="progress-step">
+                    <div class="step-number completed">✓</div>
+                    <div class="step-title">Project Type</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-number completed">✓</div>
+                    <div class="step-title">Project Details</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-number completed">✓</div>
+                    <div class="step-title">Roles</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-number completed">✓</div>
+                    <div class="step-title">Audition</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-number active">5</div>
+                    <div class="step-title active">Review</div>
+                </div>
+            </div>
+            
+            <div class="form-container">
+                <div class="form-header">
+                    <h3 class="form-title">Review Your Casting Call</h3>
+                    <p class="form-subtitle">Make sure everything looks good before publishing</p>
+                </div>
+                
+                <!-- Project Summary -->
+                <div class="review-section">
+                    <div class="review-title">Project Information</div>
+                    <div class="review-item">
+                        <span class="review-label">Project Type</span>
+                        <span class="review-value">Feature Film</span>
+                    </div>
+                    <div class="review-item">
+                        <span class="review-label">Project Title</span>
+                        <span class="review-value">Mumbai Dreams</span>
+                    </div>
+                    <div class="review-item">
+                        <span class="review-label">Production House</span>
+                        <span class="review-value">Dream Productions</span>
+                    </div>
+                    <div class="review-item">
+                        <span class="review-label">Shooting Dates</span>
+                        <span class="review-value">Feb 1 - Mar 15, 2025</span>
+                    </div>
+                    <div class="review-item">
+                        <span class="review-label">Location</span>
+                        <span class="review-value">Mumbai, Pune</span>
+                    </div>
+                </div>
+                
+                <!-- Roles Summary -->
+                <div class="review-section">
+                    <div class="review-title">Roles (2)</div>
+                    <div class="review-item">
+                        <span class="review-label">Lead Actor</span>
+                        <span class="review-value">Male, 25-35 years</span>
+                    </div>
+                    <div class="review-item">
+                        <span class="review-label">Supporting Actress</span>
+                        <span class="review-value">Female, 22-30 years</span>
+                    </div>
+                </div>
+                
+                <!-- Audition Summary -->
+                <div class="review-section">
+                    <div class="review-title">Audition Details</div>
+                    <div class="review-item">
+                        <span class="review-label">Type</span>
+                        <span class="review-value">In-Person Audition</span>
+                    </div>
+                    <div class="review-item">
+                        <span class="review-label">Application Deadline</span>
+                        <span class="review-value">Jan 10, 2025</span>
+                    </div>
+                    <div class="review-item">
+                        <span class="review-label">Audition Dates</span>
+                        <span class="review-value">Jan 15-17, 2025</span>
+                    </div>
+                </div>
+                
+                <!-- Visibility Settings -->
+                <div class="form-group">
+                    <label class="form-label">Visibility Settings</label>
+                    <div class="settings-grid">
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title">Public Listing</div>
+                                <div class="setting-desc">Visible to all talents on CastMatch</div>
+                            </div>
+                            <div class="toggle-switch active">
+                                <div class="toggle-thumb"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title">Featured Listing</div>
+                                <div class="setting-desc">Get priority placement (Premium feature)</div>
+                            </div>
+                            <div class="toggle-switch">
+                                <div class="toggle-thumb"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title">Accept Applications</div>
+                                <div class="setting-desc">Start receiving applications immediately</div>
+                            </div>
+                            <div class="toggle-switch active">
+                                <div class="toggle-thumb"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button class="btn-secondary">Back to Edit</button>
+                    <button class="btn-outline">Save as Draft</button>
+                    <button class="btn-primary">Publish Casting Call</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Success/Dashboard Preview -->
+        <div class="screen-section">
+            <div class="screen-header">
+                <h2 class="screen-title">Casting Dashboard - Post Setup</h2>
+                <div class="screen-meta">
+                    <span>Live Project</span>
+                    <span>Real-time Updates</span>
+                    <span>Management Tools</span>
+                </div>
+            </div>
+            
+            <div class="dashboard-preview">
+                <div class="dashboard-header">
+                    <div>
+                        <h2 class="dashboard-title">Mumbai Dreams</h2>
+                        <p style="color: var(--text-secondary);">Published 2 minutes ago • Active</p>
+                    </div>
+                    <div style="display: flex; gap: var(--spacing-md);">
+                        <button class="btn-outline">Share</button>
+                        <button class="btn-secondary">Edit</button>
+                        <button class="btn-primary">View Applications</button>
+                    </div>
+                </div>
+                
+                <div class="dashboard-stats">
+                    <div class="stat-card">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Applications</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">127</div>
+                        <div class="stat-label">Views</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">2</div>
+                        <div class="stat-label">Open Roles</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">10</div>
+                        <div class="stat-label">Days to Deadline</div>
+                    </div>
+                </div>
+                
+                <div style="padding: var(--spacing-lg); background: var(--gray-100); border-radius: var(--radius-lg); margin-top: 24px;">
+                    <h3 style="font-size: var(--font-size-lg); font-weight: var(--font-weight-semibold); margin-bottom: 16px;">Quick Actions</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md);">
+                        <button class="btn-outline" style="padding: var(--spacing-md);">
+                            📢 Boost Visibility
+                        </button>
+                        <button class="btn-outline" style="padding: var(--spacing-md);">
+                            👥 Invite Talents
+                        </button>
+                        <button class="btn-outline" style="padding: var(--spacing-md);">
+                            🔍 Search Talents
+                        </button>
+                        <button class="btn-outline" style="padding: var(--spacing-md);">
+                            📊 View Analytics
+                        </button>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 32px; padding: var(--spacing-lg); background: var(--success-bg); border: var(--border-width) solid var(--success-border); border-radius: var(--radius-lg);">
+                    <h4 style="font-size: var(--font-size-base); font-weight: var(--font-weight-semibold); color: var(--success-text); margin-bottom: 8px;">
+                        🎉 Your casting call is now live!
+                    </h4>
+                    <p style="font-size: var(--font-size-sm); color: var(--text-secondary);">
+                        Talents can now discover and apply for your roles. You'll receive notifications for new applications.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,458 @@
+{
+  "dashboard_config": {
+    "title": "CastMatch Success Metrics Dashboard",
+    "version": "1.0.0",
+    "update_frequency": "real-time",
+    "data_retention": "90 days",
+    "access_levels": ["executive", "manager", "contributor"]
+  },
+  
+  "user_experience_metrics": {
+    "engagement": {
+      "daily_active_users": {
+        "current": 0,
+        "target": 5000,
+        "trend": "increasing",
+        "measurement": "unique_sessions_per_day"
+      },
+      "session_duration": {
+        "current": "0:00",
+        "target": "8:00",
+        "unit": "minutes",
+        "measurement": "average_time_on_platform"
+      },
+      "task_completion_rate": {
+        "current": 0,
+        "target": 85,
+        "unit": "percentage",
+        "key_tasks": [
+          "profile_creation",
+          "talent_search",
+          "audition_booking",
+          "message_send"
+        ]
+      },
+      "user_satisfaction": {
+        "nps_score": {
+          "current": 0,
+          "target": 70,
+          "measurement": "promoter_minus_detractor"
+        },
+        "app_rating": {
+          "current": 0,
+          "target": 4.8,
+          "max": 5,
+          "platforms": ["google_play", "app_store"]
+        }
+      }
+    },
+    
+    "conversion_funnel": {
+      "visitor_to_signup": {
+        "current": 0,
+        "target": 25,
+        "unit": "percentage"
+      },
+      "signup_to_profile_complete": {
+        "current": 0,
+        "target": 80,
+        "unit": "percentage"
+      },
+      "profile_to_first_action": {
+        "current": 0,
+        "target": 60,
+        "unit": "percentage"
+      },
+      "free_to_premium": {
+        "current": 0,
+        "target": 15,
+        "unit": "percentage"
+      }
+    }
+  },
+  
+  "performance_metrics": {
+    "core_web_vitals": {
+      "largest_contentful_paint": {
+        "current": 0,
+        "target": 2.5,
+        "good_threshold": 2.5,
+        "poor_threshold": 4.0,
+        "unit": "seconds"
+      },
+      "first_input_delay": {
+        "current": 0,
+        "target": 100,
+        "good_threshold": 100,
+        "poor_threshold": 300,
+        "unit": "milliseconds"
+      },
+      "cumulative_layout_shift": {
+        "current": 0,
+        "target": 0.1,
+        "good_threshold": 0.1,
+        "poor_threshold": 0.25,
+        "unit": "score"
+      }
+    },
+    
+    "custom_performance": {
+      "time_to_interactive": {
+        "current": 0,
+        "target": 3.5,
+        "unit": "seconds",
+        "device_breakdown": {
+          "mobile_4g": 3.5,
+          "mobile_3g": 5.0,
+          "desktop": 2.0
+        }
+      },
+      "api_response_time": {
+        "p50": {
+          "current": 0,
+          "target": 100,
+          "unit": "milliseconds"
+        },
+        "p95": {
+          "current": 0,
+          "target": 300,
+          "unit": "milliseconds"
+        },
+        "p99": {
+          "current": 0,
+          "target": 500,
+          "unit": "milliseconds"
+        }
+      }
+    },
+    
+    "reliability": {
+      "uptime": {
+        "current": 0,
+        "target": 99.9,
+        "unit": "percentage",
+        "measurement": "monthly"
+      },
+      "error_rate": {
+        "current": 0,
+        "target": 0.1,
+        "unit": "percentage",
+        "categories": ["4xx", "5xx", "client", "network"]
+      },
+      "crash_free_rate": {
+        "current": 0,
+        "target": 99.5,
+        "unit": "percentage",
+        "platforms": ["ios", "android", "web"]
+      }
+    }
+  },
+  
+  "business_metrics": {
+    "growth": {
+      "total_users": {
+        "current": 0,
+        "monthly_target": 10000,
+        "quarterly_target": 50000,
+        "segments": {
+          "talent": 40000,
+          "casting_directors": 8000,
+          "production_houses": 2000
+        }
+      },
+      "verified_profiles": {
+        "current": 0,
+        "target": 100000,
+        "verification_rate": 80,
+        "unit": "percentage"
+      },
+      "active_castings": {
+        "current": 0,
+        "monthly_target": 1000,
+        "average_applications": 50,
+        "success_rate": 20
+      }
+    },
+    
+    "revenue": {
+      "monthly_recurring": {
+        "current": 0,
+        "target": 5000000,
+        "currency": "INR",
+        "streams": {
+          "premium_subscriptions": 2000000,
+          "featured_listings": 1500000,
+          "virtual_auditions": 1000000,
+          "api_access": 500000
+        }
+      },
+      "average_revenue_per_user": {
+        "current": 0,
+        "target": 500,
+        "currency": "INR",
+        "user_segments": {
+          "free": 0,
+          "basic": 299,
+          "premium": 999,
+          "enterprise": 4999
+        }
+      },
+      "lifetime_value": {
+        "current": 0,
+        "target": 6000,
+        "currency": "INR",
+        "retention_months": 12
+      }
+    },
+    
+    "market_penetration": {
+      "mumbai_coverage": {
+        "current": 0,
+        "target": 60,
+        "unit": "percentage",
+        "measurement": "active_users_vs_market_size"
+      },
+      "production_house_adoption": {
+        "current": 0,
+        "target": 100,
+        "tier_1": 20,
+        "tier_2": 30,
+        "tier_3": 50
+      }
+    }
+  },
+  
+  "design_quality_metrics": {
+    "consistency": {
+      "design_system_adoption": {
+        "current": 0,
+        "target": 95,
+        "unit": "percentage",
+        "measurement": "components_from_system"
+      },
+      "brand_compliance": {
+        "current": 0,
+        "target": 100,
+        "unit": "percentage",
+        "audit_frequency": "weekly"
+      }
+    },
+    
+    "accessibility": {
+      "wcag_compliance": {
+        "level_a": {
+          "current": 0,
+          "target": 100,
+          "unit": "percentage"
+        },
+        "level_aa": {
+          "current": 0,
+          "target": 100,
+          "unit": "percentage"
+        },
+        "level_aaa": {
+          "current": 0,
+          "target": 95,
+          "unit": "percentage"
+        }
+      },
+      "lighthouse_accessibility": {
+        "current": 0,
+        "target": 100,
+        "unit": "score"
+      }
+    },
+    
+    "usability": {
+      "system_usability_scale": {
+        "current": 0,
+        "target": 80,
+        "max": 100,
+        "benchmark": 68
+      },
+      "error_recovery_rate": {
+        "current": 0,
+        "target": 90,
+        "unit": "percentage",
+        "measurement": "users_recovering_from_errors"
+      }
+    }
+  },
+  
+  "ai_ml_metrics": {
+    "talent_matching": {
+      "accuracy": {
+        "current": 0,
+        "target": 90,
+        "unit": "percentage",
+        "measurement": "correct_recommendations"
+      },
+      "precision": {
+        "current": 0,
+        "target": 85,
+        "unit": "percentage"
+      },
+      "recall": {
+        "current": 0,
+        "target": 80,
+        "unit": "percentage"
+      },
+      "f1_score": {
+        "current": 0,
+        "target": 0.82,
+        "max": 1.0
+      }
+    },
+    
+    "search_quality": {
+      "relevance_score": {
+        "current": 0,
+        "target": 0.9,
+        "max": 1.0,
+        "measurement": "ndcg_at_10"
+      },
+      "zero_results_rate": {
+        "current": 0,
+        "target": 5,
+        "unit": "percentage"
+      },
+      "query_success_rate": {
+        "current": 0,
+        "target": 95,
+        "unit": "percentage"
+      }
+    },
+    
+    "model_performance": {
+      "inference_time": {
+        "current": 0,
+        "target": 50,
+        "unit": "milliseconds",
+        "models": {
+          "talent_matcher": 30,
+          "skill_extractor": 20,
+          "trend_predictor": 50
+        }
+      },
+      "model_size": {
+        "current": 0,
+        "target": 100,
+        "unit": "MB",
+        "deployment": "edge_optimized"
+      }
+    }
+  },
+  
+  "team_productivity_metrics": {
+    "velocity": {
+      "story_points_delivered": {
+        "current": 0,
+        "target": 100,
+        "sprint_length": 14,
+        "unit": "points_per_sprint"
+      },
+      "feature_delivery_rate": {
+        "current": 0,
+        "target": 5,
+        "unit": "features_per_week"
+      }
+    },
+    
+    "quality": {
+      "bug_escape_rate": {
+        "current": 0,
+        "target": 5,
+        "unit": "percentage",
+        "severity_breakdown": {
+          "critical": 0,
+          "high": 1,
+          "medium": 2,
+          "low": 2
+        }
+      },
+      "code_review_coverage": {
+        "current": 0,
+        "target": 100,
+        "unit": "percentage"
+      },
+      "test_coverage": {
+        "current": 0,
+        "target": 90,
+        "unit": "percentage",
+        "types": {
+          "unit": 95,
+          "integration": 85,
+          "e2e": 70
+        }
+      }
+    },
+    
+    "efficiency": {
+      "deployment_frequency": {
+        "current": 0,
+        "target": "daily",
+        "measurement": "deployments_per_week"
+      },
+      "lead_time": {
+        "current": 0,
+        "target": 2,
+        "unit": "days",
+        "measurement": "commit_to_production"
+      },
+      "mean_time_to_recovery": {
+        "current": 0,
+        "target": 1,
+        "unit": "hours"
+      }
+    }
+  },
+  
+  "alert_thresholds": {
+    "critical": {
+      "uptime_below": 99.5,
+      "error_rate_above": 1,
+      "api_p99_above": 1000,
+      "daily_active_users_drop": 20
+    },
+    "warning": {
+      "task_completion_below": 70,
+      "bug_escape_above": 10,
+      "nps_below": 50,
+      "revenue_target_miss": 20
+    },
+    "info": {
+      "new_feature_adoption_below": 30,
+      "test_coverage_below": 85,
+      "accessibility_score_below": 95
+    }
+  },
+  
+  "reporting_schedule": {
+    "real_time": [
+      "uptime",
+      "error_rate",
+      "api_response_time",
+      "active_users"
+    ],
+    "hourly": [
+      "core_web_vitals",
+      "conversion_funnel",
+      "search_quality"
+    ],
+    "daily": [
+      "user_satisfaction",
+      "revenue_metrics",
+      "ai_accuracy"
+    ],
+    "weekly": [
+      "team_velocity",
+      "design_consistency",
+      "market_penetration"
+    ],
+    "monthly": [
+      "business_growth",
+      "accessibility_audit",
+      "security_assessment"
+    ]
+  }
+}

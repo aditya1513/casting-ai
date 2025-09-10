@@ -1,0 +1,498 @@
+@import "tailwindcss";
+
+:root {
+  /* =================================
+     CASTMATCH DESIGN SYSTEM TOKENS
+     ================================= */
+
+  /* Primary Brand Colors */
+  --cast-primary: #008B8B;        /* Professional Teal */
+  --cast-primary-light: #20B2AA;  /* Light Sea Green */
+  --cast-primary-dark: #2F4F4F;   /* Dark Slate Gray */
+
+  /* Accent Colors */
+  --cast-accent: #FF6B5A;         /* Coral Red (CTAs) */
+  --cast-success: #4ADE80;        /* Lime Green (Success) */
+  --cast-warning: #F59E0B;        /* Amber (Warnings) */
+  --cast-error: #EF4444;          /* Red (Errors) */
+  --cast-info: #3B82F6;           /* Blue (Info) */
+
+  /* Neutral Gray Scale */
+  --cast-gray-50: #F8F9FA;
+  --cast-gray-100: #E5E7EB;
+  --cast-gray-200: #D1D5DB;
+  --cast-gray-300: #9CA3AF;
+  --cast-gray-400: #6B7280;
+  --cast-gray-500: #4B5563;
+  --cast-gray-600: #374151;
+  --cast-gray-700: #1F2937;
+  --cast-gray-800: #111827;
+  --cast-gray-900: #0F172A;
+
+  /* Typography Scale */
+  --text-xs: 0.75rem;      /* 12px */
+  --text-sm: 0.875rem;     /* 14px */
+  --text-base: 1rem;       /* 16px */
+  --text-lg: 1.125rem;     /* 18px */
+  --text-xl: 1.25rem;      /* 20px */
+  --text-2xl: 1.5rem;      /* 24px */
+  --text-3xl: 1.875rem;    /* 30px */
+  --text-4xl: 2.25rem;     /* 36px */
+
+  /* Font Weights */
+  --font-light: 300;
+  --font-regular: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+
+  /* Spacing System (4px Base Grid) */
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-5: 1.25rem;   /* 20px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-8: 2rem;      /* 32px */
+  --space-12: 3rem;     /* 48px */
+  --space-16: 4rem;     /* 64px */
+
+  /* Elevation System */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.15);
+  --shadow-xl: 0 12px 40px rgba(0,0,0,0.2);
+
+  /* Border Radius */
+  --radius-sm: 0.25rem;   /* 4px */
+  --radius-md: 0.5rem;    /* 8px */
+  --radius-lg: 0.75rem;   /* 12px */
+  --radius-xl: 1rem;      /* 16px */
+  --radius-2xl: 1.5rem;   /* 24px */
+  --radius-full: 9999px;
+
+  /* Focus States */
+  --focus-ring: 0 0 0 3px rgba(0,139,139,0.1);
+
+  /* Component Specific */
+  --sidebar-width: 320px;
+  --sidebar-width-collapsed: 64px;
+  --topbar-height: 56px;
+  --chat-input-min-height: 48px;
+  --chat-input-max-height: 120px;
+  
+  /* Responsive Breakpoints */
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+
+  /* Background System */
+  --background: var(--cast-gray-50);
+  --foreground: var(--cast-gray-900);
+  --background-elevated: #ffffff;
+  --background-subtle: var(--cast-gray-100);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-poppins);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: var(--cast-gray-900);
+    --foreground: var(--cast-gray-50);
+    --background-elevated: var(--cast-gray-800);
+    --background-subtle: var(--cast-gray-800);
+  }
+}
+
+/* Dashboard Component Animations */
+
+/* =================================
+   GLOBAL BASE STYLES
+   ================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-poppins), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* =================================
+   UTILITY CLASSES
+   ================================= */
+
+.font-poppins {
+  font-family: var(--font-poppins), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Text utilities */
+.text-primary { color: var(--cast-primary); }
+.text-accent { color: var(--cast-accent); }
+.text-success { color: var(--cast-success); }
+.text-warning { color: var(--cast-warning); }
+.text-error { color: var(--cast-error); }
+
+/* Background utilities */
+.bg-primary { background-color: var(--cast-primary); }
+.bg-accent { background-color: var(--cast-accent); }
+.bg-elevated { background-color: var(--background-elevated); }
+.bg-subtle { background-color: var(--background-subtle); }
+
+/* Border utilities */
+.border-primary { border-color: var(--cast-primary); }
+.border-subtle { border-color: var(--cast-gray-200); }
+
+/* Shadow utilities */
+.shadow-cast-sm { box-shadow: var(--shadow-sm); }
+.shadow-cast-md { box-shadow: var(--shadow-md); }
+.shadow-cast-lg { box-shadow: var(--shadow-lg); }
+.shadow-cast-xl { box-shadow: var(--shadow-xl); }
+
+/* Focus utilities */
+.focus-ring:focus {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* =================================
+   COMPONENT BASE STYLES
+   ================================= */
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--cast-gray-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--cast-gray-300);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--cast-gray-400);
+}
+
+/* Selection styles */
+::selection {
+  background: var(--cast-primary);
+  color: white;
+}
+
+/* =================================
+   RESPONSIVE UTILITIES
+   ================================= */
+
+/* Mobile-first responsive design */
+@media (max-width: 768px) {
+  .mobile-hidden { display: none !important; }
+  .mobile-full { width: 100% !important; }
+  
+  /* Mobile sidebar overlay */
+  .sidebar-mobile {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    z-index: 50;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .sidebar-mobile.open {
+    transform: translateX(0);
+  }
+  
+  /* Mobile backdrop */
+  .sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 40;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .sidebar-backdrop.show {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1023px) {
+  .tablet-grid-2 { 
+    grid-template-columns: repeat(2, 1fr) !important; 
+  }
+}
+
+@media (min-width: 1024px) {
+  .desktop-grid-4 { 
+    grid-template-columns: repeat(4, 1fr) !important; 
+  }
+}
+
+/* =================================
+   ACCESSIBILITY ENHANCEMENTS
+   ================================= */
+
+/* Focus visible for better keyboard navigation */
+.focus-visible:focus-visible {
+  outline: 2px solid var(--cast-primary);
+  outline-offset: 2px;
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *, 
+  *::before, 
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --cast-primary: #006666;
+    --cast-accent: #CC4125;
+    --border-subtle: #000000;
+  }
+}
+
+/* Dark mode enhancements */
+@media (prefers-color-scheme: dark) {
+  .card-dark {
+    background: var(--cast-gray-800);
+    border-color: var(--cast-gray-700);
+  }
+  
+  .input-dark {
+    background: var(--cast-gray-800);
+    border-color: var(--cast-gray-700);
+    color: var(--cast-gray-100);
+  }
+}
+
+/* =================================
+   DASHBOARD ANIMATIONS
+   ================================= */
+
+/* Enhanced Dashboard Animations */
+
+/* Sidebar Animations */
+.sidebar-item {
+  @apply transition-all duration-200 ease-in-out;
+}
+
+.sidebar-item:hover {
+  @apply transform translate-x-1;
+}
+
+/* Button Hover Effects */
+.button-hover-lift {
+  @apply transition-all duration-200 ease-in-out;
+}
+
+.button-hover-lift:hover {
+  @apply transform -translate-y-0.5 shadow-lg;
+}
+
+/* Card Animations */
+.card-hover {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+.card-hover:hover {
+  @apply transform scale-105 shadow-xl;
+}
+
+/* Fade In Animation */
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slide In Animation */
+.slide-in-left {
+  animation: slideInLeft 0.3s ease-out;
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Typing Dots Animation */
+.typing-dots {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.typing-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #9CA3AF;
+  animation: typingDots 1.4s infinite ease-in-out;
+}
+
+.typing-dot:nth-child(1) { animation-delay: 0s; }
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typingDots {
+  0%, 60%, 100% {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+  30% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+/* Pulse Animation for Active States */
+.pulse-green {
+  animation: pulseGreen 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulseGreen {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Smooth Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.5);
+  border-radius: 3px;
+  transition: background 0.2s;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.8);
+}
+
+/* Focus Ring Enhancement */
+.focus-ring-enhanced:focus {
+  @apply outline-none ring-2 ring-teal-500/50 ring-offset-2 ring-offset-white;
+}
+
+/* Gradient Background Animation */
+.gradient-animate {
+  background-size: 400% 400%;
+  animation: gradientShift 8s ease infinite;
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Shake Animation for Errors */
+.shake {
+  animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+@keyframes shake {
+  10%, 90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+  20%, 80% {
+    transform: translate3d(2px, 0, 0);
+  }
+  30%, 50%, 70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+  40%, 60% {
+    transform: translate3d(4px, 0, 0);
+  }
+}
+
+/* Loading Spinner */
+.spin-slow {
+  animation: spin 3s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive Grid Animation */
+.grid-item-animate {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+.grid-item-animate:hover {
+  @apply transform scale-102;
+}
+
+/* Message Bubble Entrance */
+.message-enter {
+  animation: messageEnter 0.4s ease-out;
+}
+
+@keyframes messageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

@@ -1,0 +1,464 @@
+/**
+ * CastMatch Fallback Font System
+ * Comprehensive fallback strategy for FOUT/FOIT prevention
+ * Optimized for entertainment industry typography needs
+ */
+
+/* =================================================================
+   FONT STACK DEFINITIONS
+   ================================================================= */
+
+:root {
+  /* Primary Display Font Stack */
+  --font-family-display: 'SF Pro Display', 
+                         -apple-system, 
+                         BlinkMacSystemFont,
+                         'Segoe UI',
+                         'Roboto',
+                         'Helvetica Neue',
+                         Arial,
+                         sans-serif;
+
+  /* Body Text Font Stack */
+  --font-family-body: 'Inter var',
+                      'Inter',
+                      -apple-system,
+                      BlinkMacSystemFont,
+                      'Segoe UI',
+                      'Roboto',
+                      'Helvetica Neue',
+                      Arial,
+                      sans-serif;
+
+  /* Monospace Font Stack */
+  --font-family-mono: 'JetBrains Mono',
+                      'SF Mono',
+                      Monaco,
+                      Consolas,
+                      'Liberation Mono',
+                      'Courier New',
+                      monospace;
+
+  /* Creative/Script Font Stack */
+  --font-family-script: 'Playlist Script',
+                        'Brush Script MT',
+                        cursive;
+
+  /* Multilingual Font Stacks */
+  --font-family-hindi: 'Noto Sans Devanagari',
+                       'Mangal',
+                       'Devanagari MT',
+                       'Arial Unicode MS',
+                       sans-serif;
+
+  --font-family-tamil: 'Noto Sans Tamil',
+                       'Tamil MN',
+                       'Arial Unicode MS',
+                       sans-serif;
+
+  --font-family-telugu: 'Noto Sans Telugu',
+                        'Telugu MN',
+                        'Arial Unicode MS',
+                        sans-serif;
+
+  /* Accessibility Font Stacks */
+  --font-family-dyslexia: 'OpenDyslexic',
+                          'Comic Sans MS',
+                          'Trebuchet MS',
+                          Verdana,
+                          sans-serif;
+}
+
+/* =================================================================
+   FONT LOADING STATES
+   ================================================================= */
+
+/* Default state - fonts loading */
+.fonts-loading {
+  /* Use system fonts while loading */
+  --font-family-display: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-family-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  
+  /* Prevent layout shift during loading */
+  font-feature-settings: "kern" 1;
+  text-rendering: optimizeSpeed;
+  
+  /* Subtle transition for font swap */
+  transition: font-family 0.1s ease-in-out;
+}
+
+/* Fonts successfully loaded */
+.fonts-loaded {
+  /* Enable advanced typography features */
+  font-feature-settings: "kern" 1, "liga" 1, "clig" 1;
+  text-rendering: optimizeLegibility;
+}
+
+/* Font loading failed - stick with system fonts */
+.fonts-failed {
+  --font-family-display: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-family-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* =================================================================
+   PLATFORM-SPECIFIC FALLBACKS
+   ================================================================= */
+
+/* macOS specific optimizations */
+@supports (-webkit-appearance: none) {
+  :root {
+    --font-family-display: 'SF Pro Display',
+                           -apple-system,
+                           BlinkMacSystemFont,
+                           sans-serif;
+    
+    --font-family-body: 'Inter var',
+                        'SF Pro Text',
+                        -apple-system,
+                        sans-serif;
+    
+    --font-family-mono: 'JetBrains Mono',
+                        'SF Mono',
+                        Monaco,
+                        monospace;
+  }
+}
+
+/* Windows specific optimizations */
+@media screen and (-ms-high-contrast: active), screen and (-ms-high-contrast: none) {
+  :root {
+    --font-family-display: 'SF Pro Display',
+                           'Segoe UI',
+                           'Segoe UI Historic',
+                           Tahoma,
+                           sans-serif;
+    
+    --font-family-body: 'Inter var',
+                        'Segoe UI',
+                        Tahoma,
+                        Arial,
+                        sans-serif;
+  }
+}
+
+/* Android/Linux specific optimizations */
+@supports not (-webkit-appearance: none) and not (-ms-high-contrast: active) {
+  :root {
+    --font-family-display: 'SF Pro Display',
+                           'Roboto',
+                           'Noto Sans',
+                           'Ubuntu',
+                           sans-serif;
+    
+    --font-family-body: 'Inter var',
+                        'Roboto',
+                        'Noto Sans',
+                        Arial,
+                        sans-serif;
+  }
+}
+
+/* =================================================================
+   METRIC MATCHING FOR LAYOUT STABILITY
+   ================================================================= */
+
+/* Match Inter metrics with system fonts */
+@font-face {
+  font-family: 'Inter Fallback';
+  src: local('Arial');
+  ascent-override: 90.20%;
+  descent-override: 22.48%;
+  line-gap-override: 0%;
+  size-adjust: 107%;
+}
+
+/* Match SF Pro Display metrics */
+@font-face {
+  font-family: 'SF Pro Display Fallback';
+  src: local('Arial');
+  ascent-override: 88.38%;
+  descent-override: 19.90%;
+  line-gap-override: 0%;
+  size-adjust: 110%;
+}
+
+/* =================================================================
+   FONT LOADING OPTIMIZATION CLASSES
+   ================================================================= */
+
+/* Critical above-the-fold content */
+.critical-text {
+  font-family: var(--font-family-body);
+  font-display: swap;
+}
+
+/* Important but not critical content */
+.important-text {
+  font-family: var(--font-family-body);
+  font-display: swap;
+}
+
+/* Optional content that can wait */
+.optional-text {
+  font-family: var(--font-family-body);
+  font-display: optional;
+}
+
+/* =================================================================
+   MULTILINGUAL FALLBACK SUPPORT
+   ================================================================= */
+
+/* Language-specific font selection */
+:lang(hi), .lang-hi {
+  font-family: var(--font-family-hindi);
+}
+
+:lang(mr), .lang-mr {
+  font-family: var(--font-family-hindi); /* Marathi uses Devanagari script */
+}
+
+:lang(ta), .lang-ta {
+  font-family: var(--font-family-tamil);
+}
+
+:lang(te), .lang-te {
+  font-family: var(--font-family-telugu);
+}
+
+/* Unicode range-based fallbacks */
+@supports (font-variation-settings: normal) {
+  .devanagari-text {
+    font-family: 'Noto Sans Devanagari',
+                 'Mangal',
+                 'Arial Unicode MS',
+                 sans-serif;
+    unicode-range: U+0900-097F;
+  }
+  
+  .tamil-text {
+    font-family: 'Noto Sans Tamil',
+                 'Tamil MN',
+                 'Arial Unicode MS',
+                 sans-serif;
+    unicode-range: U+0B82-0BFA;
+  }
+  
+  .telugu-text {
+    font-family: 'Noto Sans Telugu',
+                 'Telugu MN',
+                 'Arial Unicode MS',
+                 sans-serif;
+    unicode-range: U+0C00-0C7F;
+  }
+}
+
+/* =================================================================
+   ACCESSIBILITY FALLBACKS
+   ================================================================= */
+
+/* High contrast mode adjustments */
+@media (prefers-contrast: high) {
+  :root {
+    --font-family-body: var(--font-family-body);
+    font-weight: 500; /* Increase weight for better contrast */
+  }
+}
+
+/* Dyslexia-friendly font support */
+.dyslexia-friendly,
+.accessibility-mode-dyslexia {
+  font-family: var(--font-family-dyslexia) !important;
+  letter-spacing: 0.12em;
+  word-spacing: 0.16em;
+  line-height: 1.5;
+}
+
+/* Reduced motion users - no font transitions */
+@media (prefers-reduced-motion: reduce) {
+  .fonts-loading {
+    transition: none;
+  }
+}
+
+/* =================================================================
+   PERFORMANCE OPTIMIZATIONS
+   ================================================================= */
+
+/* Prevent invisible text during font swap */
+@supports (font-display: optional) {
+  .performance-critical {
+    font-display: optional;
+  }
+}
+
+/* Font loading timeout fallback */
+@supports (font-display: fallback) {
+  .timeout-fallback {
+    font-display: fallback;
+  }
+}
+
+/* =================================================================
+   ERROR HANDLING AND RECOVERY
+   ================================================================= */
+
+/* Network error recovery */
+.network-error .font-dependent {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Font loading failure recovery */
+.font-load-error {
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* Generic fallback for unsupported browsers */
+.no-font-support {
+  font-family: Arial, Helvetica, sans-serif;
+  font-feature-settings: normal;
+  text-rendering: auto;
+}
+
+/* =================================================================
+   RESPONSIVE FONT LOADING
+   ================================================================= */
+
+/* Load essential fonts first on slow connections */
+@media (max-width: 768px) {
+  .mobile-optimized {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  
+  /* Delay non-essential fonts */
+  .mobile-optional {
+    font-family: system-ui, sans-serif;
+  }
+}
+
+/* Prefer system fonts on very slow connections */
+@media (max-bandwidth: 1mbps) {
+  :root {
+    --font-family-display: system-ui, sans-serif;
+    --font-family-body: system-ui, sans-serif;
+  }
+}
+
+/* =================================================================
+   PRINT MEDIA FALLBACKS
+   ================================================================= */
+
+@media print {
+  :root {
+    /* Use standard print fonts */
+    --font-family-display: 'Times New Roman', Times, serif;
+    --font-family-body: 'Times New Roman', Times, serif;
+    --font-family-mono: 'Courier New', Courier, monospace;
+  }
+  
+  /* Ensure text remains readable in print */
+  .print-safe {
+    font-family: 'Times New Roman', Times, serif !important;
+    color: #000000 !important;
+    background: transparent !important;
+  }
+}
+
+/* =================================================================
+   DARK MODE CONSIDERATIONS
+   ================================================================= */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Dark mode may require different font weights */
+    font-weight: 400; /* Slightly lighter for dark backgrounds */
+    letter-spacing: 0.02em; /* Slightly more spacing */
+  }
+  
+  .dark-mode-optimized {
+    font-weight: 350;
+    letter-spacing: 0.025em;
+  }
+}
+
+/* =================================================================
+   UTILITY CLASSES
+   ================================================================= */
+
+/* Force system font usage */
+.system-font-only {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;
+}
+
+/* Force web font usage (when loaded) */
+.web-font-only {
+  font-family: var(--font-family-body) !important;
+}
+
+/* Neutral fallback for unsupported contexts */
+.neutral-fallback {
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  font-variant: normal;
+  text-decoration: none;
+  text-transform: none;
+}
+
+/* Emergency readable text */
+.emergency-readable {
+  font-family: Arial, sans-serif !important;
+  font-size: 16px !important;
+  line-height: 1.5 !important;
+  color: #000000 !important;
+  background: #FFFFFF !important;
+  font-weight: normal !important;
+}
+
+/* =================================================================
+   BROWSER-SPECIFIC FIXES
+   ================================================================= */
+
+/* Firefox font rendering optimization */
+@-moz-document url-prefix() {
+  body {
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Webkit font smoothing */
+@supports (-webkit-font-smoothing: antialiased) {
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Edge legacy support */
+@supports (-ms-ime-align: auto) {
+  body {
+    font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+  }
+}
+
+/* =================================================================
+   DEVELOPMENT AND DEBUGGING
+   ================================================================= */
+
+/* Development mode - highlight fallback fonts */
+.debug-fonts .fallback-active {
+  background-color: rgba(255, 255, 0, 0.2);
+  border: 1px dashed #ff0000;
+}
+
+/* Show which fonts are actually being used (dev only) */
+.debug-fonts::after {
+  content: 'Font: ' attr(data-font-family);
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: #000;
+  color: #fff;
+  font-size: 10px;
+  padding: 2px 4px;
+  z-index: 9999;
+}

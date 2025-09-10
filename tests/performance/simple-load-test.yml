@@ -1,0 +1,52 @@
+config:
+  target: 'http://localhost:3000'
+  phases:
+    - duration: 60
+      arrivalRate: 10
+      name: "Mumbai Peak Hours Simulation"
+    - duration: 120
+      arrivalRate: 50
+      name: "High Load Test"
+    - duration: 30
+      arrivalRate: 100
+      name: "Stress Test"
+  
+  ensure:
+    thresholds:
+      - http.response_time.p95: 2000
+      - http.response_time.p99: 3000
+      - http.codes.200: 95
+
+scenarios:
+  - name: "API Health Check"
+    weight: 20
+    flow:
+      - get:
+          url: "/api/health"
+          expect:
+            - statusCode: 200
+      - think: 1
+
+  - name: "Basic API Load"
+    weight: 30
+    flow:
+      - post:
+          url: "/api/auth/login"
+          json:
+            email: "test@example.com"
+            password: "password123"
+      - think: 2
+      - get:
+          url: "/api/health"
+          expect:
+            - statusCode: 200
+
+  - name: "Concurrent Operations"
+    weight: 50
+    flow:
+      - get:
+          url: "/api/health"
+      - get:
+          url: "/api/health"
+      - get:
+          url: "/api/health"

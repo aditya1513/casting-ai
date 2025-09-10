@@ -1,0 +1,535 @@
+---
+# CastMatch Production Kubernetes Deployment
+# Multi-service deployment with blue-green strategy
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: castmatch-production
+  labels:
+    name: castmatch-production
+    environment: production
+---
+# ConfigMap for application configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: castmatch-config
+  namespace: castmatch-production
+data:
+  NODE_ENV: "production"
+  API_URL: "https://api.castmatch.ai"
+  FRONTEND_URL: "https://castmatch.ai"
+  WS_URL: "wss://api.castmatch.ai"
+  REDIS_HOST: "castmatch-redis-master.castmatch-production.svc.cluster.local"
+  POSTGRES_HOST: "castmatch-postgres.castmatch-production.svc.cluster.local"
+  ENABLE_METRICS: "true"
+  LOG_LEVEL: "info"
+  MAX_POOL_SIZE: "100"
+  SESSION_TIMEOUT: "3600"
+---
+# Blue Deployment - Backend API
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: castmatch-backend-blue
+  namespace: castmatch-production
+  labels:
+    app: castmatch-backend
+    version: blue
+    component: backend
+spec:
+  replicas: 6
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: castmatch-backend
+      version: blue
+  template:
+    metadata:
+      labels:
+        app: castmatch-backend
+        version: blue
+        component: backend
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9090"
+        prometheus.io/path: "/metrics"
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - castmatch-backend
+              topologyKey: kubernetes.io/hostname
+      containers:
+      - name: backend
+        image: castmatch/backend:v1.0.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+          name: http
+        - containerPort: 9090
+          name: metrics
+        envFrom:
+        - configMapRef:
+            name: castmatch-config
+        - secretRef:
+            name: castmatch-secrets
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "2000m"
+        livenessProbe:
+          httpGet:
+            path: /health/live
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: 3000
+          initialDelaySeconds: 20
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        volumeMounts:
+        - name: app-logs
+          mountPath: /var/log/castmatch
+      volumes:
+      - name: app-logs
+        emptyDir: {}
+---
+# Green Deployment - Backend API (for blue-green deployments)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: castmatch-backend-green
+  namespace: castmatch-production
+  labels:
+    app: castmatch-backend
+    version: green
+    component: backend
+spec:
+  replicas: 0  # Initially scaled to 0
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: castmatch-backend
+      version: green
+  template:
+    metadata:
+      labels:
+        app: castmatch-backend
+        version: green
+        component: backend
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9090"
+        prometheus.io/path: "/metrics"
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - castmatch-backend
+              topologyKey: kubernetes.io/hostname
+      containers:
+      - name: backend
+        image: castmatch/backend:v1.0.1  # New version for green deployment
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+          name: http
+        - containerPort: 9090
+          name: metrics
+        envFrom:
+        - configMapRef:
+            name: castmatch-config
+        - secretRef:
+            name: castmatch-secrets
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "2000m"
+        livenessProbe:
+          httpGet:
+            path: /health/live
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: 3000
+          initialDelaySeconds: 20
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        volumeMounts:
+        - name: app-logs
+          mountPath: /var/log/castmatch
+      volumes:
+      - name: app-logs
+        emptyDir: {}
+---
+# Frontend Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: castmatch-frontend
+  namespace: castmatch-production
+  labels:
+    app: castmatch-frontend
+    component: frontend
+spec:
+  replicas: 4
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: castmatch-frontend
+  template:
+    metadata:
+      labels:
+        app: castmatch-frontend
+        component: frontend
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - castmatch-frontend
+              topologyKey: kubernetes.io/hostname
+      containers:
+      - name: frontend
+        image: castmatch/frontend:v1.0.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3001
+          name: http
+        envFrom:
+        - configMapRef:
+            name: castmatch-config
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3001
+          initialDelaySeconds: 20
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3001
+          initialDelaySeconds: 10
+          periodSeconds: 5
+---
+# AI Service Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: castmatch-ai-service
+  namespace: castmatch-production
+  labels:
+    app: castmatch-ai
+    component: ai-service
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: castmatch-ai
+  template:
+    metadata:
+      labels:
+        app: castmatch-ai
+        component: ai-service
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+        prometheus.io/path: "/metrics"
+    spec:
+      nodeSelector:
+        node-type: compute-optimized
+      containers:
+      - name: ai-service
+        image: castmatch/ai-service:v1.0.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+          name: http
+        envFrom:
+        - configMapRef:
+            name: castmatch-config
+        - secretRef:
+            name: castmatch-ai-secrets
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "1000m"
+            nvidia.com/gpu: 1  # GPU request for AI workloads
+          limits:
+            memory: "8Gi"
+            cpu: "4000m"
+            nvidia.com/gpu: 1
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 60
+          periodSeconds: 20
+          timeoutSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+---
+# WebSocket Service Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: castmatch-websocket
+  namespace: castmatch-production
+  labels:
+    app: castmatch-websocket
+    component: websocket
+spec:
+  replicas: 4
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: castmatch-websocket
+  template:
+    metadata:
+      labels:
+        app: castmatch-websocket
+        component: websocket
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - castmatch-websocket
+            topologyKey: kubernetes.io/hostname
+      containers:
+      - name: websocket
+        image: castmatch/websocket:v1.0.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+          name: ws
+        envFrom:
+        - configMapRef:
+            name: castmatch-config
+        - secretRef:
+            name: castmatch-secrets
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "2000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 20
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+---
+# Services
+apiVersion: v1
+kind: Service
+metadata:
+  name: castmatch-backend
+  namespace: castmatch-production
+  labels:
+    app: castmatch-backend
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+spec:
+  type: LoadBalancer
+  selector:
+    app: castmatch-backend
+    version: blue  # Points to blue deployment by default
+  ports:
+  - name: http
+    port: 80
+    targetPort: 3000
+  - name: metrics
+    port: 9090
+    targetPort: 9090
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: castmatch-frontend
+  namespace: castmatch-production
+  labels:
+    app: castmatch-frontend
+spec:
+  type: ClusterIP
+  selector:
+    app: castmatch-frontend
+  ports:
+  - name: http
+    port: 80
+    targetPort: 3001
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: castmatch-ai
+  namespace: castmatch-production
+  labels:
+    app: castmatch-ai
+spec:
+  type: ClusterIP
+  selector:
+    app: castmatch-ai
+  ports:
+  - name: http
+    port: 8000
+    targetPort: 8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: castmatch-websocket
+  namespace: castmatch-production
+  labels:
+    app: castmatch-websocket
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+spec:
+  type: LoadBalancer
+  selector:
+    app: castmatch-websocket
+  ports:
+  - name: ws
+    port: 8080
+    targetPort: 8080
+---
+# Ingress Controller
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: castmatch-ingress
+  namespace: castmatch-production
+  annotations:
+    kubernetes.io/ingress.class: "alb"
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-west-2:123456789012:certificate/12345678-1234-1234-1234-123456789012
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: '443'
+    alb.ingress.kubernetes.io/healthcheck-path: /health
+    alb.ingress.kubernetes.io/success-codes: 200,301,302
+spec:
+  rules:
+  - host: api.castmatch.ai
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: castmatch-backend
+            port:
+              number: 80
+  - host: castmatch.ai
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: castmatch-frontend
+            port:
+              number: 80
+  - host: ws.castmatch.ai
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: castmatch-websocket
+            port:
+              number: 8080
+  - host: ai.castmatch.ai
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: castmatch-ai
+            port:
+              number: 8000

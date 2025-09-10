@@ -1,0 +1,656 @@
+/**
+ * CastMatch Micro-Interactions Library
+ * Premium UI feedback animations inspired by UXerflow
+ * Mumbai Cinema themed interactions
+ */
+
+/* ========================
+   BUTTON INTERACTIONS
+   ======================== */
+
+/* Primary CTA Button */
+.btn-primary-motion {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #8B5CF6 0%, #A855F7 100%);
+  border: none;
+  color: white;
+  padding: 14px 32px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform-style: preserve-3d;
+  box-shadow: 
+    0 4px 15px rgba(139, 92, 246, 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary-motion::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.btn-primary-motion:hover {
+  transform: translateY(-3px) rotateX(-5deg);
+  box-shadow: 
+    0 8px 25px rgba(139, 92, 246, 0.4),
+    0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn-primary-motion:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.btn-primary-motion:active {
+  transform: translateY(-1px);
+  box-shadow: 
+    0 2px 10px rgba(139, 92, 246, 0.4),
+    0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+/* Ghost Button with Border Animation */
+.btn-ghost-motion {
+  position: relative;
+  background: transparent;
+  color: #8B5CF6;
+  border: 2px solid transparent;
+  padding: 12px 28px;
+  border-radius: 10px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+  background-image: linear-gradient(#0a0a0a, #0a0a0a),
+                    linear-gradient(90deg, #8B5CF6, #A855F7, #6366F1);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+}
+
+.btn-ghost-motion::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 10px;
+  padding: 2px;
+  background: linear-gradient(90deg, #8B5CF6, #A855F7, #6366F1);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, 
+                linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.btn-ghost-motion:hover {
+  color: white;
+  background-image: linear-gradient(135deg, #8B5CF6, #A855F7),
+                    linear-gradient(90deg, #8B5CF6, #A855F7, #6366F1);
+  transform: scale(1.02);
+}
+
+.btn-ghost-motion:hover::after {
+  opacity: 1;
+  animation: borderRotate 3s linear infinite;
+}
+
+@keyframes borderRotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Magnetic Button */
+.btn-magnetic {
+  position: relative;
+  padding: 16px 40px;
+  background: #1a1a1a;
+  color: white;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 50px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  overflow: hidden;
+}
+
+.btn-magnetic::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, transparent 70%);
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  pointer-events: none;
+}
+
+.btn-magnetic:hover::before {
+  transform: translate(-50%, -50%) scale(2);
+}
+
+/* ========================
+   FORM INTERACTIONS
+   ======================== */
+
+/* Floating Label Input */
+.input-floating-group {
+  position: relative;
+  margin-bottom: 30px;
+}
+
+.input-floating {
+  width: 100%;
+  padding: 18px 16px 6px;
+  background: rgba(139, 92, 246, 0.05);
+  border: 2px solid transparent;
+  border-radius: 12px;
+  font-size: 16px;
+  color: white;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.input-floating-label {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 16px;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.input-floating:focus,
+.input-floating:not(:placeholder-shown) {
+  padding: 22px 16px 6px;
+  background: rgba(139, 92, 246, 0.08);
+  border-color: #8B5CF6;
+  box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
+}
+
+.input-floating:focus + .input-floating-label,
+.input-floating:not(:placeholder-shown) + .input-floating-label {
+  top: 12px;
+  font-size: 12px;
+  color: #8B5CF6;
+  transform: translateY(0);
+}
+
+/* Animated Checkbox */
+.checkbox-animated {
+  position: relative;
+  display: inline-block;
+  width: 56px;
+  height: 28px;
+}
+
+.checkbox-animated input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.checkbox-animated-slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background: rgba(139, 92, 246, 0.1);
+  border: 2px solid rgba(139, 92, 246, 0.3);
+  border-radius: 28px;
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.checkbox-animated-slider::before {
+  position: absolute;
+  content: '';
+  height: 20px;
+  width: 20px;
+  left: 2px;
+  bottom: 2px;
+  background: white;
+  border-radius: 50%;
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.checkbox-animated input:checked + .checkbox-animated-slider {
+  background: linear-gradient(135deg, #8B5CF6, #A855F7);
+  border-color: transparent;
+}
+
+.checkbox-animated input:checked + .checkbox-animated-slider::before {
+  transform: translateX(28px) rotate(360deg);
+}
+
+/* Radio Button with Pulse */
+.radio-pulse {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  margin-right: 20px;
+}
+
+.radio-pulse input {
+  position: absolute;
+  opacity: 0;
+}
+
+.radio-pulse-indicator {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  border: 2px solid rgba(139, 92, 246, 0.5);
+  border-radius: 50%;
+  margin-right: 10px;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.radio-pulse-indicator::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  background: #8B5CF6;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.radio-pulse-indicator::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  border: 2px solid #8B5CF6;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+}
+
+.radio-pulse input:checked ~ .radio-pulse-indicator {
+  border-color: #8B5CF6;
+}
+
+.radio-pulse input:checked ~ .radio-pulse-indicator::before {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.radio-pulse input:checked ~ .radio-pulse-indicator::after {
+  animation: radioPulse 0.6s ease-out;
+}
+
+@keyframes radioPulse {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2);
+    opacity: 0;
+  }
+}
+
+/* ========================
+   CARD INTERACTIONS
+   ======================== */
+
+/* 3D Flip Card */
+.card-flip-container {
+  width: 100%;
+  height: 400px;
+  perspective: 1000px;
+}
+
+.card-flip {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+  transform-style: preserve-3d;
+}
+
+.card-flip-container:hover .card-flip {
+  transform: rotateY(180deg);
+}
+
+.card-flip-front,
+.card-flip-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.card-flip-front {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(168, 85, 247, 0.1));
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card-flip-back {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transform: rotateY(180deg);
+}
+
+/* Tilt Card */
+.card-tilt {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(168, 85, 247, 0.05));
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 24px;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform-style: preserve-3d;
+  transform: perspective(1000px) rotateX(0) rotateY(0);
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.2),
+    0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.card-tilt:hover {
+  box-shadow: 
+    0 20px 40px rgba(139, 92, 246, 0.3),
+    0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Expanding Card */
+.card-expand {
+  position: relative;
+  background: rgba(139, 92, 246, 0.05);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 12px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  overflow: hidden;
+}
+
+.card-expand-content {
+  max-height: 100px;
+  overflow: hidden;
+  transition: max-height 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.card-expand.expanded .card-expand-content {
+  max-height: 500px;
+}
+
+.card-expand::after {
+  content: '→';
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%) rotate(0);
+  transition: transform 0.3s;
+  font-size: 24px;
+  color: #8B5CF6;
+}
+
+.card-expand.expanded::after {
+  transform: translateY(-50%) rotate(90deg);
+}
+
+/* ========================
+   NAVIGATION INTERACTIONS
+   ======================== */
+
+/* Tab Indicator Animation */
+.tabs-animated {
+  display: flex;
+  position: relative;
+  border-bottom: 1px solid rgba(139, 92, 246, 0.1);
+}
+
+.tab-item {
+  padding: 16px 24px;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: relative;
+}
+
+.tab-item:hover {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.tab-item.active {
+  color: #8B5CF6;
+}
+
+.tab-indicator {
+  position: absolute;
+  bottom: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #8B5CF6, #A855F7);
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  border-radius: 3px 3px 0 0;
+}
+
+/* Menu Burger Animation */
+.menu-burger {
+  width: 30px;
+  height: 24px;
+  position: relative;
+  cursor: pointer;
+}
+
+.menu-burger-line {
+  position: absolute;
+  width: 100%;
+  height: 3px;
+  background: #8B5CF6;
+  border-radius: 3px;
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.menu-burger-line:nth-child(1) {
+  top: 0;
+}
+
+.menu-burger-line:nth-child(2) {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.menu-burger-line:nth-child(3) {
+  bottom: 0;
+}
+
+.menu-burger.active .menu-burger-line:nth-child(1) {
+  transform: rotate(45deg) translate(7px, 7px);
+}
+
+.menu-burger.active .menu-burger-line:nth-child(2) {
+  opacity: 0;
+  transform: translateY(-50%) scaleX(0);
+}
+
+.menu-burger.active .menu-burger-line:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -7px);
+}
+
+/* ========================
+   LOADING STATES
+   ======================== */
+
+/* Morphing Dots Loader */
+.loader-dots {
+  display: flex;
+  gap: 8px;
+}
+
+.loader-dot {
+  width: 12px;
+  height: 12px;
+  background: #8B5CF6;
+  border-radius: 50%;
+  animation: dotMorph 1.4s ease-in-out infinite;
+}
+
+.loader-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.loader-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes dotMorph {
+  0%, 80%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  40% {
+    transform: scale(1.5);
+    opacity: 0.5;
+  }
+}
+
+/* Progress Ring */
+.progress-ring {
+  width: 100px;
+  height: 100px;
+  position: relative;
+}
+
+.progress-ring-circle {
+  stroke: #8B5CF6;
+  stroke-width: 4;
+  fill: none;
+  stroke-dasharray: 283;
+  stroke-dashoffset: 283;
+  transform: rotate(-90deg);
+  transform-origin: center;
+  animation: progressRing 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes progressRing {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ========================
+   TOOLTIP & POPOVER
+   ======================== */
+
+/* Animated Tooltip */
+.tooltip-container {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip-content {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.tooltip-content::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: rgba(0, 0, 0, 0.9);
+}
+
+.tooltip-container:hover .tooltip-content {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ========================
+   NOTIFICATION BADGE
+   ======================== */
+
+.badge-animated {
+  position: relative;
+  display: inline-block;
+}
+
+.badge-count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: linear-gradient(135deg, #EF4444, #F59E0B);
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 10px;
+  min-width: 20px;
+  text-align: center;
+  animation: badgePop 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes badgePop {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.badge-pulse {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 20px;
+  height: 20px;
+  background: #EF4444;
+  border-radius: 50%;
+  animation: badgePulse 2s ease-out infinite;
+}
+
+@keyframes badgePulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  }
+}

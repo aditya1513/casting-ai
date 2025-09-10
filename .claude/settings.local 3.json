@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "mcp__byterover-mcp__byterover-store-knowledge",
+      "mcp__byterover-mcp__byterover-retrieve-knowledge",
+      "Bash(docker-compose up:*)",
+      "Bash(./scripts/reset-docker-db.sh:*)",
+      "Bash(npm run migrate:deploy:*)",
+      "Bash(npm run:*)",
+      "Bash(node:*)",
+      "Bash(docker exec:*)",
+      "Bash(npx create-next-app:*)",
+      "Bash(npm install)",
+      "Bash(lsof:*)",
+      "Bash(cat:*)",
+      "Bash(npx shadcn:*)",
+      "Bash(curl:*)",
+      "Bash(chmod:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

@@ -1,0 +1,1299 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  // extensions = [vector] // Commented out - pgvector not installed
+}
+
+// Enums
+enum UserRole {
+  ACTOR
+  CASTING_DIRECTOR
+  PRODUCER
+  DIRECTOR
+  AGENT
+  ADMIN
+  MODERATOR
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+  PREFER_NOT_TO_SAY
+}
+
+enum ProjectStatus {
+  DRAFT
+  ACTIVE
+  CASTING
+  IN_PRODUCTION
+  POST_PRODUCTION
+  COMPLETED
+  CANCELLED
+  ON_HOLD
+}
+
+enum ProjectType {
+  WEB_SERIES
+  FILM
+  SHORT_FILM
+  DOCUMENTARY
+  AD_COMMERCIAL
+  MUSIC_VIDEO
+  THEATRE
+  VOICE_OVER
+  REALITY_SHOW
+  TALK_SHOW
+}
+
+enum AuditionStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+  RESCHEDULED
+}
+
+enum AuditionType {
+  IN_PERSON
+  VIRTUAL
+  SELF_TAPE
+  CALLBACK
+  SCREEN_TEST
+  CHEMISTRY_READ
+}
+
+enum ApplicationStatus {
+  PENDING
+  UNDER_REVIEW
+  SHORTLISTED
+  AUDITIONED
+  CALLBACK
+  SELECTED
+  BACKUP
+  REJECTED
+  WITHDRAWN
+}
+
+enum UnionStatus {
+  UNION_MEMBER
+  NON_UNION
+  ELIGIBLE
+  SAG_AFTRA
+  ACTORS_EQUITY
+  OTHER
+}
+
+enum CharacterImportance {
+  LEAD
+  SUPPORTING
+  FEATURED
+  BACKGROUND
+  CAMEO
+  RECURRING
+  GUEST_STAR
+}
+
+enum ExperienceLevel {
+  FRESHER
+  BEGINNER
+  INTERMEDIATE
+  EXPERIENCED
+  EXPERT
+  VETERAN
+}
+
+enum AvailabilityStatus {
+  AVAILABLE
+  BUSY
+  PARTIALLY_AVAILABLE
+  NOT_AVAILABLE
+  ON_PROJECT
+}
+
+enum MediaType {
+  HEADSHOT
+  FULL_BODY
+  PORTFOLIO
+  SHOWREEL
+  MONOLOGUE
+  SCENE
+  VOICE_SAMPLE
+  DANCE_VIDEO
+  ACTION_REEL
+  RESUME
+  CERTIFICATE
+}
+
+enum ProfileCompleteness {
+  BASIC
+  INTERMEDIATE
+  ADVANCED
+  COMPLETE
+  VERIFIED
+}
+
+// Models
+model User {
+  id               String    @id @default(uuid())
+  email            String    @unique
+  phone            String?   @unique
+  password         String
+  role             UserRole
+  isEmailVerified  Boolean   @default(false)
+  isPhoneVerified  Boolean   @default(false)
+  isActive         Boolean   @default(true)
+  lastLoginAt      DateTime?
+  refreshToken     String?
+  resetToken       String?
+  resetTokenExpiry DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  // Relations
+  actor           Actor?
+  castingDirector CastingDirector?
+  producer        Producer?
+  sessions        Session[]
+  notifications   Notification[]
+  Talent          Talent?
+
+  @@index([email])
+  @@index([phone])
+  @@index([role])
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  ipAddress String?
+  userAgent String?
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([token])
+  @@map("sessions")
+}
+
+// Comprehensive Talent/Actor Profile
+model Talent {
+  id     String @id @default(uuid())
+  userId String @unique
+
+  // Personal Information
+  firstName      String
+  lastName       String
+  middleName     String?
+  displayName    String?
+  dateOfBirth    DateTime
+  gender         Gender
+  nationality    String   @default("Indian")
+  aadharNumber   String? // Encrypted
+  panNumber      String? // Encrypted
+  passportNumber String? // Encrypted
+
+  // Contact Information
+  primaryPhone   String
+  secondaryPhone String?
+  whatsappNumber String?
+  email          String
+  alternateEmail String?
+
+  // Location Details
+  currentCity        String
+  currentState       String
+  currentPincode     String?
+  hometown           String?
+  preferredLocations String[] // Cities willing to work in
+  willingToRelocate  Boolean  @default(false)
+
+  // Physical Attributes
+  height    Float? // in centimeters
+  weight    Float? // in kilograms
+  chest     Float? // in inches
+  waist     Float? // in inches
+  hips      Float? // in inches
+  shoeSize  String?
+  dressSize String?
+
+  // Professional Details
+  bio               String?     @db.Text
+  experience        Json? // Structured experience data
+  yearsOfExperience Int         @default(0)
+  unionStatus       UnionStatus @default(NON_UNION)
+  unionId           String?
+  agentId           String?
+  agencyName        String?
+  managerName       String?
+  managerContact    String?
+
+  // Skills and Specializations
+  actingSkills       String[] // Method acting, improv, etc.
+  danceSkills        String[] // Ballet, hip-hop, classical, etc.
+  martialArts        String[] // Karate, boxing, etc.
+  musicalInstruments String[] // Guitar, piano, etc.
+  singingSkills      String[] // Classical, pop, etc.
+  languages          String[] // Hindi, English, Marathi, etc.
+  dialects           String[] // Regional dialects
+  accents            String[] // British, American, etc.
+  specialSkills      String[] // Horse riding, swimming, driving, etc.
+
+  // Mumbai Market Specific
+  marathiProficiency  ExperienceLevel?
+  hindiProficiency    ExperienceLevel?
+  englishProficiency  ExperienceLevel?
+  gujaratiProficiency ExperienceLevel?
+  regionalExperience  String[] // Bollywood, Tollywood, etc.
+
+  // Availability and Rates
+  availabilityStatus AvailabilityStatus @default(AVAILABLE)
+  availableFrom      DateTime?
+  availableTo        DateTime?
+  minimumRate        Float? // Per day rate in INR
+  maximumRate        Float? // Per day rate in INR
+  preferredRate      Float? // Preferred per day rate
+  rateNegotiable     Boolean            @default(true)
+
+  // Profile Management
+  profileImageUrl String?
+  portfolioUrls   String[]
+  instagramHandle String?
+  facebookProfile String?
+  linkedinProfile String?
+  youtubeChannel  String?
+  websiteUrl      String?
+
+  // Profile Scoring and Verification
+  profileCompleteness ProfileCompleteness @default(BASIC)
+  profileScore        Float               @default(0) // 0-100 score
+  isVerified          Boolean             @default(false)
+  verifiedAt          DateTime?
+  verificationNotes   String?
+
+  // AI and Search Features
+  embedding          Unsupported("vector(1536)")? // Vector embedding for AI matching (OpenAI ada-002 dimension)
+  searchTags         String[] // Optimized search tags
+  aiGeneratedSummary String?                      @db.Text // AI-generated profile summary
+  lastAiAnalysis     DateTime?
+
+  // Performance Metrics
+  rating         Float @default(0) // Average rating 0-5
+  totalReviews   Int   @default(0)
+  totalAuditions Int   @default(0)
+  totalCallbacks Int   @default(0)
+  totalBookings  Int   @default(0)
+  responseRate   Float @default(100) // Percentage
+  responseTime   Int   @default(0) // Average in hours
+
+  // System Fields
+  isActive         Boolean   @default(true)
+  isPremium        Boolean   @default(false)
+  premiumExpiresAt DateTime?
+  lastActiveAt     DateTime  @default(now())
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  // Relations
+  user                User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  media               TalentMedia[]
+  applications        Application[]
+  auditions           Audition[]
+  bookmarks           ProjectBookmark[]
+  reviews             Review[]
+  physicalAttributes  PhysicalAttribute?
+  workExperiences     WorkExperience[]
+  educations          Education[]
+  achievements        Achievement[]
+  preferredCharacters PreferredCharacter[]
+  blockedProjects     BlockedProject[]
+  savedSearches       SavedSearch[]
+  talentNotes         TalentNote[]
+
+  @@index([userId])
+  @@index([currentCity, currentState])
+  @@index([isVerified])
+  @@index([availabilityStatus])
+  @@index([profileCompleteness])
+  @@index([rating])
+  @@index([yearsOfExperience])
+  @@index([languages])
+  @@index([actingSkills])
+  @@index([searchTags])
+  @@map("talents")
+}
+
+// Keep Actor model for backward compatibility (can be removed later)
+model Actor {
+  id              String   @id @default(uuid())
+  userId          String   @unique
+  firstName       String
+  lastName        String
+  displayName     String?
+  dateOfBirth     DateTime
+  gender          Gender
+  height          Float? // in centimeters
+  weight          Float? // in kilograms
+  languages       String[] // Array of language codes
+  city            String
+  state           String
+  bio             String?  @db.Text
+  experience      Json? // Structured experience data
+  skills          String[]
+  profileImageUrl String?
+  portfolioUrls   String[]
+  isVerified      Boolean  @default(false)
+  rating          Float    @default(0)
+  totalReviews    Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  media              ActorMedia[]
+  applications       Application[]
+  auditions          Audition[]
+  bookmarks          ProjectBookmark[]
+  reviews            Review[]
+  physicalAttributes PhysicalAttribute?
+
+  @@index([userId])
+  @@index([city, state])
+  @@index([isVerified])
+  @@map("actors")
+}
+
+model PhysicalAttribute {
+  id       String  @id @default(uuid())
+  actorId  String? @unique
+  talentId String? @unique
+
+  // Facial Features
+  eyeColor    String?
+  eyeShape    String? // Almond, round, hooded, etc.
+  hairColor   String?
+  hairLength  String? // Short, medium, long, bald
+  hairTexture String? // Straight, wavy, curly, kinky
+  hairStyle   String? // Current style
+
+  // Body Features
+  bodyType  String? // Athletic, slim, average, heavy, etc.
+  skinTone  String? // Fair, wheatish, dusky, dark
+  ethnicity String? // Indian, Caucasian, etc.
+
+  // Distinguishing Features
+  facialHair       Boolean @default(false)
+  facialHairStyle  String? // Beard, mustache, goatee, etc.
+  piercings        Boolean @default(false)
+  piercingDetails  String?
+  tattoos          Boolean @default(false)
+  tattooDetails    String? // Location and description
+  scars            Boolean @default(false)
+  scarDetails      String?
+  birthmarks       Boolean @default(false)
+  birthmarkDetails String?
+  glasses          Boolean @default(false)
+  contactLenses    Boolean @default(false)
+  dentalWork       String? // Braces, veneers, etc.
+
+  // Additional
+  fitnessLevel    String? // Excellent, good, average, etc.
+  flexibility     String? // Very flexible, moderate, limited
+  additionalNotes String?  @db.Text
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  actor  Actor?  @relation(fields: [actorId], references: [id], onDelete: Cascade)
+  talent Talent? @relation(fields: [talentId], references: [id], onDelete: Cascade)
+
+  @@map("physical_attributes")
+}
+
+// Media for Talents
+model TalentMedia {
+  id            String    @id @default(uuid())
+  talentId      String
+  type          MediaType
+  category      String? // Professional, casual, character, etc.
+  url           String
+  cloudinaryId  String? // For Cloudinary integration
+  thumbnailUrl  String?
+  title         String?
+  description   String?   @db.Text
+  fileSize      Int? // in bytes
+  mimeType      String?
+  dimensions    String? // WxH for images
+  duration      Int? // for videos, in seconds
+  shotDate      DateTime? // When photo/video was taken
+  photographer  String? // Credit
+  makeupArtist  String? // Credit
+  location      String? // Where it was shot
+  tags          String[] // Searchable tags
+  order         Int       @default(0)
+  isPrimary     Boolean   @default(false)
+  isPublic      Boolean   @default(true)
+  isWatermarked Boolean   @default(false)
+  viewCount     Int       @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  talent Talent @relation(fields: [talentId], references: [id], onDelete: Cascade)
+
+  @@index([talentId])
+  @@index([type])
+  @@index([isPrimary])
+  @@map("talent_media")
+}
+
+// Keep ActorMedia for backward compatibility
+model ActorMedia {
+  id           String   @id @default(uuid())
+  actorId      String
+  type         String // 'image', 'video', 'document'
+  url          String
+  thumbnailUrl String?
+  title        String?
+  description  String?
+  fileSize     Int? // in bytes
+  mimeType     String?
+  duration     Int? // for videos, in seconds
+  order        Int      @default(0)
+  isPublic     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+
+  // Relations
+  actor Actor @relation(fields: [actorId], references: [id], onDelete: Cascade)
+
+  @@index([actorId])
+  @@map("actor_media")
+}
+
+model CastingDirector {
+  id                String   @id @default(uuid())
+  userId            String   @unique
+  firstName         String
+  lastName          String
+  companyName       String?
+  designation       String?
+  bio               String?  @db.Text
+  profileImageUrl   String?
+  yearsOfExperience Int      @default(0)
+  specializations   String[]
+  isVerified        Boolean  @default(false)
+  rating            Float    @default(0)
+  totalReviews      Int      @default(0)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  projects  Project[]
+  auditions Audition[]
+  reviews   Review[]
+
+  @@index([userId])
+  @@index([isVerified])
+  @@map("casting_directors")
+}
+
+model Producer {
+  id              String   @id @default(uuid())
+  userId          String   @unique
+  firstName       String
+  lastName        String
+  productionHouse String?
+  designation     String?
+  bio             String?  @db.Text
+  profileImageUrl String?
+  isVerified      Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  projects Project[]
+
+  @@index([userId])
+  @@map("producers")
+}
+
+// Enhanced Project Model
+model Project {
+  id String @id @default(uuid())
+
+  // Basic Information
+  title          String
+  workingTitle   String? // Confidential project name
+  description    String      @db.Text
+  synopsis       String?     @db.Text
+  logline        String? // One-line description
+  type           ProjectType
+  genre          String[]
+  subGenre       String[]
+  targetAudience String? // Age group, demographics
+  contentRating  String? // U, UA, A, etc.
+
+  // Production Details
+  productionHouse   String?
+  coproducers       String[]
+  platform          String? // Netflix, Amazon Prime, etc.
+  languages         String[] // Primary languages
+  dubLanguages      String[] // Languages for dubbing
+  subtitleLanguages String[] // Languages for subtitles
+
+  // Budget and Compensation
+  totalBudget    Float? // In INR
+  castingBudget  Float? // In INR
+  budgetCurrency String  @default("INR")
+  paymentTerms   String? // Net 30, Net 60, etc.
+
+  // Timeline
+  preProductionStart DateTime?
+  castingStartDate   DateTime?
+  castingEndDate     DateTime?
+  auditionStartDate  DateTime?
+  auditionEndDate    DateTime?
+  callbackDeadline   DateTime?
+  shootingStartDate  DateTime?
+  shootingEndDate    DateTime?
+  wrapDate           DateTime?
+  releaseDate        DateTime?
+
+  // Locations
+  shootingLocations String[] // Mumbai, Pune, etc.
+  auditionLocations String[] // Specific venues
+  studioName        String?
+
+  // Team Information
+  directorName      String?
+  directorId        String?
+  writerName        String?
+  musicDirector     String?
+  cinematographer   String?
+  castingDirectorId String?
+  assistantCDId     String?
+  producerId        String?
+  lineProducerId    String?
+
+  // Project Management
+  status          ProjectStatus @default(DRAFT)
+  priority        String? // High, Medium, Low
+  confidentiality String? // Public, Private, NDA Required
+  ndaRequired     Boolean       @default(false)
+  ndaDocument     String? // URL to NDA document
+
+  // Media and Documents
+  posterUrl      String?
+  bannerUrl      String?
+  scriptUrl      String? // Encrypted/Protected URL
+  referenceLinks String[] // Reference videos, mood boards
+
+  // Casting Requirements
+  totalRoles      Int     @default(0)
+  filledRoles     Int     @default(0)
+  unionProject    Boolean @default(false)
+  openToNewcomers Boolean @default(true)
+
+  // AI and Search
+  embedding          Unsupported("vector(1536)")? // Vector for AI matching
+  searchKeywords     String[] // SEO optimization
+  aiSuggestedTalents Json? // AI recommendations
+
+  // Engagement Metrics
+  isPublic         Boolean @default(true)
+  isFeatured       Boolean @default(false)
+  viewCount        Int     @default(0)
+  applicationCount Int     @default(0)
+  shareCount       Int     @default(0)
+  saveCount        Int     @default(0)
+
+  // System Fields
+  isActive    Boolean   @default(true)
+  isArchived  Boolean   @default(false)
+  publishedAt DateTime?
+  archivedAt  DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  castingDirector CastingDirector?  @relation(fields: [castingDirectorId], references: [id])
+  producer        Producer?         @relation(fields: [producerId], references: [id])
+  characters      Character[] // Renamed from roles
+  roles           Role[] // Keep for backward compatibility
+  applications    Application[]
+  auditions       Audition[]
+  bookmarks       ProjectBookmark[]
+  teamMembers     ProjectTeam[]
+  documents       ProjectDocument[]
+  updates         ProjectUpdate[]
+
+  @@index([status])
+  @@index([type])
+  @@index([castingDirectorId])
+  @@index([producerId])
+  @@index([castingEndDate])
+  @@index([shootingStartDate])
+  @@index([languages])
+  @@index([shootingLocations])
+  @@index([isPublic, status])
+  @@index([searchKeywords])
+  @@map("projects")
+}
+
+// Comprehensive Character/Role Requirements
+model Character {
+  id        String @id @default(uuid())
+  projectId String
+
+  // Character Information
+  name           String
+  alternateNames String[] // Character aliases
+  description    String              @db.Text
+  backstory      String?             @db.Text
+  personality    String?             @db.Text
+  characterArc   String?             @db.Text
+  importance     CharacterImportance
+  screenTime     String? // Percentage or description
+  numberOfScenes Int?
+
+  // Age Requirements
+  ageMin     Int?
+  ageMax     Int?
+  playingAge String? // Can look 25-30
+
+  // Physical Requirements
+  gender       Gender?
+  heightMin    Float? // in cm
+  heightMax    Float? // in cm
+  weightMin    Float? // in kg
+  weightMax    Float? // in kg
+  bodyType     String? // Athletic, slim, etc.
+  ethnicity    String? // Specific ethnicity required
+  specificLook String? @db.Text // Detailed look requirements
+
+  // Skill Requirements
+  requiredSkills       String[] // Must have skills
+  preferredSkills      String[] // Nice to have skills
+  actingStyle          String? // Method, classical, etc.
+  danceRequirements    String[] // Specific dance forms
+  fightRequirements    String[] // Action, stunts
+  languageRequirements String[] // Must speak fluently
+  accentRequired       String? // Specific accent needed
+  experienceLevel      ExperienceLevel
+
+  // Cultural Requirements
+  culturalBackground  String? // Specific cultural knowledge
+  regionalOrigin      String? // From specific region
+  communityBackground String? // Specific community
+
+  // Work Requirements
+  numberOfDays   Int? // Shooting days
+  startDate      DateTime?
+  endDate        DateTime?
+  locations      String[] // Specific shooting locations
+  nightShoots    Boolean   @default(false)
+  intimateScenes Boolean   @default(false)
+  nudityRequired Boolean   @default(false)
+  stuntWork      Boolean   @default(false)
+
+  // Compensation
+  compensation      Float?
+  compensationType  String? // per_day, per_project, etc.
+  compensationNotes String?
+  perks             String[] // Travel, accommodation, etc.
+
+  // Casting Process
+  auditionType      AuditionType[]
+  auditionMaterial  String? // Sides, scripts provided
+  callbackRequired  Boolean        @default(false)
+  chemistryReadWith String? // Other character names
+
+  // Selection Status
+  status              String    @default("open")
+  applicationDeadline DateTime?
+  targetCastingDate   DateTime?
+  selectedTalentId    String?
+  backupTalentIds     String[]
+
+  // AI Features
+  embedding          Unsupported("vector(1536)")? // For AI matching
+  idealProfileTraits Json? // AI-generated ideal traits
+
+  // System Fields
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  project             Project              @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  applications        Application[]
+  auditionScripts     AuditionScript[]
+  characterReferences CharacterReference[]
+  Audition            Audition[]
+
+  @@index([projectId])
+  @@index([status])
+  @@index([importance])
+  @@index([gender])
+  @@index([experienceLevel])
+  @@map("characters")
+}
+
+// Keep Role for backward compatibility
+model Role {
+  id               String   @id @default(uuid())
+  projectId        String
+  name             String
+  description      String   @db.Text
+  characterAge     String? // e.g., "25-35"
+  gender           Gender?
+  requiredSkills   String[]
+  languages        String[]
+  compensation     Float?
+  compensationType String? // 'per_day', 'per_project', 'negotiable'
+  numberOfDays     Int?
+  isLead           Boolean  @default(false)
+  status           String   @default("open") // 'open', 'closed', 'filled'
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  // Relations
+  project      Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  applications Application[]
+
+  @@index([projectId])
+  @@index([status])
+  @@map("roles")
+}
+
+model Application {
+  id          String  @id @default(uuid())
+  actorId     String?
+  talentId    String?
+  roleId      String?
+  characterId String?
+  projectId   String
+
+  // Application Details
+  coverLetter    String? @db.Text
+  whyInterested  String? @db.Text // Why interested in role
+  interpretation String? @db.Text // Character interpretation
+
+  // Availability and Rates
+  proposedRate   Float?
+  rateType       String? // per_day, per_project, etc.
+  isNegotiable   Boolean    @default(true)
+  availability   Json? // Structured availability data
+  availableDates DateTime[] // Specific available dates
+  blackoutDates  DateTime[] // Not available dates
+
+  // Submitted Materials
+  submittedMedia  String[] // URLs to headshots, reels
+  selftapeUrl     String? // Audition self-tape
+  additionalLinks String[] // Other relevant links
+
+  // Application Tracking
+  status     ApplicationStatus @default(PENDING)
+  priority   String? // High, medium, low
+  source     String? // Direct, agent, referral
+  referredBy String? // Referrer name or ID
+
+  // Review Process
+  appliedAt    DateTime  @default(now())
+  viewedAt     DateTime? // When CD first viewed
+  reviewedAt   DateTime? // When formally reviewed
+  reviewedBy   String? // User ID of reviewer
+  reviewRating Int? // Initial rating 1-5
+  reviewNotes  String?   @db.Text
+
+  // AI Analysis
+  matchScore       Float? // AI-calculated match percentage
+  matchFactors     Json? // Detailed matching analysis
+  aiRecommendation String? // AI recommendation
+
+  // Communication
+  lastContactDate  DateTime?
+  contactAttempts  Int       @default(0)
+  responseReceived Boolean   @default(false)
+
+  // System Fields
+  isArchived Boolean  @default(false)
+  updatedAt  DateTime @updatedAt
+
+  // Relations
+  actor          Actor?               @relation(fields: [actorId], references: [id], onDelete: Cascade)
+  talent         Talent?              @relation(fields: [talentId], references: [id], onDelete: Cascade)
+  role           Role?                @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  character      Character?           @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  project        Project              @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  audition       Audition?
+  communications ApplicationMessage[]
+
+  @@unique([actorId, roleId])
+  @@unique([talentId, characterId])
+  @@index([actorId])
+  @@index([talentId])
+  @@index([roleId])
+  @@index([characterId])
+  @@index([projectId])
+  @@index([status])
+  @@index([matchScore])
+  @@map("applications")
+}
+
+// Enhanced Audition Management
+model Audition {
+  id            String  @id @default(uuid())
+  applicationId String  @unique
+  projectId     String
+  characterId   String?
+  actorId       String?
+  talentId      String?
+
+  // Scheduling Information
+  scheduledAt  DateTime
+  endTime      DateTime?
+  duration     Int // in minutes
+  timeSlot     String? // Morning, afternoon, evening
+  auditionType AuditionType
+  round        Int          @default(1) // 1st round, 2nd round, etc.
+
+  // Location Details
+  location        String?
+  venueAddress    String? @db.Text
+  roomNumber      String?
+  meetingLink     String? // for virtual auditions
+  meetingPassword String? // encrypted
+  dialInNumber    String? // for phone auditions
+
+  // Participants
+  castingDirectorId String
+  assistantCDId     String?
+  directorPresent   Boolean  @default(false)
+  producerPresent   Boolean  @default(false)
+  observers         String[] // List of observer IDs
+  panelMembers      Json? // Detailed panel info
+
+  // Audition Materials
+  scriptProvided      String?  @db.Text // Sides or scenes
+  sceneNumbers        String[] // Scene references
+  preparationNotes    String?  @db.Text
+  specialInstructions String?  @db.Text
+  dresscode           String? // Formal, casual, character-specific
+  propsRequired       String[] // Props talent should bring
+
+  // Technical Requirements
+  cameraSetup        String? // For self-tapes
+  lightingNotes      String?
+  audioRequirements  String?
+  backgroundRequired String? // Plain, specific setting
+
+  // Status and Tracking
+  status             AuditionStatus @default(SCHEDULED)
+  checkedIn          Boolean        @default(false)
+  checkedInAt        DateTime?
+  startedAt          DateTime?
+  completedAt        DateTime?
+  noShowReason       String?
+  cancellationReason String?
+  rescheduledFrom    String? // Previous audition ID
+  rescheduledCount   Int            @default(0)
+
+  // Evaluation and Feedback
+  performances    Json? // Structured performance data
+  technicalSkills Json? // Skills demonstrated
+  overallRating   Float? // 0-10 scale with decimals
+  lookRating      Int? // 1-5 scale
+  actingRating    Int? // 1-5 scale
+  voiceRating     Int? // 1-5 scale
+  energyRating    Int? // 1-5 scale
+  chemistryRating Int? // 1-5 scale for chemistry reads
+
+  // Detailed Feedback
+  strengths        String[] // Key strengths observed
+  improvements     String[] // Areas for improvement
+  castingNotes     String?  @db.Text // Private CD notes
+  directorNotes    String?  @db.Text
+  producerNotes    String?  @db.Text
+  internalComments String?  @db.Text // Team-only comments
+  talentFeedback   String?  @db.Text // Feedback to share with talent
+
+  // Recordings and Media
+  recordingUrl      String? // Audition recording
+  recordingDuration Int? // in seconds
+  thumbnailUrl      String?
+  additionalMedia   String[] // Photos, documents
+  selftapeUrl       String? // If submitted self-tape
+
+  // Decision Making
+  recommendation      String? // Recommended, maybe, no
+  callbackRecommended Boolean   @default(false)
+  finalDecision       String? // Selected, backup, rejected
+  decisionDate        DateTime?
+  decisionBy          String? // User ID who made decision
+
+  // Follow-up
+  followUpRequired Boolean   @default(false)
+  followUpNotes    String?
+  followUpDate     DateTime?
+  contractSent     Boolean   @default(false)
+  contractSentDate DateTime?
+
+  // System Fields
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  application     Application          @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  project         Project              @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  character       Character?           @relation(fields: [characterId], references: [id])
+  actor           Actor?               @relation(fields: [actorId], references: [id], onDelete: Cascade)
+  talent          Talent?              @relation(fields: [talentId], references: [id], onDelete: Cascade)
+  castingDirector CastingDirector      @relation(fields: [castingDirectorId], references: [id])
+  evaluations     AuditionEvaluation[]
+
+  @@index([projectId])
+  @@index([actorId])
+  @@index([talentId])
+  @@index([castingDirectorId])
+  @@index([scheduledAt])
+  @@index([status])
+  @@index([auditionType])
+  @@index([round])
+  @@index([overallRating])
+  @@map("auditions")
+}
+
+model ProjectBookmark {
+  id        String   @id @default(uuid())
+  actorId   String
+  projectId String
+  createdAt DateTime @default(now())
+
+  // Relations
+  actor    Actor   @relation(fields: [actorId], references: [id], onDelete: Cascade)
+  project  Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  Talent   Talent? @relation(fields: [talentId], references: [id])
+  talentId String?
+
+  @@unique([actorId, projectId])
+  @@map("project_bookmarks")
+}
+
+model Review {
+  id                String   @id @default(uuid())
+  actorId           String?
+  castingDirectorId String?
+  reviewerId        String
+  reviewerRole      UserRole
+  rating            Int // 1-5 scale
+  comment           String?  @db.Text
+  projectName       String?
+  isVerified        Boolean  @default(false)
+  createdAt         DateTime @default(now())
+
+  // Relations
+  actor           Actor?           @relation(fields: [actorId], references: [id], onDelete: Cascade)
+  castingDirector CastingDirector? @relation(fields: [castingDirectorId], references: [id], onDelete: Cascade)
+  Talent          Talent?          @relation(fields: [talentId], references: [id])
+  talentId        String?
+
+  @@index([actorId])
+  @@index([castingDirectorId])
+  @@map("reviews")
+}
+
+model Notification {
+  id        String    @id @default(uuid())
+  userId    String
+  type      String
+  title     String
+  message   String    @db.Text
+  data      Json?
+  isRead    Boolean   @default(false)
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([isRead])
+  @@index([createdAt])
+  @@map("notifications")
+}
+
+// Additional Supporting Tables
+
+// Work Experience for Talents
+model WorkExperience {
+  id              String   @id @default(uuid())
+  talentId        String
+  projectName     String
+  projectType     String
+  role            String
+  productionHouse String?
+  director        String?
+  platform        String? // Where it was released
+  year            Int
+  description     String?  @db.Text
+  videoLink       String? // Link to the work
+  isVerified      Boolean  @default(false)
+  order           Int      @default(0)
+  createdAt       DateTime @default(now())
+
+  // Relations
+  talent Talent @relation(fields: [talentId], references: [id], onDelete: Cascade)
+
+  @@index([talentId])
+  @@map("work_experiences")
+}
+
+// Education for Talents
+model Education {
+  id           String   @id @default(uuid())
+  talentId     String
+  institution  String
+  degree       String?
+  field        String?
+  startYear    Int?
+  endYear      Int?
+  isCompleted  Boolean  @default(true)
+  achievements String?
+  createdAt    DateTime @default(now())
+
+  // Relations
+  talent Talent @relation(fields: [talentId], references: [id], onDelete: Cascade)
+
+  @@index([talentId])
+  @@map("educations")
+}
+
+// Achievements and Awards
+model Achievement {
+  id             String   @id @default(uuid())
+  talentId       String
+  title          String
+  organization   String
+  year           Int
+  category       String? // Best Actor, Best Newcomer, etc.
+  description    String?  @db.Text
+  certificateUrl String?
+  isVerified     Boolean  @default(false)
+  order          Int      @default(0)
+  createdAt      DateTime @default(now())
+
+  // Relations
+  talent Talent @relation(fields: [talentId], references: [id], onDelete: Cascade)
+
+  @@index([talentId])
+  @@map("achievements")
+}
+
+// Talent's Preferred Character Types
+model PreferredCharacter {
+  id            String   @id @default(uuid())
+  talentId      String
+  characterType String // Hero, villain, comedian, etc.
+  description   String?  @db.Text
+  examples      String[] // Example characters played
+  createdAt     DateTime @default(now())
+
+  // Relations
+  talent Talent @relation(fields: [talentId], references: [id], onDelete: Cascade)
+
+  @@index([talentId])
+  @@map("preferred_characters")
+}
+
+// Project Team Members
+model ProjectTeam {
+  id          String    @id @default(uuid())
+  projectId   String
+  userId      String
+  role        String // Director, AD, Line Producer, etc.
+  department  String? // Casting, Production, Direction
+  permissions Json? // Specific permissions
+  joinedAt    DateTime  @default(now())
+  leftAt      DateTime?
+  isActive    Boolean   @default(true)
+
+  // Relations
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@index([userId])
+  @@map("project_teams")
+}
+
+// Project Documents
+model ProjectDocument {
+  id             String   @id @default(uuid())
+  projectId      String
+  name           String
+  type           String // Script, budget, schedule, etc.
+  url            String
+  version        String?
+  uploadedBy     String
+  isConfidential Boolean  @default(true)
+  createdAt      DateTime @default(now())
+
+  // Relations
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@map("project_documents")
+}
+
+// Project Updates/Announcements
+model ProjectUpdate {
+  id        String   @id @default(uuid())
+  projectId String
+  title     String
+  content   String   @db.Text
+  type      String // Casting update, schedule change, etc.
+  isPublic  Boolean  @default(false)
+  createdBy String
+  createdAt DateTime @default(now())
+
+  // Relations
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@map("project_updates")
+}
+
+// Audition Scripts/Sides
+model AuditionScript {
+  id          String   @id @default(uuid())
+  characterId String
+  title       String
+  content     String   @db.Text
+  pageNumbers String? // Page references
+  duration    Int? // Estimated reading time
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  // Relations
+  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+  @@index([characterId])
+  @@map("audition_scripts")
+}
+
+// Character Reference Materials
+model CharacterReference {
+  id          String   @id @default(uuid())
+  characterId String
+  type        String // Image, video, mood board
+  url         String
+  description String?
+  createdAt   DateTime @default(now())
+
+  // Relations
+  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+  @@index([characterId])
+  @@map("character_references")
+}
+
+// Audition Evaluation by Panel Members
+model AuditionEvaluation {
+  id             String   @id @default(uuid())
+  auditionId     String
+  evaluatorId    String
+  evaluatorRole  String // CD, Director, Producer
+  rating         Int // 1-10
+  notes          String?  @db.Text
+  recommendation String? // Yes, No, Maybe
+  createdAt      DateTime @default(now())
+
+  // Relations
+  audition Audition @relation(fields: [auditionId], references: [id], onDelete: Cascade)
+
+  @@unique([auditionId, evaluatorId])
+  @@index([auditionId])
+  @@map("audition_evaluations")
+}
+
+// Application Messages/Communication
+model ApplicationMessage {
+  id            String    @id @default(uuid())
+  applicationId String
+  senderId      String
+  senderRole    UserRole
+  message       String    @db.Text
+  isRead        Boolean   @default(false)
+  readAt        DateTime?
+  createdAt     DateTime  @default(now())
+
+  // Relations
+  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@index([applicationId])
+  @@map("application_messages")
+}
+
+// Talent Notes (Private notes by CDs)
+model TalentNote {
+  id        String   @id @default(uuid())
+  talentId  String
+  authorId  String
+  projectId String?
+  note      String   @db.Text
+  isPrivate Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  talent Talent @relation(fields: [talentId], references: [id], onDelete: Cascade)
+
+  @@index([talentId])
+  @@index([authorId])
+  @@map("talent_notes")
+}
+
+// Blocked Projects (Talents can block certain projects)
+model BlockedProject {
+  id        String   @id @default(uuid())
+  talentId  String
+  projectId String
+  reason    String?
+  blockedAt DateTime @default(now())
+
+  // Relations
+  talent Talent @relation(fields: [talentId], references: [id], onDelete: Cascade)
+
+  @@unique([talentId, projectId])
+  @@map("blocked_projects")
+}
+
+// Saved Searches
+model SavedSearch {
+  id             String    @id @default(uuid())
+  talentId       String
+  name           String
+  searchCriteria Json // Stored search parameters
+  frequency      String? // Daily, weekly, instant
+  lastRun        DateTime?
+  createdAt      DateTime  @default(now())
+
+  // Relations
+  talent Talent @relation(fields: [talentId], references: [id], onDelete: Cascade)
+
+  @@index([talentId])
+  @@map("saved_searches")
+}

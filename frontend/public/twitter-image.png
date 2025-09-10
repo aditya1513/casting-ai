@@ -1,0 +1,46 @@
+<svg width="1200" height="600" viewBox="0 0 1200 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1e293b;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="logoGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="600" fill="url(#bgGrad2)"/>
+  
+  <!-- Accent shapes -->
+  <circle cx="950" cy="80" r="50" fill="#8b5cf6" opacity="0.1"/>
+  <circle cx="150" cy="450" r="35" fill="#06b6d4" opacity="0.15"/>
+  
+  <!-- Main content centered -->
+  <rect x="500" y="150" width="100" height="100" fill="url(#logoGrad2)" rx="15"/>
+  <text x="550" y="215" font-family="Arial, sans-serif" font-size="32" font-weight="bold" text-anchor="middle" fill="white">CM</text>
+  
+  <!-- Title -->
+  <text x="600" y="200" font-family="Arial, sans-serif" font-size="44" font-weight="bold" fill="white" text-anchor="middle">CastMatch</text>
+  <text x="600" y="240" font-family="Arial, sans-serif" font-size="20" fill="#94a3b8" text-anchor="middle">AI-powered casting platform</text>
+  
+  <!-- Key features in row -->
+  <rect x="200" y="320" width="240" height="120" fill="#1e293b" rx="12" stroke="#334155" stroke-width="1"/>
+  <text x="320" y="350" font-family="Arial, sans-serif" font-size="16" font-weight="600" fill="white" text-anchor="middle">Smart Matching</text>
+  <text x="320" y="380" font-family="Arial, sans-serif" font-size="14" fill="#94a3b8" text-anchor="middle">AI finds perfect</text>
+  <text x="320" y="400" font-family="Arial, sans-serif" font-size="14" fill="#94a3b8" text-anchor="middle">talent matches</text>
+  
+  <rect x="480" y="320" width="240" height="120" fill="#1e293b" rx="12" stroke="#334155" stroke-width="1"/>
+  <text x="600" y="350" font-family="Arial, sans-serif" font-size="16" font-weight="600" fill="white" text-anchor="middle">Real-time Sync</text>
+  <text x="600" y="380" font-family="Arial, sans-serif" font-size="14" fill="#94a3b8" text-anchor="middle">Collaborate with</text>
+  <text x="600" y="400" font-family="Arial, sans-serif" font-size="14" fill="#94a3b8" text-anchor="middle">your team</text>
+  
+  <rect x="760" y="320" width="240" height="120" fill="#1e293b" rx="12" stroke="#334155" stroke-width="1"/>
+  <text x="880" y="350" font-family="Arial, sans-serif" font-size="16" font-weight="600" fill="white" text-anchor="middle">Mumbai Focus</text>
+  <text x="880" y="380" font-family="Arial, sans-serif" font-size="14" fill="#94a3b8" text-anchor="middle">Built for India's</text>
+  <text x="880" y="400" font-family="Arial, sans-serif" font-size="14" fill="#94a3b8" text-anchor="middle">entertainment hub</text>
+  
+  <!-- Footer -->
+  <text x="600" y="520" font-family="Arial, sans-serif" font-size="16" fill="#64748b" text-anchor="middle">Ready to transform your casting process?</text>
+</svg>

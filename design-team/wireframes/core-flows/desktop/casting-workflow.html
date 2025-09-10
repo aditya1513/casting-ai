@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casting Workflow - Desktop Wireframe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #212529;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Progress Bar */
+        .progress-header {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        .progress-line {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #dee2e6;
+            z-index: 0;
+        }
+
+        .progress-line-active {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            width: 40%;
+            height: 2px;
+            background: #6366f1;
+            z-index: 1;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+            background: #f8f9fa;
+            padding: 0 8px;
+        }
+
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid #dee2e6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .step.active .step-circle {
+            background: #6366f1;
+            color: white;
+            border-color: #6366f1;
+        }
+
+        .step.completed .step-circle {
+            background: #10b981;
+            color: white;
+            border-color: #10b981;
+        }
+
+        .step-label {
+            font-size: 13px;
+            color: #6c757d;
+            text-align: center;
+        }
+
+        .step.active .step-label {
+            color: #212529;
+            font-weight: 500;
+        }
+
+        /* Main Layout */
+        .workflow-container {
+            display: grid;
+            grid-template-columns: 8fr 4fr;
+            gap: 24px;
+        }
+
+        /* Form Section */
+        .form-section {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .section-subtitle {
+            color: #6c757d;
+            margin-bottom: 32px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #212529;
+        }
+
+        .required {
+            color: #ef4444;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 120px;
+            font-family: inherit;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .form-help {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 4px;
+        }
+
+        /* Role Requirements */
+        .requirements-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .requirement-card {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .requirement-title {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox {
+            width: 18px;
+            height: 18px;
+            border: 2px solid #dee2e6;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .checkbox:checked {
+            background: #6366f1;
+            border-color: #6366f1;
+        }
+
+        /* Date Time Picker */
+        .datetime-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        /* File Upload */
+        .upload-area {
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            padding: 32px;
+            text-align: center;
+            background: #fafbfc;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .upload-area:hover {
+            border-color: #6366f1;
+            background: #f0f9ff;
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            color: #6c757d;
+        }
+
+        .upload-text {
+            font-size: 14px;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+
+        .upload-hint {
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Summary Card */
+        .summary-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 24px;
+        }
+
+        .summary-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f3f5;
+            font-size: 13px;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            color: #6c757d;
+        }
+
+        .summary-value {
+            color: #212529;
+            font-weight: 500;
+        }
+
+        /* Tips Card */
+        .tips-card {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .tips-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #0284c7;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tips-list {
+            font-size: 13px;
+            color: #0c4a6e;
+            line-height: 1.6;
+        }
+
+        .tips-list li {
+            margin-bottom: 8px;
+        }
+
+        /* Action Buttons */
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 32px;
+            background: white;
+            border-top: 1px solid #dee2e6;
+            margin: 0 -32px -32px;
+            border-radius: 0 0 12px 12px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #6366f1;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #495057;
+            border: 1px solid #dee2e6;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: #6c757d;
+            border: none;
+        }
+
+        /* Talent Selection Grid */
+        .talent-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .talent-select-card {
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .talent-select-card:hover {
+            border-color: #6366f1;
+            background: #f0f9ff;
+        }
+
+        .talent-select-card.selected {
+            border-color: #6366f1;
+            background: #e0e7ff;
+        }
+
+        .talent-select-avatar {
+            width: 64px;
+            height: 64px;
+            background: #e9ecef;
+            border-radius: 50%;
+            margin: 0 auto 12px;
+        }
+
+        .talent-select-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .talent-select-role {
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        /* Mumbai Specific Elements */
+        .mumbai-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff9933 0%, #138808 50%, #000080 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .location-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .location-chip {
+            padding: 8px 12px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .location-chip:hover {
+            border-color: #6366f1;
+            background: #f0f9ff;
+        }
+
+        .location-chip.selected {
+            background: #6366f1;
+            color: white;
+            border-color: #6366f1;
+        }
+
+        /* Annotations */
+        .annotation {
+            position: absolute;
+            background: #ffd43b;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Progress Header -->
+        <div class="progress-header">
+            <div class="progress-steps">
+                <div class="progress-line"></div>
+                <div class="progress-line-active"></div>
+                
+                <div class="step completed">
+                    <div class="step-circle">✓</div>
+                    <div class="step-label">Project Details</div>
+                </div>
+                <div class="step active">
+                    <div class="step-circle">2</div>
+                    <div class="step-label">Role Requirements</div>
+                </div>
+                <div class="step">
+                    <div class="step-circle">3</div>
+                    <div class="step-label">Schedule Auditions</div>
+                </div>
+                <div class="step">
+                    <div class="step-circle">4</div>
+                    <div class="step-label">Select Talents</div>
+                </div>
+                <div class="step">
+                    <div class="step-circle">5</div>
+                    <div class="step-label">Review & Publish</div>
+                </div>
+            </div>
+            <div style="text-align: center; color: #6c757d; font-size: 14px;">
+                Step 2 of 5 • Estimated time: 3 minutes
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="workflow-container">
+            <!-- Form Section -->
+            <div class="form-section">
+                <h1 class="section-title">
+                    Role Requirements
+                    <span class="mumbai-badge">Mumbai Region</span>
+                </h1>
+                <p class="section-subtitle">Define the specific requirements for this role</p>
+
+                <!-- Basic Information -->
+                <div class="form-group">
+                    <label class="form-label">
+                        Role Title <span class="required">*</span>
+                    </label>
+                    <input type="text" class="form-input" placeholder="e.g., Lead Actor, Supporting Actress" value="Lead Actress">
+                    <div class="form-help">This will be visible to all applicants</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        Role Description <span class="required">*</span>
+                    </label>
+                    <textarea class="form-textarea" placeholder="Describe the character, personality traits, and role requirements...">Strong female protagonist for a contemporary drama set in Mumbai. The character is a young entrepreneur navigating the challenges of startup culture while dealing with family expectations. Requires emotional depth and ability to portray vulnerability and strength.</textarea>
+                </div>
+
+                <!-- Requirements Grid -->
+                <div class="requirements-grid">
+                    <div class="requirement-card">
+                        <h3 class="requirement-title">Age & Gender</h3>
+                        <div style="display: grid; gap: 12px;">
+                            <div>
+                                <label class="form-label" style="font-size: 12px;">Age Range</label>
+                                <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; align-items: center;">
+                                    <input type="number" class="form-input" value="24" style="padding: 8px;">
+                                    <span>to</span>
+                                    <input type="number" class="form-input" value="32" style="padding: 8px;">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="form-label" style="font-size: 12px;">Gender</label>
+                                <select class="form-select">
+                                    <option>Female</option>
+                                    <option>Male</option>
+                                    <option>Any</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="requirement-card">
+                        <h3 class="requirement-title">Physical Attributes</h3>
+                        <div style="display: grid; gap: 12px;">
+                            <div>
+                                <label class="form-label" style="font-size: 12px;">Height Range</label>
+                                <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; align-items: center;">
+                                    <input type="text" class="form-input" value="5'4"" style="padding: 8px;">
+                                    <span>to</span>
+                                    <input type="text" class="form-input" value="5'8"" style="padding: 8px;">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="form-label" style="font-size: 12px;">Build Type</label>
+                                <select class="form-select">
+                                    <option>Athletic</option>
+                                    <option>Slim</option>
+                                    <option>Average</option>
+                                    <option>Any</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Skills & Languages -->
+                <div class="form-group">
+                    <label class="form-label">Required Languages</label>
+                    <div class="checkbox-group" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+                        <label class="checkbox-item">
+                            <input type="checkbox" class="checkbox" checked>
+                            <span>Hindi</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" class="checkbox" checked>
+                            <span>English</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" class="checkbox">
+                            <span>Marathi</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" class="checkbox">
+                            <span>Gujarati</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" class="checkbox">
+                            <span>Tamil</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" class="checkbox">
+                            <span>Telugu</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Special Skills</label>
+                    <div class="checkbox-group" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+                        <label class="checkbox-item">
+                            <input type="checkbox" class="checkbox">
+                            <span>Dancing</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" class="checkbox">
+                            <span>Singing</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" class="checkbox">
+                            <span>Martial Arts</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" class="checkbox">
+                            <span>Horse Riding</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" class="checkbox">
+                            <span>Driving</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" class="checkbox">
+                            <span>Swimming</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Shooting Locations -->
+                <div class="form-group">
+                    <label class="form-label">Shooting Locations in Mumbai</label>
+                    <div class="location-selector">
+                        <div class="location-chip selected">Film City</div>
+                        <div class="location-chip">Andheri</div>
+                        <div class="location-chip selected">Bandra</div>
+                        <div class="location-chip">Juhu</div>
+                        <div class="location-chip">Powai</div>
+                        <div class="location-chip">Marine Drive</div>
+                    </div>
+                </div>
+
+                <!-- Audition Schedule -->
+                <div class="form-group">
+                    <label class="form-label">Audition Dates</label>
+                    <div class="datetime-grid">
+                        <div>
+                            <label class="form-label" style="font-size: 12px;">Start Date</label>
+                            <input type="date" class="form-input" value="2024-12-15">
+                        </div>
+                        <div>
+                            <label class="form-label" style="font-size: 12px;">End Date</label>
+                            <input type="date" class="form-input" value="2024-12-20">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reference Materials -->
+                <div class="form-group">
+                    <label class="form-label">Reference Materials</label>
+                    <div class="upload-area">
+                        <div class="upload-icon">📁</div>
+                        <div class="upload-text">Drop files here or click to upload</div>
+                        <div class="upload-hint">Scripts, character briefs, mood boards (Max 10MB per file)</div>
+                    </div>
+                </div>
+
+                <!-- Action Bar -->
+                <div class="action-bar">
+                    <button class="btn btn-ghost">← Previous Step</button>
+                    <div style="display: flex; gap: 12px;">
+                        <button class="btn btn-secondary">Save as Draft</button>
+                        <button class="btn btn-primary">Next: Schedule Auditions →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Summary Card -->
+                <div class="summary-card">
+                    <h3 class="summary-title">Casting Summary</h3>
+                    <div class="summary-item">
+                        <span class="summary-label">Project</span>
+                        <span class="summary-value">Mumbai Dreams</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Type</span>
+                        <span class="summary-value">Feature Film</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Roles</span>
+                        <span class="summary-value">3 Active</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Location</span>
+                        <span class="summary-value">Mumbai</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Duration</span>
+                        <span class="summary-value">3 Months</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Budget</span>
+                        <span class="summary-value">₹50L - ₹1Cr</span>
+                    </div>
+                </div>
+
+                <!-- Tips Card -->
+                <div class="tips-card">
+                    <div class="tips-title">
+                        <span>💡</span>
+                        <span>Pro Tips</span>
+                    </div>
+                    <ul class="tips-list">
+                        <li>Be specific about language requirements for Mumbai market</li>
+                        <li>Include dialect preferences if needed</li>
+                        <li>Consider including dance forms like Bollywood or Classical</li>
+                        <li>Mention if theatre experience is preferred</li>
+                        <li>Specify if union card is required</li>
+                    </ul>
+                </div>
+
+                <!-- AI Assistant -->
+                <div class="summary-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                    <h3 class="summary-title" style="color: white;">AI Assistant</h3>
+                    <p style="font-size: 13px; line-height: 1.6; margin-bottom: 16px;">
+                        Based on your requirements, I found 247 matching talents in Mumbai. 
+                        Would you like me to create a shortlist?
+                    </p>
+                    <button class="btn" style="background: white; color: #6366f1; width: 100%;">
+                        View Recommendations
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Annotations -->
+    <div class="annotation" style="top: 100px; left: 400px;">Multi-step progress indicator</div>
+    <div class="annotation" style="top: 350px; left: 100px;">Auto-save on field change</div>
+    <div class="annotation" style="top: 600px; right: 350px;">Mumbai-specific locations</div>
+    <div class="annotation" style="bottom: 100px; right: 100px;">AI-powered suggestions</div>
+</body>
+</html>

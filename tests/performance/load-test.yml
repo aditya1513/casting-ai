@@ -1,0 +1,355 @@
+config:
+  target: 'http://localhost:3001'
+  phases:
+    # Warm-up phase
+    - duration: 60
+      arrivalRate: 5
+      name: "Warm up"
+    
+    # Ramp-up phase
+    - duration: 120
+      arrivalRate: 5
+      rampTo: 50
+      name: "Ramp up load"
+    
+    # Sustained load phase
+    - duration: 300
+      arrivalRate: 50
+      name: "Sustained load"
+    
+    # Spike test phase
+    - duration: 60
+      arrivalRate: 100
+      name: "Spike test"
+    
+    # Cool down phase
+    - duration: 60
+      arrivalRate: 10
+      name: "Cool down"
+  
+  variables:
+    baseUrl: "http://localhost:3001"
+    
+  processor: "./performance-processor.js"
+  
+  plugins:
+    expect: {}
+    metrics-by-endpoint: {}
+    
+  ensure:
+    thresholds:
+      - http.response_time.p95: 2000
+      - http.response_time.p99: 3000
+      - http.codes.200: 95
+      - http.request_rate: 100
+
+scenarios:
+  # User Registration and Login Flow
+  - name: "User Registration and Login"
+    weight: 10
+    flow:
+      - post:
+          url: "/api/auth/register"
+          json:
+            email: "{{ $randomEmail() }}"
+            password: "TestUser123!"
+            firstName: "{{ $randomString() }}"
+            lastName: "{{ $randomString() }}"
+            role: "ACTOR"
+          capture:
+            - json: "$.tokens.accessToken"
+              as: "authToken"
+            - json: "$.user.id"
+              as: "userId"
+          expect:
+            - statusCode: 201
+            - contentType: json
+            - hasProperty: "user"
+            - hasProperty: "tokens"
+      
+      - think: 2
+      
+      - post:
+          url: "/api/auth/login"
+          json:
+            email: "{{ email }}"
+            password: "TestUser123!"
+          expect:
+            - statusCode: 200
+            - hasProperty: "tokens.accessToken"
+  
+  # AI Chat Interaction Flow
+  - name: "AI Chat Conversation"
+    weight: 30
+    flow:
+      - post:
+          url: "/api/auth/login"
+          json:
+            email: "testuser@castmatch.com"
+            password: "TestUser123!"
+          capture:
+            - json: "$.tokens.accessToken"
+              as: "authToken"
+      
+      - post:
+          url: "/api/chat/conversations"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          json:
+            title: "Performance Test Conversation"
+          capture:
+            - json: "$.id"
+              as: "conversationId"
+          expect:
+            - statusCode: 201
+      
+      - loop:
+          count: 5
+          steps:
+            - post:
+                url: "/api/chat/messages"
+                headers:
+                  Authorization: "Bearer {{ authToken }}"
+                json:
+                  conversationId: "{{ conversationId }}"
+                  message: "{{ $randomCastingQuery() }}"
+                expect:
+                  - statusCode: 200
+                  - hasProperty: "response"
+                  - responseTime: 2000
+            
+            - think: 3
+  
+  # Talent Search Flow
+  - name: "Talent Search Operations"
+    weight: 25
+    flow:
+      - post:
+          url: "/api/auth/login"
+          json:
+            email: "director@castmatch.com"
+            password: "Director123!"
+          capture:
+            - json: "$.tokens.accessToken"
+              as: "authToken"
+      
+      - get:
+          url: "/api/talent/search"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          qs:
+            query: "{{ $randomSearchQuery() }}"
+            ageMin: 25
+            ageMax: 40
+            limit: 20
+          expect:
+            - statusCode: 200
+            - hasProperty: "results"
+            - responseTime: 1500
+      
+      - think: 2
+      
+      - get:
+          url: "/api/talent/search"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          qs:
+            aiQuery: "Find actors similar to Shah Rukh Khan"
+          expect:
+            - statusCode: 200
+            - responseTime: 3000
+  
+  # Project Management Flow
+  - name: "Project Operations"
+    weight: 15
+    flow:
+      - post:
+          url: "/api/auth/login"
+          json:
+            email: "producer@castmatch.com"
+            password: "Producer123!"
+          capture:
+            - json: "$.tokens.accessToken"
+              as: "authToken"
+      
+      - post:
+          url: "/api/projects"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          json:
+            title: "Performance Test Project {{ $randomString() }}"
+            type: "FEATURE_FILM"
+            budget: 5000000
+            startDate: "2024-06-01"
+            endDate: "2024-08-31"
+          capture:
+            - json: "$.id"
+              as: "projectId"
+          expect:
+            - statusCode: 201
+      
+      - post:
+          url: "/api/projects/{{ projectId }}/roles"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          json:
+            title: "Lead Actor"
+            description: "Main character"
+            ageRange:
+              min: 25
+              max: 35
+          expect:
+            - statusCode: 201
+  
+  # Concurrent User Simulation
+  - name: "Mixed User Behavior"
+    weight: 20
+    flow:
+      - parallel:
+          - get:
+              url: "/api/health"
+              expect:
+                - statusCode: 200
+          
+          - post:
+              url: "/api/auth/login"
+              json:
+                email: "{{ $randomExistingEmail() }}"
+                password: "Password123!"
+          
+          - get:
+              url: "/api/talent/featured"
+              expect:
+                - statusCode: 200
+
+# WebSocket Connection Test
+  - name: "WebSocket Chat Connection"
+    weight: 10
+    engine: "ws"
+    flow:
+      - connect:
+          url: "ws://localhost:3001/socket.io/"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+      
+      - send:
+          data:
+            event: "join_conversation"
+            conversationId: "{{ conversationId }}"
+      
+      - think: 5
+      
+      - send:
+          data:
+            event: "message"
+            content: "Test message from load test"
+      
+      - think: 2
+      
+      - send:
+          data:
+            event: "typing"
+            isTyping: true
+      
+      - think: 10
+
+# Database Stress Test
+  - name: "Database Operations"
+    weight: 10
+    flow:
+      - loop:
+          count: 10
+          steps:
+            - get:
+                url: "/api/talent/{{ $randomTalentId() }}"
+                headers:
+                  Authorization: "Bearer {{ authToken }}"
+                expect:
+                  - statusCode: 200
+                  - responseTime: 500
+            
+            - think: 1
+
+# File Upload Test
+  - name: "Script Upload and Analysis"
+    weight: 5
+    flow:
+      - post:
+          url: "/api/auth/login"
+          json:
+            email: "uploader@castmatch.com"
+            password: "Upload123!"
+          capture:
+            - json: "$.tokens.accessToken"
+              as: "authToken"
+      
+      - post:
+          url: "/api/ai/analyze-script"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          formData:
+            script: "{{ $randomScriptContent() }}"
+          expect:
+            - statusCode: 200
+            - responseTime: 5000
+            - hasProperty: "characters"
+
+# Cache Performance Test
+  - name: "Cache Hit Rate Test"
+    weight: 5
+    flow:
+      - loop:
+          count: 20
+          steps:
+            # First request - cache miss
+            - get:
+                url: "/api/talent/popular"
+                headers:
+                  Authorization: "Bearer {{ authToken }}"
+                capture:
+                  - json: "$"
+                    as: "firstResponse"
+                expect:
+                  - statusCode: 200
+            
+            # Second request - should be cache hit
+            - get:
+                url: "/api/talent/popular"
+                headers:
+                  Authorization: "Bearer {{ authToken }}"
+                expect:
+                  - statusCode: 200
+                  - responseTime: 100 # Much faster due to cache
+
+# Error Handling Test
+  - name: "Error Recovery Test"
+    weight: 5
+    flow:
+      # Invalid request
+      - post:
+          url: "/api/auth/login"
+          json:
+            email: "invalid"
+            password: "short"
+          expect:
+            - statusCode: 400
+            - hasProperty: "errors"
+      
+      # Unauthorized request
+      - get:
+          url: "/api/admin/users"
+          headers:
+            Authorization: "Bearer invalid_token"
+          expect:
+            - statusCode: 401
+      
+      # Rate limit test
+      - loop:
+          count: 50
+          steps:
+            - get:
+                url: "/api/public/info"
+                expect:
+                  - statusCode:
+                      - 200
+                      - 429 # Rate limited

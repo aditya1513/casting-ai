@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CastMatch - Comprehensive Wireframes & User Flows</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .title {
+            font-size: 42px;
+            font-weight: 700;
+            color: #3b82f6;
+            margin-bottom: 16px;
+        }
+
+        .subtitle {
+            font-size: 20px;
+            color: #94a3b8;
+            margin-bottom: 24px;
+        }
+
+        .description {
+            font-size: 16px;
+            color: #e2e8f0;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .section {
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-icon {
+            font-size: 32px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            border-color: #3b82f6;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(59, 130, 246, 0.15);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #f1f5f9;
+        }
+
+        .card-badge {
+            background: #3b82f6;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .card-description {
+            font-size: 14px;
+            color: #94a3b8;
+            margin-bottom: 16px;
+        }
+
+        .card-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .feature-tag {
+            background: #334155;
+            color: #e2e8f0;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+
+        .card-link {
+            color: #3b82f6;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.2s;
+        }
+
+        .card-link:hover {
+            color: #60a5fa;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .stat-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #3b82f6;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #94a3b8;
+        }
+
+        .quick-nav {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 40px;
+        }
+
+        .quick-nav-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 16px;
+        }
+
+        .nav-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .nav-link {
+            background: #334155;
+            border: none;
+            color: #f1f5f9;
+            padding: 12px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-link:hover {
+            background: #3b82f6;
+            transform: translateY(-1px);
+        }
+
+        .footer {
+            border-top: 1px solid #334155;
+            padding-top: 40px;
+            margin-top: 60px;
+            text-align: center;
+        }
+
+        .footer-text {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .responsive-demo {
+            display: flex;
+            gap: 16px;
+            margin: 20px 0;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+
+        .device-preview {
+            background: #334155;
+            border-radius: 8px;
+            padding: 12px;
+            min-width: 120px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .device-preview:hover {
+            background: #475569;
+        }
+
+        .device-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .device-label {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .nav-links {
+                grid-template-columns: 1fr;
+            }
+            
+            .title {
+                font-size: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1 class="title">CastMatch Wireframes</h1>
+            <p class="subtitle">Comprehensive UI/UX Design System & User Flows</p>
+            <p class="description">
+                Complete wireframe package featuring responsive designs, interactive prototypes, and detailed user journey maps 
+                for CastMatch's talent discovery and audition management platform.
+            </p>
+        </header>
+
+        <!-- Quick Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">12</div>
+                <div class="stat-label">Wireframes</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">5</div>
+                <div class="stat-label">User Flows</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">3</div>
+                <div class="stat-label">Device Sizes</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">1</div>
+                <div class="stat-label">Interactive Prototype</div>
+            </div>
+        </div>
+
+        <!-- Quick Navigation -->
+        <div class="quick-nav">
+            <h2 class="quick-nav-title">🚀 Quick Access</h2>
+            <div class="nav-links">
+                <a href="prototypes/interactive-prototype.html" class="nav-link">
+                    <span>🎮</span>
+                    <span>Interactive Prototype</span>
+                </a>
+                <a href="flows/talent-discovery-flow.html" class="nav-link">
+                    <span>🔄</span>
+                    <span>User Flows</span>
+                </a>
+                <a href="annotations/wireframe-specifications.json" class="nav-link">
+                    <span>📝</span>
+                    <span>Design Specifications</span>
+                </a>
+                <a href="core-flows/desktop/talent-search.html" class="nav-link">
+                    <span>🖥️</span>
+                    <span>Desktop Wireframes</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Core Flows Section -->
+        <section class="section">
+            <h2 class="section-title">
+                <span class="section-icon">🎯</span>
+                <span>Core User Flows</span>
+            </h2>
+            <div class="grid">
+                <div class="card" onclick="window.open('core-flows/mobile/talent-search.html', '_blank')">
+                    <div class="card-header">
+                        <h3 class="card-title">Talent Search & Discovery</h3>
+                        <span class="card-badge">Mobile</span>
+                    </div>
+                    <p class="card-description">
+                        Mobile-optimized talent search with filters, real-time results, and intuitive navigation patterns.
+                    </p>
+                    <div class="card-features">
+                        <span class="feature-tag">Touch Optimized</span>
+                        <span class="feature-tag">Real-time Search</span>
+                        <span class="feature-tag">Filter System</span>
+                        <span class="feature-tag">Infinite Scroll</span>
+                    </div>
+                    <div class="responsive-demo">
+                        <div class="device-preview" onclick="event.stopPropagation(); window.open('core-flows/mobile/talent-search.html', '_blank')">
+                            <div class="device-icon">📱</div>
+                            <div class="device-label">Mobile</div>
+                        </div>
+                        <div class="device-preview" onclick="event.stopPropagation(); window.open('core-flows/desktop/talent-search.html', '_blank')">
+                            <div class="device-icon">💻</div>
+                            <div class="device-label">Desktop</div>
+                        </div>
+                    </div>
+                    <a href="core-flows/mobile/talent-search.html" class="card-link">
+                        View Wireframe →
+                    </a>
+                </div>
+
+                <div class="card" onclick="window.open('core-flows/mobile/audition-creation.html', '_blank')">
+                    <div class="card-header">
+                        <h3 class="card-title">Audition Creation Flow</h3>
+                        <span class="card-badge">Multi-step</span>
+                    </div>
+                    <p class="card-description">
+                        Step-by-step audition setup with progress tracking, form validation, and draft saving.
+                    </p>
+                    <div class="card-features">
+                        <span class="feature-tag">Progress Tracker</span>
+                        <span class="feature-tag">Form Validation</span>
+                        <span class="feature-tag">Auto-save</span>
+                        <span class="feature-tag">File Upload</span>
+                    </div>
+                    <a href="core-flows/mobile/audition-creation.html" class="card-link">
+                        View Wireframe →
+                    </a>
+                </div>
+
+                <div class="card" onclick="window.open('core-flows/desktop/ai-chat-interface.html', '_blank')">
+                    <div class="card-header">
+                        <h3 class="card-title">AI Chat Interface</h3>
+                        <span class="card-badge">Interactive</span>
+                    </div>
+                    <p class="card-description">
+                        Three-panel AI assistant with conversation history, context awareness, and smart suggestions.
+                    </p>
+                    <div class="card-features">
+                        <span class="feature-tag">3-Panel Layout</span>
+                        <span class="feature-tag">Context Aware</span>
+                        <span class="feature-tag">Smart Suggestions</span>
+                        <span class="feature-tag">Message Threading</span>
+                    </div>
+                    <a href="core-flows/desktop/ai-chat-interface.html" class="card-link">
+                        View Wireframe →
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard & Navigation -->
+        <section class="section">
+            <h2 class="section-title">
+                <span class="section-icon">📊</span>
+                <span>Dashboard & Navigation</span>
+            </h2>
+            <div class="grid">
+                <div class="card" onclick="window.open('pages/desktop/dashboard.html', '_blank')">
+                    <div class="card-header">
+                        <h3 class="card-title">Main Dashboard</h3>
+                        <span class="card-badge">Desktop</span>
+                    </div>
+                    <p class="card-description">
+                        Comprehensive overview with performance metrics, quick actions, and real-time activity feed.
+                    </p>
+                    <div class="card-features">
+                        <span class="feature-tag">Performance Metrics</span>
+                        <span class="feature-tag">Quick Actions</span>
+                        <span class="feature-tag">Activity Feed</span>
+                        <span class="feature-tag">Real-time Updates</span>
+                    </div>
+                    <a href="pages/desktop/dashboard.html" class="card-link">
+                        View Dashboard →
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- User Flow Diagrams -->
+        <section class="section">
+            <h2 class="section-title">
+                <span class="section-icon">🔄</span>
+                <span>User Flow Diagrams</span>
+            </h2>
+            <div class="grid">
+                <div class="card" onclick="window.open('flows/talent-discovery-flow.html', '_blank')">
+                    <div class="card-header">
+                        <h3 class="card-title">Talent Discovery Journey</h3>
+                        <span class="card-badge">Interactive</span>
+                    </div>
+                    <p class="card-description">
+                        Complete user journey from search initiation to talent selection with decision points and metrics.
+                    </p>
+                    <div class="card-features">
+                        <span class="feature-tag">Decision Points</span>
+                        <span class="feature-tag">Success Metrics</span>
+                        <span class="feature-tag">Pain Point Analysis</span>
+                        <span class="feature-tag">Optimization Tips</span>
+                    </div>
+                    <a href="flows/talent-discovery-flow.html" class="card-link">
+                        Explore Flow →
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Prototype -->
+        <section class="section">
+            <h2 class="section-title">
+                <span class="section-icon">🎮</span>
+                <span>Interactive Prototype</span>
+            </h2>
+            <div class="grid">
+                <div class="card" onclick="window.open('prototypes/interactive-prototype.html', '_blank')">
+                    <div class="card-header">
+                        <h3 class="card-title">Live Prototype</h3>
+                        <span class="card-badge">Clickable</span>
+                    </div>
+                    <p class="card-description">
+                        Fully interactive prototype with device switching, screen navigation, and functional components.
+                    </p>
+                    <div class="card-features">
+                        <span class="feature-tag">Device Toggle</span>
+                        <span class="feature-tag">Screen Navigation</span>
+                        <span class="feature-tag">Interactive Elements</span>
+                        <span class="feature-tag">Keyboard Shortcuts</span>
+                    </div>
+                    <div class="responsive-demo">
+                        <div class="device-preview">
+                            <div class="device-icon">📱</div>
+                            <div class="device-label">Mobile View</div>
+                        </div>
+                        <div class="device-preview">
+                            <div class="device-icon">📲</div>
+                            <div class="device-label">Tablet View</div>
+                        </div>
+                        <div class="device-preview">
+                            <div class="device-icon">💻</div>
+                            <div class="device-label">Desktop View</div>
+                        </div>
+                    </div>
+                    <a href="prototypes/interactive-prototype.html" class="card-link">
+                        Launch Prototype →
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Design Specifications -->
+        <section class="section">
+            <h2 class="section-title">
+                <span class="section-icon">📐</span>
+                <span>Design Specifications</span>
+            </h2>
+            <div class="grid">
+                <div class="card" onclick="window.open('annotations/wireframe-specifications.json', '_blank')">
+                    <div class="card-header">
+                        <h3 class="card-title">Comprehensive Specs</h3>
+                        <span class="card-badge">JSON</span>
+                    </div>
+                    <p class="card-description">
+                        Detailed technical specifications including design system, interactions, accessibility, and implementation notes.
+                    </p>
+                    <div class="card-features">
+                        <span class="feature-tag">Design System</span>
+                        <span class="feature-tag">Accessibility</span>
+                        <span class="feature-tag">Performance</span>
+                        <span class="feature-tag">Implementation</span>
+                    </div>
+                    <a href="annotations/wireframe-specifications.json" class="card-link">
+                        View Specifications →
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p class="footer-text">
+                CastMatch Wireframe Package v1.0 | Created with focus on usability, accessibility, and user delight
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Add some interactive enhancements
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate stats on scroll
+            const observeStats = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const statValue = entry.target.querySelector('.stat-value');
+                        const finalValue = parseInt(statValue.textContent);
+                        animateCounter(statValue, 0, finalValue, 1000);
+                    }
+                });
+            });
+
+            document.querySelectorAll('.stat-card').forEach(card => {
+                observeStats.observe(card);
+            });
+
+            function animateCounter(element, start, end, duration) {
+                const range = end - start;
+                const startTime = Date.now();
+                
+                function updateCounter() {
+                    const elapsed = Date.now() - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const current = Math.floor(start + (range * progress));
+                    
+                    element.textContent = current;
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(updateCounter);
+                    }
+                }
+                
+                updateCounter();
+            }
+
+            // Add keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'p' && (e.metaKey || e.ctrlKey)) {
+                    e.preventDefault();
+                    window.open('prototypes/interactive-prototype.html', '_blank');
+                }
+            });
+
+            // Track wireframe views
+            document.querySelectorAll('.card-link, .nav-link').forEach(link => {
+                link.addEventListener('click', function() {
+                    console.log('Wireframe accessed:', this.href);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Auth Integration</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #0A0F1B;
+            color: #E8ECF3;
+        }
+        .test-section {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        h2 {
+            color: #1B35FF;
+        }
+        button {
+            background: #1B35FF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #1428CC;
+        }
+        input {
+            padding: 8px;
+            margin: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 4px;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .success {
+            border-left: 3px solid #10B981;
+        }
+        .error {
+            border-left: 3px solid #EF4444;
+        }
+    </style>
+</head>
+<body>
+    <h1>CastMatch Auth Integration Test</h1>
+    <p>Backend URL: <code>http://localhost:5000/api</code></p>
+
+    <div class="test-section">
+        <h2>1. Test Registration</h2>
+        <input type="email" id="regEmail" placeholder="Email" value="test@castmatch.com">
+        <input type="password" id="regPassword" placeholder="Password" value="Test@123456">
+        <input type="text" id="regName" placeholder="Full Name" value="Test Director">
+        <button onclick="testRegister()">Test Register</button>
+        <div id="regResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>2. Test Login</h2>
+        <input type="email" id="loginEmail" placeholder="Email" value="test@castmatch.com">
+        <input type="password" id="loginPassword" placeholder="Password" value="Test@123456">
+        <button onclick="testLogin()">Test Login</button>
+        <div id="loginResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>3. Test Forgot Password</h2>
+        <input type="email" id="forgotEmail" placeholder="Email" value="test@castmatch.com">
+        <button onclick="testForgotPassword()">Test Forgot Password</button>
+        <div id="forgotResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>4. Current Auth Status</h2>
+        <button onclick="checkAuthStatus()">Check Status</button>
+        <button onclick="testLogout()">Test Logout</button>
+        <div id="statusResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>5. Direct API Test</h2>
+        <button onclick="testDirectAPI()">Test Direct API Call</button>
+        <div id="directResult" class="result"></div>
+    </div>
+
+    <script src="auth-integration.js"></script>
+    <script>
+        function showResult(elementId, success, data) {
+            const el = document.getElementById(elementId);
+            el.className = 'result ' + (success ? 'success' : 'error');
+            el.textContent = JSON.stringify(data, null, 2);
+        }
+
+        async function testRegister() {
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const fullName = document.getElementById('regName').value;
+            
+            showResult('regResult', true, { status: 'Calling API...' });
+            
+            const result = await authAPI.register({
+                email,
+                password,
+                fullName,
+                company: 'Test Productions',
+                designation: 'casting_director',
+                phone: '+91 9876543210',
+                experience: '3-5'
+            });
+            
+            showResult('regResult', result.success, result);
+        }
+
+        async function testLogin() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            showResult('loginResult', true, { status: 'Calling API...' });
+            
+            const result = await authAPI.login(email, password);
+            
+            showResult('loginResult', result.success, result);
+        }
+
+        async function testForgotPassword() {
+            const email = document.getElementById('forgotEmail').value;
+            
+            showResult('forgotResult', true, { status: 'Calling API...' });
+            
+            const result = await authAPI.forgotPassword(email);
+            
+            showResult('forgotResult', result.success, result);
+        }
+
+        function checkAuthStatus() {
+            const isAuth = authAPI.isAuthenticated();
+            const user = authAPI.getCurrentUser();
+            const token = tokenManager.getToken();
+            
+            showResult('statusResult', true, {
+                authenticated: isAuth,
+                user: user,
+                hasToken: !!token,
+                tokenPreview: token ? token.substring(0, 20) + '...' : null
+            });
+        }
+
+        function testLogout() {
+            authAPI.logout();
+            showResult('statusResult', true, { status: 'Logged out' });
+        }
+
+        async function testDirectAPI() {
+            showResult('directResult', true, { status: 'Testing direct API connection...' });
+            
+            try {
+                const response = await fetch('http://localhost:5000/api/health', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                showResult('directResult', response.ok, {
+                    status: response.status,
+                    statusText: response.statusText,
+                    data: data
+                });
+            } catch (error) {
+                showResult('directResult', false, {
+                    error: error.message,
+                    hint: 'Make sure backend is running on port 5000'
+                });
+            }
+        }
+
+        // Test connection on load
+        window.addEventListener('DOMContentLoaded', () => {
+            testDirectAPI();
+        });
+    </script>
+</body>
+</html>

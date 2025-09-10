@@ -1,0 +1,87 @@
+# CastMatch Environment Configuration
+# Database
+DATABASE_URL=postgresql://castmatch_user:castmatch_pass123@localhost:5432/castmatch_db
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+POSTGRES_USER=castmatch_user
+POSTGRES_PASSWORD=castmatch_pass123
+POSTGRES_DB=castmatch_db
+
+# Redis
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_URL=redis://localhost:6379
+
+# Application
+NODE_ENV=development
+PORT=5002
+FRONTEND_URL=http://localhost:3000
+AI_SERVICE_URL=http://localhost:8002
+
+# JWT & Auth
+JWT_SECRET=your-super-secret-jwt-key-change-in-production
+JWT_EXPIRES_IN=7d
+
+# Auth0 Configuration
+AUTH0_DOMAIN=dev-castmatch.us.auth0.com
+AUTH0_AUDIENCE=https://api.castmatch.ai
+AUTH0_CLIENT_ID=your-auth0-client-id
+AUTH0_CLIENT_SECRET=your-auth0-client-secret
+
+# Anthropic Claude API
+ANTHROPIC_API_KEY=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
+
+# AI Service Configuration
+AI_SERVICE_URL=http://localhost:8000
+ENABLE_AI_CHAT=true
+AI_MODEL=claude-3-haiku-20240307
+MAX_TOKENS=4096
+TEMPERATURE=0.7
+
+# Email Configuration (for later)
+EMAIL_FROM=noreply@castmatch.ai
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your-email@gmail.com
+SMTP_PASS=your-app-specific-password
+
+# Google OAuth (for later)
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+
+# AWS S3 (for later) 
+AWS_ACCESS_KEY_ID=your-aws-access-key
+AWS_SECRET_ACCESS_KEY=your-aws-secret-key
+AWS_REGION=ap-south-1
+AWS_S3_BUCKET=castmatch-media
+
+# Logging
+LOG_LEVEL=debug
+ENABLE_MONITORING=true
+
+# Rate Limiting
+RATE_LIMIT_WINDOW_MS=60000
+RATE_LIMIT_MAX_REQUESTS=100
+
+# Session
+SESSION_SECRET=your-session-secret-change-in-production
+
+# CORS
+CORS_ORIGIN=http://localhost:3000
+
+# Vector Database - Qdrant (Primary)
+QDRANT_URL=http://localhost:6333
+QDRANT_API_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3MiOiJtIn0.itml8YCPP8Yn-wbLDeK2YmCtR4u2e5WGGODQ3D86RU8
+PRIMARY_VECTOR_PROVIDER=qdrant
+ENABLE_DUAL_WRITE=true
+
+# Vector Database - Pinecone (Fallback) - Temporarily disabled for Qdrant-only mode
+#PINECONE_API_KEY=pcsk_4jATQ3_ULM76wBGD5cnFNEdWdkCAba4b1cs57Wb7kKBtdfzRUB3CZyhHun9KB6fP5YkkD6
+#PINECONE_ENVIRONMENT=us-east-1
+#PINECONE_INDEX=castmatch-memory
+
+# Feature Flags
+ENABLE_CHAT=true
+ENABLE_AI_MATCHING=true
+ENABLE_NOTIFICATIONS=false
+ENABLE_CALENDAR=false

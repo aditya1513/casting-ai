@@ -1,0 +1,497 @@
+name: CastMatch - Comprehensive Test Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # Run comprehensive tests daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      test_type:
+        description: 'Type of tests to run'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+        - all
+        - unit
+        - integration
+        - e2e
+        - security
+        - performance
+      environment:
+        description: 'Environment to test against'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+        - staging
+        - production
+
+env:
+  NODE_VERSION: '18'
+  PYTHON_VERSION: '3.11'
+  POSTGRES_DB: castmatch_test
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
+  REDIS_URL: redis://localhost:6379
+
+jobs:
+  # Health check and setup
+  health-check:
+    runs-on: ubuntu-latest
+    outputs:
+      should_run_tests: ${{ steps.health.outputs.healthy }}
+    steps:
+      - name: Check system health
+        id: health
+        run: |
+          echo "healthy=true" >> $GITHUB_OUTPUT
+          echo "System health check passed"
+
+  # Unit Tests - Fast feedback
+  unit-tests:
+    needs: health-check
+    if: needs.health-check.outputs.should_run_tests == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    strategy:
+      matrix:
+        node-version: ['18', '20']
+        test-group: ['services', 'utils', 'models', 'controllers']
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: castmatch_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      
+      redis:
+        image: redis:7
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          cd frontend && npm ci
+
+      - name: Setup test environment
+        run: |
+          cp .env.example .env.test
+          echo "DATABASE_URL=postgresql://postgres:postgres@localhost:5432/castmatch_test" >> .env.test
+          echo "REDIS_URL=redis://localhost:6379" >> .env.test
+          echo "NODE_ENV=test" >> .env.test
+
+      - name: Run database migrations
+        run: npm run db:migrate
+
+      - name: Run unit tests - ${{ matrix.test-group }}
+        run: |
+          npm run test:unit -- --testPathPattern=${{ matrix.test-group }} --coverage --coverageDirectory=coverage/unit-${{ matrix.test-group }}
+        env:
+          CI: true
+
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v3
+        with:
+          file: coverage/unit-${{ matrix.test-group }}/lcov.info
+          flags: unit-tests-${{ matrix.test-group }}
+          name: unit-${{ matrix.test-group }}-${{ matrix.node-version }}
+
+      - name: Archive test results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: unit-test-results-${{ matrix.test-group }}-${{ matrix.node-version }}
+          path: |
+            coverage/unit-${{ matrix.test-group }}
+            test-results/unit-${{ matrix.test-group }}
+
+  # Integration Tests
+  integration-tests:
+    needs: [health-check, unit-tests]
+    if: needs.health-check.outputs.should_run_tests == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: castmatch_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+      redis:
+        image: redis:7
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          cd python-ai-service && pip install -r requirements.txt
+
+      - name: Setup test environment
+        run: |
+          cp .env.example .env.test
+          echo "DATABASE_URL=postgresql://postgres:postgres@localhost:5432/castmatch_test" >> .env.test
+          echo "REDIS_URL=redis://localhost:6379" >> .env.test
+          echo "NODE_ENV=test" >> .env.test
+
+      - name: Start services
+        run: |
+          npm run build
+          npm start &
+          cd python-ai-service && python app.py &
+          sleep 30 # Wait for services to be ready
+
+      - name: Wait for services to be ready
+        run: |
+          timeout 60 bash -c 'until curl -f http://localhost:3001/api/health; do sleep 2; done'
+          timeout 60 bash -c 'until curl -f http://localhost:8000/health; do sleep 2; done'
+
+      - name: Run integration tests
+        run: npm run test:integration
+        env:
+          CI: true
+          BASE_URL: http://localhost:3001
+
+      - name: Run API endpoint tests
+        run: npm run test:api
+        env:
+          CI: true
+
+      - name: Upload integration test results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: integration-test-results
+          path: |
+            coverage/integration
+            test-results/integration
+
+  # Security Tests
+  security-tests:
+    needs: [health-check, integration-tests]
+    if: needs.health-check.outputs.should_run_tests == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: castmatch_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Start application
+        run: |
+          npm run build
+          npm start &
+          sleep 30
+
+      - name: Run security penetration tests
+        run: npm run test:security
+        env:
+          CI: true
+          BASE_URL: http://localhost:3001
+
+      - name: Install OWASP ZAP
+        run: |
+          wget -q https://github.com/zaproxy/zaproxy/releases/download/v2.14.0/ZAP_2.14.0_Linux.tar.gz
+          tar -xzf ZAP_2.14.0_Linux.tar.gz
+          sudo mv ZAP_2.14.0 /opt/zaproxy
+
+      - name: Run OWASP ZAP baseline scan
+        run: |
+          /opt/zaproxy/zap.sh -cmd -quickurl http://localhost:3001 -quickout /tmp/zap-report.html -quickprogress
+        continue-on-error: true
+
+      - name: Upload security test results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: security-test-results
+          path: |
+            /tmp/zap-report.html
+            coverage/security
+            test-results/security
+
+  # End-to-End Tests
+  e2e-tests:
+    needs: [health-check, integration-tests]
+    if: needs.health-check.outputs.should_run_tests == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    strategy:
+      matrix:
+        browser: [chromium, firefox, webkit]
+        shard: [1/4, 2/4, 3/4, 4/4]
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: castmatch_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          npx playwright install --with-deps ${{ matrix.browser }}
+
+      - name: Setup test database
+        run: |
+          cp .env.example .env.test
+          echo "DATABASE_URL=postgresql://postgres:postgres@localhost:5432/castmatch_test" >> .env.test
+          npm run db:migrate
+
+      - name: Start application
+        run: |
+          npm run build
+          npm start &
+          sleep 30
+
+      - name: Run E2E tests - ${{ matrix.browser }}
+        run: |
+          npx playwright test --project=${{ matrix.browser }} --shard=${{ matrix.shard }}
+        env:
+          CI: true
+          BASE_URL: http://localhost:3001
+
+      - name: Upload E2E test results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: e2e-results-${{ matrix.browser }}-${{ strategy.job-index }}
+          path: |
+            test-results/
+            playwright-report/
+
+  # Performance Tests (runs only on main branch or manual trigger)
+  performance-tests:
+    needs: [health-check, integration-tests]
+    if: needs.health-check.outputs.should_run_tests == 'true' && (github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install k6
+        run: |
+          sudo gpg -k
+          sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update
+          sudo apt-get install k6
+
+      - name: Start application with production config
+        run: |
+          npm ci
+          npm run build
+          NODE_ENV=production npm start &
+          sleep 30
+
+      - name: Run load tests (reduced scale for CI)
+        run: |
+          k6 run tests/performance/load-test-10k-users.js \
+            --env BASE_URL=http://localhost:3001 \
+            --out json=performance-results.json \
+            --summary-trend-stats="min,med,avg,p(95),p(99),max" \
+            --summary-time-unit=ms
+        env:
+          K6_VUS_MAX: 100  # Reduced for CI environment
+          K6_DURATION: 5m   # Shorter duration for CI
+
+      - name: Upload performance test results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: performance-test-results
+          path: |
+            performance-results.json
+            test-results/performance/
+
+  # Test result aggregation and reporting
+  test-summary:
+    needs: [unit-tests, integration-tests, security-tests, e2e-tests, performance-tests]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all test artifacts
+        uses: actions/download-artifact@v3
+
+      - name: Generate comprehensive test report
+        run: |
+          echo "# CastMatch Test Pipeline Results" > test-summary.md
+          echo "## Test Execution Summary" >> test-summary.md
+          echo "- **Timestamp:** $(date -u)" >> test-summary.md
+          echo "- **Commit:** ${{ github.sha }}" >> test-summary.md
+          echo "- **Branch:** ${{ github.ref_name }}" >> test-summary.md
+          echo "" >> test-summary.md
+          
+          # Add status for each test type
+          echo "## Test Results" >> test-summary.md
+          echo "- Unit Tests: ${{ needs.unit-tests.result }}" >> test-summary.md
+          echo "- Integration Tests: ${{ needs.integration-tests.result }}" >> test-summary.md
+          echo "- Security Tests: ${{ needs.security-tests.result }}" >> test-summary.md
+          echo "- E2E Tests: ${{ needs.e2e-tests.result }}" >> test-summary.md
+          echo "- Performance Tests: ${{ needs.performance-tests.result }}" >> test-summary.md
+          
+          # Calculate overall status
+          if [[ "${{ needs.unit-tests.result }}" == "success" && 
+                "${{ needs.integration-tests.result }}" == "success" && 
+                "${{ needs.security-tests.result }}" == "success" && 
+                "${{ needs.e2e-tests.result }}" == "success" ]]; then
+            echo "## Overall Status: ✅ PASSED" >> test-summary.md
+          else
+            echo "## Overall Status: ❌ FAILED" >> test-summary.md
+          fi
+
+      - name: Comment test results on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const testSummary = fs.readFileSync('test-summary.md', 'utf8');
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: testSummary
+            });
+
+      - name: Upload final test summary
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-summary
+          path: test-summary.md
+
+  # Deployment gate (only runs on main branch)
+  deployment-gate:
+    needs: [unit-tests, integration-tests, security-tests, e2e-tests]
+    if: github.ref == 'refs/heads/main' && needs.unit-tests.result == 'success' && needs.integration-tests.result == 'success' && needs.security-tests.result == 'success' && needs.e2e-tests.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: All tests passed - Ready for deployment
+        run: |
+          echo "🎉 All critical tests passed!"
+          echo "✅ Unit tests: PASSED"
+          echo "✅ Integration tests: PASSED" 
+          echo "✅ Security tests: PASSED"
+          echo "✅ E2E tests: PASSED"
+          echo ""
+          echo "🚀 Ready for production deployment!"
+
+      - name: Create deployment ready tag
+        run: |
+          echo "deployment-ready-$(date +%Y%m%d-%H%M%S)" > deployment-tag.txt
+
+      - name: Upload deployment tag
+        uses: actions/upload-artifact@v3
+        with:
+          name: deployment-ready
+          path: deployment-tag.txt

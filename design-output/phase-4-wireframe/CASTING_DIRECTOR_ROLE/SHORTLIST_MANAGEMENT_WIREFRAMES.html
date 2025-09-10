@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../SYSTEM_DOCUMENTATION/WIREFRAME_STANDARDS_GRAYSCALE.css">
+    <title>CastMatch - Shortlist Management Wireframes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: var(--font-family);
+            background: var(--white);
+            color: var(--dark);
+            line-height: var(--line-height);
+        }
+        
+        /* Layout Framework */
+        .wireframe-container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: var(--spacing-lg);
+        }
+        
+        /* Header Section */
+        .shortlist-header {
+            background: var(--white);
+            border: var(--border-width) solid var(--medium-light);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .project-selector {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: var(--spacing-md);
+        }
+        
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            gap: var(--spacing-lg);
+            border-bottom: var(--border-width) solid var(--medium-light);
+            margin-bottom: 24px;
+        }
+        
+        .tab {
+            padding: var(--spacing-md) 0;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .tab.active {
+            border-bottom-color: var(--black);
+            font-weight: 600;
+        }
+        
+        .tab-count {
+            background: var(--medium-dark);
+            color: var(--white);
+            padding: 2px 6px;
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-sm);
+            margin-left: 6px;
+        }
+        
+        /* Lists Overview */
+        .lists-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: 32px;
+        }
+        
+        .list-card {
+            background: var(--white);
+            border: var(--border-width) solid var(--medium-light);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+        
+        .list-card:hover {
+            border: 2px solid var(--medium);
+        }
+        
+        .list-card.selected {
+            border-color: var(--black);
+            border-width: 2px;
+        }
+        
+        .list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 12px;
+        }
+        
+        .list-title {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .list-meta {
+            color: var(--medium-dark);
+            font-size: var(--font-size-sm);
+        }
+        
+        .list-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+        
+        .icon-button {
+            width: 32px;
+            height: 32px;
+            border: var(--border-width) solid var(--medium-light);
+            border-radius: var(--radius-sm);
+            background: var(--white);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Talent Grid in List */
+        .list-talents {
+            display: flex;
+            margin: var(--spacing-md) 0;
+        }
+        
+        .talent-thumbnail {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--medium-light);
+            border: 2px solid var(--white);
+            margin-left: -8px;
+        }
+        
+        .talent-thumbnail:first-child {
+            margin-left: 0;
+        }
+        
+        .more-count {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--black);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            margin-left: -8px;
+        }
+        
+        /* List Stats */
+        .list-stats {
+            display: flex;
+            gap: var(--spacing-md);
+            padding-top: 12px;
+            border-top: var(--border-width) solid var(--light-gray);
+        }
+        
+        .stat-item {
+            font-size: var(--font-size-sm);
+            color: var(--medium-dark);
+        }
+        
+        .stat-value {
+            font-weight: 600;
+            color: var(--black);
+        }
+        
+        /* Detailed List View */
+        .list-detail-view {
+            background: var(--white);
+            border: var(--border-width) solid var(--medium-light);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            margin-bottom: 24px;
+        }
+        
+        .list-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: var(--border-width) solid var(--medium-light);
+            margin-bottom: 20px;
+        }
+        
+        .toolbar-left {
+            display: flex;
+            gap: var(--spacing-md);
+            align-items: center;
+        }
+        
+        .toolbar-right {
+            display: flex;
+            gap: var(--spacing-md);
+        }
+        
+        /* Talent Table View */
+        .talent-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .talent-table th {
+            background: var(--light-gray);
+            padding: var(--spacing-md);
+            text-align: left;
+            font-weight: 600;
+            font-size: var(--font-size-sm);
+            color: var(--medium-dark);
+            border-bottom: 2px solid var(--medium-light);
+        }
+        
+        .talent-table td {
+            padding: var(--spacing-md) 12px;
+            border-bottom: var(--border-width) solid var(--light-gray);
+        }
+        
+        .talent-table tr:hover {
+            background: var(--light-gray);
+        }
+        
+        .talent-cell {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+        
+        .talent-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--medium-light);
+        }
+        
+        .talent-info {
+            flex: 1;
+        }
+        
+        .talent-name {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        
+        .talent-role {
+            color: var(--medium-dark);
+            font-size: var(--font-size-sm);
+        }
+        
+        /* Voting System */
+        .voting-container {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .vote-button {
+            width: 28px;
+            height: 28px;
+            border: var(--border-width) solid var(--medium-light);
+            border-radius: var(--radius-sm);
+            background: var(--white);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .vote-button.voted-yes {
+            background: var(--medium-dark);
+            color: var(--white);
+            border-color: var(--medium-dark);
+        }
+        
+        .vote-button.voted-no {
+            background: var(--dark);
+            color: var(--white);
+            border-color: var(--dark);
+        }
+        
+        .vote-count {
+            font-size: var(--font-size-sm);
+            color: var(--medium-dark);
+        }
+        
+        /* Team Comments */
+        .comments-panel {
+            background: var(--light-gray);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            margin-top: 12px;
+        }
+        
+        .comment {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-bottom: 12px;
+        }
+        
+        .comment-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--medium-light);
+        }
+        
+        .comment-content {
+            flex: 1;
+        }
+        
+        .comment-author {
+            font-weight: 600;
+            font-size: var(--font-size-sm);
+            margin-bottom: 4px;
+        }
+        
+        .comment-text {
+            font-size: var(--font-size-sm);
+            line-height: 1.4;
+        }
+        
+        .comment-time {
+            color: var(--medium);
+            font-size: var(--font-size-sm);
+            margin-top: 4px;
+        }
+        
+        .comment-input {
+            width: 100%;
+            padding: var(--spacing-sm) 12px;
+            border: var(--border-width) solid var(--medium-light);
+            border-radius: var(--radius-sm);
+            resize: none;
+        }
+        
+        /* Ranking View */
+        .ranking-container {
+            background: var(--white);
+            border: var(--border-width) solid var(--medium-light);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+        }
+        
+        .rank-item {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-md);
+            background: var(--white);
+            border: var(--border-width) solid var(--medium-light);
+            border-radius: var(--radius-md);
+            margin-bottom: 12px;
+            cursor: move;
+            transition: all 0.2s;
+        }
+        
+        .rank-item:hover {
+            border: 2px solid var(--medium-light);
+        }
+        
+        .rank-item.dragging {
+            opacity: 0.5;
+        }
+        
+        .rank-number {
+            width: 32px;
+            height: 32px;
+            background: var(--black);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 16px;
+        }
+        
+        .rank-number.gold {
+            background: var(--medium-dark);
+            color: var(--white);
+        }
+        
+        .rank-number.silver {
+            background: var(--medium);
+            color: var(--white);
+        }
+        
+        .rank-number.bronze {
+            background: var(--medium-light);
+            color: var(--dark);
+        }
+        
+        .drag-handle {
+            width: 24px;
+            height: 24px;
+            margin-right: 12px;
+            cursor: move;
+            color: var(--medium);
+        }
+        
+        /* Collaboration Features */
+        .collab-panel {
+            background: var(--white);
+            border: var(--border-width) solid var(--medium-light);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            margin-bottom: 24px;
+        }
+        
+        .team-votes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+            margin-top: 20px;
+        }
+        
+        .team-vote-card {
+            padding: var(--spacing-md);
+            border: var(--border-width) solid var(--medium-light);
+            border-radius: var(--radius-md);
+        }
+        
+        .team-member-name {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .vote-indicator {
+            display: inline-block;
+            padding: var(--spacing-sm) 8px;
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+        }
+        
+        .vote-indicator.yes {
+            background: var(--light-gray);
+            color: var(--dark);
+        }
+        
+        .vote-indicator.no {
+            background: var(--medium-light);
+            color: var(--dark);
+        }
+        
+        .vote-indicator.pending {
+            background: var(--light-gray);
+            color: var(--medium-dark);
+        }
+        
+        /* Export Options */
+        .export-modal {
+            background: var(--white);
+            border: var(--border-width) solid var(--medium-light);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-xl);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .export-options {
+            display: grid;
+            gap: var(--spacing-md);
+            margin: var(--spacing-lg) 0;
+        }
+        
+        .export-option {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-md);
+            border: var(--border-width) solid var(--medium-light);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+        }
+        
+        .export-option:hover {
+            background: var(--light-gray);
+        }
+        
+        .export-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--light-gray);
+            border-radius: var(--radius-md);
+            margin-right: 16px;
+        }
+        
+        /* Buttons */
+        .primary-button {
+            background: var(--black);
+            color: var(--white);
+            padding: var(--spacing-md) 24px;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-weight: var(--font-weight-medium);
+        }
+        
+        .secondary-button {
+            background: var(--white);
+            color: var(--black);
+            padding: var(--spacing-md) 24px;
+            border: var(--border-width) solid var(--black);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-weight: var(--font-weight-medium);
+        }
+        
+        .ghost-button {
+            background: transparent;
+            color: var(--medium-dark);
+            padding: var(--spacing-md) 24px;
+            border: var(--border-width) solid var(--medium-light);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+        }
+        
+        /* Status Badges */
+        .status-badge {
+            display: inline-block;
+            padding: var(--spacing-sm) 8px;
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+        }
+        
+        .status-badge.approved {
+            background: var(--light-gray);
+            color: var(--dark);
+        }
+        
+        .status-badge.pending {
+            background: var(--light-gray);
+            color: var(--medium-dark);
+        }
+        
+        .status-badge.rejected {
+            background: var(--medium-light);
+            color: var(--dark);
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .lists-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .lists-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .talent-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wireframe-container">
+        <h1 style="margin-bottom: 32px;">Shortlist Management System</h1>
+        
+        <!-- Header Section -->
+        <div class="shortlist-header">
+            <div class="header-top">
+                <div class="project-selector">
+                    <select style="padding: 10px; border: var(--border-width) solid var(--medium-light); border-radius: var(--radius-sm); font-size: var(--font-size-base);">
+                        <option selected>Mumbai Dreams - Feature Film</option>
+                        <option>Zee TV Drama Series</option>
+                        <option>Commercial Project</option>
+                    </select>
+                    <span style="color: var(--medium-dark);">17 roles • 8 shortlists</span>
+                </div>
+                <div class="header-actions">
+                    <button class="ghost-button">Import</button>
+                    <button class="secondary-button">Share</button>
+                    <button class="primary-button">+ Create New List</button>
+                </div>
+            </div>
+            
+            <!-- Tab Navigation -->
+            <div class="tab-nav">
+                <div class="tab active">
+                    All Lists <span class="tab-count">8</span>
+                </div>
+                <div class="tab">
+                    Lead Roles <span class="tab-count">3</span>
+                </div>
+                <div class="tab">
+                    Supporting <span class="tab-count">4</span>
+                </div>
+                <div class="tab">
+                    Final Selection <span class="tab-count">1</span>
+                </div>
+                <div class="tab">
+                    Archived <span class="tab-count">2</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Lists Overview Grid -->
+        <div class="lists-grid">
+            <!-- List Card 1 - Lead Actor -->
+            <div class="list-card selected">
+                <div class="list-header">
+                    <div>
+                        <div class="list-title">Lead Actor - Male</div>
+                        <div class="list-meta">Created 3 days ago</div>
+                    </div>
+                    <div class="list-actions">
+                        <button class="icon-button">⭐</button>
+                        <button class="icon-button">⋮</button>
+                    </div>
+                </div>
+                
+                <div class="list-talents">
+                    <div class="talent-thumbnail"></div>
+                    <div class="talent-thumbnail"></div>
+                    <div class="talent-thumbnail"></div>
+                    <div class="talent-thumbnail"></div>
+                    <div class="more-count">+8</div>
+                </div>
+                
+                <div class="list-stats">
+                    <div class="stat-item">
+                        <span class="stat-value">12</span> talents
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">8</span> reviewed
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">3</span> approved
+                    </div>
+                </div>
+            </div>
+            
+            <!-- List Card 2 - Lead Actress -->
+            <div class="list-card">
+                <div class="list-header">
+                    <div>
+                        <div class="list-title">Lead Actor - Female</div>
+                        <div class="list-meta">Created 2 days ago</div>
+                    </div>
+                    <div class="list-actions">
+                        <button class="icon-button">⋮</button>
+                    </div>
+                </div>
+                
+                <div class="list-talents">
+                    <div class="talent-thumbnail"></div>
+                    <div class="talent-thumbnail"></div>
+                    <div class="talent-thumbnail"></div>
+                    <div class="more-count">+5</div>
+                </div>
+                
+                <div class="list-stats">
+                    <div class="stat-item">
+                        <span class="stat-value">8</span> talents
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">5</span> reviewed
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">2</span> approved
+                    </div>
+                </div>
+            </div>
+            
+            <!-- List Card 3 - Supporting -->
+            <div class="list-card">
+                <div class="list-header">
+                    <div>
+                        <div class="list-title">Supporting Roles</div>
+                        <div class="list-meta">Created 1 week ago</div>
+                    </div>
+                    <div class="list-actions">
+                        <button class="icon-button">⋮</button>
+                    </div>
+                </div>
+                
+                <div class="list-talents">
+                    <div class="talent-thumbnail"></div>
+                    <div class="talent-thumbnail"></div>
+                    <div class="talent-thumbnail"></div>
+                    <div class="talent-thumbnail"></div>
+                    <div class="talent-thumbnail"></div>
+                    <div class="more-count">+15</div>
+                </div>
+                
+                <div class="list-stats">
+                    <div class="stat-item">
+                        <span class="stat-value">20</span> talents
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">15</span> reviewed
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">8</span> approved
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Create New List Card -->
+            <div class="list-card" style="border: 2px dashed var(--medium-light); background: var(--light-gray); display: flex; align-items: center; justify-content: center; min-height: 200px;">
+                <div style="text-align: center;">
+                    <div style="font-size: var(--font-size-4xl); color: var(--gray-300); margin-bottom: 12px;">+</div>
+                    <div style="color: var(--medium-dark);">Create New List</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Detailed List View -->
+        <div class="list-detail-view">
+            <div class="list-toolbar">
+                <div class="toolbar-left">
+                    <h2>Lead Actor - Male</h2>
+                    <span style="color: var(--medium-dark); margin-left: 12px;">12 talents • Last updated 10 min ago</span>
+                </div>
+                <div class="toolbar-right">
+                    <button class="ghost-button">Compare</button>
+                    <button class="ghost-button">Rank</button>
+                    <button class="secondary-button">Export</button>
+                    <button class="primary-button">Share with Team</button>
+                </div>
+            </div>
+            
+            <!-- Talent Table -->
+            <table class="talent-table">
+                <thead>
+                    <tr>
+                        <th style="width: 40px;">
+                            <input type="checkbox">
+                        </th>
+                        <th>Talent</th>
+                        <th>Match Score</th>
+                        <th>Experience</th>
+                        <th>Availability</th>
+                        <th>Team Votes</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="checkbox" checked></td>
+                        <td>
+                            <div class="talent-cell">
+                                <div class="talent-avatar"></div>
+                                <div class="talent-info">
+                                    <div class="talent-name">Arjun Sharma</div>
+                                    <div class="talent-role">28 yrs • Mumbai • ₹5-8L</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span style="color: var(--medium-dark); font-weight: 600;">95%</span>
+                        </td>
+                        <td>5 years</td>
+                        <td>
+                            <span style="color: var(--medium-dark);">Immediate</span>
+                        </td>
+                        <td>
+                            <div class="voting-container">
+                                <button class="vote-button voted-yes">👍</button>
+                                <span class="vote-count">4</span>
+                                <button class="vote-button">👎</button>
+                                <span class="vote-count">0</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="status-badge approved">Approved</span>
+                        </td>
+                        <td>
+                            <div style="display: flex; gap: var(--spacing-sm);">
+                                <button class="icon-button">👁️</button>
+                                <button class="icon-button">💬</button>
+                                <button class="icon-button">📅</button>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td><input type="checkbox"></td>
+                        <td>
+                            <div class="talent-cell">
+                                <div class="talent-avatar"></div>
+                                <div class="talent-info">
+                                    <div class="talent-name">Vikram Patel</div>
+                                    <div class="talent-role">30 yrs • Mumbai • ₹6-10L</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span style="color: var(--medium-dark); font-weight: 600;">88%</span>
+                        </td>
+                        <td>7 years</td>
+                        <td>
+                            <span style="color: var(--medium-dark);">Immediate</span>
+                        </td>
+                        <td>
+                            <div class="voting-container">
+                                <button class="vote-button">👍</button>
+                                <span class="vote-count">2</span>
+                                <button class="vote-button voted-no">👎</button>
+                                <span class="vote-count">1</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="status-badge pending">Under Review</span>
+                        </td>
+                        <td>
+                            <div style="display: flex; gap: var(--spacing-sm);">
+                                <button class="icon-button">👁️</button>
+                                <button class="icon-button">💬</button>
+                                <button class="icon-button">📅</button>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td><input type="checkbox"></td>
+                        <td>
+                            <div class="talent-cell">
+                                <div class="talent-avatar"></div>
+                                <div class="talent-info">
+                                    <div class="talent-name">Rahul Khanna</div>
+                                    <div class="talent-role">26 yrs • Delhi • ₹4-7L</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span style="color: var(--medium-dark); font-weight: 600;">85%</span>
+                        </td>
+                        <td>4 years</td>
+                        <td>
+                            <span style="color: var(--gray-400);">1 week</span>
+                        </td>
+                        <td>
+                            <div class="voting-container">
+                                <button class="vote-button">👍</button>
+                                <span class="vote-count">3</span>
+                                <button class="vote-button">👎</button>
+                                <span class="vote-count">0</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="status-badge pending">Under Review</span>
+                        </td>
+                        <td>
+                            <div style="display: flex; gap: var(--spacing-sm);">
+                                <button class="icon-button">👁️</button>
+                                <button class="icon-button">💬</button>
+                                <button class="icon-button">📅</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <!-- Comments Panel for Selected Talent -->
+            <div class="comments-panel">
+                <h4 style="margin-bottom: 16px;">Team Discussion - Arjun Sharma</h4>
+                
+                <div class="comment">
+                    <div class="comment-avatar"></div>
+                    <div class="comment-content">
+                        <div class="comment-author">Priya Sharma (Director)</div>
+                        <div class="comment-text">Perfect fit for the role! His theatre background shows great emotional range. Loved his audition tape.</div>
+                        <div class="comment-time">2 hours ago</div>
+                    </div>
+                </div>
+                
+                <div class="comment">
+                    <div class="comment-avatar"></div>
+                    <div class="comment-content">
+                        <div class="comment-author">Amit Kumar (Casting Assistant)</div>
+                        <div class="comment-text">Agreed. He also has dance skills which is a bonus for the wedding sequence.</div>
+                        <div class="comment-time">1 hour ago</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 16px;">
+                    <textarea class="comment-input" placeholder="Add your comment..." rows="2"></textarea>
+                    <button class="primary-button" style="margin-top: 8px; padding: var(--spacing-sm) 16px; font-size: var(--font-size-sm);">Post Comment</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Ranking View -->
+        <div class="ranking-container">
+            <h3 style="margin-bottom: 20px;">Rank Talents by Preference</h3>
+            <p style="color: var(--medium-dark); margin-bottom: 20px;">Drag to reorder talents based on your preference</p>
+            
+            <div class="rank-item">
+                <span class="drag-handle">⋮⋮</span>
+                <div class="rank-number gold">1</div>
+                <div class="talent-avatar"></div>
+                <div style="flex: 1; margin-left: 12px;">
+                    <div style="font-weight: 600;">Arjun Sharma</div>
+                    <div style="color: var(--medium-dark); font-size: var(--font-size-sm);">95% match • Approved by 4 team members</div>
+                </div>
+                <div style="display: flex; gap: var(--spacing-sm);">
+                    <span class="status-badge approved">Director's Choice</span>
+                </div>
+            </div>
+            
+            <div class="rank-item">
+                <span class="drag-handle">⋮⋮</span>
+                <div class="rank-number silver">2</div>
+                <div class="talent-avatar"></div>
+                <div style="flex: 1; margin-left: 12px;">
+                    <div style="font-weight: 600;">Rahul Khanna</div>
+                    <div style="color: var(--medium-dark); font-size: var(--font-size-sm);">85% match • Under review</div>
+                </div>
+            </div>
+            
+            <div class="rank-item">
+                <span class="drag-handle">⋮⋮</span>
+                <div class="rank-number bronze">3</div>
+                <div class="talent-avatar"></div>
+                <div style="flex: 1; margin-left: 12px;">
+                    <div style="font-weight: 600;">Vikram Patel</div>
+                    <div style="color: var(--medium-dark); font-size: var(--font-size-sm);">88% match • Mixed reviews</div>
+                </div>
+            </div>
+            
+            <div class="rank-item">
+                <span class="drag-handle">⋮⋮</span>
+                <div class="rank-number">4</div>
+                <div class="talent-avatar"></div>
+                <div style="flex: 1; margin-left: 12px;">
+                    <div style="font-weight: 600;">Dev Sharma</div>
+                    <div style="color: var(--medium-dark); font-size: var(--font-size-sm);">82% match • Pending review</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Team Collaboration Panel -->
+        <div class="collab-panel">
+            <h3>Team Consensus Dashboard</h3>
+            <p style="color: var(--medium-dark); margin-bottom: 20px;">Track team preferences and build consensus</p>
+            
+            <div class="team-votes-grid">
+                <div class="team-vote-card">
+                    <div class="team-member-name">Priya Sharma</div>
+                    <div style="color: var(--medium-dark); font-size: var(--font-size-sm); margin-bottom: 8px;">Director</div>
+                    <div>
+                        <span class="vote-indicator yes">Arjun: YES</span>
+                    </div>
+                    <div style="margin-top: 4px;">
+                        <span class="vote-indicator pending">2 pending</span>
+                    </div>
+                </div>
+                
+                <div class="team-vote-card">
+                    <div class="team-member-name">Raj Kapoor</div>
+                    <div style="color: var(--medium-dark); font-size: var(--font-size-sm); margin-bottom: 8px;">Producer</div>
+                    <div>
+                        <span class="vote-indicator yes">Arjun: YES</span>
+                    </div>
+                    <div style="margin-top: 4px;">
+                        <span class="vote-indicator no">Vikram: NO</span>
+                    </div>
+                </div>
+                
+                <div class="team-vote-card">
+                    <div class="team-member-name">Amit Kumar</div>
+                    <div style="color: var(--medium-dark); font-size: var(--font-size-sm); margin-bottom: 8px;">Casting Assistant</div>
+                    <div>
+                        <span class="vote-indicator yes">3 approved</span>
+                    </div>
+                    <div style="margin-top: 4px;">
+                        <span class="vote-indicator pending">1 pending</span>
+                    </div>
+                </div>
+                
+                <div class="team-vote-card">
+                    <div class="team-member-name">Sarah Johnson</div>
+                    <div style="color: var(--medium-dark); font-size: var(--font-size-sm); margin-bottom: 8px;">Executive Producer</div>
+                    <div>
+                        <span class="vote-indicator pending">4 pending review</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 24px; padding: var(--spacing-md); background: var(--light-gray); border-radius: var(--radius-md);">
+                <h4 style="margin-bottom: 12px;">Consensus Summary</h4>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--spacing-md);">
+                    <div>
+                        <div style="font-size: var(--font-size-2xl); font-weight: 600; color: var(--medium-dark);">3</div>
+                        <div style="color: var(--medium-dark); font-size: var(--font-size-sm);">Unanimous Approvals</div>
+                    </div>
+                    <div>
+                        <div style="font-size: var(--font-size-2xl); font-weight: 600; color: var(--gray-400);">5</div>
+                        <div style="color: var(--medium-dark); font-size: var(--font-size-sm);">Under Discussion</div>
+                    </div>
+                    <div>
+                        <div style="font-size: var(--font-size-2xl); font-weight: 600; color: var(--dark);">2</div>
+                        <div style="color: var(--medium-dark); font-size: var(--font-size-sm);">Rejected</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Export Modal -->
+        <div class="export-modal">
+            <h3 style="margin-bottom: 24px;">Export Shortlist</h3>
+            
+            <div class="export-options">
+                <div class="export-option">
+                    <div class="export-icon"></div>
+                    <div>
+                        <div style="font-weight: 600;">PDF Report</div>
+                        <div style="color: var(--medium-dark); font-size: var(--font-size-sm);">Professional presentation format with photos and details</div>
+                    </div>
+                </div>
+                
+                <div class="export-option">
+                    <div class="export-icon"></div>
+                    <div>
+                        <div style="font-weight: 600;">Excel Spreadsheet</div>
+                        <div style="color: var(--medium-dark); font-size: var(--font-size-sm);">Detailed data for analysis and tracking</div>
+                    </div>
+                </div>
+                
+                <div class="export-option">
+                    <div class="export-icon"></div>
+                    <div>
+                        <div style="font-weight: 600;">Presentation Deck</div>
+                        <div style="color: var(--medium-dark); font-size: var(--font-size-sm);">Ready-to-present slides for stakeholder meetings</div>
+                    </div>
+                </div>
+                
+                <div class="export-option">
+                    <div class="export-icon"></div>
+                    <div>
+                        <div style="font-weight: 600;">Share Link</div>
+                        <div style="color: var(--medium-dark); font-size: var(--font-size-sm);">Secure link for external stakeholders</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: var(--spacing-md); justify-content: flex-end;">
+                <button class="ghost-button">Cancel</button>
+                <button class="primary-button">Export</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

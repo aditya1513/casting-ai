@@ -1,0 +1,213 @@
+{
+  "conversation_scripts": {
+    "flow": "audition_management",
+    "version": "1.0.0",
+    "scenarios": [
+      {
+        "scenario": "bulk_scheduling",
+        "context": "Scheduling auditions for 5 shortlisted actors",
+        "dialogue": [
+          {
+            "speaker": "user",
+            "message": "Schedule auditions for my shortlisted actors",
+            "input_type": "voice"
+          },
+          {
+            "speaker": "ai",
+            "message": "I'll coordinate auditions for your 5 shortlisted actors for the male lead role. Let me check everyone's availability for this week...",
+            "processing_indicator": true,
+            "response_time": "200ms"
+          },
+          {
+            "speaker": "ai",
+            "message": "Here's what I found:\n\n✓ Tuesday: Arjun, Rahul, Priya available\n✓ Wednesday: All 5 actors available\n⚠ Thursday: Ganesh Chaturthi - avoid\n✓ Friday: 4 actors available\n\nI recommend Wednesday at Casting Bay, Andheri from 10 AM - 2:30 PM. Should I book it?",
+            "shows_calendar_visual": true,
+            "response_time": "800ms"
+          },
+          {
+            "speaker": "user",
+            "message": "Yes, book Wednesday"
+          },
+          {
+            "speaker": "ai",
+            "message": "Perfect! Booking confirmed:\n📍 Casting Bay, Andheri\n📅 Wednesday, March 15\n⏰ 10:00 AM - 2:30 PM\n\nI'm now:\n✓ Sending WhatsApp confirmations to all actors\n✓ Sharing scripts and sides\n✓ Adding to team calendars\n✓ Arranging refreshments\n\nWant me to set specific time slots or keep it flexible?",
+            "actions_triggered": ["studio_booking", "actor_notifications", "calendar_updates"],
+            "response_time": "500ms"
+          }
+        ]
+      },
+      {
+        "scenario": "day_of_coordination",
+        "context": "Managing auditions in real-time",
+        "dialogue": [
+          {
+            "speaker": "ai",
+            "message": "Good morning! Auditions start in 2 hours. Quick status:\n\n📍 Casting Bay ready\n👥 Raj (Director) on his way\n🎭 4/5 actors confirmed\n⚠️ Arjun stuck in traffic near Bandra\n\nShould I push Arjun's slot by 30 minutes?",
+            "timestamp": "8:00 AM",
+            "proactive": true
+          },
+          {
+            "speaker": "user",
+            "message": "Yes, adjust the schedule"
+          },
+          {
+            "speaker": "ai",
+            "message": "Schedule adjusted:\n\n10:00 - Rahul\n10:45 - Priya\n11:30 - Arjun (was 10:45)\n12:15 - Lunch break\n12:45 - Vikram\n1:30 - Meera\n\nEveryone notified via WhatsApp. Rahul confirms he's parking now.",
+            "real_time_update": true
+          },
+          {
+            "speaker": "ai",
+            "message": "Rahul's audition starting now. I'm recording. Raj says 'Roll camera'",
+            "timestamp": "10:00 AM",
+            "auto_action": "start_recording"
+          },
+          {
+            "speaker": "ai",
+            "message": "Great take at 00:03:45 - Raj wants to mark this. Rahul's emotional range impressive. Should I note anything specific?",
+            "timestamp": "10:15 AM",
+            "captures_feedback": true
+          }
+        ]
+      },
+      {
+        "scenario": "virtual_audition_setup",
+        "context": "Actor can't come in person",
+        "dialogue": [
+          {
+            "speaker": "ai",
+            "message": "Vikram just messaged - stuck in Pune, can't make it back. Options:\n\n1. Virtual audition today (same time)\n2. Reschedule for next week\n3. Review his recent self-tape\n4. Skip him\n\nWhat works best?",
+            "urgent": true
+          },
+          {
+            "speaker": "user",
+            "message": "Let's do virtual today"
+          },
+          {
+            "speaker": "ai",
+            "message": "Setting up virtual audition:\n\n✓ Zoom link created and sent\n✓ Self-tape guidelines shared\n✓ Lighting tips included\n✓ Script sections marked\n✓ 12:45 PM slot maintained\n\nI've asked him to join 10 mins early for tech check. Want me to record his audition for later review?",
+            "technical_setup": true
+          }
+        ]
+      },
+      {
+        "scenario": "feedback_capture",
+        "context": "Post-audition immediate feedback",
+        "dialogue": [
+          {
+            "speaker": "ai",
+            "message": "Arjun's audition just finished. How did it go?",
+            "timestamp": "post_audition",
+            "quick_rating": true
+          },
+          {
+            "speaker": "user",
+            "message": "Excellent! Best so far",
+            "voice_note": true
+          },
+          {
+            "speaker": "ai",
+            "message": "Noted: Arjun - Excellent (5⭐)\n\nQuick feedback while it's fresh?\n• Screen presence?\n• Dialogue delivery?\n• Character understanding?\n• Chemistry potential?\n\nOr just tell me your thoughts...",
+            "structured_options": true
+          },
+          {
+            "speaker": "user",
+            "message": "Perfect screen presence, great intensity, might be too tall for Priya"
+          },
+          {
+            "speaker": "ai",
+            "message": "Captured:\n✓ Screen presence: Perfect\n✓ Intensity: Great\n⚠ Height compatibility with Priya\n\nShould I schedule a chemistry read with both of them?",
+            "follow_up_action": true
+          }
+        ]
+      },
+      {
+        "scenario": "audition_compilation",
+        "context": "End of day review preparation",
+        "dialogue": [
+          {
+            "speaker": "ai",
+            "message": "All auditions complete! Here's your summary:\n\n✅ 5/5 actors auditioned\n⭐ Standouts: Arjun (5★), Priya (4.5★)\n🔄 Callback needed: Rahul (different scene)\n❌ Not suitable: Vikram (too mature)\n\nI've created a 12-minute highlight reel with best moments from each actor. Want to review now or schedule team discussion?",
+            "summary_mode": true
+          },
+          {
+            "speaker": "user",
+            "message": "Schedule team discussion for tomorrow morning"
+          },
+          {
+            "speaker": "ai",
+            "message": "Team review scheduled:\n\n📅 Tomorrow, 10 AM\n👥 You, Raj, Karan invited\n📹 Zoom link sent\n📎 Highlight reel shared\n📊 Comparison sheet attached\n\nI'll send reminders at 9 AM. Should I prepare anything specific for the discussion?",
+            "meeting_coordination": true
+          }
+        ]
+      },
+      {
+        "scenario": "callback_management",
+        "context": "Organizing second round auditions",
+        "dialogue": [
+          {
+            "speaker": "user",
+            "message": "We need callbacks for Arjun and Rahul"
+          },
+          {
+            "speaker": "ai",
+            "message": "Setting up callbacks for Arjun and Rahul. What specific scenes should they prepare?\n\n• Intense confrontation scene\n• Romantic chemistry read\n• Improvisation test\n• Different character interpretation\n• Director's choice scene",
+            "scene_selection": true
+          },
+          {
+            "speaker": "user",
+            "message": "Chemistry read with female lead"
+          },
+          {
+            "speaker": "ai",
+            "message": "Chemistry read callbacks arranged:\n\n📅 Friday, March 17\n⏰ 11 AM - Arjun + Priya\n⏰ 12 PM - Rahul + Priya\n📍 Same studio\n\nI'll send:\n• Romantic scene excerpts\n• Character relationship notes\n• Chemistry test guidelines\n\nWant me to add any specific moments to test their dynamic?",
+            "callback_specific": true
+          }
+        ]
+      },
+      {
+        "scenario": "weather_disruption",
+        "context": "Mumbai monsoon affecting auditions",
+        "dialogue": [
+          {
+            "speaker": "ai",
+            "message": "⚠️ Weather Alert: Heavy rain warning from 2 PM today. \n\n3 actors coming from Borivali/Malad might get stuck. Options:\n\n1. Move afternoon slots to morning\n2. Switch to virtual auditions\n3. Reschedule to tomorrow\n4. Continue and risk delays\n\nWhat's your preference?",
+            "weather_aware": true,
+            "proactive": true
+          },
+          {
+            "speaker": "user",
+            "message": "Move to morning if possible"
+          },
+          {
+            "speaker": "ai",
+            "message": "Rescheduling in progress:\n\n✓ Vikram can come at 9 AM\n✓ Meera available at 9:45 AM\n⚠ Raj needs to be informed about early start\n✓ Studio available from 8:30 AM\n\nCalling afternoon actors now... 2/3 confirmed for morning slots. Shall I convert the third to virtual?",
+            "real_time_coordination": true
+          }
+        ]
+      }
+    ],
+    "ai_behaviors": {
+      "proactive_monitoring": [
+        "Track actor arrival times",
+        "Monitor traffic conditions",
+        "Check weather updates",
+        "Verify studio readiness",
+        "Ensure team availability"
+      ],
+      "automatic_actions": [
+        "Start/stop recording",
+        "Mark important moments",
+        "Send notifications",
+        "Update schedules",
+        "Generate summaries"
+      ],
+      "contextual_awareness": [
+        "Festival calendar checking",
+        "Traffic pattern recognition",
+        "Meal time considerations",
+        "Actor preference tracking",
+        "Director mood sensing"
+      ]
+    }
+  }
+}

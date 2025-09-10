@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CastMatch Hero - Typography Implementation</title>
+    
+    <!-- Preconnect to font sources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    
+    <!-- Preload critical fonts -->
+    <link rel="preload" href="/fonts/InterDisplay-Variable.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/Inter-Variable.woff2" as="font" type="font/woff2" crossorigin>
+    
+    <!-- Typography System -->
+    <link rel="stylesheet" href="./type-system.css">
+    
+    <!-- Visual Tokens -->
+    <link rel="stylesheet" href="../../visual-systems/landing-page/tokens.css">
+    
+    <!-- Font Loader Script -->
+    <script src="./font-loader.js" defer></script>
+    
+    <style>
+        /* Additional implementation-specific styles */
+        .implementation-demo {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #000000 0%, #0A0A0A 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Language toggle implementation */
+        .language-selector {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 8px;
+            z-index: 100;
+        }
+        
+        .lang-toggle {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .lang-toggle:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .lang-toggle.lang-toggle--active {
+            background: var(--text-accent-cyan);
+            border-color: var(--text-accent-cyan);
+            color: #000000;
+        }
+        
+        /* Content wrapper with proper typography application */
+        .hero-content-wrapper {
+            padding: var(--spacing-8) 0;
+            display: flex;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        /* Typography application examples */
+        .content-block {
+            margin-bottom: var(--spacing-5);
+        }
+        
+        /* Mumbai market emphasis */
+        .mumbai-emphasis {
+            color: var(--text-accent-amber);
+            font-weight: calc(var(--weight-medium) + 50);
+        }
+        
+        /* Bilingual content display */
+        .bilingual-content {
+            transition: opacity 0.3s ease;
+        }
+        
+        .bilingual-content[data-lang]:not([data-lang="en"]) .content-en,
+        .bilingual-content[data-lang="en"] .content-hi {
+            display: none;
+        }
+        
+        /* Trust indicators with proper typography */
+        .trust-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-4);
+            margin-top: var(--spacing-4);
+        }
+        
+        .trust-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-1);
+        }
+        
+        .trust-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-accent-cyan);
+        }
+        
+        /* Performance monitoring overlay */
+        .perf-monitor {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 12px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-accent-cyan);
+            z-index: 1000;
+            display: none;
+        }
+        
+        .perf-monitor.visible {
+            display: block;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 767px) {
+            .hero-headline {
+                margin-bottom: var(--spacing-3);
+            }
+            
+            .hero-cta {
+                width: 100%;
+                justify-content: center;
+                padding: var(--spacing-2-5) var(--spacing-4);
+            }
+            
+            .trust-list {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Language Selector -->
+    <div class="language-selector">
+        <button class="lang-toggle lang-toggle--active" data-lang="en" aria-label="Switch to English">
+            EN
+        </button>
+        <button class="lang-toggle" data-lang="hi" aria-label="हिंदी में स्विच करें">
+            हि
+        </button>
+    </div>
+    
+    <!-- Hero Section with Typography Implementation -->
+    <section class="hero-section implementation-demo" role="banner">
+        <div class="container">
+            <div class="hero-content-wrapper">
+                <div class="grid-12">
+                    <!-- Content Area with Typography -->
+                    <div class="hero-content">
+                        <!-- Bilingual Content Container -->
+                        <div class="bilingual-content" data-lang="en">
+                            
+                            <!-- English Content -->
+                            <div class="content-en">
+                                <!-- Hero Headline with Gradient -->
+                                <h1 class="hero-headline hero-headline--gradient">
+                                    Cast Your Vision,<br>
+                                    Shape Cinema's Future
+                                </h1>
+                                
+                                <!-- Subheadline with Mumbai Emphasis -->
+                                <p class="hero-subheadline">
+                                    Transform <span class="mumbai-emphasis">Mumbai's</span> film industry with 
+                                    AI-powered casting. Connect visionary directors with exceptional talent 
+                                    in seconds, not weeks.
+                                </p>
+                                
+                                <!-- CTA Buttons with Typography Classes -->
+                                <div class="cta-group">
+                                    <button class="cta-primary hero-cta hero-cta--primary">
+                                        Start Casting
+                                    </button>
+                                    <button class="cta-secondary hero-cta hero-cta--secondary">
+                                        Join as Talent
+                                    </button>
+                                </div>
+                                
+                                <!-- Trust Indicators with Typography -->
+                                <div class="trust-list">
+                                    <div class="trust-item hero-trust-text">
+                                        <span class="trust-icon">✓</span>
+                                        <span><span class="trust-number">10,000+</span> Mumbai Talents</span>
+                                    </div>
+                                    <div class="trust-item hero-trust-text">
+                                        <span class="trust-icon">✓</span>
+                                        <span>AI-Powered Matching</span>
+                                    </div>
+                                    <div class="trust-item hero-trust-text">
+                                        <span class="trust-icon">✓</span>
+                                        <span>Instant Auditions</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Hindi Content -->
+                            <div class="content-hi">
+                                <!-- Hero Headline Hindi -->
+                                <h1 class="hero-headline hero-headline--hindi hero-headline--gradient">
+                                    अपनी दृष्टि को साकार करें,<br>
+                                    सिनेमा का भविष्य बनाएं
+                                </h1>
+                                
+                                <!-- Subheadline Hindi -->
+                                <p class="hero-subheadline hero-subheadline--hindi">
+                                    AI-संचालित कास्टिंग के साथ <span class="mumbai-emphasis">मुंबई</span> के 
+                                    फिल्म उद्योग को बदलें। दूरदर्शी निर्देशकों को असाधारण प्रतिभा से सेकंडों में 
+                                    जोड़ें, हफ्तों में नहीं।
+                                </p>
+                                
+                                <!-- CTA Buttons Hindi -->
+                                <div class="cta-group">
+                                    <button class="cta-primary hero-cta hero-cta--primary hero-cta--hindi">
+                                        कास्टिंग शुरू करें
+                                    </button>
+                                    <button class="cta-secondary hero-cta hero-cta--secondary hero-cta--hindi">
+                                        प्रतिभा के रूप में जुड़ें
+                                    </button>
+                                </div>
+                                
+                                <!-- Trust Indicators Hindi -->
+                                <div class="trust-list">
+                                    <div class="trust-item hero-trust-text">
+                                        <span class="trust-icon">✓</span>
+                                        <span><span class="trust-number">10,000+</span> मुंबई प्रतिभाएं</span>
+                                    </div>
+                                    <div class="trust-item hero-trust-text">
+                                        <span class="trust-icon">✓</span>
+                                        <span>AI-संचालित मैचिंग</span>
+                                    </div>
+                                    <div class="trust-item hero-trust-text">
+                                        <span class="trust-icon">✓</span>
+                                        <span>तत्काल ऑडिशन</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Visual Area (Placeholder) -->
+                    <div class="hero-visual">
+                        <div class="visual-container">
+                            <div class="platform-preview">
+                                <div class="preview-card">
+                                    <div class="visual-placeholder hero-caption">
+                                        Talent Card Preview
+                                    </div>
+                                </div>
+                                <div class="preview-card">
+                                    <div class="visual-placeholder hero-caption">
+                                        Talent Card Preview
+                                    </div>
+                                </div>
+                                <div class="preview-card">
+                                    <div class="visual-placeholder hero-caption">
+                                        Talent Card Preview
+                                    </div>
+                                </div>
+                                <div class="preview-card">
+                                    <div class="visual-placeholder hero-caption">
+                                        Talent Card Preview
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Performance Monitor -->
+    <div class="perf-monitor" id="perfMonitor">
+        <div>Font Load Time: <span id="fontLoadTime">--</span>ms</div>
+        <div>Render Time: <span id="renderTime">--</span>ms</div>
+        <div>Language: <span id="currentLang">EN</span></div>
+    </div>
+    
+    <!-- Implementation Script -->
+    <script>
+        // Language toggle functionality
+        const langButtons = document.querySelectorAll('.lang-toggle');
+        const bilingualContent = document.querySelector('.bilingual-content');
+        const perfMonitor = document.getElementById('perfMonitor');
+        const currentLangDisplay = document.getElementById('currentLang');
+        
+        // Handle language switching
+        langButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const lang = this.dataset.lang;
+                
+                // Update active state
+                langButtons.forEach(btn => btn.classList.remove('lang-toggle--active'));
+                this.classList.add('lang-toggle--active');
+                
+                // Switch content
+                bilingualContent.setAttribute('data-lang', lang);
+                
+                // Update document language
+                document.documentElement.lang = lang;
+                
+                // Save preference
+                localStorage.setItem('preferredLanguage', lang);
+                
+                // Update performance monitor
+                currentLangDisplay.textContent = lang.toUpperCase();
+                
+                // Track language switch
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'language_switch', {
+                        event_category: 'Engagement',
+                        event_label: lang
+                    });
+                }
+            });
+        });
+        
+        // Performance monitoring
+        window.addEventListener('load', () => {
+            // Measure font load time
+            if (performance.getEntriesByType) {
+                const resources = performance.getEntriesByType('resource');
+                const fontResources = resources.filter(resource => 
+                    resource.name.includes('.woff') || resource.name.includes('font')
+                );
+                
+                if (fontResources.length > 0) {
+                    const totalFontLoadTime = fontResources.reduce((acc, font) => 
+                        acc + font.duration, 0
+                    );
+                    document.getElementById('fontLoadTime').textContent = 
+                        totalFontLoadTime.toFixed(2);
+                }
+            }
+            
+            // Measure render time
+            if (performance.timing) {
+                const renderTime = performance.timing.loadEventEnd - 
+                                 performance.timing.navigationStart;
+                document.getElementById('renderTime').textContent = renderTime;
+            }
+        });
+        
+        // Toggle performance monitor with keyboard shortcut (Ctrl+Shift+P)
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.shiftKey && e.key === 'P') {
+                perfMonitor.classList.toggle('visible');
+            }
+        });
+        
+        // Load saved language preference
+        const savedLang = localStorage.getItem('preferredLanguage');
+        if (savedLang) {
+            const savedButton = document.querySelector(`[data-lang="${savedLang}"]`);
+            if (savedButton) {
+                savedButton.click();
+            }
+        }
+        
+        // Animate text on scroll (optional enhancement)
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+        
+        const textObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeInUp 0.6s ease-out forwards';
+                }
+            });
+        }, observerOptions);
+        
+        // Observe hero content elements
+        document.querySelectorAll('.hero-headline, .hero-subheadline, .cta-group, .trust-list')
+            .forEach(el => textObserver.observe(el));
+        
+        // Add fade-in animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

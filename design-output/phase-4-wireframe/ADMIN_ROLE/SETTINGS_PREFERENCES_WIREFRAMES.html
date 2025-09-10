@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CastMatch - Settings & Preferences Wireframes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif; background: #f8f9fa; color: #1a1a1a; line-height: 1.5; }
+        .wireframe-container { max-width: 1440px; margin: 0 auto; padding: 40px 20px; }
+        .wireframe-header { text-align: center; margin-bottom: 60px; padding-bottom: 40px; border-bottom: 2px solid #e0e0e0; }
+        .wireframe-title { font-size: 48px; font-weight: 700; margin-bottom: 16px; color: #000; }
+        .wireframe-subtitle { font-size: 20px; color: #666; max-width: 800px; margin: 0 auto; }
+        .section-header { margin: 60px 0 30px; padding: 20px; background: #fff; border-left: 4px solid #333; }
+        .section-title { font-size: 28px; font-weight: 600; margin-bottom: 8px; }
+        .section-description { color: #666; font-size: 16px; }
+        .wireframe-section { background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 40px; margin-bottom: 40px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .settings-layout { display: grid; grid-template-columns: 280px 1fr; gap: 32px; min-height: 600px; }
+        .settings-sidebar { background: #fafafa; border-radius: 8px; padding: 24px; }
+        .settings-menu-item { padding: 12px 16px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 14px; margin-bottom: 4px; transition: all 0.2s; }
+        .settings-menu-item:hover { background: #e0e0e0; }
+        .settings-menu-item.active { background: #333; color: #fff; }
+        .settings-content { padding: 0 24px; }
+        .settings-group { margin-bottom: 40px; }
+        .settings-group-title { font-size: 20px; font-weight: 600; margin-bottom: 24px; }
+        .setting-item { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; border-bottom: 1px solid #f0f0f0; }
+        .setting-info { flex: 1; }
+        .setting-label { font-size: 16px; font-weight: 500; margin-bottom: 4px; }
+        .setting-description { font-size: 14px; color: #666; }
+        .toggle-switch { position: relative; width: 48px; height: 24px; }
+        .toggle-input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #ccc; transition: .4s; border-radius: 24px; }
+        .toggle-slider:before { position: absolute; content: ''; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; transition: .4s; border-radius: 50%; }
+        .toggle-input:checked + .toggle-slider { background: #333; }
+        .toggle-input:checked + .toggle-slider:before { transform: translateX(24px); }
+        .form-input { width: 100%; padding: 12px; border: 1px solid #d0d0d0; border-radius: 8px; font-size: 14px; }
+        .privacy-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+        .privacy-card { border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; }
+        .notification-channel { display: grid; grid-template-columns: 1fr repeat(4, 80px); gap: 16px; align-items: center; padding: 16px; background: #fafafa; border-radius: 8px; margin-bottom: 12px; }
+        .integration-card { border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+        .integration-icon { width: 48px; height: 48px; background: #e0e0e0; border-radius: 8px; }
+        .annotation { background: #fffbf0; border: 1px solid #ffd700; border-radius: 4px; padding: 12px; margin: 20px 0; font-size: 13px; color: #666; }
+        .annotation-title { font-weight: 600; color: #333; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+    <div class="wireframe-container">
+        <div class="wireframe-header">
+            <h1 class="wireframe-title">Settings & Preferences System</h1>
+            <p class="wireframe-subtitle">Complete account management with privacy controls, notifications, integrations, and personalization options</p>
+        </div>
+
+        <!-- 1. Main Settings Dashboard -->
+        <div class="section-header">
+            <h2 class="section-title">1. Settings Dashboard Overview</h2>
+            <p class="section-description">Centralized control panel for all account and platform settings</p>
+        </div>
+        
+        <div class="wireframe-section">
+            <div class="settings-layout">
+                <div class="settings-sidebar">
+                    <div style="margin-bottom: 24px;">
+                        <input type="search" placeholder="Search settings..." style="width: 100%; padding: 10px; border: 1px solid #d0d0d0; border-radius: 6px;">
+                    </div>
+                    
+                    <div class="settings-menu-item active">
+                        <span>👤</span>
+                        <span>Account</span>
+                    </div>
+                    <div class="settings-menu-item">
+                        <span>🔐</span>
+                        <span>Privacy & Security</span>
+                    </div>
+                    <div class="settings-menu-item">
+                        <span>🔔</span>
+                        <span>Notifications</span>
+                    </div>
+                    <div class="settings-menu-item">
+                        <span>💳</span>
+                        <span>Billing</span>
+                    </div>
+                    <div class="settings-menu-item">
+                        <span>🔗</span>
+                        <span>Integrations</span>
+                    </div>
+                    <div class="settings-menu-item">
+                        <span>🎨</span>
+                        <span>Appearance</span>
+                    </div>
+                    <div class="settings-menu-item">
+                        <span>🌐</span>
+                        <span>Language & Region</span>
+                    </div>
+                    <div class="settings-menu-item">
+                        <span>📱</span>
+                        <span>Mobile App</span>
+                    </div>
+                    <div class="settings-menu-item">
+                        <span>⚡</span>
+                        <span>Advanced</span>
+                    </div>
+                </div>
+                
+                <div class="settings-content">
+                    <h2 style="font-size: 24px; margin-bottom: 32px;">Account Settings</h2>
+                    
+                    <div class="settings-group">
+                        <h3 class="settings-group-title">Personal Information</h3>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;">
+                            <div>
+                                <label style="display: block; font-size: 14px; color: #666; margin-bottom: 8px;">First Name</label>
+                                <input type="text" class="form-input" value="Rajesh">
+                            </div>
+                            <div>
+                                <label style="display: block; font-size: 14px; color: #666; margin-bottom: 8px;">Last Name</label>
+                                <input type="text" class="form-input" value="Kumar">
+                            </div>
+                            <div>
+                                <label style="display: block; font-size: 14px; color: #666; margin-bottom: 8px;">Email Address</label>
+                                <input type="email" class="form-input" value="rajesh.kumar@email.com">
+                            </div>
+                            <div>
+                                <label style="display: block; font-size: 14px; color: #666; margin-bottom: 8px;">Phone Number</label>
+                                <input type="tel" class="form-input" value="+91 98765 43210">
+                            </div>
+                        </div>
+                        
+                        <button style="padding: 12px 24px; background: #333; color: #fff; border: none; border-radius: 6px; cursor: pointer;">Save Changes</button>
+                    </div>
+                    
+                    <div class="settings-group">
+                        <h3 class="settings-group-title">Account Security</h3>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-label">Two-Factor Authentication</div>
+                                <div class="setting-description">Add an extra layer of security to your account</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-label">Login Alerts</div>
+                                <div class="setting-description">Get notified of new login attempts</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-input" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-label">Password</div>
+                                <div class="setting-description">Last changed 30 days ago</div>
+                            </div>
+                            <button style="padding: 8px 16px; background: #fff; border: 1px solid #333; border-radius: 6px; cursor: pointer;">Change Password</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="annotation">
+                <div class="annotation-title">⚙️ Account Features</div>
+                Profile management, Password reset, 2FA with OTP/Authenticator, Session management, Login history, Device management, Account export, Account deletion with grace period.
+            </div>
+        </div>
+
+        <!-- 2. Privacy & Security Settings -->
+        <div class="section-header">
+            <h2 class="section-title">2. Privacy & Security Controls</h2>
+            <p class="section-description">Granular control over data privacy and platform security</p>
+        </div>
+        
+        <div class="wireframe-section">
+            <h3 style="font-size: 24px; margin-bottom: 32px;">Privacy Settings</h3>
+            
+            <div class="privacy-grid">
+                <div class="privacy-card">
+                    <h4 style="font-size: 18px; margin-bottom: 20px;">Profile Visibility</h4>
+                    
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="radio" name="visibility" checked>
+                            <div>
+                                <div style="font-weight: 500;">Public</div>
+                                <div style="font-size: 12px; color: #666;">Anyone can view your profile</div>
+                            </div>
+                        </label>
+                    </div>
+                    
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="radio" name="visibility">
+                            <div>
+                                <div style="font-weight: 500;">Industry Only</div>
+                                <div style="font-size: 12px; color: #666;">Only verified industry professionals</div>
+                            </div>
+                        </label>
+                    </div>
+                    
+                    <div>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="radio" name="visibility">
+                            <div>
+                                <div style="font-weight: 500;">Private</div>
+                                <div style="font-size: 12px; color: #666;">Only people you approve</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="privacy-card">
+                    <h4 style="font-size: 18px; margin-bottom: 20px;">Search Inclusion</h4>
+                    
+                    <div class="setting-item" style="padding: 12px 0;">
+                        <div class="setting-info">
+                            <div style="font-size: 14px;">Appear in talent search</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" class="toggle-input" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="setting-item" style="padding: 12px 0;">
+                        <div class="setting-info">
+                            <div style="font-size: 14px;">Show in recommendations</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" class="toggle-input" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="setting-item" style="padding: 12px 0;">
+                        <div class="setting-info">
+                            <div style="font-size: 14px;">Allow Google indexing</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" class="toggle-input">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 32px;">
+                <h4 style="font-size: 18px; margin-bottom: 20px;">Data Privacy</h4>
+                
+                <div style="background: #fafafa; border-radius: 8px; padding: 24px;">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">Contact Information</div>
+                            <div class="setting-description">Who can see your phone and email</div>
+                        </div>
+                        <select style="padding: 8px 12px; border: 1px solid #d0d0d0; border-radius: 6px;">
+                            <option>Only Me</option>
+                            <option>Connections</option>
+                            <option>Everyone</option>
+                        </select>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">Work History</div>
+                            <div class="setting-description">Control who sees your past projects</div>
+                        </div>
+                        <select style="padding: 8px 12px; border: 1px solid #d0d0d0; border-radius: 6px;">
+                            <option>Public</option>
+                            <option>Industry Only</option>
+                            <option>Private</option>
+                        </select>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">Analytics Tracking</div>
+                            <div class="setting-description">Allow us to collect usage data for improvements</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" class="toggle-input" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="annotation">
+                <div class="annotation-title">🔒 Privacy Features</div>
+                GDPR compliance, Data export, Right to deletion, Consent management, Cookie preferences, Third-party data sharing controls, Audit logs, Privacy policy versioning.
+            </div>
+        </div>
+
+        <!-- 3. Notification Preferences -->
+        <div class="section-header">
+            <h2 class="section-title">3. Notification Preferences</h2>
+            <p class="section-description">Customize how and when you receive platform notifications</p>
+        </div>
+        
+        <div class="wireframe-section">
+            <h3 style="font-size: 24px; margin-bottom: 32px;">Notification Settings</h3>
+            
+            <div style="margin-bottom: 32px;">
+                <h4 style="font-size: 18px; margin-bottom: 20px;">Notification Channels</h4>
+                
+                <div class="notification-channel">
+                    <div style="font-weight: 500;">New Audition Matches</div>
+                    <label style="text-align: center;">
+                        <input type="checkbox" checked>
+                        <div style="font-size: 12px; color: #666;">In-App</div>
+                    </label>
+                    <label style="text-align: center;">
+                        <input type="checkbox" checked>
+                        <div style="font-size: 12px; color: #666;">Email</div>
+                    </label>
+                    <label style="text-align: center;">
+                        <input type="checkbox">
+                        <div style="font-size: 12px; color: #666;">SMS</div>
+                    </label>
+                    <label style="text-align: center;">
+                        <input type="checkbox" checked>
+                        <div style="font-size: 12px; color: #666;">Push</div>
+                    </label>
+                </div>
+                
+                <div class="notification-channel">
+                    <div style="font-weight: 500;">Messages</div>
+                    <label style="text-align: center;">
+                        <input type="checkbox" checked>
+                        <div style="font-size: 12px; color: #666;">In-App</div>
+                    </label>
+                    <label style="text-align: center;">
+                        <input type="checkbox">
+                        <div style="font-size: 12px; color: #666;">Email</div>
+                    </label>
+                    <label style="text-align: center;">
+                        <input type="checkbox" checked>
+                        <div style="font-size: 12px; color: #666;">SMS</div>
+                    </label>
+                    <label style="text-align: center;">
+                        <input type="checkbox" checked>
+                        <div style="font-size: 12px; color: #666;">Push</div>
+                    </label>
+                </div>
+                
+                <div class="notification-channel">
+                    <div style="font-weight: 500;">Callback Requests</div>
+                    <label style="text-align: center;">
+                        <input type="checkbox" checked>
+                        <div style="font-size: 12px; color: #666;">In-App</div>
+                    </label>
+                    <label style="text-align: center;">
+                        <input type="checkbox" checked>
+                        <div style="font-size: 12px; color: #666;">Email</div>
+                    </label>
+                    <label style="text-align: center;">
+                        <input type="checkbox" checked>
+                        <div style="font-size: 12px; color: #666;">SMS</div>
+                    </label>
+                    <label style="text-align: center;">
+                        <input type="checkbox" checked>
+                        <div style="font-size: 12px; color: #666;">Push</div>
+                    </label>
+                </div>
+                
+                <div class="notification-channel">
+                    <div style="font-weight: 500;">Marketing Updates</div>
+                    <label style="text-align: center;">
+                        <input type="checkbox">
+                        <div style="font-size: 12px; color: #666;">In-App</div>
+                    </label>
+                    <label style="text-align: center;">
+                        <input type="checkbox" checked>
+                        <div style="font-size: 12px; color: #666;">Email</div>
+                    </label>
+                    <label style="text-align: center;">
+                        <input type="checkbox">
+                        <div style="font-size: 12px; color: #666;">SMS</div>
+                    </label>
+                    <label style="text-align: center;">
+                        <input type="checkbox">
+                        <div style="font-size: 12px; color: #666;">Push</div>
+                    </label>
+                </div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <div style="background: #fafafa; padding: 20px; border-radius: 8px;">
+                    <h4 style="font-size: 16px; margin-bottom: 16px;">Quiet Hours</h4>
+                    <div style="margin-bottom: 12px;">
+                        <label style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" checked>
+                            <span>Enable quiet hours</span>
+                        </label>
+                    </div>
+                    <div style="display: flex; gap: 12px;">
+                        <input type="time" value="22:00" style="padding: 8px; border: 1px solid #d0d0d0; border-radius: 4px;">
+                        <span>to</span>
+                        <input type="time" value="08:00" style="padding: 8px; border: 1px solid #d0d0d0; border-radius: 4px;">
+                    </div>
+                </div>
+                
+                <div style="background: #fafafa; padding: 20px; border-radius: 8px;">
+                    <h4 style="font-size: 16px; margin-bottom: 16px;">WhatsApp Notifications</h4>
+                    <div style="margin-bottom: 12px;">
+                        <label style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox">
+                            <span>Enable WhatsApp updates</span>
+                        </label>
+                    </div>
+                    <input type="tel" placeholder="WhatsApp number" style="width: 100%; padding: 8px; border: 1px solid #d0d0d0; border-radius: 4px;">
+                </div>
+            </div>
+            
+            <div class="annotation">
+                <div class="annotation-title">🔔 Notification Features</div>
+                Multi-channel delivery, Frequency capping, Digest options, Priority levels, Do not disturb mode, Snooze notifications, Channel-specific preferences, Unsubscribe management.
+            </div>
+        </div>
+
+        <!-- 4. Integrations -->
+        <div class="section-header">
+            <h2 class="section-title">4. Third-Party Integrations</h2>
+            <p class="section-description">Connect external services and platforms</p>
+        </div>
+        
+        <div class="wireframe-section">
+            <h3 style="font-size: 24px; margin-bottom: 32px;">Connected Services</h3>
+            
+            <div class="integration-card">
+                <div class="integration-icon"></div>
+                <div style="flex: 1;">
+                    <div style="font-size: 16px; font-weight: 600;">Google Calendar</div>
+                    <div style="font-size: 14px; color: #666;">Sync audition schedules automatically</div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="color: #4CAF50; font-size: 14px;">● Connected</span>
+                    <button style="padding: 8px 16px; background: #fff; border: 1px solid #d0d0d0; border-radius: 6px; cursor: pointer;">Disconnect</button>
+                </div>
+            </div>
+            
+            <div class="integration-card">
+                <div class="integration-icon"></div>
+                <div style="flex: 1;">
+                    <div style="font-size: 16px; font-weight: 600;">Instagram</div>
+                    <div style="font-size: 14px; color: #666;">Import portfolio from Instagram</div>
+                </div>
+                <button style="padding: 8px 16px; background: #333; color: #fff; border: none; border-radius: 6px; cursor: pointer;">Connect</button>
+            </div>
+            
+            <div class="integration-card">
+                <div class="integration-icon"></div>
+                <div style="flex: 1;">
+                    <div style="font-size: 16px; font-weight: 600;">LinkedIn</div>
+                    <div style="font-size: 14px; color: #666;">Import professional experience</div>
+                </div>
+                <button style="padding: 8px 16px; background: #333; color: #fff; border: none; border-radius: 6px; cursor: pointer;">Connect</button>
+            </div>
+            
+            <div class="integration-card">
+                <div class="integration-icon"></div>
+                <div style="flex: 1;">
+                    <div style="font-size: 16px; font-weight: 600;">YouTube</div>
+                    <div style="font-size: 14px; color: #666;">Showcase video portfolio</div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="color: #4CAF50; font-size: 14px;">● Connected</span>
+                    <button style="padding: 8px 16px; background: #fff; border: 1px solid #d0d0d0; border-radius: 6px; cursor: pointer;">Manage</button>
+                </div>
+            </div>
+            
+            <div class="annotation">
+                <div class="annotation-title">🔗 Integration Features</div>
+                OAuth 2.0 authentication, API key management, Webhook configuration, Data sync settings, Import/export controls, Permission scopes, Integration logs, Rate limit monitoring.
+            </div>
+        </div>
+
+        <!-- Final Summary -->
+        <div class="section-header">
+            <h2 class="section-title">Complete Settings Architecture</h2>
+            <p class="section-description">Comprehensive configuration and preference management</p>
+        </div>
+        
+        <div class="wireframe-section">
+            <div style="background: #f0f0f0; padding: 32px; border-radius: 8px;">
+                <h3 style="font-size: 24px; margin-bottom: 24px; text-align: center;">Settings Feature Matrix</h3>
+                
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
+                    <div style="background: #fff; padding: 20px; border-radius: 8px;">
+                        <h4 style="font-size: 16px; margin-bottom: 12px; color: #333;">Account Management</h4>
+                        <ul style="list-style: none; padding: 0; font-size: 14px; color: #666; line-height: 1.8;">
+                            <li>✓ Profile editing</li>
+                            <li>✓ Password management</li>
+                            <li>✓ 2FA setup</li>
+                            <li>✓ Session control</li>
+                            <li>✓ Device management</li>
+                            <li>✓ Data export</li>
+                            <li>✓ Account deletion</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="background: #fff; padding: 20px; border-radius: 8px;">
+                        <h4 style="font-size: 16px; margin-bottom: 12px; color: #333;">Privacy Controls</h4>
+                        <ul style="list-style: none; padding: 0; font-size: 14px; color: #666; line-height: 1.8;">
+                            <li>✓ Visibility settings</li>
+                            <li>✓ Search inclusion</li>
+                            <li>✓ Data sharing</li>
+                            <li>✓ Cookie preferences</li>
+                            <li>✓ GDPR compliance</li>
+                            <li>✓ Consent management</li>
+                            <li>✓ Blocking controls</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="background: #fff; padding: 20px; border-radius: 8px;">
+                        <h4 style="font-size: 16px; margin-bottom: 12px; color: #333;">Platform Features</h4>
+                        <ul style="list-style: none; padding: 0; font-size: 14px; color: #666; line-height: 1.8;">
+                            <li>✓ Notification settings</li>
+                            <li>✓ Language selection</li>
+                            <li>✓ Theme preferences</li>
+                            <li>✓ Accessibility options</li>
+                            <li>✓ Integration management</li>
+                            <li>✓ API access</li>
+                            <li>✓ Advanced settings</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CastMatch - Talent Applications Tracking Wireframes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #f0f0f0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .documentation {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+        }
+        
+        h1, h2, h3 {
+            color: #1a1a1a;
+            margin-bottom: 20px;
+        }
+        
+        .wireframe-container {
+            background: white;
+            border: 2px solid #333;
+            border-radius: 8px;
+            margin-bottom: 60px;
+            overflow: hidden;
+        }
+        
+        .device-header {
+            background: #333;
+            color: white;
+            padding: 10px 20px;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .screen-dots {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #666;
+        }
+        
+        /* Layout Styles */
+        .applications-layout {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            min-height: 800px;
+        }
+        
+        .sidebar {
+            background: #f8f8f8;
+            border-right: 1px solid #e0e0e0;
+            padding: 20px;
+        }
+        
+        .nav-menu {
+            list-style: none;
+        }
+        
+        .nav-item {
+            display: block;
+            padding: 12px 16px;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.2s;
+        }
+        
+        .nav-item:hover {
+            background: #f0f0f0;
+            transform: translateX(4px);
+        }
+        
+        .nav-item.active {
+            background: #333;
+            color: white;
+        }
+        
+        .main-content {
+            padding: 30px;
+            background: #fafafa;
+        }
+        
+        /* Application Pipeline */
+        .pipeline-view {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .pipeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .pipeline-stages {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .stage-column {
+            background: #f8f8f8;
+            border-radius: 8px;
+            padding: 15px;
+            min-height: 400px;
+        }
+        
+        .stage-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .stage-count {
+            background: #333;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+        
+        .application-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .application-card:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        
+        .application-card.priority {
+            border-left: 3px solid #ff9800;
+        }
+        
+        .application-card.urgent {
+            border-left: 3px solid #f44336;
+        }
+        
+        .application-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        
+        .application-company {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .application-date {
+            font-size: 12px;
+            color: #888;
+        }
+        
+        .application-tags {
+            display: flex;
+            gap: 6px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .tag {
+            padding: 3px 8px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            font-size: 11px;
+            color: #666;
+        }
+        
+        /* Filter Bar */
+        .filter-bar {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px 15px;
+            border: 1px solid #d0d0d0;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .filter-select {
+            padding: 10px 15px;
+            border: 1px solid #d0d0d0;
+            border-radius: 6px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+        }
+        
+        .filter-chips {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .chip {
+            padding: 6px 12px;
+            background: #f0f0f0;
+            border: 1px solid #d0d0d0;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .chip.active {
+            background: #333;
+            color: white;
+            border-color: #333;
+        }
+        
+        /* List View */
+        .applications-list {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .list-header {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 120px 100px;
+            padding: 15px 20px;
+            background: #f8f8f8;
+            border-bottom: 2px solid #e0e0e0;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            color: #666;
+        }
+        
+        .list-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 120px 100px;
+            padding: 20px;
+            border-bottom: 1px solid #f0f0f0;
+            align-items: center;
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+        
+        .list-row:hover {
+            background: #fafafa;
+        }
+        
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            text-align: center;
+            display: inline-block;
+        }
+        
+        .status-badge.submitted {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .status-badge.review {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+        
+        .status-badge.shortlisted {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+        
+        .status-badge.scheduled {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+        
+        .status-badge.rejected {
+            background: #ffebee;
+            color: #c62828;
+        }
+        
+        /* Analytics Section */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .metric-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .metric-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .metric-label {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .metric-change {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #888;
+        }
+        
+        .metric-change.positive {
+            color: #4caf50;
+        }
+        
+        .metric-change.negative {
+            color: #f44336;
+        }
+        
+        /* Detail Panel */
+        .application-detail {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 30px;
+        }
+        
+        .detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .detail-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: #333;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: white;
+            border: 1px solid #d0d0d0;
+            color: #333;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 40px;
+            margin-top: 30px;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e0e0e0;
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 25px;
+        }
+        
+        .timeline-marker {
+            position: absolute;
+            left: -30px;
+            width: 12px;
+            height: 12px;
+            background: white;
+            border: 2px solid #333;
+            border-radius: 50%;
+        }
+        
+        .timeline-content {
+            background: #f8f8f8;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .applications-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .pipeline-stages {
+                grid-template-columns: 1fr;
+            }
+            
+            .analytics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .list-header,
+            .list-row {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Documentation -->
+    <div class="documentation">
+        <h1>CastMatch - Talent Applications Tracking Wireframes</h1>
+        <p><strong>Purpose:</strong> Comprehensive application management system for talents to track, manage, and analyze their casting applications throughout the entire pipeline.</p>
+        
+        <h2>Information Architecture</h2>
+        <ul>
+            <li><strong>Route:</strong> /dashboard/applications</li>
+            <li><strong>User Type:</strong> Authenticated Talent</li>
+            <li><strong>Priority:</strong> P1 - Critical Path</li>
+            <li><strong>Dependencies:</strong> Application API, Analytics Service, Notification System</li>
+        </ul>
+        
+        <h2>Application Status Pipeline</h2>
+        <ol>
+            <li><strong>Submitted:</strong> Application sent, awaiting review</li>
+            <li><strong>Under Review:</strong> Casting director reviewing application</li>
+            <li><strong>Shortlisted:</strong> Selected for further consideration</li>
+            <li><strong>Audition Scheduled:</strong> Invited for audition</li>
+            <li><strong>Decision:</strong> Final outcome (Selected/Not Selected)</li>
+        </ol>
+        
+        <h2>Key Features</h2>
+        <ul>
+            <li>Kanban-style pipeline visualization</li>
+            <li>List view with sorting and filtering</li>
+            <li>Application analytics and insights</li>
+            <li>Quick actions and batch operations</li>
+            <li>Application history and timeline</li>
+            <li>Template management for quick reapply</li>
+        </ul>
+    </div>
+    
+    <!-- Pipeline View - Default State -->
+    <div class="wireframe-container">
+        <div class="device-header">
+            <div class="screen-dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            <span>Desktop - Applications Pipeline View (1440x900)</span>
+            <span>Kanban Board</span>
+        </div>
+        
+        <div class="applications-layout">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <nav class="nav-menu">
+                    <a href="#" class="nav-item">🏠 Dashboard</a>
+                    <a href="#" class="nav-item">👤 My Profile</a>
+                    <a href="#" class="nav-item">🎬 Portfolio</a>
+                    <a href="#" class="nav-item active">📋 Applications</a>
+                    <a href="#" class="nav-item">🎭 Auditions</a>
+                    <a href="#" class="nav-item">📅 Calendar</a>
+                    <a href="#" class="nav-item">💬 Messages</a>
+                    <a href="#" class="nav-item">⚙️ Settings</a>
+                </nav>
+                
+                <div style="margin-top: 30px; padding: 20px; background: white; border: 1px solid #e0e0e0; border-radius: 8px;">
+                    <h4 style="margin-bottom: 15px;">Quick Stats</h4>
+                    <div style="margin-bottom: 10px;">
+                        <div style="font-size: 24px; font-weight: bold;">23</div>
+                        <div style="font-size: 12px; color: #666;">Active Applications</div>
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <div style="font-size: 24px; font-weight: bold;">68%</div>
+                        <div style="font-size: 12px; color: #666;">Response Rate</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 24px; font-weight: bold;">12</div>
+                        <div style="font-size: 12px; color: #666;">This Month</div>
+                    </div>
+                </div>
+            </aside>
+            
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Header -->
+                <div class="pipeline-header">
+                    <div>
+                        <h1>My Applications</h1>
+                        <p style="color: #666; margin-top: 5px;">Track and manage all your casting applications</p>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-secondary">📊 Analytics</button>
+                        <button class="btn btn-primary">+ New Application</button>
+                    </div>
+                </div>
+                
+                <!-- Filter Bar -->
+                <div class="filter-bar">
+                    <input type="search" class="search-input" placeholder="Search applications...">
+                    <select class="filter-select">
+                        <option>All Types</option>
+                        <option>Film</option>
+                        <option>TV Series</option>
+                        <option>Commercial</option>
+                        <option>Theater</option>
+                    </select>
+                    <select class="filter-select">
+                        <option>All Dates</option>
+                        <option>This Week</option>
+                        <option>This Month</option>
+                        <option>Last 3 Months</option>
+                    </select>
+                    <div class="filter-chips">
+                        <div class="chip active">All (23)</div>
+                        <div class="chip">Priority (5)</div>
+                        <div class="chip">Urgent (2)</div>
+                    </div>
+                </div>
+                
+                <!-- Pipeline Stages -->
+                <div class="pipeline-view">
+                    <div class="pipeline-stages">
+                        <!-- Submitted -->
+                        <div class="stage-column">
+                            <div class="stage-header">
+                                <h3 style="font-size: 14px;">Submitted</h3>
+                                <span class="stage-count">8</span>
+                            </div>
+                            <div class="application-card">
+                                <div class="application-title">Lead Role - Mumbai Dreams</div>
+                                <div class="application-company">Dharma Productions</div>
+                                <div class="application-date">Applied 2 days ago</div>
+                                <div class="application-tags">
+                                    <span class="tag">Film</span>
+                                    <span class="tag">Lead</span>
+                                </div>
+                            </div>
+                            <div class="application-card priority">
+                                <div class="application-title">Supporting Actor</div>
+                                <div class="application-company">Excel Entertainment</div>
+                                <div class="application-date">Applied 5 days ago</div>
+                                <div class="application-tags">
+                                    <span class="tag">TV Series</span>
+                                </div>
+                            </div>
+                            <div class="application-card">
+                                <div class="application-title">Commercial Model</div>
+                                <div class="application-company">Leo Burnett</div>
+                                <div class="application-date">Applied 1 week ago</div>
+                                <div class="application-tags">
+                                    <span class="tag">Ad</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Under Review -->
+                        <div class="stage-column">
+                            <div class="stage-header">
+                                <h3 style="font-size: 14px;">Under Review</h3>
+                                <span class="stage-count">6</span>
+                            </div>
+                            <div class="application-card">
+                                <div class="application-title">Character Role</div>
+                                <div class="application-company">Red Chillies</div>
+                                <div class="application-date">In review for 3 days</div>
+                                <div class="application-tags">
+                                    <span class="tag">Film</span>
+                                    <span class="tag">Character</span>
+                                </div>
+                            </div>
+                            <div class="application-card urgent">
+                                <div class="application-title">Dance Sequence</div>
+                                <div class="application-company">YRF Studios</div>
+                                <div class="application-date">In review for 5 days</div>
+                                <div class="application-tags">
+                                    <span class="tag">Film</span>
+                                    <span class="tag">Urgent</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Shortlisted -->
+                        <div class="stage-column">
+                            <div class="stage-header">
+                                <h3 style="font-size: 14px;">Shortlisted</h3>
+                                <span class="stage-count">5</span>
+                            </div>
+                            <div class="application-card">
+                                <div class="application-title">The Rising Star</div>
+                                <div class="application-company">Balaji Telefilms</div>
+                                <div class="application-date">Shortlisted yesterday</div>
+                                <div class="application-tags">
+                                    <span class="tag">TV Series</span>
+                                    <span class="tag">Lead</span>
+                                </div>
+                            </div>
+                            <div class="application-card priority">
+                                <div class="application-title">Brand Ambassador</div>
+                                <div class="application-company">Nike India</div>
+                                <div class="application-date">Shortlisted 3 days ago</div>
+                                <div class="application-tags">
+                                    <span class="tag">Commercial</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Audition Scheduled -->
+                        <div class="stage-column">
+                            <div class="stage-header">
+                                <h3 style="font-size: 14px;">Audition Scheduled</h3>
+                                <span class="stage-count">3</span>
+                            </div>
+                            <div class="application-card urgent">
+                                <div class="application-title">Mumbai Nights</div>
+                                <div class="application-company">Phantom Films</div>
+                                <div class="application-date">Tomorrow, 3:00 PM</div>
+                                <div class="application-tags">
+                                    <span class="tag">Film</span>
+                                    <span class="tag" style="background: #ffebee; color: #c62828;">Tomorrow</span>
+                                </div>
+                            </div>
+                            <div class="application-card">
+                                <div class="application-title">Web Series Lead</div>
+                                <div class="application-company">Netflix India</div>
+                                <div class="application-date">Dec 28, 11:00 AM</div>
+                                <div class="application-tags">
+                                    <span class="tag">Web Series</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Decision -->
+                        <div class="stage-column">
+                            <div class="stage-header">
+                                <h3 style="font-size: 14px;">Decision</h3>
+                                <span class="stage-count">1</span>
+                            </div>
+                            <div class="application-card" style="border-left: 3px solid #4caf50;">
+                                <div class="application-title">Coffee Commercial</div>
+                                <div class="application-company">Nescafe</div>
+                                <div class="application-date">Selected! 🎉</div>
+                                <div class="application-tags">
+                                    <span class="tag" style="background: #e8f5e9; color: #2e7d32;">Selected</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <!-- List View -->
+    <div class="wireframe-container">
+        <div class="device-header">
+            <div class="screen-dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            <span>Desktop - Applications List View</span>
+            <span>Table Format</span>
+        </div>
+        
+        <div class="applications-layout">
+            <aside class="sidebar">
+                <nav class="nav-menu">
+                    <a href="#" class="nav-item">🏠 Dashboard</a>
+                    <a href="#" class="nav-item">👤 My Profile</a>
+                    <a href="#" class="nav-item">🎬 Portfolio</a>
+                    <a href="#" class="nav-item active">📋 Applications</a>
+                    <a href="#" class="nav-item">🎭 Auditions</a>
+                    <a href="#" class="nav-item">📅 Calendar</a>
+                    <a href="#" class="nav-item">💬 Messages</a>
+                    <a href="#" class="nav-item">⚙️ Settings</a>
+                </nav>
+            </aside>
+            
+            <main class="main-content">
+                <!-- Toggle View Buttons -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                    <h1>Applications List</h1>
+                    <div style="display: flex; gap: 5px; background: #f0f0f0; padding: 5px; border-radius: 6px;">
+                        <button style="padding: 8px 12px; background: white; border: none; border-radius: 4px;">📊 Pipeline</button>
+                        <button style="padding: 8px 12px; background: #333; color: white; border: none; border-radius: 4px;">📋 List</button>
+                        <button style="padding: 8px 12px; background: white; border: none; border-radius: 4px;">📈 Analytics</button>
+                    </div>
+                </div>
+                
+                <!-- List Table -->
+                <div class="applications-list">
+                    <div class="list-header">
+                        <div>Project</div>
+                        <div>Company</div>
+                        <div>Type</div>
+                        <div>Applied</div>
+                        <div>Status</div>
+                        <div>Actions</div>
+                    </div>
+                    
+                    <div class="list-row">
+                        <div>
+                            <div style="font-weight: 600;">Mumbai Dreams - Lead Role</div>
+                            <div style="font-size: 12px; color: #666; margin-top: 4px;">Feature Film • Hindi</div>
+                        </div>
+                        <div>Dharma Productions</div>
+                        <div>Film</div>
+                        <div>2 days ago</div>
+                        <div><span class="status-badge submitted">Submitted</span></div>
+                        <div>
+                            <button style="padding: 6px 10px; background: white; border: 1px solid #d0d0d0; border-radius: 4px; font-size: 12px;">View</button>
+                        </div>
+                    </div>
+                    
+                    <div class="list-row">
+                        <div>
+                            <div style="font-weight: 600;">The Rising Star</div>
+                            <div style="font-size: 12px; color: #666; margin-top: 4px;">TV Series • 13 Episodes</div>
+                        </div>
+                        <div>Balaji Telefilms</div>
+                        <div>TV Series</div>
+                        <div>5 days ago</div>
+                        <div><span class="status-badge shortlisted">Shortlisted</span></div>
+                        <div>
+                            <button style="padding: 6px 10px; background: white; border: 1px solid #d0d0d0; border-radius: 4px; font-size: 12px;">View</button>
+                        </div>
+                    </div>
+                    
+                    <div class="list-row">
+                        <div>
+                            <div style="font-weight: 600;">Mumbai Nights</div>
+                            <div style="font-size: 12px; color: #666; margin-top: 4px;">Feature Film • Drama</div>
+                        </div>
+                        <div>Phantom Films</div>
+                        <div>Film</div>
+                        <div>1 week ago</div>
+                        <div><span class="status-badge scheduled">Audition Tomorrow</span></div>
+                        <div>
+                            <button style="padding: 6px 10px; background: #333; color: white; border: none; border-radius: 4px; font-size: 12px;">Prepare</button>
+                        </div>
+                    </div>
+                    
+                    <div class="list-row">
+                        <div>
+                            <div style="font-weight: 600;">Coffee Commercial</div>
+                            <div style="font-size: 12px; color: #666; margin-top: 4px;">30 sec TVC</div>
+                        </div>
+                        <div>Nescafe</div>
+                        <div>Commercial</div>
+                        <div>2 weeks ago</div>
+                        <div><span class="status-badge shortlisted" style="background: #e8f5e9; color: #2e7d32;">Selected</span></div>
+                        <div>
+                            <button style="padding: 6px 10px; background: white; border: 1px solid #d0d0d0; border-radius: 4px; font-size: 12px;">Details</button>
+                        </div>
+                    </div>
+                    
+                    <div class="list-row">
+                        <div>
+                            <div style="font-weight: 600;">Dance Sequence</div>
+                            <div style="font-size: 12px; color: #666; margin-top: 4px;">Item Number</div>
+                        </div>
+                        <div>YRF Studios</div>
+                        <div>Film</div>
+                        <div>2 weeks ago</div>
+                        <div><span class="status-badge review">Under Review</span></div>
+                        <div>
+                            <button style="padding: 6px 10px; background: white; border: 1px solid #d0d0d0; border-radius: 4px; font-size: 12px;">View</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Pagination -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+                    <div style="color: #666; font-size: 14px;">Showing 1-10 of 23 applications</div>
+                    <div style="display: flex; gap: 5px;">
+                        <button style="padding: 8px 12px; background: white; border: 1px solid #d0d0d0; border-radius: 4px;">Previous</button>
+                        <button style="padding: 8px 12px; background: #333; color: white; border: none; border-radius: 4px;">1</button>
+                        <button style="padding: 8px 12px; background: white; border: 1px solid #d0d0d0; border-radius: 4px;">2</button>
+                        <button style="padding: 8px 12px; background: white; border: 1px solid #d0d0d0; border-radius: 4px;">3</button>
+                        <button style="padding: 8px 12px; background: white; border: 1px solid #d0d0d0; border-radius: 4px;">Next</button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <!-- Application Detail View -->
+    <div class="wireframe-container">
+        <div class="device-header">
+            <div class="screen-dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            <span>Desktop - Application Detail</span>
+            <span>Full Information</span>
+        </div>
+        
+        <div class="applications-layout">
+            <aside class="sidebar">
+                <nav class="nav-menu">
+                    <a href="#" class="nav-item">🏠 Dashboard</a>
+                    <a href="#" class="nav-item">👤 My Profile</a>
+                    <a href="#" class="nav-item">🎬 Portfolio</a>
+                    <a href="#" class="nav-item active">📋 Applications</a>
+                    <a href="#" class="nav-item">🎭 Auditions</a>
+                    <a href="#" class="nav-item">📅 Calendar</a>
+                    <a href="#" class="nav-item">💬 Messages</a>
+                    <a href="#" class="nav-item">⚙️ Settings</a>
+                </nav>
+            </aside>
+            
+            <main class="main-content">
+                <div style="margin-bottom: 20px;">
+                    <a href="#" style="color: #666; text-decoration: none;">← Back to Applications</a>
+                </div>
+                
+                <div class="application-detail">
+                    <div class="detail-header">
+                        <div>
+                            <h1>Mumbai Dreams - Lead Role</h1>
+                            <p style="color: #666; margin-top: 8px;">Dharma Productions • Feature Film</p>
+                            <div style="margin-top: 15px;">
+                                <span class="status-badge scheduled" style="font-size: 14px; padding: 6px 12px;">Audition Scheduled</span>
+                            </div>
+                        </div>
+                        <div class="detail-actions">
+                            <button class="btn btn-secondary">📄 Download Script</button>
+                            <button class="btn btn-secondary">💬 Message</button>
+                            <button class="btn btn-primary">📅 Add to Calendar</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Project Details -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 30px;">
+                        <div>
+                            <h3 style="margin-bottom: 15px;">Project Details</h3>
+                            <div style="background: #f8f8f8; padding: 20px; border-radius: 8px;">
+                                <div style="margin-bottom: 15px;">
+                                    <div style="font-size: 12px; color: #666; margin-bottom: 4px;">Director</div>
+                                    <div style="font-weight: 500;">Karan Johar</div>
+                                </div>
+                                <div style="margin-bottom: 15px;">
+                                    <div style="font-size: 12px; color: #666; margin-bottom: 4px;">Shooting Location</div>
+                                    <div style="font-weight: 500;">Mumbai, Delhi</div>
+                                </div>
+                                <div style="margin-bottom: 15px;">
+                                    <div style="font-size: 12px; color: #666; margin-bottom: 4px;">Duration</div>
+                                    <div style="font-weight: 500;">3 months (Jan - Mar 2025)</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 12px; color: #666; margin-bottom: 4px;">Character Age</div>
+                                    <div style="font-weight: 500;">25-30 years</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3 style="margin-bottom: 15px;">Audition Details</h3>
+                            <div style="background: #fff8e1; padding: 20px; border-radius: 8px; border: 1px solid #ffc107;">
+                                <div style="margin-bottom: 15px;">
+                                    <div style="font-size: 12px; color: #666; margin-bottom: 4px;">Date & Time</div>
+                                    <div style="font-weight: 500;">Tomorrow, Dec 26, 3:00 PM</div>
+                                </div>
+                                <div style="margin-bottom: 15px;">
+                                    <div style="font-size: 12px; color: #666; margin-bottom: 4px;">Location</div>
+                                    <div style="font-weight: 500;">Dharma Office, Khar West</div>
+                                </div>
+                                <div style="margin-bottom: 15px;">
+                                    <div style="font-size: 12px; color: #666; margin-bottom: 4px;">What to Prepare</div>
+                                    <div style="font-weight: 500;">2 scenes from script, 1 monologue</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 12px; color: #666; margin-bottom: 4px;">Contact</div>
+                                    <div style="font-weight: 500;">casting@dharma.com</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Timeline -->
+                    <h3 style="margin-bottom: 20px;">Application Timeline</h3>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <div style="font-weight: 500; margin-bottom: 4px;">Audition Scheduled</div>
+                                <div style="font-size: 13px; color: #666;">Today at 10:30 AM - You've been invited for an in-person audition</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <div style="font-weight: 500; margin-bottom: 4px;">Application Shortlisted</div>
+                                <div style="font-size: 13px; color: #666;">Dec 22, 4:15 PM - Your profile was shortlisted by the casting team</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <div style="font-weight: 500; margin-bottom: 4px;">Under Review</div>
+                                <div style="font-size: 13px; color: #666;">Dec 20, 11:00 AM - Casting director started reviewing your application</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <div style="font-weight: 500; margin-bottom: 4px;">Application Submitted</div>
+                                <div style="font-size: 13px; color: #666;">Dec 18, 2:30 PM - You applied with headshots and showreel</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <!-- Analytics View -->
+    <div class="wireframe-container">
+        <div class="device-header">
+            <div class="screen-dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            <span>Desktop - Application Analytics</span>
+            <span>Insights Dashboard</span>
+        </div>
+        
+        <div class="applications-layout">
+            <aside class="sidebar">
+                <nav class="nav-menu">
+                    <a href="#" class="nav-item">🏠 Dashboard</a>
+                    <a href="#" class="nav-item">👤 My Profile</a>
+                    <a href="#" class="nav-item">🎬 Portfolio</a>
+                    <a href="#" class="nav-item active">📋 Applications</a>
+                    <a href="#" class="nav-item">🎭 Auditions</a>
+                    <a href="#" class="nav-item">📅 Calendar</a>
+                    <a href="#" class="nav-item">💬 Messages</a>
+                    <a href="#" class="nav-item">⚙️ Settings</a>
+                </nav>
+            </aside>
+            
+            <main class="main-content">
+                <h1 style="margin-bottom: 30px;">Application Analytics</h1>
+                
+                <!-- Metrics Grid -->
+                <div class="analytics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value">156</div>
+                        <div class="metric-label">Total Applications</div>
+                        <div class="metric-change positive">↑ 23% from last month</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">68%</div>
+                        <div class="metric-label">Response Rate</div>
+                        <div class="metric-change positive">↑ 5% improvement</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">42%</div>
+                        <div class="metric-label">Shortlist Rate</div>
+                        <div class="metric-change negative">↓ 3% from average</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">18</div>
+                        <div class="metric-label">Auditions Booked</div>
+                        <div class="metric-change positive">↑ 6 this month</div>
+                    </div>
+                </div>
+                
+                <!-- Charts Section -->
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px; margin-top: 30px;">
+                    <div style="background: white; border: 1px solid #e0e0e0; border-radius: 12px; padding: 25px;">
+                        <h3 style="margin-bottom: 20px;">Application Trend</h3>
+                        <div style="height: 300px; background: #f8f8f8; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #888;">
+                            📊 Line chart showing applications over time
+                        </div>
+                    </div>
+                    
+                    <div style="background: white; border: 1px solid #e0e0e0; border-radius: 12px; padding: 25px;">
+                        <h3 style="margin-bottom: 20px;">Success by Type</h3>
+                        <div style="height: 300px;">
+                            <div style="margin-bottom: 15px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                    <span>Film</span>
+                                    <span style="color: #666;">45%</span>
+                                </div>
+                                <div style="background: #f0f0f0; height: 8px; border-radius: 4px; overflow: hidden;">
+                                    <div style="width: 45%; height: 100%; background: #333;"></div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 15px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                    <span>TV Series</span>
+                                    <span style="color: #666;">62%</span>
+                                </div>
+                                <div style="background: #f0f0f0; height: 8px; border-radius: 4px; overflow: hidden;">
+                                    <div style="width: 62%; height: 100%; background: #666;"></div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 15px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                    <span>Commercial</span>
+                                    <span style="color: #666;">78%</span>
+                                </div>
+                                <div style="background: #f0f0f0; height: 8px; border-radius: 4px; overflow: hidden;">
+                                    <div style="width: 78%; height: 100%; background: #888;"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                    <span>Theater</span>
+                                    <span style="color: #666;">35%</span>
+                                </div>
+                                <div style="background: #f0f0f0; height: 8px; border-radius: 4px; overflow: hidden;">
+                                    <div style="width: 35%; height: 100%; background: #aaa;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Insights Panel -->
+                <div style="background: white; border: 1px solid #e0e0e0; border-radius: 12px; padding: 25px; margin-top: 30px;">
+                    <h3 style="margin-bottom: 20px;">📈 Performance Insights</h3>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                        <div style="padding: 15px; background: #e8f5e9; border-radius: 8px;">
+                            <div style="font-weight: 500; margin-bottom: 8px;">✅ Strong Performance</div>
+                            <p style="font-size: 14px; color: #666;">Your commercial audition success rate is 25% above average</p>
+                        </div>
+                        <div style="padding: 15px; background: #fff3e0; border-radius: 8px;">
+                            <div style="font-weight: 500; margin-bottom: 8px;">💡 Opportunity</div>
+                            <p style="font-size: 14px; color: #666;">Apply to more TV series - you have a 62% shortlist rate</p>
+                        </div>
+                        <div style="padding: 15px; background: #e3f2fd; border-radius: 8px;">
+                            <div style="font-weight: 500; margin-bottom: 8px;">📊 Trend</div>
+                            <p style="font-size: 14px; color: #666;">Applications on weekdays get 40% more responses</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+</html>

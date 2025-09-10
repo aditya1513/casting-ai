@@ -1,0 +1,379 @@
+
+services:
+  # PostgreSQL Database with Resource Limits
+  postgres:
+    image: postgres:14-alpine
+    container_name: castmatch-postgres
+    restart: unless-stopped
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: castmatch123
+      POSTGRES_DB: castmatch_db
+      POSTGRES_HOST_AUTH_METHOD: trust
+      # Performance tuning
+      POSTGRES_MAX_CONNECTIONS: 200
+      POSTGRES_SHARED_BUFFERS: 256MB
+      POSTGRES_EFFECTIVE_CACHE_SIZE: 1GB
+      POSTGRES_MAINTENANCE_WORK_MEM: 64MB
+      POSTGRES_CHECKPOINT_COMPLETION_TARGET: 0.9
+      POSTGRES_WAL_BUFFERS: 16MB
+      POSTGRES_DEFAULT_STATISTICS_TARGET: 100
+      POSTGRES_RANDOM_PAGE_COST: 1.1
+      POSTGRES_EFFECTIVE_IO_CONCURRENCY: 200
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres-init:/docker-entrypoint-initdb.d
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2048M
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d castmatch_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - castmatch-network
+
+  # Dragonfly Cache with Resource Limits (Redis-compatible)
+  dragonfly:
+    image: docker.dragonflydb.io/dragonflydb/dragonfly:latest
+    container_name: castmatch-dragonfly
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: dragonfly --logtostderr --requirepass=castmatch_redis_password --maxmemory=512mb --cache_mode=true --port=6379
+    volumes:
+      - dragonfly_data:/data
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 768M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "castmatch_redis_password", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - castmatch-network
+
+  # Qdrant Vector Database
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: castmatch-qdrant
+    restart: unless-stopped
+    ports:
+      - "6333:6333"  # HTTP API
+      - "6334:6334"  # gRPC API (optional)
+    environment:
+      QDRANT__SERVICE__HTTP_PORT: 6333
+      QDRANT__SERVICE__GRPC_PORT: 6334
+      QDRANT__LOG_LEVEL: INFO
+      # Performance settings
+      QDRANT__STORAGE__PERFORMANCE__MAX_SEARCH_THREADS: 4
+      QDRANT__STORAGE__PERFORMANCE__MAX_OPTIMIZATION_THREADS: 2
+      QDRANT__SERVICE__MAX_REQUEST_SIZE_MB: 32
+      # Security (optional - for production)
+      # QDRANT__SERVICE__API_KEY: ${QDRANT_API_KEY}
+    volumes:
+      - qdrant_data:/qdrant/storage
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2048M
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:6333/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - castmatch-network
+
+  # Node.js Backend with Resource Limits
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+      args:
+        NODE_ENV: ${NODE_ENV:-development}
+    container_name: castmatch-backend
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      dragonfly:
+        condition: service_healthy
+      qdrant:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 1536M
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    env_file:
+      - .env.docker
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: 3001
+      # Node.js optimizations
+      NODE_OPTIONS: "--max-old-space-size=1024"
+      UV_THREADPOOL_SIZE: 8
+      DATABASE_URL: postgresql://postgres:castmatch123@postgres:5432/castmatch_db?schema=public
+      REDIS_URL: redis://:castmatch_redis_password@dragonfly:6379
+      JWT_SECRET: ${JWT_SECRET:-u3776dZsWJYU3EnvuNDcmOjfKWaIcuWGU+F6WaW+7GQMC9kkCH3Hd3hZlQBWwDZCJi87ZEJ1ckbLsfOEoSVBpw==}
+      AI_SERVICE_URL: http://ai-service:8000
+      CORS_ORIGINS: http://localhost:3000,http://localhost:3001
+      # Third-party service configs (removed SendGrid and Twilio)
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_REGION: ${AWS_REGION:-us-east-1}
+      S3_BUCKET_NAME: ${S3_BUCKET_NAME:-castmatch-uploads}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      GOOGLE_REDIRECT_URI: ${GOOGLE_REDIRECT_URI:-http://localhost:3001/api/auth/google/callback}
+    volumes:
+      - ./src:/app/src
+      - ./logs:/app/logs
+      - ./uploads:/app/uploads
+    networks:
+      - castmatch-network
+
+  # Python AI Service with Resource Limits
+  ai-service:
+    build:
+      context: ./python-ai-service
+      dockerfile: Dockerfile
+      args:
+        ENVIRONMENT: ${NODE_ENV:-development}
+    container_name: castmatch-ai-service
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      dragonfly:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2048M
+        reservations:
+          cpus: '0.5'
+          memory: 768M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    env_file:
+      - .env.docker
+    environment:
+      PYTHONUNBUFFERED: 1
+      # Python optimizations
+      PYTHONDONTWRITEBYTECODE: 1
+      PYTHONHASHSEED: random
+      PYTHONIOENCODING: utf-8
+      DATABASE_URL: postgresql://postgres:castmatch123@postgres:5432/castmatch_db
+      REDIS_URL: redis://:castmatch_redis_password@dragonfly:6379
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      BACKEND_URL: http://backend:3001
+      CORS_ORIGINS: http://localhost:3000,http://localhost:3001,http://backend:3001
+    volumes:
+      - ./python-ai-service:/app
+      - ./logs/ai-service:/app/logs
+    networks:
+      - castmatch-network
+
+  # Next.js Frontend with Resource Limits
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NODE_ENV: ${NODE_ENV:-development}
+    container_name: castmatch-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+      - ai-service
+    deploy:
+      resources:
+        limits:
+          cpus: '1.5'
+          memory: 1024M
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    env_file:
+      - .env.docker
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:3001/api
+      # Next.js optimizations
+      NODE_OPTIONS: "--max-old-space-size=768"
+      NEXT_PUBLIC_WS_URL: ws://localhost:3001
+      NEXTAUTH_URL: http://localhost:3000
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:-your-nextauth-secret-key-here}
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    networks:
+      - castmatch-network
+
+  # Nginx Reverse Proxy with Resource Limits
+  nginx:
+    image: nginx:alpine
+    container_name: castmatch-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - frontend
+      - backend
+      - ai-service
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./logs/nginx:/var/log/nginx
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+    networks:
+      - castmatch-network
+
+  # Bull Queue Dashboard (for monitoring)
+  bull-board:
+    image: deadly0/bull-board:latest
+    container_name: castmatch-bull-board
+    restart: unless-stopped
+    ports:
+      - "3002:3000"
+    environment:
+      REDIS_HOST: dragonfly
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: castmatch_redis_password
+    depends_on:
+      - dragonfly
+    networks:
+      - castmatch-network
+
+  # PgAdmin (optional - for database management)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: castmatch-pgadmin
+    restart: unless-stopped
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@castmatch.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - postgres
+    networks:
+      - castmatch-network
+
+  # Redis Commander (optional - for Redis management)
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: castmatch-redis-commander
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      REDIS_HOSTS: local:dragonfly:6379:0:castmatch_redis_password
+    depends_on:
+      - dragonfly
+    networks:
+      - castmatch-network
+
+networks:
+  castmatch-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
+  dragonfly_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+  qdrant_data:
+    driver: local

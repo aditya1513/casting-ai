@@ -1,0 +1,422 @@
+/**
+ * Audition Routes for CastMatch
+ * Handles audition slot management, booking, scheduling, and calendar operations
+ */
+
+import express from 'express';
+import { body, param, query, validationResult } from 'express-validator';
+import { requireAuth } from '../middleware/auth.middleware';
+// import { requireRole } from '../middleware/role.middleware'; // Role middleware not implemented yet
+import { schedulingService } from '../services/scheduling.service';
+import { calendarService } from '../services/calendar.service';
+import { emailService } from '../services/email.service';
+import { prisma } from '../config/database';
+import { logger } from '../utils/logger';
+import moment from 'moment-timezone';
+import { RRule } from 'rrule';
+import rateLimit from 'express-rate-limit';
+
+const router = express.Router();
+
+// Rate limiting for booking endpoints
+const bookingRateLimit = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // Max 10 booking attempts per IP per 15 minutes
+  message: {
+    success: false,
+    error: 'Too many booking attempts, please try again later.',
+  },
+});
+
+// Rate limiting for slot creation
+const slotCreationRateLimit = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 50, // Max 50 slots per hour per IP
+  message: {
+    success: false,
+    error: 'Too many slot creation attempts, please try again later.',
+  },
+});
+
+/**
+ * Validation middleware
+ */
+const handleValidationErrors = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      success: false,
+      error: 'Validation failed',
+      details: errors.array(),
+    });
+  }
+  next();
+};
+
+/**
+ * POST /api/auditions/slots
+ * Create audition slot(s) - Casting Directors and Producers only
+ */
+router.post(
+  '/slots',
+  slotCreationRateLimit,
+  requireAuth,
+  // requireRole(['CASTING_DIRECTOR', 'PRODUCER', 'ADMIN']), // Role middleware not implemented
+  [
+    body('projectId').isUUID().withMessage('Valid project ID required'),
+    body('startTime').isISO8601().withMessage('Valid start time required'),
+    body('endTime').isISO8601().withMessage('Valid end time required'),
+    body('duration').isInt({ min: 15, max: 480 }).withMessage('Duration must be between 15 and 480 minutes'),
+    body('location').isLength({ min: 1, max: 255 }).withMessage('Location is required'),
+    body('locationType').isIn(['physical', 'virtual', 'hybrid']).withMessage('Valid location type required'),
+  ],
+  handleValidationErrors,
+  async (req: express.Request, res: express.Response) => {
+    try {
+      const { projectId, startTime, endTime, duration, location, locationType, ...otherData } = req.body;
+      const userId = req.user!.id;
+
+      // Validate project access
+      const project = await prisma.project.findFirst({
+        where: {
+          id: projectId,
+          OR: [
+            { castingDirectorId: userId },
+            { producerId: userId },
+            ...(req.user!.role === 'ADMIN' ? [{}] : []),
+          ],
+        },
+      });
+
+      if (!project) {
+        return res.status(404).json({
+          success: false,
+          error: 'Project not found or access denied',
+        });
+      }
+
+      const slotIds = await schedulingService.createAuditionSlot({
+        projectId,
+        date: moment(startTime).startOf('day').toDate(),
+        startTime: new Date(startTime),
+        endTime: new Date(endTime),
+        duration,
+        location,
+        locationType,
+        createdBy: userId,
+        ...otherData,
+      });
+
+      res.status(201).json({
+        success: true,
+        data: { slotIds, message: `${slotIds.length} audition slot(s) created successfully` },
+      });
+    } catch (error) {
+      logger.error('Error creating audition slots', { error, userId: req.user?.id });
+      res.status(500).json({
+        success: false,
+        error: 'Failed to create audition slots',
+      });
+    }
+  }
+);
+
+/**
+ * POST /api/auditions/book
+ * Book audition slot
+ */
+router.post(
+  '/book',
+  bookingRateLimit,
+  requireAuth,
+  [
+    body('slotId').isUUID().withMessage('Valid slot ID required'),
+    body('talentId').isUUID().withMessage('Valid talent ID required'),
+  ],
+  handleValidationErrors,
+  async (req: express.Request, res: express.Response) => {
+    try {
+      const { slotId, talentId, ...bookingData } = req.body;
+      const userId = req.user!.id;
+
+      // Verify talent ownership or admin access
+      if (req.user!.role !== 'ADMIN') {
+        const talent = await prisma.talent.findUnique({
+          where: { id: talentId, userId },
+        });
+
+        if (!talent) {
+          return res.status(403).json({
+            success: false,
+            error: 'Access denied or talent not found',
+          });
+        }
+      }
+
+      const bookingId = await schedulingService.bookAuditionSlot({
+        slotId,
+        talentId,
+        ...bookingData,
+      });
+
+      res.status(201).json({
+        success: true,
+        data: { bookingId, message: 'Audition booked successfully' },
+      });
+    } catch (error) {
+      logger.error('Error booking audition', { error, userId: req.user?.id });
+      res.status(500).json({
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to book audition',
+      });
+    }
+  }
+);
+
+/**
+ * GET /api/auditions/availability
+ * Check availability for time slots
+ */
+router.get(
+  '/availability',
+  requireAuth,
+  [
+    query('startDate').isISO8601().withMessage('Valid start date required'),
+    query('endDate').isISO8601().withMessage('Valid end date required'),
+    query('userId').optional().isUUID().withMessage('Valid user ID required'),
+  ],
+  handleValidationErrors,
+  async (req: express.Request, res: express.Response) => {
+    try {
+      const { startDate, endDate, userId = req.user!.id, duration = 60 } = req.query;
+
+      const availability = await calendarService.getAvailability(
+        userId as string,
+        new Date(startDate as string),
+        new Date(endDate as string),
+        Number(duration)
+      );
+
+      res.json({
+        success: true,
+        data: { availability },
+      });
+    } catch (error) {
+      logger.error('Error checking availability', { error, userId: req.user?.id });
+      res.status(500).json({
+        success: false,
+        error: 'Failed to check availability',
+      });
+    }
+  }
+);
+
+/**
+ * GET /api/auditions/upcoming
+ * Get upcoming auditions for talent
+ */
+router.get(
+  '/upcoming',
+  requireAuth,
+  async (req: express.Request, res: express.Response) => {
+    try {
+      const userId = req.user!.id;
+      const { limit = 10 } = req.query;
+
+      // Get talent ID
+      const talent = await prisma.talent.findUnique({
+        where: { userId },
+        select: { id: true },
+      });
+
+      if (!talent) {
+        return res.json({
+          success: true,
+          data: { auditions: [] },
+        });
+      }
+
+      const auditions = await schedulingService.getUpcomingAuditions(talent.id, Number(limit));
+
+      res.json({
+        success: true,
+        data: { auditions },
+      });
+    } catch (error) {
+      logger.error('Error fetching upcoming auditions', { error, userId: req.user?.id });
+      res.status(500).json({
+        success: false,
+        error: 'Failed to fetch upcoming auditions',
+      });
+    }
+  }
+);
+
+/**
+ * GET /api/auditions/calendar
+ * Get calendar view data for casting directors
+ */
+router.get(
+  '/calendar',
+  requireAuth,
+  // requireRole(['CASTING_DIRECTOR', 'PRODUCER', 'ADMIN']), // Role middleware not implemented
+  [
+    query('date').optional().isISO8601().withMessage('Valid date required'),
+  ],
+  handleValidationErrors,
+  async (req: express.Request, res: express.Response) => {
+    try {
+      const userId = req.user!.id;
+      const { date } = req.query;
+
+      const auditions = await schedulingService.getAuditionsForCastingDirector(
+        userId,
+        date ? new Date(date as string) : undefined
+      );
+
+      res.json({
+        success: true,
+        data: { auditions },
+      });
+    } catch (error) {
+      logger.error('Error fetching calendar data', { error, userId: req.user?.id });
+      res.status(500).json({
+        success: false,
+        error: 'Failed to fetch calendar data',
+      });
+    }
+  }
+);
+
+/**
+ * PUT /api/auditions/:bookingId/reschedule
+ * Reschedule audition booking
+ */
+router.put(
+  '/:bookingId/reschedule',
+  requireAuth,
+  [
+    param('bookingId').isUUID().withMessage('Valid booking ID required'),
+    body('newSlotId').isUUID().withMessage('Valid new slot ID required'),
+  ],
+  handleValidationErrors,
+  async (req: express.Request, res: express.Response) => {
+    try {
+      const { bookingId } = req.params;
+      const { newSlotId, reason, notifyTalent = true } = req.body;
+
+      await schedulingService.rescheduleBooking({
+        bookingId,
+        newSlotId,
+        reason,
+        notifyTalent,
+      });
+
+      res.json({
+        success: true,
+        message: 'Audition rescheduled successfully',
+      });
+    } catch (error) {
+      logger.error('Error rescheduling audition', { error, bookingId: req.params.bookingId });
+      res.status(500).json({
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to reschedule audition',
+      });
+    }
+  }
+);
+
+/**
+ * DELETE /api/auditions/:bookingId
+ * Cancel audition booking
+ */
+router.delete(
+  '/:bookingId',
+  requireAuth,
+  [param('bookingId').isUUID().withMessage('Valid booking ID required')],
+  handleValidationErrors,
+  async (req: express.Request, res: express.Response) => {
+    try {
+      const { bookingId } = req.params;
+      const { reason, notifyTalent = true } = req.body;
+
+      await schedulingService.cancelBooking(bookingId, reason, notifyTalent);
+
+      res.json({
+        success: true,
+        message: 'Audition cancelled successfully',
+      });
+    } catch (error) {
+      logger.error('Error cancelling audition', { error, bookingId: req.params.bookingId });
+      res.status(500).json({
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to cancel audition',
+      });
+    }
+  }
+);
+
+/**
+ * POST /api/auditions/reminders/send
+ * Manual reminder trigger
+ */
+router.post(
+  '/reminders/send',
+  requireAuth,
+  // requireRole(['CASTING_DIRECTOR', 'PRODUCER', 'ADMIN']), // Role middleware not implemented
+  [
+    body('bookingId').isUUID().withMessage('Valid booking ID required'),
+    body('reminderType').isIn(['24h', '2h', '30m']).withMessage('Valid reminder type required'),
+  ],
+  handleValidationErrors,
+  async (req: express.Request, res: express.Response) => {
+    try {
+      const { bookingId, reminderType } = req.body;
+
+      const booking = await prisma.auditionBooking.findUnique({
+        where: { id: bookingId },
+        include: {
+          talent: { include: { user: true } },
+          slot: {
+            include: {
+              project: true,
+              character: true,
+            },
+          },
+        },
+      });
+
+      if (!booking) {
+        return res.status(404).json({
+          success: false,
+          error: 'Booking not found',
+        });
+      }
+
+      await emailService.sendAuditionReminderEmail({
+        to: booking.talent.user.email,
+        talentName: `${booking.talent.firstName} ${booking.talent.lastName}`,
+        projectTitle: booking.slot.project.title,
+        characterName: booking.slot.character?.name,
+        auditionDate: booking.slot.startTime,
+        location: booking.slot.location,
+        confirmationCode: booking.confirmationCode,
+        meetingLink: booking.slot.meetingLink || undefined,
+        reminderType,
+      });
+
+      res.json({
+        success: true,
+        message: 'Reminder sent successfully',
+      });
+    } catch (error) {
+      logger.error('Error sending reminder', { error });
+      res.status(500).json({
+        success: false,
+        error: 'Failed to send reminder',
+      });
+    }
+  }
+);
+
+export default router;

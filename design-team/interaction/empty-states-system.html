@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CastMatch - Empty State System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8fafc;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 48px;
+            padding: 32px 0;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            color: white;
+            border-radius: 16px;
+        }
+
+        .empty-state-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 32px;
+            margin-bottom: 32px;
+        }
+
+        .empty-state-card {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .empty-state-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px -8px rgba(0, 0, 0, 0.15);
+        }
+
+        .empty-state-category {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .category-header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .empty-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .empty-icon::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: rotate(0deg) translate(-100%, -100%); }
+            50% { transform: rotate(0deg) translate(100%, 100%); }
+            100% { transform: rotate(0deg) translate(100%, 100%); }
+        }
+
+        .empty-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #1f2937;
+        }
+
+        .empty-description {
+            color: #6b7280;
+            margin-bottom: 24px;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        .empty-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #6b7280;
+            border: 1px solid #d1d5db;
+        }
+
+        .btn-secondary:hover {
+            background: #f9fafb;
+            color: #374151;
+        }
+
+        .skeleton-preview {
+            margin-top: 24px;
+            padding: 16px;
+            background: #f9fafb;
+            border-radius: 8px;
+            border: 1px dashed #d1d5db;
+        }
+
+        .skeleton-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            opacity: 0.6;
+        }
+
+        .skeleton-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .skeleton-avatar {
+            width: 48px;
+            height: 48px;
+            background: #e5e7eb;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .skeleton-content {
+            flex: 1;
+        }
+
+        .skeleton-line {
+            height: 12px;
+            background: #e5e7eb;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        .skeleton-line.short {
+            width: 60%;
+        }
+
+        .skeleton-line.medium {
+            width: 80%;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .motivation-element {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+            text-align: left;
+        }
+
+        .motivation-element h4 {
+            color: #92400e;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .motivation-list {
+            color: #92400e;
+            font-size: 13px;
+            padding-left: 16px;
+        }
+
+        .progress-indicator {
+            margin-top: 16px;
+            padding: 12px;
+            background: #eff6ff;
+            border: 1px solid #3b82f6;
+            border-radius: 8px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #3b82f6;
+            transition: width 0.3s ease;
+            animation: progress 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes progress {
+            0% { width: 0%; }
+            100% { width: 60%; }
+        }
+
+        .checklist {
+            text-align: left;
+            margin-top: 16px;
+            background: #f0f9ff;
+            border: 1px solid #0ea5e9;
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .checklist-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .checkbox {
+            width: 16px;
+            height: 16px;
+            border: 2px solid #0ea5e9;
+            border-radius: 3px;
+            position: relative;
+        }
+
+        .checkbox.checked {
+            background: #0ea5e9;
+        }
+
+        .checkbox.checked::after {
+            content: '✓';
+            position: absolute;
+            color: white;
+            font-size: 12px;
+            top: -2px;
+            left: 1px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+
+            .empty-state-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .empty-state-card, .empty-state-category {
+                padding: 24px;
+            }
+
+            .empty-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .empty-icon {
+                width: 64px;
+                height: 64px;
+                font-size: 24px;
+            }
+
+            .empty-title {
+                font-size: 20px;
+            }
+
+            .empty-description {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>CastMatch Empty State System</h1>
+            <p>Motivational empty states that guide users to success</p>
+        </div>
+
+        <!-- New User Onboarding States -->
+        <div class="empty-state-category">
+            <div class="category-header">
+                <h2>🌟 New User Onboarding</h2>
+            </div>
+            
+            <div class="empty-state-grid">
+                <div class="empty-state-card">
+                    <div class="empty-icon">👋</div>
+                    <h3 class="empty-title">Welcome to CastMatch!</h3>
+                    <p class="empty-description">
+                        You're 3 steps away from discovering amazing talent opportunities. 
+                        Let's get your profile set up!
+                    </p>
+                    <div class="empty-actions">
+                        <button class="btn btn-primary">
+                            <span>✨</span> Start Setup
+                        </button>
+                        <button class="btn btn-secondary">Take a Tour</button>
+                    </div>
+                    
+                    <div class="checklist">
+                        <div class="checklist-item">
+                            <div class="checkbox"></div>
+                            <span>Add basic information</span>
+                        </div>
+                        <div class="checklist-item">
+                            <div class="checkbox"></div>
+                            <span>Upload profile photo</span>
+                        </div>
+                        <div class="checklist-item">
+                            <div class="checkbox"></div>
+                            <span>Set your preferences</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="empty-state-card">
+                    <div class="empty-icon">📸</div>
+                    <h3 class="empty-title">Your Profile is 60% Complete</h3>
+                    <p class="empty-description">
+                        Great start! Adding a professional headshot will increase your 
+                        visibility by 3x and help casting directors find you faster.
+                    </p>
+                    <div class="empty-actions">
+                        <button class="btn btn-primary">
+                            <span>📷</span> Add Photo
+                        </button>
+                        <button class="btn btn-secondary">Skip for Now</button>
+                    </div>
+                    
+                    <div class="progress-indicator">
+                        <div style="display: flex; justify-content: space-between; align-items: center; color: #3b82f6; font-size: 14px; font-weight: 600;">
+                            <span>Profile Completion</span>
+                            <span>60%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 60%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- No Results States -->
+        <div class="empty-state-category">
+            <div class="category-header">
+                <h2>🔍 No Results Found</h2>
+            </div>
+            
+            <div class="empty-state-grid">
+                <div class="empty-state-card">
+                    <div class="empty-icon">🎭</div>
+                    <h3 class="empty-title">No Talents Found</h3>
+                    <p class="empty-description">
+                        We couldn't find any talents matching "Musical Theater Actor in NYC". 
+                        Try adjusting your search criteria or explore similar roles.
+                    </p>
+                    <div class="empty-actions">
+                        <button class="btn btn-primary">
+                            <span>🔄</span> Clear Filters
+                        </button>
+                        <button class="btn btn-secondary">Browse All Talents</button>
+                    </div>
+                    
+                    <div class="motivation-element">
+                        <h4>💡 Search Tips</h4>
+                        <ul class="motivation-list">
+                            <li>Try broader location terms (e.g., "New York" instead of "Brooklyn")</li>
+                            <li>Use general skill terms (e.g., "singing" instead of "opera")</li>
+                            <li>Remove age or experience filters to see more options</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="empty-state-card">
+                    <div class="empty-icon">🎬</div>
+                    <h3 class="empty-title">No Auditions Yet</h3>
+                    <p class="empty-description">
+                        Your casting board is empty! Create your first audition posting 
+                        and start connecting with talented performers.
+                    </p>
+                    <div class="empty-actions">
+                        <button class="btn btn-primary">
+                            <span>🎯</span> Create Audition
+                        </button>
+                        <button class="btn btn-secondary">View Examples</button>
+                    </div>
+                    
+                    <div class="motivation-element">
+                        <h4>🚀 Did You Know?</h4>
+                        <ul class="motivation-list">
+                            <li>Well-written audition posts get 5x more applications</li>
+                            <li>Projects with clear requirements find talent 50% faster</li>
+                            <li>Video briefs increase application quality by 40%</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- No Data States -->
+        <div class="empty-state-category">
+            <div class="category-header">
+                <h2>📊 Dashboard Empty States</h2>
+            </div>
+            
+            <div class="empty-state-grid">
+                <div class="empty-state-card">
+                    <div class="empty-icon">💬</div>
+                    <h3 class="empty-title">No Messages</h3>
+                    <p class="empty-description">
+                        Your inbox is empty! Start connecting with casting directors 
+                        and talent to begin building your network.
+                    </p>
+                    <div class="empty-actions">
+                        <button class="btn btn-primary">
+                            <span>🔍</span> Find Opportunities
+                        </button>
+                        <button class="btn btn-secondary">Browse Talent</button>
+                    </div>
+
+                    <div class="skeleton-preview">
+                        <div class="skeleton-item">
+                            <div class="skeleton-avatar"></div>
+                            <div class="skeleton-content">
+                                <div class="skeleton-line short"></div>
+                                <div class="skeleton-line medium"></div>
+                            </div>
+                        </div>
+                        <div class="skeleton-item">
+                            <div class="skeleton-avatar"></div>
+                            <div class="skeleton-content">
+                                <div class="skeleton-line short"></div>
+                                <div class="skeleton-line medium"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="empty-state-card">
+                    <div class="empty-icon">📈</div>
+                    <h3 class="empty-title">No Activity Yet</h3>
+                    <p class="empty-description">
+                        Your dashboard will show profile views, application responses, 
+                        and booking updates once you start engaging with the platform.
+                    </p>
+                    <div class="empty-actions">
+                        <button class="btn btn-primary">
+                            <span>🎯</span> Apply to Projects
+                        </button>
+                        <button class="btn btn-secondary">Update Profile</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- No Connection States -->
+        <div class="empty-state-category">
+            <div class="category-header">
+                <h2>📱 Offline States</h2>
+            </div>
+            
+            <div class="empty-state-grid">
+                <div class="empty-state-card">
+                    <div class="empty-icon">📶</div>
+                    <h3 class="empty-title">You're Offline</h3>
+                    <p class="empty-description">
+                        No internet connection detected. You can still browse your saved 
+                        profiles and drafted messages while offline.
+                    </p>
+                    <div class="empty-actions">
+                        <button class="btn btn-primary">
+                            <span>🔄</span> Try Again
+                        </button>
+                        <button class="btn btn-secondary">View Saved Content</button>
+                    </div>
+                    
+                    <div class="motivation-element">
+                        <h4>🔒 Available Offline</h4>
+                        <ul class="motivation-list">
+                            <li>Your saved talent profiles</li>
+                            <li>Draft messages and applications</li>
+                            <li>Recently viewed auditions</li>
+                            <li>Profile editing (syncs when online)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="empty-state-card">
+                    <div class="empty-icon">⚡</div>
+                    <h3 class="empty-title">Slow Connection</h3>
+                    <p class="empty-description">
+                        Your connection seems slow. We've enabled data-saver mode 
+                        to improve your browsing experience.
+                    </p>
+                    <div class="empty-actions">
+                        <button class="btn btn-primary">
+                            <span>🚀</span> Enable Fast Mode
+                        </button>
+                        <button class="btn btn-secondary">Continue Browsing</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feature Unavailable States -->
+        <div class="empty-state-category">
+            <div class="category-header">
+                <h2>🚧 Feature States</h2>
+            </div>
+            
+            <div class="empty-state-grid">
+                <div class="empty-state-card">
+                    <div class="empty-icon">🎥</div>
+                    <h3 class="empty-title">Video Chat Coming Soon</h3>
+                    <p class="empty-description">
+                        We're working on bringing you face-to-face auditions! 
+                        Video calls will be available in your mobile app by March 2025.
+                    </p>
+                    <div class="empty-actions">
+                        <button class="btn btn-primary">
+                            <span>🔔</span> Notify Me
+                        </button>
+                        <button class="btn btn-secondary">Use Desktop</button>
+                    </div>
+                    
+                    <div class="progress-indicator">
+                        <div style="display: flex; justify-content: space-between; align-items: center; color: #3b82f6; font-size: 14px; font-weight: 600;">
+                            <span>Development Progress</span>
+                            <span>80%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 80%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="empty-state-card">
+                    <div class="empty-icon">⭐</div>
+                    <h3 class="empty-title">Premium Feature</h3>
+                    <p class="empty-description">
+                        Advanced analytics and priority placement are available 
+                        with CastMatch Pro. Upgrade to unlock detailed insights.
+                    </p>
+                    <div class="empty-actions">
+                        <button class="btn btn-primary">
+                            <span>✨</span> Upgrade Now
+                        </button>
+                        <button class="btn btn-secondary">Learn More</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simulate checklist progression
+        function updateChecklist() {
+            const checkboxes = document.querySelectorAll('.checkbox');
+            checkboxes.forEach((checkbox, index) => {
+                setTimeout(() => {
+                    checkbox.classList.add('checked');
+                }, (index + 1) * 1000);
+            });
+        }
+
+        // Animate progress bars
+        function animateProgress() {
+            const progressFills = document.querySelectorAll('.progress-fill');
+            progressFills.forEach(fill => {
+                const width = fill.style.width || '0%';
+                fill.style.width = '0%';
+                setTimeout(() => {
+                    fill.style.width = width;
+                }, 500);
+            });
+        }
+
+        // Add interaction handlers
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simulate form completion
+            const startSetupBtn = document.querySelector('button:contains("Start Setup")');
+            if (startSetupBtn) {
+                startSetupBtn.addEventListener('click', updateChecklist);
+            }
+
+            // Animate progress on load
+            animateProgress();
+
+            // Retry functionality for offline states
+            document.querySelectorAll('.btn').forEach(button => {
+                if (button.textContent.includes('Try Again')) {
+                    button.addEventListener('click', function() {
+                        this.innerHTML = '<span>🔄</span> Connecting...';
+                        this.disabled = true;
+                        
+                        setTimeout(() => {
+                            this.innerHTML = '<span>🔄</span> Try Again';
+                            this.disabled = false;
+                        }, 2000);
+                    });
+                }
+            });
+
+            // Notification signup
+            document.querySelectorAll('.btn').forEach(button => {
+                if (button.textContent.includes('Notify Me')) {
+                    button.addEventListener('click', function() {
+                        this.innerHTML = '<span>✓</span> You\'ll be notified!';
+                        this.classList.remove('btn-primary');
+                        this.classList.add('btn-secondary');
+                        this.disabled = true;
+                    });
+                }
+            });
+        });
+
+        // Add shine effect to icons
+        setInterval(() => {
+            const icons = document.querySelectorAll('.empty-icon');
+            icons.forEach(icon => {
+                icon.style.animationDelay = Math.random() * 3 + 's';
+            });
+        }, 5000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,282 @@
+/// <reference path="../types/express.d.ts" />
+
+/**
+ * Authentication Middleware
+ * JWT token verification and user authentication
+ */
+
+import { Request, Response, NextFunction } from 'express';
+import * as jwt from 'jsonwebtoken';
+import { config } from '../config/config';
+import { db } from '../config/database';
+import { CacheManager, CacheKeys } from '../config/redis';
+import { AppError } from '../utils/AppError';
+import { logger } from '../utils/logger';
+
+// Define UserRole type based on our Drizzle schema
+export type UserRole = 'ACTOR' | 'CASTING_DIRECTOR' | 'PRODUCER' | 'AGENT' | 'MANAGER' | 'ADMIN';
+
+/**
+ * JWT payload interface
+ */
+interface JWTPayload {
+  userId: string;
+  email: string;
+  role: UserRole;
+  sessionId: string;
+  type: 'access' | 'refresh';
+}
+
+/**
+ * Extract token from Authorization header
+ */
+const extractToken = (authHeader?: string): string | null => {
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return null;
+  }
+  return authHeader.substring(7);
+};
+
+/**
+ * Verify JWT token and authenticate user
+ */
+export const authenticate = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    // Extract token from header
+    const token = extractToken(req.headers.authorization);
+    
+    if (!token) {
+      throw new AppError('No authentication token provided', 401);
+    }
+    
+    // Verify token
+    const payload = jwt.verify(token, config.jwt.secret) as JWTPayload;
+    
+    // Check if it's an access token
+    if (payload.type !== 'access') {
+      throw new AppError('Invalid token type', 401);
+    }
+    
+    // Check session in cache
+    const sessionKey = CacheKeys.userSession(payload.userId, payload.sessionId);
+    const cachedSession = await CacheManager.get(sessionKey);
+    
+    if (!cachedSession) {
+      // Session not in cache, check database
+      const session = await prisma.session.findUnique({
+        where: { id: payload.sessionId },
+        include: { user: true },
+      });
+      
+      if (!session || session.expiresAt < new Date()) {
+        throw new AppError('Session expired or invalid', 401);
+      }
+      
+      // Cache the session
+      await CacheManager.set(sessionKey, session, config.redis.ttl.session);
+    }
+    
+    // Attach user to request
+    req.user = {
+      id: payload.userId,
+      email: payload.email,
+      role: payload.role,
+      sessionId: payload.sessionId,
+    };
+    req.token = token;
+    
+    next();
+  } catch (error) {
+    if (error instanceof jwt.TokenExpiredError) {
+      next(new AppError('Token expired', 401));
+    } else if (error instanceof jwt.JsonWebTokenError) {
+      next(new AppError('Invalid token', 401));
+    } else {
+      next(error);
+    }
+  }
+};
+
+/**
+ * Optional authentication - doesn't fail if no token
+ */
+export const optionalAuth = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const token = extractToken(req.headers.authorization);
+    
+    if (!token) {
+      return next();
+    }
+    
+    // Verify token
+    const payload = jwt.verify(token, config.jwt.secret) as JWTPayload;
+    
+    // Attach user to request if valid
+    req.user = {
+      id: payload.userId,
+      email: payload.email,
+      role: payload.role,
+      sessionId: payload.sessionId,
+    };
+    req.token = token;
+    
+    next();
+  } catch (error) {
+    // Don't fail, just continue without user
+    logger.debug('Optional auth failed:', error);
+    next();
+  }
+};
+
+/**
+ * Role-based access control middleware
+ */
+export const authorize = (...roles: UserRole[]) => {
+  return (req: Request, res: Response, next: NextFunction): void => {
+    if (!req.user) {
+      return next(new AppError('Authentication required', 401));
+    }
+    
+    if (!roles.includes(req.user.role)) {
+      return next(new AppError('Insufficient permissions', 403));
+    }
+    
+    next();
+  };
+};
+
+/**
+ * Verify user owns the resource or is admin
+ */
+export const authorizeOwner = (getUserId: (req: Request) => string | Promise<string>) => {
+  return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      if (!req.user) {
+        return next(new AppError('Authentication required', 401));
+      }
+      
+      // Admins can access everything
+      if (req.user.role === 'ADMIN') {
+        return next();
+      }
+      
+      // Get the resource owner ID
+      const ownerId = await getUserId(req);
+      
+      // Check if user owns the resource
+      if (req.user.id !== ownerId) {
+        return next(new AppError('Access denied', 403));
+      }
+      
+      next();
+    } catch (error) {
+      next(error);
+    }
+  };
+};
+
+/**
+ * Verify email is confirmed
+ */
+export const requireEmailVerification = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    if (!req.user) {
+      return next(new AppError('Authentication required', 401));
+    }
+    
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.id },
+      select: { isEmailVerified: true },
+    });
+    
+    if (!user?.isEmailVerified) {
+      return next(new AppError('Email verification required', 403));
+    }
+    
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Require authentication (alias for authenticate)
+ */
+export const requireAuth = authenticate;
+
+/**
+ * Require specific role
+ */
+export const requireRole = (role: UserRole) => {
+  return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    if (!req.user) {
+      return next(new AppError('Authentication required', 401));
+    }
+    
+    if (req.user.role !== role) {
+      return next(new AppError('Insufficient permissions', 403));
+    }
+    
+    next();
+  };
+};
+
+/**
+ * Require any of the specified roles
+ */
+export const requireAnyRole = (roles: UserRole[]) => {
+  return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    if (!req.user) {
+      return next(new AppError('Authentication required', 401));
+    }
+    
+    if (!roles.includes(req.user.role)) {
+      return next(new AppError('Insufficient permissions', 403));
+    }
+    
+    next();
+  };
+};
+
+/**
+ * Rate limit by user (stricter than IP-based)
+ */
+export const userRateLimit = (maxRequests: number = 10, windowMinutes: number = 1) => {
+  return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    if (!req.user) {
+      return next();
+    }
+    
+    const key = `user_rate:${req.user.id}:${req.path}`;
+    const current = await CacheManager.get<number>(key) || 0;
+    
+    if (current >= maxRequests) {
+      return next(new AppError('Too many requests', 429));
+    }
+    
+    await CacheManager.set(key, current + 1, windowMinutes * 60);
+    next();
+  };
+};
+
+// Default export
+export default {
+  authenticate: authenticate,
+  requireAuth: requireAuth,
+  requireRole: requireRole,
+  requireAnyRole: requireAnyRole,
+  requireEmailVerification: requireEmailVerification,
+  userRateLimit: userRateLimit
+};

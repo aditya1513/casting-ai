@@ -1,0 +1,280 @@
+/* CastMatch Low-Fidelity Wireframe Standards - Grayscale Only */
+
+:root {
+    /* APPROVED GRAYSCALE PALETTE - ONLY 7 COLORS */
+    --white: #FFFFFF;
+    --light-gray: #F5F5F5;
+    --medium-light: #CCCCCC;
+    --medium: #999999;
+    --medium-dark: #666666;
+    --dark: #333333;
+    --black: #000000;
+    
+    /* Simple Spacing System - 8px grid */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+    --spacing-2xl: 48px;
+    
+    /* Simple Typography */
+    --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    
+    /* Basic Font Sizes */
+    --font-size-sm: 12px;
+    --font-size-base: 14px;
+    --font-size-md: 16px;
+    --font-size-lg: 20px;
+    --font-size-xl: 24px;
+    --font-size-2xl: 32px;
+    
+    /* Simple Line Heights */
+    --line-height: 1.5;
+    --line-height-heading: 1.2;
+    
+    /* Basic Borders */
+    --border-width: 1px;
+    --border-style: solid;
+    
+    /* Simple Radius */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    
+    /* Layout Constants */
+    --max-width: 1440px;
+    --header-height: 64px;
+    --sidebar-width: 240px;
+}
+
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height);
+    background: var(--white);
+    color: var(--dark);
+}
+
+/* Simple Wireframe Components */
+.wireframe-container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: var(--spacing-lg);
+    background: var(--white);
+}
+
+.wireframe-header {
+    background: var(--light-gray);
+    border-bottom: var(--border-width) var(--border-style) var(--medium-light);
+    padding: var(--spacing-md);
+    height: var(--header-height);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.wireframe-card {
+    background: var(--white);
+    border: var(--border-width) var(--border-style) var(--medium-light);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    border-radius: var(--radius-sm);
+}
+
+.wireframe-button {
+    background: var(--light-gray);
+    border: var(--border-width) var(--border-style) var(--medium);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-base);
+    color: var(--dark);
+    cursor: pointer;
+    display: inline-block;
+}
+
+.wireframe-button-primary {
+    background: var(--medium-dark);
+    color: var(--white);
+    border: none;
+}
+
+.wireframe-input {
+    background: var(--white);
+    border: var(--border-width) var(--border-style) var(--medium-light);
+    padding: var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-base);
+    width: 100%;
+}
+
+.wireframe-label {
+    color: var(--medium-dark);
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--spacing-xs);
+    display: block;
+}
+
+.wireframe-placeholder {
+    background: var(--light-gray);
+    border: var(--border-width) dashed var(--medium-light);
+    padding: var(--spacing-lg);
+    text-align: center;
+    color: var(--medium);
+    border-radius: var(--radius-sm);
+}
+
+/* Typography Classes */
+.wireframe-heading-1 {
+    font-size: var(--font-size-2xl);
+    line-height: var(--line-height-heading);
+    color: var(--black);
+    margin-bottom: var(--spacing-md);
+}
+
+.wireframe-heading-2 {
+    font-size: var(--font-size-xl);
+    line-height: var(--line-height-heading);
+    color: var(--dark);
+    margin-bottom: var(--spacing-md);
+}
+
+.wireframe-heading-3 {
+    font-size: var(--font-size-lg);
+    line-height: var(--line-height-heading);
+    color: var(--dark);
+    margin-bottom: var(--spacing-sm);
+}
+
+.wireframe-text {
+    font-size: var(--font-size-base);
+    line-height: var(--line-height);
+    color: var(--medium-dark);
+}
+
+.wireframe-text-small {
+    font-size: var(--font-size-sm);
+    color: var(--medium);
+}
+
+/* Layout Grid */
+.wireframe-grid {
+    display: grid;
+    gap: var(--spacing-md);
+}
+
+.wireframe-grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.wireframe-grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.wireframe-grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+/* Simple Tables */
+.wireframe-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--white);
+}
+
+.wireframe-table th {
+    background: var(--light-gray);
+    padding: var(--spacing-sm);
+    text-align: left;
+    border-bottom: var(--border-width) var(--border-style) var(--medium-light);
+    color: var(--dark);
+    font-weight: normal;
+}
+
+.wireframe-table td {
+    padding: var(--spacing-sm);
+    border-bottom: var(--border-width) var(--border-style) var(--light-gray);
+    color: var(--medium-dark);
+}
+
+/* Navigation */
+.wireframe-nav {
+    background: var(--white);
+    border-bottom: var(--border-width) var(--border-style) var(--medium-light);
+    padding: var(--spacing-md);
+}
+
+.wireframe-nav-item {
+    display: inline-block;
+    padding: var(--spacing-sm) var(--spacing-md);
+    color: var(--medium-dark);
+    text-decoration: none;
+}
+
+.wireframe-nav-item-active {
+    color: var(--black);
+    border-bottom: 2px var(--border-style) var(--dark);
+}
+
+/* Sidebar */
+.wireframe-sidebar {
+    background: var(--light-gray);
+    border-right: var(--border-width) var(--border-style) var(--medium-light);
+    width: var(--sidebar-width);
+    padding: var(--spacing-md);
+    min-height: 100vh;
+}
+
+/* Status Indicators (Text-based) */
+.wireframe-status {
+    display: inline-block;
+    padding: 2px var(--spacing-sm);
+    border: var(--border-width) var(--border-style) var(--medium);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-sm);
+    color: var(--medium-dark);
+}
+
+/* Simple Icons (Placeholder) */
+.wireframe-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background: var(--medium-light);
+    border-radius: var(--radius-sm);
+}
+
+/* Utility Classes */
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+.mb-sm { margin-bottom: var(--spacing-sm); }
+.mb-md { margin-bottom: var(--spacing-md); }
+.mb-lg { margin-bottom: var(--spacing-lg); }
+
+.p-sm { padding: var(--spacing-sm); }
+.p-md { padding: var(--spacing-md); }
+.p-lg { padding: var(--spacing-lg); }
+
+/* Responsive Breakpoints (Simple) */
+@media (max-width: 768px) {
+    .wireframe-grid-2,
+    .wireframe-grid-3,
+    .wireframe-grid-4 {
+        grid-template-columns: 1fr;
+    }
+    
+    .wireframe-sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: var(--border-width) var(--border-style) var(--medium-light);
+        min-height: auto;
+    }
+}

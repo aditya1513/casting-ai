@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CastMatch - AI Interaction Patterns Wireframes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif; background: #f8f9fa; color: #1a1a1a; line-height: 1.5; }
+        .wireframe-container { max-width: 1440px; margin: 0 auto; padding: 40px 20px; }
+        .wireframe-header { text-align: center; margin-bottom: 60px; padding-bottom: 40px; border-bottom: 2px solid #e0e0e0; }
+        .wireframe-title { font-size: 48px; font-weight: 700; margin-bottom: 16px; color: #000; }
+        .wireframe-subtitle { font-size: 20px; color: #666; max-width: 800px; margin: 0 auto; }
+        .section-header { margin: 60px 0 30px; padding: 20px; background: #fff; border-left: 4px solid #333; }
+        .section-title { font-size: 28px; font-weight: 600; margin-bottom: 8px; }
+        .section-description { color: #666; font-size: 16px; }
+        .wireframe-section { background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 40px; margin-bottom: 40px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .chat-interface { background: #fafafa; border-radius: 12px; min-height: 600px; display: flex; flex-direction: column; }
+        .chat-header { padding: 20px; border-bottom: 2px solid #e0e0e0; background: #fff; border-radius: 12px 12px 0 0; }
+        .chat-messages { flex: 1; padding: 24px; overflow-y: auto; }
+        .message { margin-bottom: 20px; display: flex; gap: 12px; }
+        .message.user { flex-direction: row-reverse; }
+        .message-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #667eea, #764ba2); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 600; flex-shrink: 0; }
+        .message.user .message-avatar { background: #333; }
+        .message-content { max-width: 70%; }
+        .message-bubble { background: #fff; padding: 16px; border-radius: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .message.user .message-bubble { background: #333; color: #fff; }
+        .message-time { font-size: 12px; color: #999; margin-top: 4px; }
+        .typing-indicator { display: flex; gap: 4px; padding: 16px; }
+        .typing-dot { width: 8px; height: 8px; background: #999; border-radius: 50%; animation: typing 1.4s infinite; }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing { 0%, 60%, 100% { opacity: 0.3; } 30% { opacity: 1; } }
+        .chat-input-container { padding: 20px; border-top: 2px solid #e0e0e0; background: #fff; border-radius: 0 0 12px 12px; }
+        .quick-replies { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+        .quick-reply { padding: 8px 16px; background: #fff; border: 1px solid #333; border-radius: 20px; font-size: 14px; cursor: pointer; transition: all 0.2s; }
+        .quick-reply:hover { background: #333; color: #fff; }
+        .chat-input-wrapper { display: flex; gap: 12px; }
+        .chat-input { flex: 1; padding: 12px 16px; border: 1px solid #d0d0d0; border-radius: 24px; font-size: 14px; outline: none; }
+        .action-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 16px 0; }
+        .action-card { background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px; cursor: pointer; transition: all 0.2s; }
+        .action-card:hover { border-color: #333; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .inline-form { background: #f5f5f5; border-radius: 8px; padding: 20px; margin: 16px 0; }
+        .form-field { margin-bottom: 16px; }
+        .form-label { display: block; font-size: 14px; color: #666; margin-bottom: 6px; }
+        .form-input { width: 100%; padding: 10px; border: 1px solid #d0d0d0; border-radius: 6px; font-size: 14px; }
+        .progress-tracker { display: flex; justify-content: space-between; margin: 20px 0; padding: 20px; background: #f5f5f5; border-radius: 8px; }
+        .progress-step { text-align: center; flex: 1; position: relative; }
+        .progress-step::after { content: ''; position: absolute; top: 15px; left: 50%; width: 100%; height: 2px; background: #d0d0d0; z-index: 0; }
+        .progress-step:last-child::after { display: none; }
+        .progress-step.completed::after { background: #4CAF50; }
+        .progress-circle { width: 30px; height: 30px; border-radius: 50%; background: #fff; border: 2px solid #d0d0d0; margin: 0 auto 8px; position: relative; z-index: 1; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+        .progress-step.completed .progress-circle { background: #4CAF50; border-color: #4CAF50; color: #fff; }
+        .progress-step.active .progress-circle { border-color: #333; background: #333; color: #fff; }
+        .context-panel { background: #f0f5ff; border-left: 3px solid #4a90e2; padding: 16px; border-radius: 4px; margin: 16px 0; }
+        .smart-suggestions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 16px 0; }
+        .suggestion-chip { padding: 12px; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s; }
+        .suggestion-chip:hover { background: #f5f5f5; border-color: #999; }
+        .error-state { background: #ffebee; border-left: 3px solid #d32f2f; padding: 16px; border-radius: 4px; margin: 16px 0; }
+        .success-state { background: #e8f5e9; border-left: 3px solid #4CAF50; padding: 16px; border-radius: 4px; margin: 16px 0; }
+        .annotation { background: #fffbf0; border: 1px solid #ffd700; border-radius: 4px; padding: 12px; margin: 20px 0; font-size: 13px; color: #666; }
+        .annotation-title { font-weight: 600; color: #333; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+    <div class="wireframe-container">
+        <div class="wireframe-header">
+            <h1 class="wireframe-title">AI Interaction Patterns</h1>
+            <p class="wireframe-subtitle">Complete conversational AI patterns with chat flows, contextual assistance, multi-modal interactions, and intelligent responses</p>
+        </div>
+
+        <!-- 1. Conversational Chat Interface -->
+        <div class="section-header">
+            <h2 class="section-title">1. Main Chat Interface Pattern</h2>
+            <p class="section-description">Primary conversational UI with message bubbles, quick replies, and action suggestions</p>
+        </div>
+        
+        <div class="wireframe-section">
+            <div class="chat-interface">
+                <div class="chat-header">
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div class="message-avatar">AI</div>
+                            <div>
+                                <div style="font-size: 18px; font-weight: 600;">CastMatch Assistant</div>
+                                <div style="font-size: 14px; color: #4CAF50;">● Online and ready to help</div>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 12px;">
+                            <button style="padding: 8px 12px; background: #f5f5f5; border: none; border-radius: 6px; cursor: pointer;">🔊</button>
+                            <button style="padding: 8px 12px; background: #f5f5f5; border: none; border-radius: 6px; cursor: pointer;">⚙️</button>
+                            <button style="padding: 8px 12px; background: #f5f5f5; border: none; border-radius: 6px; cursor: pointer;">❌</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chat-messages">
+                    <div class="message">
+                        <div class="message-avatar">AI</div>
+                        <div class="message-content">
+                            <div class="message-bubble">
+                                <div>👋 Hello! I'm your CastMatch AI assistant. How can I help you today?</div>
+                            </div>
+                            <div class="message-time">9:00 AM</div>
+                        </div>
+                    </div>
+                    
+                    <div class="message user">
+                        <div class="message-avatar">U</div>
+                        <div class="message-content">
+                            <div class="message-bubble">
+                                <div>I need to find actors for my new project</div>
+                            </div>
+                            <div class="message-time" style="text-align: right;">9:01 AM</div>
+                        </div>
+                    </div>
+                    
+                    <div class="message">
+                        <div class="message-avatar">AI</div>
+                        <div class="message-content">
+                            <div class="message-bubble">
+                                <div>I'd be happy to help you find the perfect actors! Let me gather some details about your project:</div>
+                            </div>
+                            
+                            <div class="inline-form">
+                                <h4 style="font-size: 16px; margin-bottom: 16px;">Project Details</h4>
+                                <div class="form-field">
+                                    <label class="form-label">Project Type</label>
+                                    <select class="form-input">
+                                        <option>Select type...</option>
+                                        <option>Feature Film</option>
+                                        <option>Web Series</option>
+                                        <option>TV Commercial</option>
+                                        <option>Theater</option>
+                                    </select>
+                                </div>
+                                <div class="form-field">
+                                    <label class="form-label">Location</label>
+                                    <input type="text" class="form-input" placeholder="e.g., Mumbai, Delhi">
+                                </div>
+                                <div class="form-field">
+                                    <label class="form-label">Number of Roles</label>
+                                    <input type="number" class="form-input" placeholder="How many actors needed?">
+                                </div>
+                                <button style="padding: 10px 24px; background: #333; color: #fff; border: none; border-radius: 6px; cursor: pointer;">Continue</button>
+                            </div>
+                            <div class="message-time">9:01 AM</div>
+                        </div>
+                    </div>
+                    
+                    <div class="message">
+                        <div class="message-avatar">AI</div>
+                        <div class="message-content">
+                            <div class="typing-indicator">
+                                <div class="typing-dot"></div>
+                                <div class="typing-dot"></div>
+                                <div class="typing-dot"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chat-input-container">
+                    <div class="quick-replies">
+                        <div class="quick-reply">Find actors</div>
+                        <div class="quick-reply">Schedule audition</div>
+                        <div class="quick-reply">View shortlist</div>
+                        <div class="quick-reply">Help</div>
+                    </div>
+                    <div class="chat-input-wrapper">
+                        <button style="width: 40px; height: 40px; border-radius: 50%; background: #f5f5f5; border: none; cursor: pointer;">📎</button>
+                        <input type="text" class="chat-input" placeholder="Type your message or speak...">
+                        <button style="width: 40px; height: 40px; border-radius: 50%; background: #f5f5f5; border: none; cursor: pointer;">🎤</button>
+                        <button style="width: 40px; height: 40px; border-radius: 50%; background: #333; color: #fff; border: none; cursor: pointer;">➤</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="annotation">
+                <div class="annotation-title">💬 Chat Patterns</div>
+                Message bubbles with avatars, Typing indicators, Quick reply chips, Inline forms, File attachments, Voice input option, Persistent input bar, Context preservation.
+            </div>
+        </div>
+
+        <!-- 2. Contextual Action Cards -->
+        <div class="section-header">
+            <h2 class="section-title">2. Contextual Actions & Smart Suggestions</h2>
+            <p class="section-description">AI-driven action cards and contextual suggestions based on conversation</p>
+        </div>
+        
+        <div class="wireframe-section">
+            <div style="background: #fafafa; border-radius: 12px; padding: 24px;">
+                <div class="message">
+                    <div class="message-avatar">AI</div>
+                    <div class="message-content">
+                        <div class="message-bubble">
+                            <div>Based on your requirements, I've found 23 actors matching your criteria. Here are the top recommendations:</div>
+                        </div>
+                        
+                        <div class="action-cards">
+                            <div class="action-card">
+                                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                                    <div style="width: 48px; height: 48px; background: #e0e0e0; border-radius: 50%;"></div>
+                                    <div>
+                                        <div style="font-weight: 600;">Arjun Patel</div>
+                                        <div style="font-size: 12px; color: #666;">95% match</div>
+                                    </div>
+                                </div>
+                                <div style="font-size: 13px; color: #666; margin-bottom: 12px;">5 years experience • Theater background</div>
+                                <div style="display: flex; gap: 8px;">
+                                    <button style="flex: 1; padding: 6px; background: #333; color: #fff; border: none; border-radius: 4px; font-size: 12px; cursor: pointer;">View</button>
+                                    <button style="flex: 1; padding: 6px; background: #fff; border: 1px solid #333; border-radius: 4px; font-size: 12px; cursor: pointer;">Shortlist</button>
+                                </div>
+                            </div>
+                            
+                            <div class="action-card">
+                                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                                    <div style="width: 48px; height: 48px; background: #e0e0e0; border-radius: 50%;"></div>
+                                    <div>
+                                        <div style="font-weight: 600;">Priya Sharma</div>
+                                        <div style="font-size: 12px; color: #666;">92% match</div>
+                                    </div>
+                                </div>
+                                <div style="font-size: 13px; color: #666; margin-bottom: 12px;">3 years experience • Film background</div>
+                                <div style="display: flex; gap: 8px;">
+                                    <button style="flex: 1; padding: 6px; background: #333; color: #fff; border: none; border-radius: 4px; font-size: 12px; cursor: pointer;">View</button>
+                                    <button style="flex: 1; padding: 6px; background: #fff; border: 1px solid #333; border-radius: 4px; font-size: 12px; cursor: pointer;">Shortlist</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="smart-suggestions">
+                            <div class="suggestion-chip">
+                                <div style="font-size: 20px; margin-bottom: 4px;">🔍</div>
+                                <div style="font-size: 13px;">View all 23</div>
+                            </div>
+                            <div class="suggestion-chip">
+                                <div style="font-size: 20px; margin-bottom: 4px;">⚙️</div>
+                                <div style="font-size: 13px;">Refine filters</div>
+                            </div>
+                            <div class="suggestion-chip">
+                                <div style="font-size: 20px; margin-bottom: 4px;">📨</div>
+                                <div style="font-size: 13px;">Send invites</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="context-panel">
+                    <div style="font-weight: 600; margin-bottom: 8px;">💡 AI Insight</div>
+                    <div style="font-size: 14px;">3 of these actors have worked together before in similar projects, which could help with chemistry. Would you like to see their previous collaborations?</div>
+                    <div style="margin-top: 12px; display: flex; gap: 8px;">
+                        <button style="padding: 6px 12px; background: #4a90e2; color: #fff; border: none; border-radius: 4px; font-size: 13px; cursor: pointer;">Show collaborations</button>
+                        <button style="padding: 6px 12px; background: #fff; border: 1px solid #4a90e2; color: #4a90e2; border-radius: 4px; font-size: 13px; cursor: pointer;">Not now</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="annotation">
+                <div class="annotation-title">🎯 Contextual Actions</div>
+                Dynamic action cards, Smart suggestions based on context, Inline insights, Proactive recommendations, One-click actions, Bulk operations, Context-aware follow-ups.
+            </div>
+        </div>
+
+        <!-- 3. Multi-Step Workflows -->
+        <div class="section-header">
+            <h2 class="section-title">3. Guided Multi-Step Workflows</h2>
+            <p class="section-description">AI-guided progressive workflows with step tracking and validation</p>
+        </div>
+        
+        <div class="wireframe-section">
+            <div style="background: #fafafa; border-radius: 12px; padding: 24px;">
+                <h3 style="font-size: 20px; margin-bottom: 24px;">Creating Audition Schedule</h3>
+                
+                <div class="progress-tracker">
+                    <div class="progress-step completed">
+                        <div class="progress-circle">✓</div>
+                        <div style="font-size: 12px;">Project</div>
+                    </div>
+                    <div class="progress-step completed">
+                        <div class="progress-circle">✓</div>
+                        <div style="font-size: 12px;">Roles</div>
+                    </div>
+                    <div class="progress-step active">
+                        <div class="progress-circle">3</div>
+                        <div style="font-size: 12px;">Schedule</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="progress-circle">4</div>
+                        <div style="font-size: 12px;">Venue</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="progress-circle">5</div>
+                        <div style="font-size: 12px;">Confirm</div>
+                    </div>
+                </div>
+                
+                <div class="message">
+                    <div class="message-avatar">AI</div>
+                    <div class="message-content">
+                        <div class="message-bubble">
+                            <div>Great! Now let's set up the audition schedule. When would you like to conduct auditions?</div>
+                        </div>
+                        
+                        <div style="background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin-top: 16px;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                                <div>
+                                    <label style="display: block; font-size: 14px; color: #666; margin-bottom: 6px;">Start Date</label>
+                                    <input type="date" style="width: 100%; padding: 10px; border: 1px solid #d0d0d0; border-radius: 6px;">
+                                </div>
+                                <div>
+                                    <label style="display: block; font-size: 14px; color: #666; margin-bottom: 6px;">End Date</label>
+                                    <input type="date" style="width: 100%; padding: 10px; border: 1px solid #d0d0d0; border-radius: 6px;">
+                                </div>
+                            </div>
+                            
+                            <div style="margin-bottom: 16px;">
+                                <label style="display: block; font-size: 14px; color: #666; margin-bottom: 6px;">Time Slots</label>
+                                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
+                                    <label style="padding: 8px; background: #f5f5f5; border: 1px solid #d0d0d0; border-radius: 4px; text-align: center; cursor: pointer;">
+                                        <input type="checkbox"> 9-12 PM
+                                    </label>
+                                    <label style="padding: 8px; background: #333; color: #fff; border: 1px solid #333; border-radius: 4px; text-align: center; cursor: pointer;">
+                                        <input type="checkbox" checked style="display: none;"> 12-3 PM
+                                    </label>
+                                    <label style="padding: 8px; background: #333; color: #fff; border: 1px solid #333; border-radius: 4px; text-align: center; cursor: pointer;">
+                                        <input type="checkbox" checked style="display: none;"> 3-6 PM
+                                    </label>
+                                    <label style="padding: 8px; background: #f5f5f5; border: 1px solid #d0d0d0; border-radius: 4px; text-align: center; cursor: pointer;">
+                                        <input type="checkbox"> 6-9 PM
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div style="display: flex; justify-content: space-between;">
+                                <button style="padding: 10px 24px; background: #fff; border: 1px solid #333; border-radius: 6px; cursor: pointer;">← Back</button>
+                                <button style="padding: 10px 24px; background: #333; color: #fff; border: none; border-radius: 6px; cursor: pointer;">Next: Select Venue →</button>
+                            </div>
+                        </div>
+                        
+                        <div style="background: #e3f2fd; padding: 12px; border-radius: 6px; margin-top: 16px;">
+                            <div style="font-size: 13px; color: #1976d2;">💡 <strong>AI Suggestion:</strong> Based on 47 actors to audition and 15-minute slots, you'll need approximately 12 hours. The selected time slots can accommodate all auditions over 2 days.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="annotation">
+                <div class="annotation-title">🔄 Workflow Patterns</div>
+                Step-by-step guidance, Progress tracking, Validation at each step, Context carry-forward, Back/Next navigation, AI suggestions per step, Save and resume capability.
+            </div>
+        </div>
+
+        <!-- 4. Error Handling & Recovery -->
+        <div class="section-header">
+            <h2 class="section-title">4. Error States & Recovery Patterns</h2>
+            <p class="section-description">Graceful error handling with helpful recovery suggestions</p>
+        </div>
+        
+        <div class="wireframe-section">
+            <div style="background: #fafafa; border-radius: 12px; padding: 24px;">
+                <div class="message user">
+                    <div class="message-avatar">U</div>
+                    <div class="message-content">
+                        <div class="message-bubble">
+                            <div>Book studio for tomorrow at 2 PM</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="message">
+                    <div class="message-avatar">AI</div>
+                    <div class="message-content">
+                        <div class="error-state">
+                            <div style="display: flex; align-items: start; gap: 12px;">
+                                <span style="font-size: 20px;">⚠️</span>
+                                <div>
+                                    <div style="font-weight: 600; margin-bottom: 8px;">Unable to complete booking</div>
+                                    <div style="font-size: 14px; margin-bottom: 12px;">I couldn't book the studio for tomorrow at 2 PM because:</div>
+                                    <ul style="margin-left: 20px; font-size: 14px; line-height: 1.6;">
+                                        <li>No studio location was specified</li>
+                                        <li>Duration of booking is needed</li>
+                                        <li>Tomorrow (Jan 15) at 2 PM may have conflicts</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="message-bubble" style="margin-top: 12px;">
+                            <div>Let me help you complete this booking. I'll need a few details:</div>
+                        </div>
+                        
+                        <div style="background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px; margin-top: 12px;">
+                            <div style="margin-bottom: 12px;">
+                                <div style="font-size: 14px; color: #666; margin-bottom: 4px;">Which studio?</div>
+                                <div style="display: flex; gap: 8px;">
+                                    <button style="padding: 8px 12px; background: #f5f5f5; border: 1px solid #d0d0d0; border-radius: 6px; cursor: pointer;">Film City Studio A</button>
+                                    <button style="padding: 8px 12px; background: #f5f5f5; border: 1px solid #d0d0d0; border-radius: 6px; cursor: pointer;">Andheri Studio 3</button>
+                                    <button style="padding: 8px 12px; background: #f5f5f5; border: 1px solid #d0d0d0; border-radius: 6px; cursor: pointer;">Other</button>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <div style="font-size: 14px; color: #666; margin-bottom: 4px;">Duration?</div>
+                                <div style="display: flex; gap: 8px;">
+                                    <button style="padding: 8px 12px; background: #f5f5f5; border: 1px solid #d0d0d0; border-radius: 6px; cursor: pointer;">2 hours</button>
+                                    <button style="padding: 8px 12px; background: #f5f5f5; border: 1px solid #d0d0d0; border-radius: 6px; cursor: pointer;">4 hours</button>
+                                    <button style="padding: 8px 12px; background: #f5f5f5; border: 1px solid #d0d0d0; border-radius: 6px; cursor: pointer;">Full day</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="message">
+                    <div class="message-avatar">AI</div>
+                    <div class="message-content">
+                        <div class="success-state">
+                            <div style="display: flex; align-items: start; gap: 12px;">
+                                <span style="font-size: 20px;">✅</span>
+                                <div>
+                                    <div style="font-weight: 600; margin-bottom: 8px;">Booking Confirmed!</div>
+                                    <div style="font-size: 14px;">Film City Studio A is booked for Jan 15, 2024 from 2:00 PM to 6:00 PM</div>
+                                    <div style="margin-top: 8px;">
+                                        <span style="font-size: 13px; color: #666;">Confirmation #: FSA-2024-0115-1423</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="annotation">
+                <div class="annotation-title">🚫 Error Handling</div>
+                Clear error messages, Specific reason for failure, Recovery suggestions, Quick fix options, Retry mechanisms, Fallback alternatives, Success confirmation.
+            </div>
+        </div>
+
+        <!-- 5. Proactive AI Assistance -->
+        <div class="section-header">
+            <h2 class="section-title">5. Proactive AI Assistance</h2>
+            <p class="section-description">AI-initiated helpful interventions and smart notifications</p>
+        </div>
+        
+        <div class="wireframe-section">
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+                <div style="display: flex; align-items: center; gap: 16px;">
+                    <div style="width: 48px; height: 48px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px;">
+                        🌟
+                    </div>
+                    <div>
+                        <div style="font-size: 18px; font-weight: 600; margin-bottom: 4px;">AI Insight Available</div>
+                        <div style="opacity: 0.9;">I noticed you have 3 auditions scheduled back-to-back tomorrow. Would you like me to optimize the schedule?</div>
+                        <div style="margin-top: 12px; display: flex; gap: 8px;">
+                            <button style="padding: 8px 16px; background: rgba(255,255,255,0.2); border: 1px solid #fff; border-radius: 6px; color: #fff; cursor: pointer;">Show me</button>
+                            <button style="padding: 8px 16px; background: #fff; border: none; border-radius: 6px; color: #764ba2; cursor: pointer;">Optimize now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                <div style="background: #fff3e0; border-left: 3px solid #ff9800; padding: 16px; border-radius: 4px;">
+                    <div style="font-weight: 600; margin-bottom: 8px;">⏰ Reminder</div>
+                    <div style="font-size: 14px; margin-bottom: 12px;">Your audition with Priya Sharma starts in 30 minutes at Studio B</div>
+                    <div style="display: flex; gap: 8px;">
+                        <button style="padding: 6px 12px; background: #ff9800; color: #fff; border: none; border-radius: 4px; font-size: 12px; cursor: pointer;">View details</button>
+                        <button style="padding: 6px 12px; background: #fff; border: 1px solid #ff9800; color: #ff9800; border-radius: 4px; font-size: 12px; cursor: pointer;">Navigate</button>
+                    </div>
+                </div>
+                
+                <div style="background: #e8f5e9; border-left: 3px solid #4CAF50; padding: 16px; border-radius: 4px;">
+                    <div style="font-weight: 600; margin-bottom: 8px;">📈 Trending</div>
+                    <div style="font-size: 14px; margin-bottom: 12px;">5 new actors matching your saved search "Young comedic actors" just joined</div>
+                    <div style="display: flex; gap: 8px;">
+                        <button style="padding: 6px 12px; background: #4CAF50; color: #fff; border: none; border-radius: 4px; font-size: 12px; cursor: pointer;">View profiles</button>
+                        <button style="padding: 6px 12px; background: #fff; border: 1px solid #4CAF50; color: #4CAF50; border-radius: 4px; font-size: 12px; cursor: pointer;">Save search</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 24px; background: #f5f5f5; border-radius: 8px; padding: 20px;">
+                <h4 style="font-size: 16px; margin-bottom: 16px;">🤖 AI Learning from Your Behavior</h4>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 24px; font-weight: 700; color: #333;">87%</div>
+                        <div style="font-size: 12px; color: #666;">Prediction Accuracy</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 24px; font-weight: 700; color: #333;">24</div>
+                        <div style="font-size: 12px; color: #666;">Patterns Learned</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 24px; font-weight: 700; color: #333;">3.5h</div>
+                        <div style="font-size: 12px; color: #666;">Time Saved/Week</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="annotation">
+                <div class="annotation-title">🤖 Proactive Features</div>
+                Smart notifications, Predictive suggestions, Behavior learning, Automatic optimization, Timely reminders, Trend alerts, Performance insights, Workflow automation.
+            </div>
+        </div>
+
+        <!-- Final Summary -->
+        <div class="section-header">
+            <h2 class="section-title">Complete AI Interaction Architecture</h2>
+            <p class="section-description">Comprehensive conversational AI patterns for casting platform</p>
+        </div>
+        
+        <div class="wireframe-section">
+            <div style="background: #f0f0f0; padding: 32px; border-radius: 8px;">
+                <h3 style="font-size: 24px; margin-bottom: 24px; text-align: center;">AI Interaction Feature Matrix</h3>
+                
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
+                    <div style="background: #fff; padding: 20px; border-radius: 8px;">
+                        <h4 style="font-size: 16px; margin-bottom: 12px; color: #333;">Conversation Patterns</h4>
+                        <ul style="list-style: none; padding: 0; font-size: 14px; color: #666; line-height: 1.8;">
+                            <li>✓ Natural dialogue flow</li>
+                            <li>✓ Context preservation</li>
+                            <li>✓ Multi-turn conversations</li>
+                            <li>✓ Quick replies</li>
+                            <li>✓ Typing indicators</li>
+                            <li>✓ Message threading</li>
+                            <li>✓ Voice & text input</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="background: #fff; padding: 20px; border-radius: 8px;">
+                        <h4 style="font-size: 16px; margin-bottom: 12px; color: #333;">Intelligence Features</h4>
+                        <ul style="list-style: none; padding: 0; font-size: 14px; color: #666; line-height: 1.8;">
+                            <li>✓ Intent recognition</li>
+                            <li>✓ Entity extraction</li>
+                            <li>✓ Sentiment analysis</li>
+                            <li>✓ Predictive suggestions</li>
+                            <li>✓ Learning from behavior</li>
+                            <li>✓ Personalization</li>
+                            <li>✓ Proactive assistance</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="background: #fff; padding: 20px; border-radius: 8px;">
+                        <h4 style="font-size: 16px; margin-bottom: 12px; color: #333;">Interaction Types</h4>
+                        <ul style="list-style: none; padding: 0; font-size: 14px; color: #666; line-height: 1.8;">
+                            <li>✓ Conversational chat</li>
+                            <li>✓ Inline forms</li>
+                            <li>✓ Action cards</li>
+                            <li>✓ Multi-step workflows</li>
+                            <li>✓ Error recovery</li>
+                            <li>✓ Confirmation dialogs</li>
+                            <li>✓ Smart notifications</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid #d0d0d0;">
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; text-align: center;">
+                        <div>
+                            <div style="font-size: 32px; font-weight: 700; color: #333;">95%</div>
+                            <div style="font-size: 14px; color: #666;">Intent Accuracy</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 32px; font-weight: 700; color: #333;">&lt;1s</div>
+                            <div style="font-size: 14px; color: #666;">Response Time</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 32px; font-weight: 700; color: #333;">12</div>
+                            <div style="font-size: 14px; color: #666;">Languages</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 32px; font-weight: 700; color: #333;">24/7</div>
+                            <div style="font-size: 14px; color: #666;">Availability</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

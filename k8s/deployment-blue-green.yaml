@@ -1,0 +1,363 @@
+# Blue-Green Deployment Configuration for CastMatch Backend
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: castmatch-backend-blue
+  namespace: castmatch-production
+  labels:
+    app: castmatch
+    service: backend
+    environment: production
+    deployment: blue
+spec:
+  replicas: 3
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app: castmatch
+      service: backend
+      deployment: blue
+  template:
+    metadata:
+      labels:
+        app: castmatch
+        service: backend
+        deployment: blue
+        version: blue
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "3001"
+        prometheus.io/path: "/metrics"
+    spec:
+      serviceAccountName: castmatch-backend
+      containers:
+      - name: backend
+        image: ghcr.io/castmatch/backend:latest
+        ports:
+        - containerPort: 3001
+          name: http
+        - containerPort: 9090
+          name: metrics
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: PORT
+          value: "3001"
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: castmatch-secrets
+              key: database-url
+        - name: REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: castmatch-secrets
+              key: redis-url
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: castmatch-secrets
+              key: jwt-secret
+        - name: DEPLOYMENT_VERSION
+          value: "blue"
+        resources:
+          requests:
+            cpu: 500m
+            memory: 512Mi
+          limits:
+            cpu: 2
+            memory: 2Gi
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3001
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 3001
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        startupProbe:
+          httpGet:
+            path: /health
+            port: 3001
+          failureThreshold: 30
+          periodSeconds: 10
+      terminationGracePeriodSeconds: 30
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 2000
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - castmatch
+                - key: service
+                  operator: In
+                  values:
+                  - backend
+              topologyKey: kubernetes.io/hostname
+
+---
+# Green Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: castmatch-backend-green
+  namespace: castmatch-production
+  labels:
+    app: castmatch
+    service: backend
+    environment: production
+    deployment: green
+spec:
+  replicas: 0  # Initially scaled to 0
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app: castmatch
+      service: backend
+      deployment: green
+  template:
+    metadata:
+      labels:
+        app: castmatch
+        service: backend
+        deployment: green
+        version: green
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "3001"
+        prometheus.io/path: "/metrics"
+    spec:
+      serviceAccountName: castmatch-backend
+      containers:
+      - name: backend
+        image: ghcr.io/castmatch/backend:latest
+        ports:
+        - containerPort: 3001
+          name: http
+        - containerPort: 9090
+          name: metrics
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: PORT
+          value: "3001"
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: castmatch-secrets
+              key: database-url
+        - name: REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: castmatch-secrets
+              key: redis-url
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: castmatch-secrets
+              key: jwt-secret
+        - name: DEPLOYMENT_VERSION
+          value: "green"
+        resources:
+          requests:
+            cpu: 500m
+            memory: 512Mi
+          limits:
+            cpu: 2
+            memory: 2Gi
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3001
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 3001
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        startupProbe:
+          httpGet:
+            path: /health
+            port: 3001
+          failureThreshold: 30
+          periodSeconds: 10
+      terminationGracePeriodSeconds: 30
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 2000
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - castmatch
+                - key: service
+                  operator: In
+                  values:
+                  - backend
+              topologyKey: kubernetes.io/hostname
+
+---
+# Service for Blue Deployment
+apiVersion: v1
+kind: Service
+metadata:
+  name: castmatch-backend-blue-svc
+  namespace: castmatch-production
+  labels:
+    app: castmatch
+    service: backend
+    deployment: blue
+spec:
+  selector:
+    app: castmatch
+    service: backend
+    deployment: blue
+  ports:
+  - name: http
+    port: 80
+    targetPort: 3001
+    protocol: TCP
+  type: ClusterIP
+
+---
+# Service for Green Deployment
+apiVersion: v1
+kind: Service
+metadata:
+  name: castmatch-backend-green-svc
+  namespace: castmatch-production
+  labels:
+    app: castmatch
+    service: backend
+    deployment: green
+spec:
+  selector:
+    app: castmatch
+    service: backend
+    deployment: green
+  ports:
+  - name: http
+    port: 80
+    targetPort: 3001
+    protocol: TCP
+  type: ClusterIP
+
+---
+# Main Service (switches between blue/green)
+apiVersion: v1
+kind: Service
+metadata:
+  name: castmatch-backend-svc
+  namespace: castmatch-production
+  labels:
+    app: castmatch
+    service: backend
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+    service.beta.kubernetes.io/aws-load-balancer-healthcheck-path: "/health"
+    service.beta.kubernetes.io/aws-load-balancer-healthcheck-interval: "10"
+spec:
+  selector:
+    app: castmatch
+    service: backend
+    deployment: blue  # Default to blue, switch during deployment
+  ports:
+  - name: http
+    port: 80
+    targetPort: 3001
+    protocol: TCP
+  type: LoadBalancer
+
+---
+# Ingress with traffic splitting capability
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: castmatch-backend-ingress
+  namespace: castmatch-production
+  annotations:
+    kubernetes.io/ingress.class: "alb"
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/healthcheck-path: /health
+    alb.ingress.kubernetes.io/healthcheck-interval-seconds: "15"
+    alb.ingress.kubernetes.io/healthcheck-timeout-seconds: "5"
+    alb.ingress.kubernetes.io/healthy-threshold-count: "2"
+    alb.ingress.kubernetes.io/unhealthy-threshold-count: "2"
+    # Traffic splitting annotations for canary deployments
+    nginx.ingress.kubernetes.io/canary: "false"
+    nginx.ingress.kubernetes.io/canary-weight: "0"
+spec:
+  rules:
+  - host: api.castmatch.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: castmatch-backend-svc
+            port:
+              number: 80
+  tls:
+  - hosts:
+    - api.castmatch.com
+    secretName: castmatch-tls-cert
+
+---
+# Canary Ingress for gradual rollout
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: castmatch-backend-canary-ingress
+  namespace: castmatch-production
+  annotations:
+    kubernetes.io/ingress.class: "alb"
+    nginx.ingress.kubernetes.io/canary: "true"
+    nginx.ingress.kubernetes.io/canary-weight: "0"  # Start with 0% traffic
+    nginx.ingress.kubernetes.io/canary-by-header: "X-Canary-Deploy"
+spec:
+  rules:
+  - host: api.castmatch.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: castmatch-backend-green-svc
+            port:
+              number: 80
+  tls:
+  - hosts:
+    - api.castmatch.com
+    secretName: castmatch-tls-cert

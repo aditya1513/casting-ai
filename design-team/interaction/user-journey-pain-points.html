@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CastMatch - User Journey Pain Point Analysis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8fafc;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 48px;
+            padding: 32px 0;
+            background: linear-gradient(135deg, #ef4444 0%, #f59e0b 100%);
+            color: white;
+            border-radius: 16px;
+        }
+
+        .journey-map {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .journey-header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding-bottom: 16px;
+            border-bottom: 3px solid #e5e7eb;
+        }
+
+        .journey-header h2 {
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .persona-info {
+            background: #f0f9ff;
+            border: 1px solid #0ea5e9;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 24px;
+            display: inline-block;
+        }
+
+        .journey-phases {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .phase-card {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .phase-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px -12px rgba(0, 0, 0, 0.15);
+        }
+
+        .phase-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .phase-number {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 32px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .phase-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .phase-duration {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .phase-content {
+            padding: 24px;
+        }
+
+        .user-actions {
+            margin-bottom: 20px;
+        }
+
+        .user-actions h4 {
+            color: #3b82f6;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .action-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            padding: 8px 12px;
+            background: #f8fafc;
+            border-radius: 6px;
+            border-left: 3px solid #3b82f6;
+        }
+
+        .pain-points {
+            margin-bottom: 20px;
+        }
+
+        .pain-points h4 {
+            color: #ef4444;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pain-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 12px;
+            padding: 12px;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 6px;
+        }
+
+        .pain-severity {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .severity-high {
+            background: #ef4444;
+            color: white;
+        }
+
+        .severity-medium {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .severity-low {
+            background: #6b7280;
+            color: white;
+        }
+
+        .solutions {
+            margin-bottom: 20px;
+        }
+
+        .solutions h4 {
+            color: #10b981;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .solution-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 12px;
+            padding: 12px;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 6px;
+        }
+
+        .sentiment-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .sentiment-chart {
+            display: flex;
+            width: 100%;
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .sentiment-positive {
+            background: #10b981;
+            flex: 1;
+        }
+
+        .sentiment-neutral {
+            background: #f59e0b;
+            flex: 1;
+        }
+
+        .sentiment-negative {
+            background: #ef4444;
+            flex: 2;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .metric-card {
+            text-align: center;
+            padding: 12px;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+        }
+
+        .metric-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1f2937;
+        }
+
+        .metric-label {
+            font-size: 11px;
+            color: #6b7280;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+
+        .improvement-needed {
+            color: #ef4444;
+        }
+
+        .meets-target {
+            color: #10b981;
+        }
+
+        .alternative-paths {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .alternative-paths h4 {
+            color: #92400e;
+            margin-bottom: 8px;
+        }
+
+        .path-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #92400e;
+        }
+
+        .recovery-workflows {
+            margin-top: 32px;
+            padding: 24px;
+            background: #f0f9ff;
+            border: 2px solid #0ea5e9;
+            border-radius: 12px;
+        }
+
+        .workflow-step {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #0ea5e9;
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: #0ea5e9;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 24px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .critical-failure-points {
+            background: #fef2f2;
+            border: 2px solid #ef4444;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .failure-point {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            color: #991b1b;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+
+            .journey-phases {
+                grid-template-columns: 1fr;
+            }
+
+            .phase-content {
+                padding: 16px;
+            }
+
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>CastMatch User Journey Pain Point Analysis</h1>
+            <p>Identifying friction points and designing recovery solutions</p>
+        </div>
+
+        <!-- Talent Discovery Journey -->
+        <div class="journey-map">
+            <div class="journey-header">
+                <h2>🎭 Talent Discovery Journey</h2>
+                <div class="persona-info">
+                    <strong>Persona:</strong> Sarah Chen, Casting Director | <strong>Goal:</strong> Find lead actor for indie film
+                </div>
+            </div>
+
+            <div class="journey-phases">
+                <div class="phase-card">
+                    <div class="phase-header">
+                        <div class="phase-number">1</div>
+                        <div class="phase-title">Search Initiation</div>
+                        <div class="phase-duration">0-2 minutes</div>
+                    </div>
+                    <div class="phase-content">
+                        <div class="user-actions">
+                            <h4>🎯 User Actions</h4>
+                            <ul class="action-list">
+                                <li class="action-item">🔍 Opens search page</li>
+                                <li class="action-item">📝 Enters search terms</li>
+                                <li class="action-item">🎚️ Sets initial filters</li>
+                                <li class="action-item">👀 Reviews suggestions</li>
+                            </ul>
+                        </div>
+
+                        <div class="pain-points">
+                            <h4>😤 Pain Points</h4>
+                            <div class="pain-item">
+                                <div class="pain-severity severity-high">High</div>
+                                <div>
+                                    <strong>Overwhelming search interface</strong><br>
+                                    Too many filter options visible at once, causing analysis paralysis
+                                </div>
+                            </div>
+                            <div class="pain-item">
+                                <div class="pain-severity severity-medium">Med</div>
+                                <div>
+                                    <strong>Unclear search autocomplete</strong><br>
+                                    Suggestions don't match user intent or industry terminology
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="solutions">
+                            <h4>💡 Solutions</h4>
+                            <div class="solution-item">
+                                <div>✅</div>
+                                <div>
+                                    <strong>Progressive filter disclosure</strong><br>
+                                    Show 3 main filters initially, expand on demand
+                                </div>
+                            </div>
+                            <div class="solution-item">
+                                <div>✅</div>
+                                <div>
+                                    <strong>Smart search suggestions</strong><br>
+                                    Context-aware autocomplete with casting terminology
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="sentiment-indicator">
+                            <strong>User Sentiment</strong>
+                            <div class="sentiment-chart">
+                                <div class="sentiment-positive" style="flex: 1;"></div>
+                                <div class="sentiment-neutral" style="flex: 2;"></div>
+                                <div class="sentiment-negative" style="flex: 1;"></div>
+                            </div>
+                        </div>
+
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <div class="metric-value improvement-needed">45%</div>
+                                <div class="metric-label">Completion Rate</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value improvement-needed">2.5min</div>
+                                <div class="metric-label">Avg Time</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value improvement-needed">32%</div>
+                                <div class="metric-label">Success Rate</div>
+                            </div>
+                        </div>
+
+                        <div class="alternative-paths">
+                            <h4>🔄 Alternative Paths</h4>
+                            <div class="path-option">📚 Browse featured talents instead</div>
+                            <div class="path-option">🎬 Use project-based search templates</div>
+                            <div class="path-option">📞 Contact customer success for guidance</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="phase-card">
+                    <div class="phase-header">
+                        <div class="phase-number">2</div>
+                        <div class="phase-title">Filter & Browse</div>
+                        <div class="phase-duration">3-8 minutes</div>
+                    </div>
+                    <div class="phase-content">
+                        <div class="user-actions">
+                            <h4>🎯 User Actions</h4>
+                            <ul class="action-list">
+                                <li class="action-item">🎚️ Applies multiple filters</li>
+                                <li class="action-item">📊 Reviews result count</li>
+                                <li class="action-item">👀 Scans talent thumbnails</li>
+                                <li class="action-item">🔄 Refines search criteria</li>
+                            </ul>
+                        </div>
+
+                        <div class="pain-points">
+                            <h4>😤 Pain Points</h4>
+                            <div class="pain-item">
+                                <div class="pain-severity severity-high">High</div>
+                                <div>
+                                    <strong>Filter combinations yield zero results</strong><br>
+                                    Users don't understand which filters conflict
+                                </div>
+                            </div>
+                            <div class="pain-item">
+                                <div class="pain-severity severity-medium">Med</div>
+                                <div>
+                                    <strong>Slow loading of talent previews</strong><br>
+                                    Images and basic info take 3-5 seconds to load
+                                </div>
+                            </div>
+                            <div class="pain-item">
+                                <div class="pain-severity severity-low">Low</div>
+                                <div>
+                                    <strong>Inconsistent talent photo quality</strong><br>
+                                    Mix of professional and casual photos affects browsing
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="solutions">
+                            <h4>💡 Solutions</h4>
+                            <div class="solution-item">
+                                <div>✅</div>
+                                <div>
+                                    <strong>Smart filter validation</strong><br>
+                                    Show result count changes in real-time, warn about conflicts
+                                </div>
+                            </div>
+                            <div class="solution-item">
+                                <div>✅</div>
+                                <div>
+                                    <strong>Optimistic loading with skeletons</strong><br>
+                                    Show placeholder cards immediately, load content progressively
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <div class="metric-value improvement-needed">28%</div>
+                                <div class="metric-label">Zero Results</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value improvement-needed">4.2s</div>
+                                <div class="metric-label">Load Time</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value meets-target">78%</div>
+                                <div class="metric-label">Refinement Success</div>
+                            </div>
+                        </div>
+
+                        <div class="critical-failure-points">
+                            <h4>🚨 Critical Failure Points</h4>
+                            <div class="failure-point">⚠️ User applies age + location + skill filters → 0 results</div>
+                            <div class="failure-point">⚠️ Search timeout on mobile data → blank page</div>
+                            <div class="failure-point">⚠️ Filter state lost on page refresh → user starts over</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="phase-card">
+                    <div class="phase-header">
+                        <div class="phase-number">3</div>
+                        <div class="phase-title">Profile Review</div>
+                        <div class="phase-duration">5-15 minutes</div>
+                    </div>
+                    <div class="phase-content">
+                        <div class="user-actions">
+                            <h4>🎯 User Actions</h4>
+                            <ul class="action-list">
+                                <li class="action-item">👤 Opens talent profiles</li>
+                                <li class="action-item">🎥 Views demo reels</li>
+                                <li class="action-item">📋 Reviews experience</li>
+                                <li class="action-item">⭐ Saves favorites</li>
+                            </ul>
+                        </div>
+
+                        <div class="pain-points">
+                            <h4>😤 Pain Points</h4>
+                            <div class="pain-item">
+                                <div class="pain-severity severity-high">High</div>
+                                <div>
+                                    <strong>Video player fails to load</strong><br>
+                                    Demo reels don't play on 15% of devices/browsers
+                                </div>
+                            </div>
+                            <div class="pain-item">
+                                <div class="pain-severity severity-medium">Med</div>
+                                <div>
+                                    <strong>Incomplete profile information</strong><br>
+                                    Missing contact details or availability status
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="solutions">
+                            <h4>💡 Solutions</h4>
+                            <div class="solution-item">
+                                <div>✅</div>
+                                <div>
+                                    <strong>Fallback video player</strong><br>
+                                    Multiple player options + download link for compatibility
+                                </div>
+                            </div>
+                            <div class="solution-item">
+                                <div>✅</div>
+                                <div>
+                                    <strong>Profile completeness indicator</strong><br>
+                                    Visual progress bar showing missing information
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <div class="metric-value improvement-needed">15%</div>
+                                <div class="metric-label">Video Failures</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value meets-target">85%</div>
+                                <div class="metric-label">Profile Views</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value meets-target">62%</div>
+                                <div class="metric-label">Save Rate</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="phase-card">
+                    <div class="phase-header">
+                        <div class="phase-number">4</div>
+                        <div class="phase-title">Contact & Follow-up</div>
+                        <div class="phase-duration">2-10 minutes</div>
+                    </div>
+                    <div class="phase-content">
+                        <div class="user-actions">
+                            <h4>🎯 User Actions</h4>
+                            <ul class="action-list">
+                                <li class="action-item">💬 Sends initial message</li>
+                                <li class="action-item">📅 Schedules audition</li>
+                                <li class="action-item">📝 Takes notes</li>
+                                <li class="action-item">🔔 Sets reminders</li>
+                            </ul>
+                        </div>
+
+                        <div class="pain-points">
+                            <h4>😤 Pain Points</h4>
+                            <div class="pain-item">
+                                <div class="pain-severity severity-high">High</div>
+                                <div>
+                                    <strong>Message delivery failures</strong><br>
+                                    12% of messages fail to send without user notification
+                                </div>
+                            </div>
+                            <div class="pain-item">
+                                <div class="pain-severity severity-medium">Med</div>
+                                <div>
+                                    <strong>Calendar integration issues</strong><br>
+                                    Scheduling conflicts with external calendar apps
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="solutions">
+                            <h4>💡 Solutions</h4>
+                            <div class="solution-item">
+                                <div>✅</div>
+                                <div>
+                                    <strong>Reliable message queue</strong><br>
+                                    Retry failed messages + clear delivery status
+                                </div>
+                            </div>
+                            <div class="solution-item">
+                                <div>✅</div>
+                                <div>
+                                    <strong>Universal calendar sync</strong><br>
+                                    Support for Google, Outlook, Apple calendars
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <div class="metric-value improvement-needed">88%</div>
+                                <div class="metric-label">Message Success</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value meets-target">92%</div>
+                                <div class="metric-label">Contact Rate</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value improvement-needed">67%</div>
+                                <div class="metric-label">Response Rate</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="recovery-workflows">
+                <h3>🔄 Recovery Workflow for Critical Failures</h3>
+                <div class="workflow-step">
+                    <div class="step-number">1</div>
+                    <div>
+                        <strong>Detect Issue:</strong> Monitor search result counts, page load times, message delivery status
+                    </div>
+                </div>
+                <div class="workflow-step">
+                    <div class="step-number">2</div>
+                    <div>
+                        <strong>Alert User:</strong> Show contextual notification with clear explanation and next steps
+                    </div>
+                </div>
+                <div class="workflow-step">
+                    <div class="step-number">3</div>
+                    <div>
+                        <strong>Provide Alternatives:</strong> Offer simplified search, contact support, or browse featured content
+                    </div>
+                </div>
+                <div class="workflow-step">
+                    <div class="step-number">4</div>
+                    <div>
+                        <strong>Preserve State:</strong> Save user's progress and preferences for seamless recovery
+                    </div>
+                </div>
+                <div class="workflow-step">
+                    <div class="step-number">5</div>
+                    <div>
+                        <strong>Follow-up:</strong> Check if issue resolved and gather feedback for improvements
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Talent Application Journey -->
+        <div class="journey-map">
+            <div class="journey-header">
+                <h2>📋 Talent Application Journey</h2>
+                <div class="persona-info">
+                    <strong>Persona:</strong> Marcus Johnson, Actor | <strong>Goal:</strong> Apply for commercial audition
+                </div>
+            </div>
+
+            <div class="journey-phases">
+                <div class="phase-card">
+                    <div class="phase-header">
+                        <div class="phase-number">1</div>
+                        <div class="phase-title">Opportunity Discovery</div>
+                        <div class="phase-duration">1-3 minutes</div>
+                    </div>
+                    <div class="phase-content">
+                        <div class="user-actions">
+                            <h4>🎯 User Actions</h4>
+                            <ul class="action-list">
+                                <li class="action-item">🎬 Browses casting calls</li>
+                                <li class="action-item">📖 Reads project details</li>
+                                <li class="action-item">✅ Checks eligibility</li>
+                                <li class="action-item">💾 Saves interesting roles</li>
+                            </ul>
+                        </div>
+
+                        <div class="pain-points">
+                            <h4>😤 Pain Points</h4>
+                            <div class="pain-item">
+                                <div class="pain-severity severity-medium">Med</div>
+                                <div>
+                                    <strong>Vague project descriptions</strong><br>
+                                    Missing key details like pay range, shoot dates, location
+                                </div>
+                            </div>
+                            <div class="pain-item">
+                                <div class="pain-severity severity-low">Low</div>
+                                <div>
+                                    <strong>Expired postings still visible</strong><br>
+                                    Users waste time on closed opportunities
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <div class="metric-value meets-target">82%</div>
+                                <div class="metric-label">Engagement Rate</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value improvement-needed">23%</div>
+                                <div class="metric-label">Application Rate</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="phase-card">
+                    <div class="phase-header">
+                        <div class="phase-number">2</div>
+                        <div class="phase-title">Application Submission</div>
+                        <div class="phase-duration">5-20 minutes</div>
+                    </div>
+                    <div class="phase-content">
+                        <div class="user-actions">
+                            <h4>🎯 User Actions</h4>
+                            <ul class="action-list">
+                                <li class="action-item">📝 Fills application form</li>
+                                <li class="action-item">📎 Uploads materials</li>
+                                <li class="action-item">🎥 Records audition video</li>
+                                <li class="action-item">📤 Submits application</li>
+                            </ul>
+                        </div>
+
+                        <div class="pain-points">
+                            <h4>😤 Pain Points</h4>
+                            <div class="pain-item">
+                                <div class="pain-severity severity-high">High</div>
+                                <div>
+                                    <strong>File upload failures</strong><br>
+                                    Large video files fail to upload 25% of the time
+                                </div>
+                            </div>
+                            <div class="pain-item">
+                                <div class="pain-severity severity-high">High</div>
+                                <div>
+                                    <strong>Form data loss on errors</strong><br>
+                                    Users lose all progress when submission fails
+                                </div>
+                            </div>
+                            <div class="pain-item">
+                                <div class="pain-severity severity-medium">Med</div>
+                                <div>
+                                    <strong>Unclear video requirements</strong><br>
+                                    Confused about format, length, content guidelines
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="solutions">
+                            <h4>💡 Solutions</h4>
+                            <div class="solution-item">
+                                <div>✅</div>
+                                <div>
+                                    <strong>Chunked file uploads</strong><br>
+                                    Break large files into chunks with resume capability
+                                </div>
+                            </div>
+                            <div class="solution-item">
+                                <div>✅</div>
+                                <div>
+                                    <strong>Auto-save drafts</strong><br>
+                                    Save form data every 30 seconds to prevent loss
+                                </div>
+                            </div>
+                            <div class="solution-item">
+                                <div>✅</div>
+                                <div>
+                                    <strong>Video requirement wizard</strong><br>
+                                    Step-by-step guide with examples and tips
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <div class="metric-value improvement-needed">75%</div>
+                                <div class="metric-label">Upload Success</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value improvement-needed">68%</div>
+                                <div class="metric-label">Completion Rate</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value improvement-needed">12min</div>
+                                <div class="metric-label">Avg Time</div>
+                            </div>
+                        </div>
+
+                        <div class="critical-failure-points">
+                            <h4>🚨 Critical Failure Points</h4>
+                            <div class="failure-point">⚠️ 50MB video upload times out → user loses 15 minutes of work</div>
+                            <div class="failure-point">⚠️ Browser crash during submission → form data lost</div>
+                            <div class="failure-point">⚠️ Network interruption → unclear if application submitted</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="phase-card">
+                    <div class="phase-header">
+                        <div class="phase-number">3</div>
+                        <div class="phase-title">Awaiting Response</div>
+                        <div class="phase-duration">1-7 days</div>
+                    </div>
+                    <div class="phase-content">
+                        <div class="user-actions">
+                            <h4>🎯 User Actions</h4>
+                            <ul class="action-list">
+                                <li class="action-item">📱 Checks notifications</li>
+                                <li class="action-item">📧 Monitors email</li>
+                                <li class="action-item">🔍 Tracks application status</li>
+                                <li class="action-item">💬 Follows up if needed</li>
+                            </ul>
+                        </div>
+
+                        <div class="pain-points">
+                            <h4>😤 Pain Points</h4>
+                            <div class="pain-item">
+                                <div class="pain-severity severity-medium">Med</div>
+                                <div>
+                                    <strong>No status updates</strong><br>
+                                    Users don't know if application was reviewed
+                                </div>
+                            </div>
+                            <div class="pain-item">
+                                <div class="pain-severity severity-low">Low</div>
+                                <div>
+                                    <strong>Generic rejection emails</strong><br>
+                                    No feedback on why application wasn't selected
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="solutions">
+                            <h4>💡 Solutions</h4>
+                            <div class="solution-item">
+                                <div>✅</div>
+                                <div>
+                                    <strong>Application tracking system</strong><br>
+                                    Real-time status updates: submitted → reviewed → decision
+                                </div>
+                            </div>
+                            <div class="solution-item">
+                                <div>✅</div>
+                                <div>
+                                    <strong>Constructive feedback system</strong><br>
+                                    Optional feedback categories for rejected applications
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <div class="metric-value improvement-needed">45%</div>
+                                <div class="metric-label">Get Feedback</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value meets-target">78%</div>
+                                <div class="metric-label">Return Users</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile-Specific Pain Points -->
+        <div class="journey-map">
+            <div class="journey-header">
+                <h2>📱 Mobile-Specific Pain Points</h2>
+            </div>
+
+            <div class="journey-phases">
+                <div class="phase-card">
+                    <div class="phase-header">
+                        <div class="phase-number">📱</div>
+                        <div class="phase-title">Mobile Touch Interactions</div>
+                    </div>
+                    <div class="phase-content">
+                        <div class="pain-points">
+                            <h4>😤 Pain Points</h4>
+                            <div class="pain-item">
+                                <div class="pain-severity severity-high">High</div>
+                                <div>
+                                    <strong>Small touch targets</strong><br>
+                                    Filter buttons and action links under 44px minimum
+                                </div>
+                            </div>
+                            <div class="pain-item">
+                                <div class="pain-severity severity-medium">Med</div>
+                                <div>
+                                    <strong>Keyboard covers form fields</strong><br>
+                                    Input fields hidden behind virtual keyboard
+                                </div>
+                            </div>
+                            <div class="pain-item">
+                                <div class="pain-severity severity-medium">Med</div>
+                                <div>
+                                    <strong>Scroll performance issues</strong><br>
+                                    Laggy scrolling through talent lists on older devices
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="solutions">
+                            <h4>💡 Solutions</h4>
+                            <div class="solution-item">
+                                <div>✅</div>
+                                <div>
+                                    <strong>44px minimum touch targets</strong><br>
+                                    Ensure all interactive elements meet accessibility guidelines
+                                </div>
+                            </div>
+                            <div class="solution-item">
+                                <div>✅</div>
+                                <div>
+                                    <strong>Smart viewport handling</strong><br>
+                                    Detect keyboard and adjust layout accordingly
+                                </div>
+                            </div>
+                            <div class="solution-item">
+                                <div>✅</div>
+                                <div>
+                                    <strong>Virtual scrolling</strong><br>
+                                    Render only visible items for better performance
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <div class="metric-value improvement-needed">32%</div>
+                                <div class="metric-label">Touch Accuracy</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value improvement-needed">2.3s</div>
+                                <div class="metric-label">Scroll Response</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="phase-card">
+                    <div class="phase-header">
+                        <div class="phase-number">📶</div>
+                        <div class="phase-title">Network & Performance</div>
+                    </div>
+                    <div class="phase-content">
+                        <div class="pain-points">
+                            <h4>😤 Pain Points</h4>
+                            <div class="pain-item">
+                                <div class="pain-severity severity-high">High</div>
+                                <div>
+                                    <strong>Slow loading on 3G/4G</strong><br>
+                                    Initial page load takes 8+ seconds on mobile data
+                                </div>
+                            </div>
+                            <div class="pain-item">
+                                <div class="pain-severity severity-medium">Med</div>
+                                <div>
+                                    <strong>High data usage</strong><br>
+                                    Auto-playing videos consume user's data plan
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="solutions">
+                            <h4>💡 Solutions</h4>
+                            <div class="solution-item">
+                                <div>✅</div>
+                                <div>
+                                    <strong>Progressive loading</strong><br>
+                                    Load critical content first, defer non-essential elements
+                                </div>
+                            </div>
+                            <div class="solution-item">
+                                <div>✅</div>
+                                <div>
+                                    <strong>Data-saver mode</strong><br>
+                                    Detect connection speed and adjust content quality
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <div class="metric-value improvement-needed">8.2s</div>
+                                <div class="metric-label">First Load</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value improvement-needed">15MB</div>
+                                <div class="metric-label">Data Usage</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

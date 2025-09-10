@@ -1,0 +1,1065 @@
+/**
+ * Social Authentication Controller
+ * Handles OAuth authentication flows
+ */
+
+import { Request, Response } from 'express';
+import { v4 as uuidv4 } from 'uuid';
+import axios from 'axios';
+import { dbDirect } from '../utils/db-direct';
+import { logger } from '../utils/logger';
+import { ValidationError, AuthenticationError, ConflictError } from '../utils/errors';
+import { generateAccessToken, generateRefreshToken, generateSessionId, getTokenExpiry } from '../utils/jwt';
+import { config } from '../config/config';
+import { oauthService } from '../config/oauth.config';
+import { AuthProvider } from '@prisma/client';
+import { generateCSRFToken } from '../middleware/csrfProtection';
+import crypto from 'crypto';
+import Redis from 'ioredis';
+
+// Redis client for OAuth state management
+const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379', {
+  password: process.env.REDIS_PASSWORD,
+  maxRetriesPerRequest: 3,
+  lazyConnect: true,
+});
+
+interface GoogleUserInfo {
+  id: string;
+  email: string;
+  name: string;
+  picture?: string;
+  given_name?: string;
+  family_name?: string;
+  verified_email?: boolean;
+}
+
+interface GitHubUserInfo {
+  id: number;
+  login: string;
+  email: string;
+  name: string;
+  avatar_url?: string;
+  html_url?: string;
+  public_repos?: number;
+  followers?: number;
+  following?: number;
+}
+
+interface LinkedInUserInfo {
+  id: string;
+  localizedFirstName: string;
+  localizedLastName: string;
+  profilePicture?: {
+    displayImage: string;
+  };
+  emailAddress?: string;
+}
+
+interface OAuthState {
+  provider: string;
+  redirectUri?: string;
+  scope?: string;
+  timestamp: number;
+  csrfToken: string;
+}
+
+interface AuthenticatedRequest extends Request {
+  user?: {
+    id: string;
+    email: string;
+    role: any;
+    sessionId?: string;
+  };
+}
+
+export class SocialAuthController {
+  /**
+   * Google OAuth callback
+   * @route POST /api/auth/google
+   */
+  public googleCallback = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { access_token, code, state, scope } = req.body;
+
+      // Validate state if provided
+      if (state && !(await this.validateOAuthState(state))) {
+        throw new ValidationError('Invalid OAuth state parameter');
+      }
+
+      if (!access_token && !code) {
+        throw new ValidationError('Access token or authorization code is required');
+      }
+
+      let userInfo: GoogleUserInfo;
+      let tokenData: any;
+
+      if (access_token) {
+        // Direct access token approach
+        userInfo = await this.getGoogleUserInfo(access_token);
+        tokenData = { access_token };
+      } else {
+        // Authorization code flow (more secure)
+        tokenData = await this.exchangeGoogleCode(code);
+        userInfo = await this.getGoogleUserInfo(tokenData.access_token);
+      }
+
+      // Enhanced scope handling for Google Calendar
+      const requestedScopes = scope ? scope.split(' ') : [];
+      const hasCalendarScope = requestedScopes.some(s => s.includes('calendar'));
+
+      const result = await this.handleSocialAuth({
+        provider: 'GOOGLE',
+        providerId: userInfo.id,
+        email: userInfo.email,
+        name: userInfo.name,
+        firstName: userInfo.given_name,
+        lastName: userInfo.family_name,
+        profileImage: userInfo.picture,
+        accessToken: tokenData.access_token,
+        refreshToken: tokenData.refresh_token,
+        tokenExpiry: tokenData.expires_in ? new Date(Date.now() + tokenData.expires_in * 1000) : undefined,
+        scopes: requestedScopes,
+        hasCalendarAccess: hasCalendarScope
+      });
+
+      res.status(200).json({
+        success: true,
+        data: result,
+        message: 'Google authentication successful',
+        features: {
+          calendarIntegration: hasCalendarScope
+        }
+      });
+
+      logger.info('Google OAuth successful', { 
+        email: userInfo.email,
+        scopes: requestedScopes,
+        calendarAccess: hasCalendarScope
+      });
+    } catch (error) {
+      const context = hasCalendarScope ? 'calendar_integration' : undefined;
+      const errorInfo = oauthService.handleOAuthError(error, AuthProvider.GOOGLE, context);
+      logger.error('Google OAuth error', { error: errorInfo, context });
+      
+      res.status(400).json({
+        success: false,
+        error: errorInfo.message,
+        userMessage: errorInfo.userMessage,
+        shouldRetry: errorInfo.shouldRetry,
+        action: errorInfo.action,
+        errorCode: errorInfo.errorCode,
+        recoverySteps: errorInfo.recoverySteps
+      });
+    }
+  };
+
+  /**
+   * GitHub OAuth callback
+   * @route POST /api/auth/github
+   */
+  public githubCallback = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { access_token, code, state } = req.body;
+
+      // Validate state if provided
+      if (state && !(await this.validateOAuthState(state))) {
+        throw new ValidationError('Invalid OAuth state parameter');
+      }
+
+      if (!access_token && !code) {
+        throw new ValidationError('Access token or authorization code is required');
+      }
+
+      let userInfo: GitHubUserInfo;
+      let tokenData: any;
+
+      if (access_token) {
+        // Direct access token approach
+        userInfo = await this.getGitHubUserInfo(access_token);
+        tokenData = { access_token };
+      } else {
+        // Authorization code flow
+        tokenData = await this.exchangeGitHubCode(code);
+        userInfo = await this.getGitHubUserInfo(tokenData.access_token);
+      }
+
+      const result = await this.handleSocialAuth({
+        provider: 'GITHUB',
+        providerId: userInfo.id.toString(),
+        email: userInfo.email,
+        name: userInfo.name,
+        profileImage: userInfo.avatar_url,
+        accessToken: tokenData.access_token,
+        refreshToken: tokenData.refresh_token,
+        portfolioData: {
+          username: userInfo.login,
+          profileUrl: userInfo.html_url,
+          publicRepos: userInfo.public_repos,
+          followers: userInfo.followers,
+          following: userInfo.following
+        }
+      });
+
+      res.status(200).json({
+        success: true,
+        data: result,
+        message: 'GitHub authentication successful',
+        features: {
+          portfolioSync: true,
+          publicRepos: userInfo.public_repos || 0
+        }
+      });
+
+      logger.info('GitHub OAuth successful', { 
+        email: userInfo.email,
+        username: userInfo.login,
+        publicRepos: userInfo.public_repos
+      });
+    } catch (error) {
+      const errorInfo = oauthService.handleOAuthError(error, AuthProvider.GITHUB, 'portfolio_sync');
+      logger.error('GitHub OAuth error', { error: errorInfo, context: 'portfolio_sync' });
+      
+      res.status(400).json({
+        success: false,
+        error: errorInfo.message,
+        userMessage: errorInfo.userMessage,
+        shouldRetry: errorInfo.shouldRetry,
+        action: errorInfo.action,
+        errorCode: errorInfo.errorCode,
+        recoverySteps: errorInfo.recoverySteps
+      });
+    }
+  };
+
+  /**
+   * LinkedIn OAuth callback
+   * @route POST /api/auth/linkedin
+   */
+  public linkedinCallback = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { access_token, code, state } = req.body;
+
+      // Validate state if provided
+      if (state && !(await this.validateOAuthState(state))) {
+        throw new ValidationError('Invalid OAuth state parameter');
+      }
+
+      if (!access_token && !code) {
+        throw new ValidationError('Access token or authorization code is required');
+      }
+
+      let userInfo: LinkedInUserInfo;
+      let tokenData: any;
+
+      if (access_token) {
+        // Direct access token approach
+        userInfo = await this.getLinkedInUserInfo(access_token);
+        tokenData = { access_token };
+      } else {
+        // Authorization code flow
+        tokenData = await this.exchangeLinkedInCode(code);
+        userInfo = await this.getLinkedInUserInfo(tokenData.access_token);
+      }
+
+      // Get enhanced LinkedIn profile data
+      const enhancedProfile = await oauthService.getLinkedInProfileData(tokenData.access_token);
+
+      const result = await this.handleSocialAuth({
+        provider: 'LINKEDIN',
+        providerId: userInfo.id,
+        email: userInfo.emailAddress || enhancedProfile.emailAddress,
+        name: `${userInfo.localizedFirstName} ${userInfo.localizedLastName}`.trim(),
+        firstName: userInfo.localizedFirstName,
+        lastName: userInfo.localizedLastName,
+        profileImage: userInfo.profilePicture?.displayImage,
+        accessToken: tokenData.access_token,
+        refreshToken: tokenData.refresh_token,
+        professionalData: enhancedProfile
+      });
+
+      res.status(200).json({
+        success: true,
+        data: result,
+        message: 'LinkedIn authentication successful',
+        features: {
+          professionalProfile: true,
+          networkingData: true
+        }
+      });
+
+      logger.info('LinkedIn OAuth successful', { 
+        email: userInfo.emailAddress,
+        name: `${userInfo.localizedFirstName} ${userInfo.localizedLastName}`
+      });
+    } catch (error) {
+      const errorInfo = oauthService.handleOAuthError(error, AuthProvider.LINKEDIN);
+      logger.error('LinkedIn OAuth error', { error: errorInfo });
+      
+      res.status(400).json({
+        success: false,
+        error: errorInfo.message,
+        userMessage: errorInfo.userMessage,
+        shouldRetry: errorInfo.shouldRetry,
+        action: errorInfo.action,
+        errorCode: errorInfo.errorCode,
+        recoverySteps: errorInfo.recoverySteps
+      });
+    }
+  };
+
+  /**
+   * Link social account to existing user
+   * @route POST /api/auth/link-social
+   */
+  public linkSocial = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+    try {
+      const userId = req.user!.id;
+      const { provider, access_token, provider_account_id } = req.body;
+
+      // Verify the social account
+      let userInfo: any;
+      
+      if (provider === 'GOOGLE') {
+        userInfo = await this.getGoogleUserInfo(access_token);
+        if (userInfo.id !== provider_account_id) {
+          throw new ValidationError('Invalid Google account');
+        }
+      } else if (provider === 'GITHUB') {
+        userInfo = await this.getGitHubUserInfo(access_token);
+        if (userInfo.id.toString() !== provider_account_id) {
+          throw new ValidationError('Invalid GitHub account');
+        }
+      } else {
+        throw new ValidationError('Unsupported social provider');
+      }
+
+      // Check if account is already linked
+      const existingAccount = await dbDirect.findSocialAccount(provider, provider_account_id);
+      
+      if (existingAccount) {
+        throw new ConflictError('This social account is already linked');
+      }
+
+      // Link the account
+      const socialData = {
+        id: uuidv4(),
+        provider,
+        provider_account_id,
+        provider_display_name: userInfo.name || `${provider} Account`,
+        access_token,
+        refresh_token: null,
+        expires_at: null,
+        is_primary: false
+      };
+
+      const linkedAccount = await dbDirect.linkSocialAccount(userId, socialData);
+
+      const { access_token: _, refresh_token: __, ...sanitizedAccount } = linkedAccount;
+
+      res.status(201).json({
+        success: true,
+        data: {
+          social_account: sanitizedAccount
+        },
+        message: `${provider} account linked successfully`
+      });
+
+      logger.info('Social account linked', { userId, provider });
+    } catch (error) {
+      logger.error('Link social account error', { userId: req.user?.id, error });
+      throw error;
+    }
+  };
+
+  /**
+   * Unlink social account
+   * @route DELETE /api/auth/unlink-social
+   */
+  public unlinkSocial = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+    try {
+      const userId = req.user!.id;
+      const { provider } = req.body;
+
+      const unlinkedAccount = await dbDirect.unlinkSocialAccount(userId, provider);
+
+      if (!unlinkedAccount) {
+        throw new ValidationError(`No ${provider} account found to unlink`);
+      }
+
+      res.status(200).json({
+        success: true,
+        data: {
+          provider
+        },
+        message: `${provider} account unlinked successfully`
+      });
+
+      logger.info('Social account unlinked', { userId, provider });
+    } catch (error) {
+      logger.error('Unlink social account error', { userId: req.user?.id, error });
+      throw error;
+    }
+  };
+
+  /**
+   * Handle social authentication logic
+   */
+  private async handleSocialAuth(socialData: {
+    provider: string;
+    providerId: string;
+    email: string;
+    name: string;
+    firstName?: string;
+    lastName?: string;
+    profileImage?: string;
+    accessToken?: string;
+    refreshToken?: string;
+    tokenExpiry?: Date;
+    scopes?: string[];
+    hasCalendarAccess?: boolean;
+    portfolioData?: any;
+    professionalData?: any;
+  }) {
+    // Check if social account already exists
+    const existingSocialAccount = await dbDirect.findSocialAccount(socialData.provider, socialData.providerId);
+
+    let user: any;
+
+    if (existingSocialAccount) {
+      // User exists with this social account
+      user = await dbDirect.findUserById(existingSocialAccount.user_id);
+      if (!user) {
+        throw new AuthenticationError('Invalid social account');
+      }
+    } else {
+      // Check if user exists by email
+      const existingUser = await dbDirect.findUserByEmail(socialData.email);
+
+      if (existingUser) {
+        // User exists but doesn't have this social account linked
+        user = existingUser;
+        
+        // Link the social account
+        const socialAccountData = {
+          id: uuidv4(),
+          provider: socialData.provider,
+          provider_account_id: socialData.providerId,
+          provider_display_name: socialData.name,
+          access_token: socialData.accessToken || null,
+          refresh_token: null,
+          expires_at: null,
+          is_primary: false
+        };
+
+        await dbDirect.linkSocialAccount(user.id, socialAccountData);
+      } else {
+        // Create new user
+        const userId = uuidv4();
+        
+        user = await dbDirect.createUser({
+          id: userId,
+          email: socialData.email,
+          password: null, // Social auth users don't have passwords
+          role: 'TALENT' // Default role
+        });
+
+        // Create user profile
+        await dbDirect.updateUserProfile(userId, {
+          display_name: socialData.name,
+          first_name: socialData.firstName || null,
+          last_name: socialData.lastName || null,
+          profile_image_url: socialData.profileImage || null,
+          is_profile_complete: false
+        });
+
+        // Create social account with enhanced data
+        const socialAccountData = {
+          id: uuidv4(),
+          provider: socialData.provider,
+          provider_account_id: socialData.providerId,
+          provider_display_name: socialData.name,
+          access_token: socialData.accessToken || null,
+          refresh_token: socialData.refreshToken || null,
+          expires_at: socialData.tokenExpiry || null,
+          is_primary: true,
+          metadata: {
+            scopes: socialData.scopes,
+            hasCalendarAccess: socialData.hasCalendarAccess,
+            portfolioData: socialData.portfolioData,
+            professionalData: socialData.professionalData,
+            linkedAt: new Date().toISOString()
+          }
+        };
+
+        await dbDirect.createSocialAccount(socialAccountData);
+      }
+    }
+
+    // Generate tokens
+    const sessionId = generateSessionId();
+    const accessToken = generateAccessToken(user.id, user.email, user.role, sessionId);
+    const refreshToken = generateRefreshToken(user.id, sessionId);
+
+    // Store session
+    const refreshExpiry = getTokenExpiry(config.jwt.refreshExpiry);
+    await dbDirect.createUserSession({
+      id: sessionId,
+      user_id: user.id,
+      refresh_token: refreshToken,
+      expires_at: refreshExpiry
+    });
+
+    return {
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        is_verified: user.is_verified
+      },
+      tokens: {
+        access_token: accessToken,
+        refresh_token: refreshToken,
+        expires_in: config.jwt.accessExpiry
+      },
+      session_id: sessionId
+    };
+  }
+
+  /**
+   * Get Google user information
+   */
+  private async getGoogleUserInfo(accessToken: string): Promise<GoogleUserInfo> {
+    try {
+      const response = await axios.get(`https://www.googleapis.com/oauth2/v2/userinfo`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      });
+
+      return response.data;
+    } catch (error: any) {
+      logger.error('Google API error', { error: error.response?.data });
+      throw new AuthenticationError('Invalid Google access token');
+    }
+  }
+
+  /**
+   * Exchange Google authorization code for tokens
+   */
+  private async exchangeGoogleCode(code: string) {
+    try {
+      const response = await axios.post('https://oauth2.googleapis.com/token', {
+        code,
+        client_id: process.env.GOOGLE_CLIENT_ID,
+        client_secret: process.env.GOOGLE_CLIENT_SECRET,
+        redirect_uri: process.env.GOOGLE_REDIRECT_URI,
+        grant_type: 'authorization_code'
+      });
+
+      return response.data;
+    } catch (error: any) {
+      logger.error('Google token exchange error', { error: error.response?.data });
+      throw new ValidationError('Invalid authorization code');
+    }
+  }
+
+  /**
+   * Get GitHub user information
+   */
+  private async getGitHubUserInfo(accessToken: string): Promise<GitHubUserInfo> {
+    try {
+      const response = await axios.get('https://api.github.com/user', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'User-Agent': 'CastMatch'
+        }
+      });
+
+      return response.data;
+    } catch (error: any) {
+      logger.error('GitHub API error', { error: error.response?.data });
+      throw new AuthenticationError('Invalid GitHub access token');
+    }
+  }
+
+  /**
+   * Exchange GitHub authorization code for tokens
+   */
+  private async exchangeGitHubCode(code: string) {
+    try {
+      const response = await axios.post('https://github.com/login/oauth/access_token', {
+        code,
+        client_id: process.env.GITHUB_CLIENT_ID,
+        client_secret: process.env.GITHUB_CLIENT_SECRET,
+        redirect_uri: process.env.GITHUB_REDIRECT_URI
+      }, {
+        headers: {
+          Accept: 'application/json'
+        }
+      });
+
+      return response.data;
+    } catch (error: any) {
+      logger.error('GitHub token exchange error', { error: error.response?.data });
+      throw new ValidationError('Invalid authorization code');
+    }
+  }
+
+  /**
+   * Get LinkedIn user information
+   */
+  private async getLinkedInUserInfo(accessToken: string): Promise<LinkedInUserInfo> {
+    try {
+      const response = await axios.get('https://api.linkedin.com/v2/me', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          Accept: 'application/json'
+        }
+      });
+
+      return response.data;
+    } catch (error: any) {
+      logger.error('LinkedIn API error', { error: error.response?.data });
+      throw new AuthenticationError('Invalid LinkedIn access token');
+    }
+  }
+
+  /**
+   * Exchange LinkedIn authorization code for tokens
+   */
+  private async exchangeLinkedInCode(code: string) {
+    try {
+      const response = await axios.post('https://api.linkedin.com/oauth/v2/accessToken', {
+        grant_type: 'authorization_code',
+        code,
+        client_id: process.env.LINKEDIN_CLIENT_ID,
+        client_secret: process.env.LINKEDIN_CLIENT_SECRET,
+        redirect_uri: process.env.LINKEDIN_REDIRECT_URI
+      }, {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      });
+
+      return response.data;
+    } catch (error: any) {
+      logger.error('LinkedIn token exchange error', { error: error.response?.data });
+      throw new ValidationError('Invalid authorization code');
+    }
+  }
+
+  /**
+   * OAuth callback handlers for redirect-based flows
+   */
+  public googleOAuthCallback = async (req: Request, res: Response): Promise<void> => {
+    await this.handleOAuthCallback('GOOGLE', req, res);
+  };
+
+  public githubOAuthCallback = async (req: Request, res: Response): Promise<void> => {
+    await this.handleOAuthCallback('GITHUB', req, res);
+  };
+
+  public linkedinOAuthCallback = async (req: Request, res: Response): Promise<void> => {
+    await this.handleOAuthCallback('LINKEDIN', req, res);
+  };
+
+  /**
+   * Generic OAuth callback handler
+   */
+  private async handleOAuthCallback(provider: string, req: Request, res: Response): Promise<void> {
+    try {
+      const { code, state, error, error_description } = req.query;
+      const clientId = req.ip + ':' + (req.get('User-Agent') || 'unknown');
+
+      // Check rate limiting
+      if (!(await this.checkOAuthRateLimit(clientId, provider))) {
+        return res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=rate_limited`);
+      }
+
+      if (error) {
+        logger.error(`${provider} OAuth error`, { error, description: error_description });
+        return res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=${encodeURIComponent(error as string)}&description=${encodeURIComponent(error_description as string || '')}`);
+      }
+
+      if (!code) {
+        logger.error(`${provider} OAuth error: Missing authorization code`);
+        return res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=missing_code`);
+      }
+
+      if (!state || !(await this.validateOAuthState(state as string))) {
+        logger.error(`${provider} OAuth error: Invalid state parameter`);
+        return res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=invalid_state`);
+      }
+
+      // Handle the callback based on provider
+      let result;
+      switch (provider) {
+        case 'GOOGLE':
+          result = await this.handleGoogleCallback(code as string);
+          break;
+        case 'GITHUB':
+          result = await this.handleGitHubCallback(code as string);
+          break;
+        case 'LINKEDIN':
+          result = await this.handleLinkedInCallback(code as string);
+          break;
+        default:
+          throw new Error(`Unsupported OAuth provider: ${provider}`);
+      }
+
+      // Generate session token for frontend
+      const sessionToken = crypto.randomBytes(32).toString('hex');
+      await redis.setex(`oauth_session:${sessionToken}`, 300, JSON.stringify(result)); // 5 minutes
+
+      // Redirect to frontend with session token
+      res.redirect(`${process.env.FRONTEND_URL}/auth/callback?session=${sessionToken}`);
+
+    } catch (error) {
+      logger.error(`${provider} OAuth callback error`, { error });
+      res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=callback_failed`);
+    }
+  }
+
+  /**
+   * Get OAuth session result
+   * @route GET /api/auth/oauth/session/:sessionToken
+   */
+  public getOAuthSession = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { sessionToken } = req.params;
+      
+      if (!sessionToken || !/^[a-f0-9]{64}$/.test(sessionToken)) {
+        throw new ValidationError('Invalid session token');
+      }
+
+      const sessionData = await redis.get(`oauth_session:${sessionToken}`);
+      if (!sessionData) {
+        throw new ValidationError('Session token expired or invalid');
+      }
+
+      // Delete session token after use (single use)
+      await redis.del(`oauth_session:${sessionToken}`);
+
+      const result = JSON.parse(sessionData);
+
+      res.json({
+        success: true,
+        data: result,
+        message: 'OAuth session retrieved successfully'
+      });
+
+    } catch (error) {
+      logger.error('Get OAuth session error', { error, sessionToken: req.params.sessionToken });
+      res.status(400).json({
+        success: false,
+        error: 'Failed to retrieve OAuth session',
+        message: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  };
+
+  /**
+   * Initialize OAuth flow with enhanced security
+   * @route GET /api/auth/oauth/authorize/:provider
+   */
+  public initializeOAuth = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { provider } = req.params;
+      const { redirect_uri, scope } = req.query;
+
+      if (!['google', 'github', 'linkedin'].includes(provider.toLowerCase())) {
+        throw new ValidationError('Unsupported OAuth provider');
+      }
+
+      // Validate redirect URI if provided
+      if (redirect_uri && !this.isValidRedirectUri(redirect_uri as string)) {
+        throw new ValidationError('Invalid redirect URI');
+      }
+
+      // Generate and store OAuth state with additional entropy
+      const clientEntropy = req.ip + req.get('User-Agent') + req.sessionID;
+      const state = oauthService.generateOAuthState(clientEntropy);
+      const stateData: OAuthState = {
+        provider: provider.toUpperCase(),
+        redirectUri: redirect_uri as string,
+        scope: scope as string,
+        timestamp: Date.now(),
+        csrfToken: await generateCSRFToken(req)
+      };
+
+      await redis.setex(`oauth_state:${state}`, 300, JSON.stringify(stateData)); // 5 minutes
+
+      // Get OAuth config
+      const config = oauthService.getConfig(provider.toUpperCase() as AuthProvider);
+      if (!config) {
+        throw new ValidationError(`${provider} OAuth is not configured`);
+      }
+
+      // Build authorization URL
+      const authUrl = this.buildAuthorizationURL(provider, config, state, scope as string);
+
+      res.json({
+        success: true,
+        authorizationUrl: authUrl,
+        state,
+        expiresIn: 300
+      });
+
+    } catch (error) {
+      logger.error('OAuth initialization error', { error });
+      res.status(400).json({
+        success: false,
+        error: 'OAuth initialization failed',
+        message: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  };
+
+  /**
+   * Refresh OAuth token
+   * @route POST /api/auth/refresh-token
+   */
+  public refreshToken = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+    try {
+      const userId = req.user!.id;
+      const { provider } = req.body;
+
+      await oauthService.refreshOAuthTokens(userId, provider as AuthProvider);
+
+      res.json({
+        success: true,
+        message: `${provider} token refreshed successfully`
+      });
+
+      logger.info('OAuth token refreshed', { userId, provider });
+    } catch (error) {
+      logger.error('Token refresh error', { error, userId: req.user?.id });
+      res.status(400).json({
+        success: false,
+        error: 'Token refresh failed',
+        message: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  };
+
+  /**
+   * Get user's social accounts
+   * @route GET /api/auth/social-accounts
+   */
+  public getSocialAccounts = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+    try {
+      const userId = req.user!.id;
+      const accounts = await dbDirect.getUserSocialAccounts(userId);
+
+      res.json({
+        success: true,
+        data: accounts.map(account => ({
+          id: account.id,
+          provider: account.provider,
+          provider_display_name: account.provider_display_name,
+          is_primary: account.is_primary,
+          linked_at: account.created_at,
+          last_used: account.updated_at,
+          has_valid_token: !!account.access_token
+        }))
+      });
+    } catch (error) {
+      logger.error('Get social accounts error', { error, userId: req.user?.id });
+      res.status(500).json({
+        success: false,
+        error: 'Failed to fetch social accounts'
+      });
+    }
+  };
+
+  /**
+   * Revoke OAuth token
+   * @route POST /api/auth/revoke-token
+   */
+  public revokeToken = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+    try {
+      const userId = req.user!.id;
+      const { provider } = req.body;
+
+      await oauthService.revokeOAuthTokens(userId, provider as AuthProvider);
+
+      res.json({
+        success: true,
+        message: `${provider} token revoked successfully`
+      });
+
+      logger.info('OAuth token revoked', { userId, provider });
+    } catch (error) {
+      logger.error('Token revocation error', { error, userId: req.user?.id });
+      res.status(400).json({
+        success: false,
+        error: 'Token revocation failed',
+        message: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  };
+
+  /**
+   * Validate redirect URI against whitelist
+   */
+  private isValidRedirectUri(uri: string): boolean {
+    try {
+      const url = new URL(uri);
+      
+      // Define allowed domains for redirect URIs
+      const allowedDomains = [
+        process.env.FRONTEND_URL?.replace(/^https?:\/\//, '') || 'localhost',
+        'castmatch.com',
+        'www.castmatch.com',
+        'app.castmatch.com'
+      ];
+      
+      // Check if domain is in whitelist
+      const isAllowedDomain = allowedDomains.some(domain => {
+        return url.hostname === domain || url.hostname.endsWith('.' + domain);
+      });
+      
+      // Ensure HTTPS in production
+      const isSecure = process.env.NODE_ENV !== 'production' || url.protocol === 'https:';
+      
+      return isAllowedDomain && isSecure;
+    } catch (error) {
+      logger.error('Invalid redirect URI format', { uri, error });
+      return false;
+    }
+  }
+
+  /**
+   * Enhanced rate limiting for OAuth attempts
+   */
+  private async checkOAuthRateLimit(clientId: string, provider: string): Promise<boolean> {
+    const key = `oauth_rate_limit:${clientId}:${provider}`;
+    const attempts = await redis.get(key);
+    
+    if (attempts && parseInt(attempts) >= 5) {
+      logger.warn('OAuth rate limit exceeded', { clientId, provider, attempts });
+      return false;
+    }
+    
+    await redis.incr(key);
+    await redis.expire(key, 900); // 15 minutes
+    
+    return true;
+  }
+
+  /**
+   * Utility methods
+   */
+  private async validateOAuthState(state: string): Promise<boolean> {
+    try {
+      const stateData = await redis.get(`oauth_state:${state}`);
+      if (!stateData) {
+        return false;
+      }
+
+      const data: OAuthState = JSON.parse(stateData);
+      const isValid = Date.now() - data.timestamp < 300000; // 5 minutes
+
+      if (isValid) {
+        await redis.del(`oauth_state:${state}`); // Use once
+      }
+
+      return isValid;
+    } catch (error) {
+      logger.error('OAuth state validation error', { error });
+      return false;
+    }
+  }
+
+  private buildAuthorizationURL(provider: string, config: any, state: string, scope?: string): string {
+    const baseUrl = config.authorizationURL || this.getDefaultAuthUrl(provider);
+    const params = new URLSearchParams({
+      client_id: config.clientId,
+      redirect_uri: config.callbackURL,
+      response_type: 'code',
+      state,
+      scope: scope || config.scope?.join(' ') || this.getDefaultScope(provider)
+    });
+
+    return `${baseUrl}?${params.toString()}`;
+  }
+
+  private getDefaultAuthUrl(provider: string): string {
+    switch (provider.toLowerCase()) {
+      case 'google':
+        return 'https://accounts.google.com/oauth/authorize';
+      case 'github':
+        return 'https://github.com/login/oauth/authorize';
+      case 'linkedin':
+        return 'https://www.linkedin.com/oauth/v2/authorization';
+      default:
+        throw new Error(`Unknown provider: ${provider}`);
+    }
+  }
+
+  private getDefaultScope(provider: string): string {
+    switch (provider.toLowerCase()) {
+      case 'google':
+        return 'openid email profile';
+      case 'github':
+        return 'user:email read:user';
+      case 'linkedin':
+        return 'r_liteprofile r_emailaddress';
+      default:
+        return '';
+    }
+  }
+
+  private async handleGoogleCallback(code: string) {
+    const tokenData = await this.exchangeGoogleCode(code);
+    const userInfo = await this.getGoogleUserInfo(tokenData.access_token);
+    return this.handleSocialAuth({
+      provider: 'GOOGLE',
+      providerId: userInfo.id,
+      email: userInfo.email,
+      name: userInfo.name,
+      firstName: userInfo.given_name,
+      lastName: userInfo.family_name,
+      profileImage: userInfo.picture,
+      accessToken: tokenData.access_token,
+      refreshToken: tokenData.refresh_token,
+      tokenExpiry: tokenData.expires_in ? new Date(Date.now() + tokenData.expires_in * 1000) : undefined
+    });
+  }
+
+  private async handleGitHubCallback(code: string) {
+    const tokenData = await this.exchangeGitHubCode(code);
+    const userInfo = await this.getGitHubUserInfo(tokenData.access_token);
+    return this.handleSocialAuth({
+      provider: 'GITHUB',
+      providerId: userInfo.id.toString(),
+      email: userInfo.email,
+      name: userInfo.name,
+      profileImage: userInfo.avatar_url,
+      accessToken: tokenData.access_token,
+      portfolioData: {
+        username: userInfo.login,
+        profileUrl: userInfo.html_url,
+        publicRepos: userInfo.public_repos
+      }
+    });
+  }
+
+  private async handleLinkedInCallback(code: string) {
+    const tokenData = await this.exchangeLinkedInCode(code);
+    const userInfo = await this.getLinkedInUserInfo(tokenData.access_token);
+    const enhancedProfile = await oauthService.getLinkedInProfileData(tokenData.access_token);
+    return this.handleSocialAuth({
+      provider: 'LINKEDIN',
+      providerId: userInfo.id,
+      email: enhancedProfile.emailAddress,
+      name: `${userInfo.localizedFirstName} ${userInfo.localizedLastName}`.trim(),
+      firstName: userInfo.localizedFirstName,
+      lastName: userInfo.localizedLastName,
+      profileImage: userInfo.profilePicture?.displayImage,
+      accessToken: tokenData.access_token,
+      professionalData: enhancedProfile
+    });
+  }
+}

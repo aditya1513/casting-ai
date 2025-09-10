@@ -1,0 +1,596 @@
+/*
+ * =========================================================================
+ * CastMatch Grid System v2.0
+ * Mathematical Precision Layout Framework
+ * Based on UXerflow Design Inspiration Analysis
+ * =========================================================================
+ * 
+ * Foundation: 8-point baseline grid with golden ratio (1.618) proportions
+ * Breakpoints: 5-tier responsive system optimized for Mumbai market
+ * Grid: 12-column flexible layout with CSS Grid and Flexbox fallback
+ * Performance: GPU-accelerated with minimal reflows
+ * 
+ * Created: January 2025
+ * Quality Target: 9.5/10 (matching UXerflow precision)
+ * =========================================================================
+ */
+
+/* ==========================================
+   ROOT VARIABLES & MATHEMATICAL CONSTANTS
+   ========================================== */
+
+:root {
+  /* Mathematical Constants */
+  --phi: 1.618;                    /* Golden ratio */
+  --modular-scale: 1.25;           /* Major third scale */
+  --baseline: 8px;                 /* Base unit for all measurements */
+  
+  /* 8-Point Spacing Scale (Core) */
+  --spacing-0: 0;                  /* 0px */
+  --spacing-0_5: 4px;              /* 0.5x - Micro */
+  --spacing-1: 8px;                /* 1x - Base unit */
+  --spacing-1_5: 12px;             /* 1.5x - Small */
+  --spacing-2: 16px;               /* 2x - Default */
+  --spacing-3: 24px;               /* 3x - Medium */
+  --spacing-4: 32px;               /* 4x - Large */
+  --spacing-5: 40px;               /* 5x - Large-plus */
+  --spacing-6: 48px;               /* 6x - Extra large */
+  --spacing-7: 56px;               /* 7x - Extra large-plus */
+  --spacing-8: 64px;               /* 8x - Huge */
+  --spacing-10: 80px;              /* 10x - Huge-plus */
+  --spacing-12: 96px;              /* 12x - Massive */
+  --spacing-14: 112px;             /* 14x - Massive-plus */
+  --spacing-16: 128px;             /* 16x - Giant */
+  
+  /* Golden Ratio Spacing (Fibonacci-based) */
+  --spacing-phi-1: 13px;           /* 8 × φ */
+  --spacing-phi-2: 21px;           /* 13 × φ */
+  --spacing-phi-3: 34px;           /* 21 × φ */
+  --spacing-phi-4: 55px;           /* 34 × φ */
+  --spacing-phi-5: 89px;           /* 55 × φ */
+  --spacing-phi-6: 144px;          /* 89 × φ */
+  
+  /* 5-Tier Responsive Breakpoints */
+  --breakpoint-mobile: 320px;      /* Mobile (320px - 767px) */
+  --breakpoint-tablet: 768px;      /* Tablet (768px - 1023px) */
+  --breakpoint-desktop: 1024px;    /* Desktop (1024px - 1439px) */
+  --breakpoint-wide: 1440px;       /* Wide (1440px - 1919px) */
+  --breakpoint-ultra: 1920px;      /* Ultra-wide (1920px+) */
+  
+  /* Container Maximum Widths */
+  --container-mobile: 100%;        /* Full width with margins */
+  --container-tablet: 728px;       /* 768px - 40px margins */
+  --container-desktop: 984px;      /* 1024px - 40px margins */
+  --container-wide: 1360px;        /* 1440px - 80px margins */
+  --container-ultra: 1840px;       /* 1920px - 80px margins */
+  --container-max: 1920px;         /* Absolute maximum width */
+  
+  /* Grid Column Configuration */
+  --columns-mobile: 4;              /* Mobile: 4 columns */
+  --columns-tablet: 8;              /* Tablet: 8 columns */
+  --columns-desktop: 12;            /* Desktop: 12 columns */
+  --columns-wide: 12;               /* Wide: 12 columns */
+  --columns-ultra: 12;              /* Ultra: 12 columns (centered) */
+  
+  /* Gutter System (Responsive) */
+  --gutter-mobile: var(--spacing-2);    /* 16px */
+  --gutter-tablet: var(--spacing-3);    /* 24px */
+  --gutter-desktop: var(--spacing-4);   /* 32px */
+  --gutter-wide: var(--spacing-4);      /* 32px */
+  --gutter-ultra: var(--spacing-5);     /* 40px */
+  
+  /* Margin System (Responsive) */
+  --margin-mobile: var(--spacing-2);    /* 16px */
+  --margin-tablet: var(--spacing-3);    /* 24px */
+  --margin-desktop: var(--spacing-5);   /* 40px */
+  --margin-wide: var(--spacing-6);      /* 48px */
+  --margin-ultra: var(--spacing-8);     /* 64px */
+  
+  /* Column Width Calculations */
+  --column-width-mobile: calc((100vw - (2 * var(--margin-mobile)) - (3 * var(--gutter-mobile))) / 4);
+  --column-width-tablet: calc((100vw - (2 * var(--margin-tablet)) - (7 * var(--gutter-tablet))) / 8);
+  --column-width-desktop: calc((var(--container-desktop) - (11 * var(--gutter-desktop))) / 12);
+  
+  /* Z-index Layering System */
+  --z-base: 0;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-fixed: 300;
+  --z-modal-backdrop: 400;
+  --z-modal: 500;
+  --z-popover: 600;
+  --z-tooltip: 700;
+  --z-notification: 800;
+  --z-maximum: 999;
+}
+
+/* ==========================================
+   CSS GRID CONTAINER SYSTEM
+   ========================================== */
+
+.grid-container {
+  display: grid;
+  width: 100%;
+  max-width: var(--container-max);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--margin-mobile);
+  padding-right: var(--margin-mobile);
+  
+  /* Mobile Grid: 4 columns */
+  grid-template-columns: repeat(var(--columns-mobile), 1fr);
+  gap: var(--gutter-mobile);
+  
+  /* Performance optimizations */
+  contain: layout style;
+  will-change: contents;
+}
+
+/* Tablet: 768px+ */
+@media screen and (min-width: 768px) {
+  .grid-container {
+    max-width: var(--container-tablet);
+    padding-left: var(--margin-tablet);
+    padding-right: var(--margin-tablet);
+    grid-template-columns: repeat(var(--columns-tablet), 1fr);
+    gap: var(--gutter-tablet);
+  }
+}
+
+/* Desktop: 1024px+ */
+@media screen and (min-width: 1024px) {
+  .grid-container {
+    max-width: var(--container-desktop);
+    padding-left: var(--margin-desktop);
+    padding-right: var(--margin-desktop);
+    grid-template-columns: repeat(var(--columns-desktop), 1fr);
+    gap: var(--gutter-desktop);
+  }
+}
+
+/* Wide: 1440px+ */
+@media screen and (min-width: 1440px) {
+  .grid-container {
+    max-width: var(--container-wide);
+    padding-left: var(--margin-wide);
+    padding-right: var(--margin-wide);
+    grid-template-columns: repeat(var(--columns-wide), 1fr);
+    gap: var(--gutter-wide);
+  }
+}
+
+/* Ultra-wide: 1920px+ */
+@media screen and (min-width: 1920px) {
+  .grid-container {
+    max-width: var(--container-ultra);
+    padding-left: var(--margin-ultra);
+    padding-right: var(--margin-ultra);
+    grid-template-columns: repeat(var(--columns-ultra), 1fr);
+    gap: var(--gutter-ultra);
+  }
+}
+
+/* ==========================================
+   GRID SPAN UTILITIES
+   ========================================== */
+
+/* Mobile spans (4-column grid) */
+.col-span-1 { grid-column: span 1; }
+.col-span-2 { grid-column: span 2; }
+.col-span-3 { grid-column: span 3; }
+.col-span-4 { grid-column: span 4; }
+.col-span-full { grid-column: 1 / -1; }
+
+/* Tablet spans (8-column grid) */
+@media screen and (min-width: 768px) {
+  .tablet\:col-span-1 { grid-column: span 1; }
+  .tablet\:col-span-2 { grid-column: span 2; }
+  .tablet\:col-span-3 { grid-column: span 3; }
+  .tablet\:col-span-4 { grid-column: span 4; }
+  .tablet\:col-span-5 { grid-column: span 5; }
+  .tablet\:col-span-6 { grid-column: span 6; }
+  .tablet\:col-span-7 { grid-column: span 7; }
+  .tablet\:col-span-8 { grid-column: span 8; }
+  .tablet\:col-span-full { grid-column: 1 / -1; }
+}
+
+/* Desktop spans (12-column grid) */
+@media screen and (min-width: 1024px) {
+  .desktop\:col-span-1 { grid-column: span 1; }
+  .desktop\:col-span-2 { grid-column: span 2; }
+  .desktop\:col-span-3 { grid-column: span 3; }
+  .desktop\:col-span-4 { grid-column: span 4; }
+  .desktop\:col-span-5 { grid-column: span 5; }
+  .desktop\:col-span-6 { grid-column: span 6; }
+  .desktop\:col-span-7 { grid-column: span 7; }
+  .desktop\:col-span-8 { grid-column: span 8; }
+  .desktop\:col-span-9 { grid-column: span 9; }
+  .desktop\:col-span-10 { grid-column: span 10; }
+  .desktop\:col-span-11 { grid-column: span 11; }
+  .desktop\:col-span-12 { grid-column: span 12; }
+  .desktop\:col-span-full { grid-column: 1 / -1; }
+}
+
+/* ==========================================
+   SPECIALIZED GRID LAYOUTS
+   ========================================== */
+
+/* Bento Grid (Asymmetric card layout inspired by UXerflow) */
+.bento-grid {
+  display: grid;
+  gap: var(--gutter-mobile);
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: minmax(120px, auto);
+}
+
+@media screen and (min-width: 768px) {
+  .bento-grid {
+    gap: var(--gutter-tablet);
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: minmax(160px, auto);
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .bento-grid {
+    gap: var(--gutter-desktop);
+    grid-template-columns: repeat(6, 1fr);
+    grid-auto-rows: minmax(200px, auto);
+  }
+}
+
+/* Bento item variations */
+.bento-item-small { grid-column: span 1; grid-row: span 1; }
+.bento-item-wide { grid-column: span 2; grid-row: span 1; }
+.bento-item-tall { grid-column: span 1; grid-row: span 2; }
+.bento-item-large { grid-column: span 2; grid-row: span 2; }
+.bento-item-featured { grid-column: span 3; grid-row: span 2; }
+
+/* Talent Card Grid (Masonry-style) */
+.talent-card-grid {
+  display: grid;
+  gap: var(--gutter-mobile);
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-auto-rows: minmax(320px, auto);
+  grid-auto-flow: dense;
+}
+
+@media screen and (min-width: 768px) {
+  .talent-card-grid {
+    gap: var(--gutter-tablet);
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    grid-auto-rows: minmax(360px, auto);
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .talent-card-grid {
+    gap: var(--gutter-desktop);
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    grid-auto-rows: minmax(400px, auto);
+  }
+}
+
+/* Dashboard Grid (3-column layout) */
+.dashboard-grid {
+  display: grid;
+  gap: var(--gutter-mobile);
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "sidebar"
+    "main"
+    "auxiliary";
+}
+
+@media screen and (min-width: 768px) {
+  .dashboard-grid {
+    gap: var(--gutter-tablet);
+    grid-template-columns: 240px 1fr;
+    grid-template-areas:
+      "sidebar main"
+      "sidebar auxiliary";
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .dashboard-grid {
+    gap: var(--gutter-desktop);
+    grid-template-columns: 260px 1fr 320px;
+    grid-template-areas:
+      "sidebar main auxiliary";
+  }
+}
+
+.dashboard-sidebar { grid-area: sidebar; }
+.dashboard-main { grid-area: main; }
+.dashboard-auxiliary { grid-area: auxiliary; }
+
+/* Form Grid (Aligned input layouts) */
+.form-grid {
+  display: grid;
+  gap: var(--spacing-3);
+  grid-template-columns: 1fr;
+}
+
+@media screen and (min-width: 768px) {
+  .form-grid {
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: var(--spacing-4);
+    row-gap: var(--spacing-3);
+  }
+}
+
+.form-grid-full {
+  grid-column: 1 / -1;
+}
+
+/* ==========================================
+   FLEXBOX FALLBACK SYSTEM
+   ========================================== */
+
+.flex-grid {
+  display: flex;
+  flex-wrap: wrap;
+  margin: calc(var(--gutter-mobile) * -0.5);
+}
+
+.flex-grid > * {
+  flex: 1 1 100%;
+  padding: calc(var(--gutter-mobile) * 0.5);
+}
+
+@media screen and (min-width: 768px) {
+  .flex-grid {
+    margin: calc(var(--gutter-tablet) * -0.5);
+  }
+  
+  .flex-grid > * {
+    flex: 0 1 50%;
+    padding: calc(var(--gutter-tablet) * 0.5);
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .flex-grid {
+    margin: calc(var(--gutter-desktop) * -0.5);
+  }
+  
+  .flex-grid > * {
+    flex: 0 1 33.333%;
+    padding: calc(var(--gutter-desktop) * 0.5);
+  }
+}
+
+/* Flex column utilities */
+.flex-col-auto { flex: 0 0 auto; }
+.flex-col-1 { flex: 0 0 8.333%; }
+.flex-col-2 { flex: 0 0 16.666%; }
+.flex-col-3 { flex: 0 0 25%; }
+.flex-col-4 { flex: 0 0 33.333%; }
+.flex-col-5 { flex: 0 0 41.666%; }
+.flex-col-6 { flex: 0 0 50%; }
+.flex-col-7 { flex: 0 0 58.333%; }
+.flex-col-8 { flex: 0 0 66.666%; }
+.flex-col-9 { flex: 0 0 75%; }
+.flex-col-10 { flex: 0 0 83.333%; }
+.flex-col-11 { flex: 0 0 91.666%; }
+.flex-col-12 { flex: 0 0 100%; }
+
+/* ==========================================
+   DENSITY VARIATIONS
+   ========================================== */
+
+/* Comfortable (Default) */
+.density-comfortable {
+  --gutter: var(--gutter-desktop);
+  --spacing: var(--spacing-3);
+}
+
+/* Compact (-20% spacing) */
+.density-compact {
+  --gutter: calc(var(--gutter-desktop) * 0.8);
+  --spacing: calc(var(--spacing-3) * 0.8);
+}
+
+.density-compact .grid-container,
+.density-compact .bento-grid,
+.density-compact .talent-card-grid {
+  gap: var(--gutter);
+}
+
+/* Spacious (+20% spacing) */
+.density-spacious {
+  --gutter: calc(var(--gutter-desktop) * 1.2);
+  --spacing: calc(var(--spacing-3) * 1.2);
+}
+
+.density-spacious .grid-container,
+.density-spacious .bento-grid,
+.density-spacious .talent-card-grid {
+  gap: var(--gutter);
+}
+
+/* ==========================================
+   ALIGNMENT & JUSTIFICATION UTILITIES
+   ========================================== */
+
+/* Grid alignment */
+.grid-start { justify-items: start; align-items: start; }
+.grid-center { justify-items: center; align-items: center; }
+.grid-end { justify-items: end; align-items: end; }
+.grid-stretch { justify-items: stretch; align-items: stretch; }
+
+/* Grid content alignment */
+.content-start { justify-content: start; align-content: start; }
+.content-center { justify-content: center; align-content: center; }
+.content-end { justify-content: end; align-content: end; }
+.content-between { justify-content: space-between; align-content: space-between; }
+.content-around { justify-content: space-around; align-content: space-around; }
+.content-evenly { justify-content: space-evenly; align-content: space-evenly; }
+
+/* Individual item alignment */
+.self-start { justify-self: start; align-self: start; }
+.self-center { justify-self: center; align-self: center; }
+.self-end { justify-self: end; align-self: end; }
+.self-stretch { justify-self: stretch; align-self: stretch; }
+
+/* ==========================================
+   ASPECT RATIO CONTAINERS
+   ========================================== */
+
+.aspect-square { aspect-ratio: 1 / 1; }
+.aspect-video { aspect-ratio: 16 / 9; }
+.aspect-portrait { aspect-ratio: 3 / 4; }
+.aspect-landscape { aspect-ratio: 4 / 3; }
+.aspect-cinema { aspect-ratio: 21 / 9; }
+.aspect-golden { aspect-ratio: 1.618 / 1; }
+
+/* ==========================================
+   GAP UTILITIES
+   ========================================== */
+
+.gap-0 { gap: 0; }
+.gap-1 { gap: var(--spacing-1); }
+.gap-2 { gap: var(--spacing-2); }
+.gap-3 { gap: var(--spacing-3); }
+.gap-4 { gap: var(--spacing-4); }
+.gap-5 { gap: var(--spacing-5); }
+.gap-6 { gap: var(--spacing-6); }
+.gap-8 { gap: var(--spacing-8); }
+
+.row-gap-0 { row-gap: 0; }
+.row-gap-1 { row-gap: var(--spacing-1); }
+.row-gap-2 { row-gap: var(--spacing-2); }
+.row-gap-3 { row-gap: var(--spacing-3); }
+.row-gap-4 { row-gap: var(--spacing-4); }
+
+.col-gap-0 { column-gap: 0; }
+.col-gap-1 { column-gap: var(--spacing-1); }
+.col-gap-2 { column-gap: var(--spacing-2); }
+.col-gap-3 { column-gap: var(--spacing-3); }
+.col-gap-4 { column-gap: var(--spacing-4); }
+
+/* ==========================================
+   CONTAINER QUERIES (Modern Responsive)
+   ========================================== */
+
+@container (min-width: 400px) {
+  .container\:col-span-2 { grid-column: span 2; }
+}
+
+@container (min-width: 600px) {
+  .container\:col-span-3 { grid-column: span 3; }
+}
+
+@container (min-width: 800px) {
+  .container\:col-span-4 { grid-column: span 4; }
+}
+
+/* ==========================================
+   PERFORMANCE OPTIMIZATIONS
+   ========================================== */
+
+/* GPU acceleration for transforms */
+.grid-container,
+.bento-grid,
+.talent-card-grid,
+.dashboard-grid {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Reduce paint areas */
+.grid-item {
+  contain: layout style paint;
+}
+
+/* Optimize reflows */
+.grid-static {
+  contain: strict;
+  content-visibility: auto;
+}
+
+/* ==========================================
+   ACCESSIBILITY ENHANCEMENTS
+   ========================================== */
+
+/* Support for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .grid-container {
+    border: 1px solid currentColor;
+  }
+}
+
+/* Focus visible enhancements */
+.grid-item:focus-visible {
+  outline: 2px solid var(--focus-color, #3B82F6);
+  outline-offset: 2px;
+}
+
+/* ==========================================
+   PRINT STYLES
+   ========================================== */
+
+@media print {
+  .grid-container {
+    display: block;
+  }
+  
+  .grid-container > * {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+}
+
+/* ==========================================
+   UTILITY CLASSES
+   ========================================== */
+
+/* Display utilities */
+.grid { display: grid; }
+.inline-grid { display: inline-grid; }
+.subgrid { display: grid; grid-template-columns: subgrid; }
+
+/* Overflow utilities */
+.overflow-auto { overflow: auto; }
+.overflow-hidden { overflow: hidden; }
+.overflow-scroll { overflow: scroll; }
+.overflow-visible { overflow: visible; }
+
+/* Position utilities */
+.sticky-top { position: sticky; top: 0; z-index: var(--z-sticky); }
+.sticky-bottom { position: sticky; bottom: 0; z-index: var(--z-sticky); }
+
+/* ==========================================
+   DEBUG MODE (Development Only)
+   ========================================== */
+
+.grid-debug * {
+  outline: 1px solid rgba(255, 0, 0, 0.3);
+}
+
+.grid-debug .grid-container {
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(255, 0, 0, 0.1) 0,
+    rgba(255, 0, 0, 0.1) calc(100% / var(--columns-desktop) - var(--gutter-desktop)),
+    transparent calc(100% / var(--columns-desktop) - var(--gutter-desktop)),
+    transparent calc(100% / var(--columns-desktop))
+  );
+}
+
+/* ==========================================
+   END OF CASTMATCH GRID SYSTEM v2.0
+   ========================================== */

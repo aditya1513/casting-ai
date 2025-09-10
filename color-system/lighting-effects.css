@@ -1,0 +1,420 @@
+/**
+ * CastMatch Cinematic Lighting Effects
+ * Mumbai Night Skyline Atmospheric System
+ * Optimized for OLED displays with pure blacks
+ */
+
+:root {
+  /* Color Tokens */
+  --color-pure-black: oklch(0% 0 0);
+  --color-charcoal: oklch(0.12 0.008 240);
+  --color-midnight: oklch(0.18 0.012 240);
+  --color-shadow: oklch(0.25 0.008 240);
+  
+  /* Neon Colors */
+  --color-cyan-primary: oklch(0.78 0.15 200);
+  --color-cyan-bright: oklch(0.85 0.18 195);
+  --color-cyan-electric: oklch(0.88 0.15 190);
+  --color-magenta-primary: oklch(0.65 0.25 350);
+  --color-magenta-bright: oklch(0.75 0.35 320);
+  --color-magenta-soft: oklch(0.78 0.25 340);
+  
+  /* Bollywood Colors */
+  --color-cinema-gold: oklch(0.82 0.12 85);
+  --color-royal-gold: oklch(0.88 0.15 90);
+  --color-champagne: oklch(0.92 0.08 95);
+  --color-saffron: oklch(0.75 0.18 65);
+  --color-vermillion: oklch(0.68 0.22 45);
+  
+  /* Mumbai Atmosphere */
+  --color-monsoon-blue: oklch(0.45 0.12 240);
+  --color-twilight-purple: oklch(0.42 0.15 280);
+  --color-street-amber: oklch(0.75 0.15 75);
+  --color-marine-teal: oklch(0.55 0.12 210);
+  --color-bollywood-rose: oklch(0.82 0.08 15);
+  
+  /* Light Intensities */
+  --glow-soft: 0 0 10px;
+  --glow-medium: 0 0 20px;
+  --glow-strong: 0 0 30px;
+  --glow-intense: 0 0 40px;
+  
+  /* Rim Light Thickness */
+  --rim-thin: 1px;
+  --rim-medium: 2px;
+  --rim-thick: 3px;
+  
+  /* Animation Timings */
+  --transition-fast: 200ms ease;
+  --transition-medium: 300ms ease;
+  --transition-slow: 500ms ease;
+  --breathing-cycle: 4s ease-in-out infinite;
+  --pulse-cycle: 2s ease-in-out infinite;
+}
+
+/* Base Dark Theme Foundation */
+.castmatch-dark {
+  background: var(--color-pure-black);
+  color: var(--color-cyan-bright);
+  min-height: 100vh;
+}
+
+/* Mumbai Skyline Gradient Background */
+.mumbai-skyline-bg {
+  background: linear-gradient(
+    135deg,
+    var(--color-pure-black) 0%,
+    var(--color-monsoon-blue) 40%,
+    var(--color-cyan-primary) 100%
+  );
+  position: relative;
+}
+
+.mumbai-skyline-bg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    ellipse at center top,
+    transparent 0%,
+    var(--color-pure-black) 60%
+  );
+  pointer-events: none;
+}
+
+/* Cinematic Card Elevation System */
+.cinema-card {
+  background: var(--color-charcoal);
+  border-radius: 12px;
+  position: relative;
+  transition: var(--transition-medium);
+}
+
+.cinema-card--elevated-1 {
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.cinema-card--elevated-2 {
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.5),
+    0 0 0 var(--rim-thin) rgba(0, 184, 212, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.cinema-card--elevated-3 {
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.6),
+    0 0 0 var(--rim-medium) rgba(0, 217, 255, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Neon Glow Effects */
+.neon-glow-cyan {
+  box-shadow: var(--glow-medium) rgba(0, 217, 255, 0.4);
+  animation: breathingCyan var(--breathing-cycle);
+}
+
+@keyframes breathingCyan {
+  0%, 100% { box-shadow: var(--glow-medium) rgba(0, 217, 255, 0.4); }
+  50% { box-shadow: var(--glow-strong) rgba(0, 217, 255, 0.6); }
+}
+
+.neon-glow-magenta {
+  box-shadow: var(--glow-medium) rgba(255, 0, 255, 0.4);
+  animation: breathingMagenta var(--breathing-cycle);
+}
+
+@keyframes breathingMagenta {
+  0%, 100% { box-shadow: var(--glow-medium) rgba(255, 0, 255, 0.4); }
+  50% { box-shadow: var(--glow-strong) rgba(255, 0, 255, 0.6); }
+}
+
+.neon-glow-gold {
+  box-shadow: var(--glow-medium) rgba(255, 215, 0, 0.5);
+  animation: breathingGold var(--breathing-cycle);
+}
+
+@keyframes breathingGold {
+  0%, 100% { box-shadow: var(--glow-medium) rgba(255, 215, 0, 0.5); }
+  50% { box-shadow: var(--glow-strong) rgba(255, 215, 0, 0.7); }
+}
+
+/* Rim Lighting System */
+.rim-light-cyan {
+  position: relative;
+}
+
+.rim-light-cyan::before {
+  content: '';
+  position: absolute;
+  inset: -var(--rim-medium);
+  border-radius: inherit;
+  background: linear-gradient(
+    45deg,
+    transparent,
+    rgba(0, 217, 255, 0.3),
+    transparent
+  );
+  z-index: -1;
+  opacity: 0.6;
+}
+
+.rim-light-gold {
+  position: relative;
+}
+
+.rim-light-gold::before {
+  content: '';
+  position: absolute;
+  inset: -var(--rim-medium);
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 215, 0, 0.4),
+    transparent,
+    rgba(255, 215, 0, 0.4)
+  );
+  z-index: -1;
+}
+
+/* Glass Morphism Effects */
+.glass-morphism {
+  background: rgba(26, 26, 27, 0.8);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.glass-morphism--premium {
+  background: rgba(255, 184, 0, 0.1);
+  backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  box-shadow: 
+    0 12px 40px rgba(255, 215, 0, 0.2),
+    inset 0 1px 0 rgba(255, 215, 0, 0.3);
+}
+
+/* Volumetric Fog Effects */
+.volumetric-fog {
+  position: relative;
+  overflow: hidden;
+}
+
+.volumetric-fog::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 217, 255, 0.05) 0%,
+    rgba(0, 217, 255, 0.02) 30%,
+    transparent 60%
+  );
+  animation: fogDrift 20s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes fogDrift {
+  0% { transform: translateX(-25%) translateY(-25%) rotate(0deg); }
+  100% { transform: translateX(25%) translateY(25%) rotate(360deg); }
+}
+
+/* Interactive Lighting */
+.interactive-glow {
+  position: relative;
+  transition: var(--transition-medium);
+  cursor: pointer;
+}
+
+.interactive-glow:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.4),
+    0 0 0 var(--rim-medium) rgba(0, 217, 255, 0.5),
+    var(--glow-strong) rgba(0, 217, 255, 0.3);
+}
+
+.interactive-glow:active {
+  transform: translateY(-1px);
+  box-shadow: 
+    0 8px 20px rgba(0, 0, 0, 0.5),
+    0 0 0 var(--rim-thick) rgba(64, 224, 255, 0.8),
+    var(--glow-intense) rgba(64, 224, 255, 0.5);
+}
+
+/* Floating Particle System */
+.particle-field {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: var(--color-cyan-bright);
+  border-radius: 50%;
+  opacity: 0.3;
+  animation: particleFloat 15s linear infinite;
+}
+
+.particle:nth-child(2n) {
+  background: var(--color-magenta-soft);
+  animation-delay: -5s;
+  animation-duration: 18s;
+}
+
+.particle:nth-child(3n) {
+  background: var(--color-cinema-gold);
+  animation-delay: -10s;
+  animation-duration: 12s;
+  width: 1px;
+  height: 1px;
+}
+
+@keyframes particleFloat {
+  0% {
+    transform: translateY(100vh) translateX(0px) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.3;
+  }
+  90% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateY(-10vh) translateX(100px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* Genre-Specific Color Treatments */
+.genre-action {
+  --primary-color: var(--color-vermillion);
+  --glow-color: rgba(255, 69, 0, 0.4);
+}
+
+.genre-drama {
+  --primary-color: var(--color-monsoon-blue);
+  --glow-color: rgba(30, 58, 138, 0.4);
+}
+
+.genre-comedy {
+  --primary-color: var(--color-street-amber);
+  --glow-color: rgba(255, 193, 7, 0.4);
+}
+
+.genre-romance {
+  --primary-color: var(--color-bollywood-rose);
+  --glow-color: rgba(248, 187, 208, 0.4);
+}
+
+.genre-thriller {
+  --primary-color: var(--color-marine-teal);
+  --glow-color: rgba(0, 96, 100, 0.4);
+}
+
+/* Accessibility-First Focus States */
+.focus-visible {
+  outline: var(--rim-thick) solid var(--color-cyan-bright);
+  outline-offset: 2px;
+  box-shadow: 
+    0 0 0 calc(var(--rim-thick) + 2px) rgba(0, 217, 255, 0.3),
+    var(--glow-medium) rgba(0, 217, 255, 0.5);
+}
+
+/* Performance Optimizations */
+.cinema-card,
+.glass-morphism,
+.interactive-glow {
+  will-change: transform, box-shadow;
+}
+
+.neon-glow-cyan,
+.neon-glow-magenta,
+.neon-glow-gold {
+  will-change: box-shadow;
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .neon-glow-cyan,
+  .neon-glow-magenta,
+  .neon-glow-gold {
+    animation: none;
+  }
+  
+  .volumetric-fog::after {
+    animation: none;
+  }
+  
+  .particle {
+    animation: none;
+    opacity: 0;
+  }
+  
+  .interactive-glow {
+    transition: none;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .cinema-card {
+    border: 2px solid var(--color-cyan-bright);
+  }
+  
+  .glass-morphism {
+    background: var(--color-charcoal);
+    backdrop-filter: none;
+  }
+}
+
+/* OLED Optimization Classes */
+.oled-optimized {
+  background: var(--color-pure-black);
+}
+
+.oled-safe-glow {
+  box-shadow: var(--glow-soft) rgba(0, 217, 255, 0.3);
+}
+
+/* Custom Scrollbar with Neon Theme */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-pure-black);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    var(--color-cyan-primary),
+    var(--color-magenta-primary)
+  );
+  border-radius: 4px;
+  box-shadow: var(--glow-soft) rgba(0, 217, 255, 0.3);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  box-shadow: var(--glow-medium) rgba(0, 217, 255, 0.5);
+}

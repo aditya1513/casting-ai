@@ -1,0 +1,250 @@
+{
+  "conversation_scripts": {
+    "flow": "project_initiation",
+    "version": "1.0.0",
+    "scenarios": [
+      {
+        "scenario": "standard_project_setup",
+        "context": "User is a casting director setting up a new OTT series",
+        "dialogue": [
+          {
+            "speaker": "user",
+            "message": "I need to cast a new show",
+            "input_type": "voice",
+            "timestamp": "0:00"
+          },
+          {
+            "speaker": "ai",
+            "message": "Great! I'll help you set up your new casting project. What's the name of your show?",
+            "response_time": "200ms",
+            "emotion": "enthusiastic_helpful"
+          },
+          {
+            "speaker": "user",
+            "message": "It's called Mumbai Dreams",
+            "input_type": "text"
+          },
+          {
+            "speaker": "ai",
+            "message": "Perfect! Tell me a bit about Mumbai Dreams. Is this for an OTT Series, Feature Film, Web Series, or Commercial?",
+            "quick_options": ["OTT Series", "Feature Film", "Web Series", "Commercial", "Other"],
+            "response_time": "150ms"
+          },
+          {
+            "speaker": "user",
+            "message": "OTT series for Netflix",
+            "selected_option": "OTT Series"
+          },
+          {
+            "speaker": "ai",
+            "message": "Excellent! A Netflix series. Which production house is behind this project? I can help you add their details.",
+            "auto_suggestions": ["Dharma Productions", "Red Chillies", "Excel Entertainment", "Add New"],
+            "response_time": "180ms"
+          },
+          {
+            "speaker": "user",
+            "message": "Dharma Productions"
+          },
+          {
+            "speaker": "ai",
+            "message": "Great choice! Dharma Productions has an excellent track record. What's your target release timeline? This helps me prioritize urgent casting needs.",
+            "input_hint": "e.g., 'March 2025' or 'In 6 months'",
+            "response_time": "200ms"
+          },
+          {
+            "speaker": "user",
+            "message": "We need to start shooting in 3 months"
+          },
+          {
+            "speaker": "ai",
+            "message": "Understood - shooting starts in 3 months, so we need to move quickly on casting. Let's define the key roles. You can tell me about them naturally, like 'I need a male lead, 25-35, intense character' or upload your script/breakdown.",
+            "options": ["Describe roles", "Upload breakdown", "Use template", "Import from similar"],
+            "response_time": "220ms"
+          }
+        ]
+      },
+      {
+        "scenario": "quick_setup_with_template",
+        "context": "Experienced user wants fast setup using previous project as template",
+        "dialogue": [
+          {
+            "speaker": "user",
+            "message": "New project, similar to Sacred Games",
+            "input_type": "text",
+            "timestamp": "0:00"
+          },
+          {
+            "speaker": "ai",
+            "message": "I'll use Sacred Games Season 2 as a template. What's your new project called?",
+            "shows_template": true,
+            "response_time": "150ms"
+          },
+          {
+            "speaker": "user",
+            "message": "City of Shadows"
+          },
+          {
+            "speaker": "ai",
+            "message": "City of Shadows - I've imported the structure from Sacred Games. Here's what I've set up:\n\n- Crime thriller genre\n- 8 episode series\n- 5 primary roles, 12 supporting\n- Mumbai & Delhi locations\n- Similar budget range\n\nWhat would you like to modify?",
+            "quick_edit_options": ["Roles", "Budget", "Locations", "Timeline", "Keep as is"],
+            "response_time": "250ms"
+          }
+        ]
+      },
+      {
+        "scenario": "interrupted_flow_recovery",
+        "context": "User gets interrupted during setup and returns later",
+        "dialogue": [
+          {
+            "speaker": "ai",
+            "message": "Welcome back! You were setting up 'Mumbai Dreams' yesterday. You'd defined 3 roles but hadn't set the budget yet. Should we continue from there?",
+            "context_retained": true,
+            "options": ["Continue setup", "Start fresh", "Review what we have"],
+            "response_time": "180ms"
+          },
+          {
+            "speaker": "user",
+            "message": "Yes, continue"
+          },
+          {
+            "speaker": "ai",
+            "message": "Perfect! We have your Male Lead (25-35), Female Lead (22-30), and Supporting Actor (40-50) defined. Now, what's your casting budget range? This stays confidential and helps me suggest appropriate talent.",
+            "shows_progress": "Step 4 of 6",
+            "response_time": "200ms"
+          }
+        ]
+      },
+      {
+        "scenario": "voice_first_natural_flow",
+        "context": "User prefers voice commands and natural conversation",
+        "dialogue": [
+          {
+            "speaker": "user",
+            "message": "I'm casting a romantic comedy for Amazon Prime with Karan producing, need young fresh faces, budget is flexible but not crazy, shooting starts next month in Mumbai",
+            "input_type": "voice",
+            "duration": "12 seconds"
+          },
+          {
+            "speaker": "ai",
+            "message": "Got it! Let me set this up:\n\n📽️ Romantic comedy for Amazon Prime\n🎬 Producer: Karan (Johar?)\n🎭 Looking for fresh, young talent\n💰 Moderate flexible budget\n📅 Urgent - shooting next month\n📍 Mumbai location\n\nJust need the project name, and should I set Karan Johar as the producer?",
+            "extracted_entities": {
+              "genre": "romantic_comedy",
+              "platform": "amazon_prime",
+              "producer": "Karan",
+              "talent_preference": "fresh_faces",
+              "budget": "moderate_flexible",
+              "timeline": "urgent_1_month",
+              "location": "Mumbai"
+            },
+            "response_time": "300ms"
+          }
+        ]
+      },
+      {
+        "scenario": "collaborative_setup",
+        "context": "Multiple team members need to be involved in the project",
+        "dialogue": [
+          {
+            "speaker": "user",
+            "message": "Setting up a new show with my team"
+          },
+          {
+            "speaker": "ai",
+            "message": "Perfect! I'll help you set up a collaborative casting project. First, what's the show called?",
+            "response_time": "150ms"
+          },
+          {
+            "speaker": "user",
+            "message": "The Mumbai Files"
+          },
+          {
+            "speaker": "ai",
+            "message": "The Mumbai Files - great title! Who else will be working on casting decisions? I'll set up their access and notification preferences.",
+            "team_quick_add": {
+              "director": "Has final approval on all casting",
+              "creative_producer": "Input and approval rights",
+              "assistant_director": "Manages auditions and schedules",
+              "line_producer": "Approves budget-related decisions"
+            },
+            "response_time": "200ms"
+          },
+          {
+            "speaker": "user",
+            "message": "Add Raj as director, Priya as AD, and Vikram as creative producer"
+          },
+          {
+            "speaker": "ai",
+            "message": "I've added your team:\n✓ Raj (Director) - Final approval\n✓ Priya (AD) - Audition management\n✓ Vikram (Creative Producer) - Input & approval\n\nHow should I notify them? I can create a WhatsApp group, send email invites, or both.",
+            "integration_options": ["WhatsApp Group", "Email", "Both", "In-app only"],
+            "response_time": "250ms"
+          }
+        ]
+      },
+      {
+        "scenario": "error_handling_missing_info",
+        "context": "User provides incomplete information",
+        "dialogue": [
+          {
+            "speaker": "user",
+            "message": "Cast my new show"
+          },
+          {
+            "speaker": "ai",
+            "message": "I'd love to help cast your new show! To get started, I need a few quick details. What's the name of your show?",
+            "response_time": "150ms"
+          },
+          {
+            "speaker": "user",
+            "message": "Not decided yet"
+          },
+          {
+            "speaker": "ai",
+            "message": "No problem! We can use a working title for now and change it later. How about I list it as 'Untitled Project' with today's date? You can update this anytime.",
+            "suggestion": "Untitled Project - Jan 2025",
+            "options": ["Use suggestion", "Enter working title", "Skip for now"],
+            "response_time": "200ms"
+          }
+        ]
+      },
+      {
+        "scenario": "budget_sensitive_discussion",
+        "context": "User is hesitant about budget disclosure",
+        "dialogue": [
+          {
+            "speaker": "ai",
+            "message": "What's your casting budget range? This stays completely confidential and helps me suggest appropriate talent.",
+            "response_time": "180ms"
+          },
+          {
+            "speaker": "user",
+            "message": "I'd rather not say right now"
+          },
+          {
+            "speaker": "ai",
+            "message": "Absolutely understand! I can work without specific numbers. Would you prefer I show you:\n\n• All talent regardless of rate\n• Industry standard rates for reference\n• Let you filter by rate when needed\n\nYou can always add budget details later when you're ready.",
+            "respects_privacy": true,
+            "options": ["Show all talent", "Show standard rates", "I'll filter when needed"],
+            "response_time": "220ms"
+          }
+        ]
+      }
+    ],
+    "ai_personality_traits": {
+      "tone": "professional_yet_friendly",
+      "response_speed": "immediate_acknowledgment",
+      "cultural_awareness": "high_mumbai_context",
+      "industry_knowledge": "expert_level",
+      "adaptability": "matches_user_style"
+    },
+    "conversation_principles": [
+      "Always acknowledge user input within 200ms",
+      "Provide visual feedback during processing",
+      "Offer shortcuts for experienced users",
+      "Never force linear flow if user jumps ahead",
+      "Remember context across interruptions",
+      "Gracefully handle incomplete information",
+      "Respect privacy and confidentiality",
+      "Use industry-specific terminology appropriately"
+    ]
+  }
+}

@@ -1,0 +1,1342 @@
+/**
+ * Authentication Service
+ * Business logic for authentication operations with enhanced security
+ */
+
+import { prisma } from '../config/database';
+import { CacheManager, CacheKeys } from '../config/redis';
+import {
+  hashPassword,
+  comparePassword,
+  validatePassword,
+  generateRandomPassword,
+} from '../utils/password';
+import {
+  generateAccessToken,
+  generateRefreshToken,
+  generateResetToken,
+  generateVerificationToken,
+  verifyToken,
+  generateSessionId,
+  getTokenExpiry,
+} from '../utils/jwt';
+import {
+  AppError,
+  AuthenticationError,
+  ConflictError,
+  ValidationError,
+  NotFoundError,
+  RateLimitError,
+  BadRequestError,
+} from '../utils/errors';
+import { logger } from '../utils/logger';
+import type { RegisterInput, LoginInput } from '../validators/auth.validator';
+import { UserRole, AuthProvider } from '@prisma/client';
+// Using any type for validator to avoid type issues in MVP
+const validator = require('validator') as any;
+
+interface LoginOptions {
+  userAgent?: string;
+  ipAddress?: string;
+  deviceFingerprint?: string;
+  location?: {
+    country?: string;
+    city?: string;
+  };
+}
+
+// Social auth removed for MVP
+
+interface SessionLimits {
+  maxConcurrentSessions: number;
+  sessionTimeoutMinutes: number;
+}
+
+interface RateLimitInfo {
+  attempts: number;
+  lastAttempt: Date;
+  blockedUntil?: Date;
+}
+
+interface AuthResponse {
+  user: {
+    id: string;
+    email: string;
+    role: string;
+    firstName?: string;
+    lastName?: string;
+    isEmailVerified: boolean;
+  };
+  tokens: {
+    accessToken: string;
+    refreshToken: string;
+    expiresIn: number;
+  };
+}
+
+export class AuthService {
+  private static readonly SESSION_LIMITS: Partial<Record<UserRole, SessionLimits>> = {
+    ACTOR: { maxConcurrentSessions: 3, sessionTimeoutMinutes: 60 * 24 * 7 }, // 7 days
+    CASTING_DIRECTOR: { maxConcurrentSessions: 5, sessionTimeoutMinutes: 60 * 24 * 30 }, // 30 days
+    PRODUCER: { maxConcurrentSessions: 5, sessionTimeoutMinutes: 60 * 24 * 30 }, // 30 days
+    DIRECTOR: { maxConcurrentSessions: 5, sessionTimeoutMinutes: 60 * 24 * 30 }, // 30 days
+    AGENT: { maxConcurrentSessions: 5, sessionTimeoutMinutes: 60 * 24 * 30 }, // 30 days
+    ADMIN: { maxConcurrentSessions: 10, sessionTimeoutMinutes: 60 * 24 * 30 }, // 30 days
+    MODERATOR: { maxConcurrentSessions: 5, sessionTimeoutMinutes: 60 * 24 * 30 }, // 30 days
+  };
+  
+  private static readonly DEFAULT_SESSION_LIMITS: SessionLimits = {
+    maxConcurrentSessions: 3,
+    sessionTimeoutMinutes: 60 * 24 * 7, // 7 days
+  };
+
+  private static readonly MAX_LOGIN_ATTEMPTS = 5;
+  private static readonly LOCKOUT_DURATION_MINUTES = 15;
+  private static readonly GENERIC_AUTH_ERROR = 'Authentication failed. Please check your credentials and try again.';
+
+  /**
+   * Sanitize input to prevent injection attacks
+   */
+  private sanitizeInput(input: string): string {
+    return validator.escape(input.trim());
+  }
+
+  /**
+   * Check rate limiting for authentication attempts
+   */
+  private async checkRateLimit(identifier: string, action: 'login' | 'register' | 'password_reset'): Promise<void> {
+    const cacheKey = `rate_limit:${action}:${identifier}`;
+    const rateLimitInfo = await CacheManager.get<RateLimitInfo>(cacheKey);
+
+    if (rateLimitInfo) {
+      if (rateLimitInfo.blockedUntil && new Date() < rateLimitInfo.blockedUntil) {
+        const remainingTime = Math.ceil((rateLimitInfo.blockedUntil.getTime() - Date.now()) / (1000 * 60));
+        throw new RateLimitError(`Too many attempts. Try again in ${remainingTime} minutes.`);
+      }
+
+      if (rateLimitInfo.attempts >= AuthService.MAX_LOGIN_ATTEMPTS) {
+        const blockedUntil = new Date(Date.now() + AuthService.LOCKOUT_DURATION_MINUTES * 60 * 1000);
+        await CacheManager.set(cacheKey, { ...rateLimitInfo, blockedUntil }, AuthService.LOCKOUT_DURATION_MINUTES * 60);
+        throw new RateLimitError(`Too many attempts. Account temporarily locked for ${AuthService.LOCKOUT_DURATION_MINUTES} minutes.`);
+      }
+    }
+  }
+
+  /**
+   * Record authentication attempt
+   */
+  private async recordAuthAttempt(identifier: string, action: 'login' | 'register' | 'password_reset', success: boolean): Promise<void> {
+    const cacheKey = `rate_limit:${action}:${identifier}`;
+    const rateLimitInfo = await CacheManager.get<RateLimitInfo>(cacheKey) || { attempts: 0, lastAttempt: new Date() };
+
+    if (success) {
+      // Clear attempts on successful authentication
+      await CacheManager.delete(cacheKey);
+    } else {
+      // Increment failed attempts
+      const updatedInfo: RateLimitInfo = {
+        attempts: rateLimitInfo.attempts + 1,
+        lastAttempt: new Date(),
+      };
+      await CacheManager.set(cacheKey, updatedInfo, AuthService.LOCKOUT_DURATION_MINUTES * 60);
+    }
+  }
+
+  /**
+   * Clean up expired sessions for a user
+   */
+  private async cleanupExpiredSessions(userId: string): Promise<void> {
+    await prisma.session.deleteMany({
+      where: {
+        userId,
+        expiresAt: { lt: new Date() },
+      },
+    });
+  }
+
+  /**
+   * Enforce session limits based on user role
+   */
+  private async enforceSessionLimits(userId: string, role: UserRole): Promise<void> {
+    const limits = AuthService.SESSION_LIMITS[role] || AuthService.DEFAULT_SESSION_LIMITS;
+
+    // Clean up expired sessions first
+    await this.cleanupExpiredSessions(userId);
+
+    // Get active sessions count
+    const activeSessions = await prisma.session.count({
+      where: {
+        userId,
+        expiresAt: { gt: new Date() },
+      },
+    });
+
+    // Remove oldest sessions if limit exceeded
+    if (activeSessions >= limits.maxConcurrentSessions) {
+      const sessionsToDelete = activeSessions - limits.maxConcurrentSessions + 1;
+      const oldestSessions = await prisma.session.findMany({
+        where: {
+          userId,
+          expiresAt: { gt: new Date() },
+        },
+        orderBy: { createdAt: 'asc' },
+        take: sessionsToDelete,
+      });
+
+      for (const session of oldestSessions) {
+        await this.logout(userId, session.id);
+      }
+    }
+  }
+  /**
+   * Register new user
+   */
+  async register(data: RegisterInput, options: LoginOptions = {}): Promise<AuthResponse> {
+    // Sanitize inputs
+    const sanitizedEmail = this.sanitizeInput(data.email.toLowerCase());
+    const sanitizedPhone = data.phone ? this.sanitizeInput(data.phone) : undefined;
+    
+    // Check rate limiting
+    await this.checkRateLimit(sanitizedEmail, 'register');
+    
+    try {
+      // Validate email format
+      if (!validator.isEmail(sanitizedEmail)) {
+        throw new ValidationError('Invalid email format');
+      }
+      
+      // Validate phone format if provided
+      if (sanitizedPhone && !validator.isMobilePhone(sanitizedPhone, 'en-IN')) {
+        throw new ValidationError('Invalid phone number format');
+      }
+      
+      // Validate password strength
+      const passwordValidation = validatePassword(data.password);
+      if (!passwordValidation.isValid) {
+        throw new ValidationError(
+          'Password does not meet requirements',
+          passwordValidation.errors
+        );
+      }
+      
+      // Check if user already exists (use generic error to prevent enumeration)
+      const existingUser = await prisma.user.findFirst({
+        where: {
+          OR: [
+            { email: sanitizedEmail },
+            ...(sanitizedPhone ? [{ phone: sanitizedPhone }] : []),
+          ],
+        },
+      });
+      
+      if (existingUser) {
+        // Generic error message to prevent user enumeration
+        await this.recordAuthAttempt(sanitizedEmail, 'register', false);
+        throw new ConflictError('An account with these details already exists. Please try signing in instead.');
+      }
+    
+      // Hash password
+      const hashedPassword = await hashPassword(data.password);
+      
+      // Create user and profile in transaction with proper error handling
+      const user = await prisma.$transaction(async (tx) => {
+        // Create user with sanitized data
+        const newUser = await tx.user.create({
+          data: {
+            email: sanitizedEmail,
+            phone: sanitizedPhone,
+            password: hashedPassword,
+            role: data.role,
+          },
+        });
+        
+        // Create role-specific profile with sanitized data
+        const sanitizedFirstName = this.sanitizeInput(data.firstName || '');
+        const sanitizedLastName = this.sanitizeInput(data.lastName || '');
+        
+        if (data.role === 'ACTOR') {
+          await tx.actor.create({
+            data: {
+              userId: newUser.id,
+              firstName: sanitizedFirstName,
+              lastName: sanitizedLastName,
+              dateOfBirth: new Date(), // Should be provided in actual implementation
+              gender: 'PREFER_NOT_TO_SAY', // Should be provided
+              city: 'Mumbai', // Should be provided
+              state: 'Maharashtra', // Should be provided
+              languages: ['Hindi', 'English'], // Should be provided
+              skills: [], // Should be provided
+            },
+          });
+        } else if (data.role === 'CASTING_DIRECTOR') {
+          await tx.castingDirector.create({
+            data: {
+              userId: newUser.id,
+              firstName: sanitizedFirstName,
+              lastName: sanitizedLastName,
+              specializations: [],
+            },
+          });
+        } else if (data.role === 'PRODUCER') {
+          await tx.producer.create({
+            data: {
+              userId: newUser.id,
+              firstName: sanitizedFirstName,
+              lastName: sanitizedLastName,
+            },
+          });
+        }
+        
+        return newUser;
+      }, {
+        timeout: 10000,
+        isolationLevel: 'Serializable',
+      });
+    
+      // Generate tokens with enhanced claims
+      const sessionId = generateSessionId();
+      const accessToken = generateAccessToken(user.id, user.email, user.role, sessionId);
+      const refreshToken = generateRefreshToken(user.id, sessionId);
+      
+      // Enforce session limits
+      await this.enforceSessionLimits(user.id, user.role);
+      
+      // Create session with detailed tracking
+      await prisma.session.create({
+        data: {
+          id: sessionId,
+          userId: user.id,
+          token: refreshToken,
+          ipAddress: options.ipAddress,
+          userAgent: options.userAgent,
+          expiresAt: getTokenExpiry('7d'),
+        },
+      });
+      
+      // Cache session with user data
+      await CacheManager.set(
+        CacheKeys.userSession(user.id, sessionId),
+        { 
+          userId: user.id, 
+          sessionId, 
+          role: user.role,
+          email: user.email,
+          isEmailVerified: user.isEmailVerified 
+        },
+        3600 // 1 hour cache
+      );
+      
+      // Record successful registration
+      await this.recordAuthAttempt(sanitizedEmail, 'register', true);
+      
+      // Send verification email (if email service is configured)
+      // await this.sendVerificationEmail(user.email, user.id);
+      
+      logger.info(`New user registered: ${user.id} with role ${user.role}`);
+      
+      return {
+        user: {
+          id: user.id,
+          email: user.email,
+          role: user.role,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          isEmailVerified: user.isEmailVerified,
+        },
+        tokens: {
+          accessToken,
+          refreshToken,
+          expiresIn: 900, // 15 minutes in seconds
+        },
+      };
+    } catch (error) {
+      await this.recordAuthAttempt(sanitizedEmail, 'register', false);
+      if (error instanceof AppError) {
+        throw error;
+      }
+      logger.error('Registration error:', error);
+      throw new ValidationError('Registration failed. Please try again.');
+    }
+  }
+  
+  /**
+   * Login user with enhanced security
+   */
+  async login(data: LoginInput, options: LoginOptions = {}): Promise<AuthResponse> {
+    // Sanitize inputs
+    const sanitizedEmail = this.sanitizeInput(data.email.toLowerCase());
+    
+    // Check rate limiting
+    await this.checkRateLimit(sanitizedEmail, 'login');
+    
+    try {
+      // Validate email format
+      if (!validator.isEmail(sanitizedEmail)) {
+        throw new ValidationError('Invalid email format');
+      }
+      
+      // Find user by email with optimized query
+      const user = await prisma.user.findUnique({
+        where: { email: sanitizedEmail },
+        include: {
+          actor: {
+            select: {
+              firstName: true,
+              lastName: true,
+              isVerified: true,
+            },
+          },
+          castingDirector: {
+            select: {
+              firstName: true,
+              lastName: true,
+              isVerified: true,
+            },
+          },
+          producer: {
+            select: {
+              firstName: true,
+              lastName: true,
+              isVerified: true,
+            },
+          },
+        },
+      });
+      
+      // Generic error message to prevent user enumeration
+      if (!user) {
+        await this.recordAuthAttempt(sanitizedEmail, 'login', false);
+        throw new AuthenticationError('Invalid credentials. Please check your email and password.');
+      }
+      
+      // Check if account is active first
+      if (!user.isActive) {
+        await this.recordAuthAttempt(sanitizedEmail, 'login', false);
+        throw new AuthenticationError('Account access has been restricted. Please contact support.');
+      }
+      
+      // Handle different authentication methods
+      if (!user.password) {
+        // User registered with social auth
+        await this.recordAuthAttempt(sanitizedEmail, 'login', false);
+        throw new AuthenticationError('This account uses social login. Please sign in with your social account.');
+      }
+      
+      // Verify password with timing attack protection
+      const isPasswordValid = await comparePassword(data.password, user.password);
+      if (!isPasswordValid) {
+        await this.recordAuthAttempt(sanitizedEmail, 'login', false);
+        throw new AuthenticationError('Invalid credentials. Please check your email and password.');
+      }
+    
+      // Get user name based on role with null checks
+      let firstName = '';
+      let lastName = '';
+      let isProfileVerified = false;
+      
+      if (user.actor) {
+        firstName = user.actor.firstName || '';
+        lastName = user.actor.lastName || '';
+        isProfileVerified = user.actor.isVerified;
+      } else if (user.castingDirector) {
+        firstName = user.castingDirector.firstName || '';
+        lastName = user.castingDirector.lastName || '';
+        isProfileVerified = user.castingDirector.isVerified;
+      } else if (user.producer) {
+        firstName = user.producer.firstName || '';
+        lastName = user.producer.lastName || '';
+        isProfileVerified = user.producer.isVerified;
+      }
+    
+      // Enforce session limits before creating new session
+      await this.enforceSessionLimits(user.id, user.role);
+      
+      // Generate tokens with enhanced security
+      const sessionId = generateSessionId();
+      const accessToken = generateAccessToken(user.id, user.email, user.role, sessionId);
+      const refreshToken = generateRefreshToken(user.id, sessionId);
+      
+      // Create session and update last login in a transaction
+      await prisma.$transaction(async (tx) => {
+        // Create session with detailed tracking
+        await tx.session.create({
+          data: {
+            id: sessionId,
+            userId: user.id,
+            token: refreshToken,
+            ipAddress: options.ipAddress,
+            userAgent: options.userAgent,
+            expiresAt: getTokenExpiry(data.rememberMe ? '30d' : '7d'),
+          },
+        });
+        
+        // Update last login timestamp
+        await tx.user.update({
+          where: { id: user.id },
+          data: { 
+            lastLoginAt: new Date(),
+            failedLoginAttempts: 0, // Reset failed attempts on successful login
+          },
+        });
+      });
+      
+      // Cache session with enhanced user data
+      await CacheManager.set(
+        CacheKeys.userSession(user.id, sessionId),
+        { 
+          userId: user.id, 
+          sessionId,
+          role: user.role,
+          email: user.email,
+          isEmailVerified: user.isEmailVerified,
+          isProfileVerified,
+          firstName,
+          lastName
+        },
+        3600 // 1 hour cache
+      );
+      
+      // Record successful login
+      await this.recordAuthAttempt(sanitizedEmail, 'login', true);
+      
+      logger.info(`Successful login for user: ${user.id}`, {
+        userId: user.id,
+        email: user.email,
+        role: user.role,
+        ipAddress: options.ipAddress,
+        userAgent: options.userAgent,
+      });
+      
+      return {
+        user: {
+          id: user.id,
+          email: user.email,
+          role: user.role,
+          firstName,
+          lastName,
+          isEmailVerified: user.isEmailVerified,
+        },
+        tokens: {
+          accessToken,
+          refreshToken,
+          expiresIn: 900, // 15 minutes in seconds
+        },
+      };
+    } catch (error) {
+      if (error instanceof AppError) {
+        throw error;
+      }
+      logger.error('Login error:', error);
+      await this.recordAuthAttempt(sanitizedEmail, 'login', false);
+      throw new AuthenticationError('Login failed. Please try again.');
+    }
+  }
+  
+  /**
+   * Refresh access token with enhanced security
+   */
+  async refreshToken(refreshToken: string): Promise<{ accessToken: string; expiresIn: number }> {
+    try {
+      if (!refreshToken) {
+        throw new AuthenticationError('Refresh token is required');
+      }
+      
+      const payload = verifyToken<{ userId: string; sessionId: string; type: string }>(refreshToken);
+      
+      if (payload.type !== 'refresh') {
+        throw new AuthenticationError('Invalid token type');
+      }
+      
+      // Check session with user details
+      const session = await prisma.session.findUnique({
+        where: { id: payload.sessionId },
+        include: { 
+          user: {
+            select: {
+              id: true,
+              email: true,
+              role: true,
+              isActive: true,
+              isEmailVerified: true,
+            },
+          },
+        },
+      });
+      
+      if (!session || session.token !== refreshToken) {
+        logger.warn('Invalid refresh token attempt', { sessionId: payload.sessionId });
+        throw new AuthenticationError('Invalid refresh token');
+      }
+      
+      if (session.expiresAt < new Date()) {
+        // Clean up expired session
+        await prisma.session.delete({ where: { id: session.id } });
+        await CacheManager.delete(CacheKeys.userSession(session.userId, session.id));
+        throw new AuthenticationError('Refresh token expired');
+      }
+      
+      // Check if user is still active
+      if (!session.user.isActive) {
+        await this.logout(session.user.id, session.id);
+        throw new AuthenticationError('Account access has been restricted');
+      }
+      
+      // Generate new access token with updated claims
+      const accessToken = generateAccessToken(
+        session.user.id,
+        session.user.email,
+        session.user.role,
+        session.id
+      );
+      
+      // Update session last activity
+      await prisma.session.update({
+        where: { id: session.id },
+        data: { updatedAt: new Date() },
+      });
+      
+      // Update cache with fresh data
+      const cachedSession = await CacheManager.get(CacheKeys.userSession(session.user.id, session.id));
+      if (cachedSession) {
+        await CacheManager.set(
+          CacheKeys.userSession(session.user.id, session.id),
+          { ...cachedSession, lastActivity: new Date() },
+          3600
+        );
+      }
+      
+      logger.info('Token refreshed successfully', { 
+        userId: session.user.id, 
+        sessionId: session.id 
+      });
+      
+      return {
+        accessToken,
+        expiresIn: 900, // 15 minutes
+      };
+    } catch (error) {
+      if (error instanceof AppError) {
+        throw error;
+      }
+      logger.error('Token refresh error:', error);
+      throw new AuthenticationError('Token refresh failed');
+    }
+  }
+  
+  /**
+   * Logout user with comprehensive cleanup
+   */
+  async logout(userId: string, sessionId: string): Promise<void> {
+    try {
+      // Delete session and clear cache in parallel for better performance
+      await Promise.all([
+        prisma.session.delete({
+          where: { id: sessionId },
+        }).catch((error) => {
+          // Session might already be deleted, log but don't fail
+          logger.warn('Session deletion failed during logout', { sessionId, error: error.message });
+        }),
+        CacheManager.delete(CacheKeys.userSession(userId, sessionId)),
+      ]);
+      
+      logger.info('User logged out successfully', { userId, sessionId });
+    } catch (error) {
+      logger.error('Logout error:', { userId, sessionId, error });
+      // Still clear cache even if database operation failed
+      await CacheManager.delete(CacheKeys.userSession(userId, sessionId));
+      throw new AuthenticationError('Logout failed');
+    }
+  }
+  
+  /**
+   * Logout from all devices
+   */
+  async logoutAll(userId: string): Promise<void> {
+    try {
+      // Get all user sessions
+      const sessions = await prisma.session.findMany({
+        where: { userId },
+        select: { id: true },
+      });
+      
+      // Delete all sessions and clear caches
+      await Promise.all([
+        prisma.session.deleteMany({
+          where: { userId },
+        }),
+        ...sessions.map(session => 
+          CacheManager.delete(CacheKeys.userSession(userId, session.id))
+        ),
+      ]);
+      
+      logger.info('User logged out from all devices', { userId, sessionCount: sessions.length });
+    } catch (error) {
+      logger.error('Logout all error:', { userId, error });
+      throw new AuthenticationError('Failed to logout from all devices');
+    }
+  }
+  
+  /**
+   * Request password reset with enhanced security
+   */
+  async forgotPassword(email: string, options: { ipAddress?: string } = {}): Promise<void> {
+    // Sanitize email
+    const sanitizedEmail = this.sanitizeInput(email.toLowerCase());
+    
+    // Check rate limiting
+    await this.checkRateLimit(sanitizedEmail, 'password_reset');
+    
+    try {
+      // Validate email format
+      if (!validator.isEmail(sanitizedEmail)) {
+        throw new ValidationError('Invalid email format');
+      }
+      
+      const user = await prisma.user.findUnique({
+        where: { email: sanitizedEmail },
+        select: {
+          id: true,
+          email: true,
+          password: true, // Check if user has password
+          isActive: true,
+        },
+      });
+      
+      if (!user) {
+        // Don't reveal if user exists - but still record attempt
+        await this.recordAuthAttempt(sanitizedEmail, 'password_reset', false);
+        logger.info(`Password reset requested for non-existent email: ${sanitizedEmail}`, {
+          ipAddress: options.ipAddress,
+        });
+        return; // Always return success to prevent user enumeration
+      }
+      
+      if (!user.isActive) {
+        // Don't reveal account status
+        await this.recordAuthAttempt(sanitizedEmail, 'password_reset', false);
+        logger.warn(`Password reset requested for inactive account: ${user.id}`);
+        return;
+      }
+      
+      if (!user.password) {
+        // Social auth user - don't allow password reset
+        await this.recordAuthAttempt(sanitizedEmail, 'password_reset', false);
+        logger.info(`Password reset requested for social auth user: ${user.id}`);
+        return;
+      }
+      
+      // Generate secure reset token
+      const resetToken = generateResetToken(user.id, user.email);
+      const resetTokenExpiry = getTokenExpiry('1h'); // 1 hour expiry
+      
+      // Save reset token and invalidate existing ones
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          resetToken,
+          resetTokenExpiry,
+          // Optionally increment reset attempts counter
+        },
+      });
+      
+      // Record successful attempt
+      await this.recordAuthAttempt(sanitizedEmail, 'password_reset', true);
+      
+      // Send reset email (if email service is configured)
+      // await this.sendPasswordResetEmail(user.email, resetToken);
+      
+      logger.info(`Password reset token generated for user: ${user.id}`, {
+        ipAddress: options.ipAddress,
+      });
+    } catch (error) {
+      if (error instanceof AppError) {
+        throw error;
+      }
+      logger.error('Password reset request error:', { email: sanitizedEmail, error });
+      await this.recordAuthAttempt(sanitizedEmail, 'password_reset', false);
+      // Still return success to prevent information disclosure
+    }
+  }
+  
+  /**
+   * Reset password with token and enhanced security
+   */
+  async resetPassword(token: string, newPassword: string, options: { ipAddress?: string } = {}): Promise<void> {
+    try {
+      if (!token || !newPassword) {
+        throw new ValidationError('Token and new password are required');
+      }
+      
+      // Validate password strength
+      const passwordValidation = validatePassword(newPassword);
+      if (!passwordValidation.isValid) {
+        throw new ValidationError(
+          'Password does not meet requirements',
+          passwordValidation.errors
+        );
+      }
+      
+      // Verify token with proper error handling
+      let payload: any;
+      try {
+        payload = verifyToken(token);
+      } catch (error) {
+        logger.warn('Invalid reset token used', { error: error.message });
+        throw new AuthenticationError('Invalid or expired reset token');
+      }
+      
+      if (payload.type !== 'reset') {
+        logger.warn('Wrong token type used for password reset', { type: payload.type });
+        throw new AuthenticationError('Invalid token type');
+      }
+      
+      // Find user with reset token in transaction
+      const result = await prisma.$transaction(async (tx) => {
+        const user = await tx.user.findFirst({
+          where: {
+            id: payload.userId,
+            resetToken: token,
+            resetTokenExpiry: { gte: new Date() },
+            isActive: true, // Only allow reset for active accounts
+          },
+        });
+        
+        if (!user) {
+          throw new AuthenticationError('Invalid or expired reset token');
+        }
+        
+        // Hash new password
+        const hashedPassword = await hashPassword(newPassword);
+        
+        // Update password and clear reset token
+        const updatedUser = await tx.user.update({
+          where: { id: user.id },
+          data: {
+            password: hashedPassword,
+            resetToken: null,
+            resetTokenExpiry: null,
+            passwordChangedAt: new Date(),
+            failedLoginAttempts: 0, // Reset failed attempts
+          },
+        });
+        
+        // Invalidate all sessions for security
+        await tx.session.deleteMany({
+          where: { userId: user.id },
+        });
+        
+        return updatedUser;
+      });
+      
+      // Clear all cached sessions
+      const sessions = await prisma.session.findMany({
+        where: { userId: result.id },
+        select: { id: true },
+      });
+      
+      await Promise.all(
+        sessions.map(session => 
+          CacheManager.delete(CacheKeys.userSession(result.id, session.id))
+        )
+      );
+      
+      logger.info(`Password reset successful for user: ${result.id}`, {
+        ipAddress: options.ipAddress,
+      });
+    } catch (error) {
+      if (error instanceof AppError) {
+        throw error;
+      }
+      logger.error('Password reset error:', { error });
+      throw new AuthenticationError('Password reset failed');
+    }
+  }
+  
+  /**
+   * Change password for authenticated user with enhanced security
+   */
+  async changePassword(userId: string, currentPassword: string, newPassword: string): Promise<void> {
+    try {
+      if (!userId || !currentPassword || !newPassword) {
+        throw new ValidationError('All password fields are required');
+      }
+      
+      // Validate new password strength
+      const passwordValidation = validatePassword(newPassword);
+      if (!passwordValidation.isValid) {
+        throw new ValidationError(
+          'Password does not meet requirements',
+          passwordValidation.errors
+        );
+      }
+      
+      // Check if new password is same as current
+      if (currentPassword === newPassword) {
+        throw new ValidationError('New password must be different from current password');
+      }
+      
+      // Get user with password
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+          id: true,
+          password: true,
+          email: true,
+          isActive: true,
+        },
+      });
+      
+      if (!user) {
+        throw new NotFoundError('User');
+      }
+      
+      if (!user.isActive) {
+        throw new AuthenticationError('Account access has been restricted');
+      }
+      
+      // Handle social auth users
+      if (!user.password) {
+        throw new AuthenticationError('Cannot change password for social login accounts. Please contact support if you need to set a password.');
+      }
+      
+      // Verify current password with timing attack protection
+      const isPasswordValid = await comparePassword(currentPassword, user.password);
+      if (!isPasswordValid) {
+        logger.warn('Incorrect current password provided for password change', { userId });
+        throw new AuthenticationError('Current password is incorrect');
+      }
+      
+      // Hash new password
+      const hashedPassword = await hashPassword(newPassword);
+      
+      // Update password in transaction
+      await prisma.$transaction(async (tx) => {
+        await tx.user.update({
+          where: { id: userId },
+          data: { 
+            password: hashedPassword,
+            passwordChangedAt: new Date(),
+          },
+        });
+        
+        // Optionally, invalidate other sessions for security
+        // This forces user to re-login on all devices
+        const sessions = await tx.session.findMany({
+          where: { userId },
+          select: { id: true },
+        });
+        
+        // Keep current session but invalidate others
+        // This is optional - you might want to keep all sessions active
+        // await tx.session.deleteMany({
+        //   where: { 
+        //     userId,
+        //     id: { not: currentSessionId } // if provided
+        //   },
+        // });
+      });
+      
+      logger.info(`Password changed successfully for user: ${userId}`);
+    } catch (error) {
+      if (error instanceof AppError) {
+        throw error;
+      }
+      logger.error('Change password error:', { userId, error });
+      throw new AuthenticationError('Password change failed');
+    }
+  }
+  
+  /**
+   * Verify email address with enhanced validation
+   */
+  async verifyEmail(token: string): Promise<void> {
+    try {
+      if (!token) {
+        throw new ValidationError('Verification token is required');
+      }
+      
+      // Verify token with proper error handling
+      let payload: any;
+      try {
+        payload = verifyToken(token);
+      } catch (error) {
+        logger.warn('Invalid verification token used', { error: error.message });
+        throw new AuthenticationError('Invalid or expired verification token');
+      }
+      
+      if (payload.type !== 'verification') {
+        logger.warn('Wrong token type used for email verification', { type: payload.type });
+        throw new AuthenticationError('Invalid token type');
+      }
+      
+      // Update user email verification status
+      const updatedUser = await prisma.user.update({
+        where: { 
+          id: payload.userId,
+          email: payload.email, // Ensure email matches token
+        },
+        data: { 
+          isEmailVerified: true,
+          emailVerifiedAt: new Date(),
+        },
+        select: {
+          id: true,
+          email: true,
+          role: true,
+        },
+      });
+      
+      // Update cached session data if exists
+      const sessions = await prisma.session.findMany({
+        where: { userId: updatedUser.id },
+        select: { id: true },
+      });
+      
+      // Update all cached sessions with new verification status
+      await Promise.all(
+        sessions.map(async (session) => {
+          const cacheKey = CacheKeys.userSession(updatedUser.id, session.id);
+          const cachedSession = await CacheManager.get(cacheKey);
+          if (cachedSession) {
+            await CacheManager.set(
+              cacheKey,
+              { ...cachedSession, isEmailVerified: true },
+              3600
+            );
+          }
+        })
+      );
+      
+      logger.info(`Email verified successfully for user: ${payload.userId}`);
+    } catch (error) {
+      if (error instanceof AppError) {
+        throw error;
+      }
+      logger.error('Email verification error:', { error });
+      throw new AuthenticationError('Email verification failed');
+    }
+  }
+  
+  /**
+   * Social authentication (Google, LinkedIn, etc.)
+   */
+  async socialAuth(socialData: SocialAuthInput, options: LoginOptions = {}): Promise<AuthResponse> {
+    // Sanitize inputs
+    const sanitizedEmail = this.sanitizeInput(socialData.email.toLowerCase());
+    const sanitizedProviderId = this.sanitizeInput(socialData.providerId);
+    
+    try {
+      // Validate email format
+      if (!validator.isEmail(sanitizedEmail)) {
+        throw new ValidationError('Invalid email format');
+      }
+      
+      // Check if user exists with this email
+      let user = await prisma.user.findUnique({
+        where: { email: sanitizedEmail },
+        include: {
+          actor: {
+            select: {
+              firstName: true,
+              lastName: true,
+              isVerified: true,
+            },
+          },
+          castingDirector: {
+            select: {
+              firstName: true,
+              lastName: true,
+              isVerified: true,
+            },
+          },
+          producer: {
+            select: {
+              firstName: true,
+              lastName: true,
+              isVerified: true,
+            },
+          },
+        },
+      });
+      
+      if (user) {
+        // Existing user - update social provider info if needed
+        if (!user.isActive) {
+          throw new AuthenticationError('Account access has been restricted');
+        }
+        
+        // Update user's social provider info
+        user = await prisma.user.update({
+          where: { id: user.id },
+          data: {
+            lastLoginAt: new Date(),
+            // Update profile image if provided and user doesn't have one
+          },
+          include: {
+            actor: { select: { firstName: true, lastName: true, isVerified: true } },
+            castingDirector: { select: { firstName: true, lastName: true, isVerified: true } },
+            producer: { select: { firstName: true, lastName: true, isVerified: true } },
+          },
+        });
+      } else {
+        // New user - create account with social data
+        user = await prisma.$transaction(async (tx) => {
+          const newUser = await tx.user.create({
+            data: {
+              email: sanitizedEmail,
+              role: socialData.role,
+              password: null, // Social auth users don't have passwords
+              isEmailVerified: true, // Email is verified by social provider
+            },
+          });
+          
+          // Create role-specific profile
+          const sanitizedFirstName = socialData.firstName ? this.sanitizeInput(socialData.firstName) : '';
+          const sanitizedLastName = socialData.lastName ? this.sanitizeInput(socialData.lastName) : '';
+          
+          if (socialData.role === 'ACTOR') {
+            await tx.actor.create({
+              data: {
+                userId: newUser.id,
+                firstName: sanitizedFirstName,
+                lastName: sanitizedLastName,
+                dateOfBirth: new Date(), // Should be provided in actual implementation
+                gender: 'PREFER_NOT_TO_SAY',
+                city: 'Mumbai',
+                state: 'Maharashtra',
+                languages: ['Hindi', 'English'],
+                skills: [],
+              },
+            });
+          } else if (socialData.role === 'CASTING_DIRECTOR') {
+            await tx.castingDirector.create({
+              data: {
+                userId: newUser.id,
+                firstName: sanitizedFirstName,
+                lastName: sanitizedLastName,
+                specializations: [],
+              },
+            });
+          } else if (socialData.role === 'PRODUCER') {
+            await tx.producer.create({
+              data: {
+                userId: newUser.id,
+                firstName: sanitizedFirstName,
+                lastName: sanitizedLastName,
+              },
+            });
+          }
+          
+          return { ...newUser, [socialData.role.toLowerCase()]: true };
+        });
+      }
+      
+      // Get user profile data
+      let firstName = '';
+      let lastName = '';
+      let isProfileVerified = false;
+      
+      if (user.actor) {
+        firstName = user.actor.firstName || '';
+        lastName = user.actor.lastName || '';
+        isProfileVerified = user.actor.isVerified;
+      } else if (user.castingDirector) {
+        firstName = user.castingDirector.firstName || '';
+        lastName = user.castingDirector.lastName || '';
+        isProfileVerified = user.castingDirector.isVerified;
+      } else if (user.producer) {
+        firstName = user.producer.firstName || '';
+        lastName = user.producer.lastName || '';
+        isProfileVerified = user.producer.isVerified;
+      }
+      
+      // Enforce session limits
+      await this.enforceSessionLimits(user.id, user.role);
+      
+      // Generate tokens
+      const sessionId = generateSessionId();
+      const accessToken = generateAccessToken(user.id, user.email, user.role, sessionId);
+      const refreshToken = generateRefreshToken(user.id, sessionId);
+      
+      // Create session
+      await prisma.session.create({
+        data: {
+          id: sessionId,
+          userId: user.id,
+          token: refreshToken,
+          ipAddress: options.ipAddress,
+          userAgent: options.userAgent,
+          expiresAt: getTokenExpiry('7d'),
+        },
+      });
+      
+      // Cache session
+      await CacheManager.set(
+        CacheKeys.userSession(user.id, sessionId),
+        {
+          userId: user.id,
+          sessionId,
+          role: user.role,
+          email: user.email,
+          isEmailVerified: user.isEmailVerified,
+          isProfileVerified,
+          firstName,
+          lastName,
+        },
+        3600
+      );
+      
+      logger.info(`Social auth successful for user: ${user.id}`, {
+        provider: socialData.provider,
+        email: user.email,
+        role: user.role,
+      });
+      
+      return {
+        user: {
+          id: user.id,
+          email: user.email,
+          role: user.role,
+          firstName,
+          lastName,
+          isEmailVerified: user.isEmailVerified,
+        },
+        tokens: {
+          accessToken,
+          refreshToken,
+          expiresIn: 900,
+        },
+      };
+    } catch (error) {
+      if (error instanceof AppError) {
+        throw error;
+      }
+      logger.error('Social auth error:', { email: sanitizedEmail, provider: socialData.provider, error });
+      throw new AuthenticationError('Social authentication failed');
+    }
+  }
+  
+  /**
+   * Get current user with enhanced data
+   */
+  async getCurrentUser(userId: string): Promise<any> {
+    try {
+      if (!userId) {
+        throw new ValidationError('User ID is required');
+      }
+      
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+          id: true,
+          email: true,
+          phone: true,
+          role: true,
+          isEmailVerified: true,
+          isPhoneVerified: true,
+          isActive: true,
+          lastLoginAt: true,
+          createdAt: true,
+          passwordChangedAt: true,
+          actor: {
+            select: {
+              firstName: true,
+              lastName: true,
+              displayName: true,
+              profileImageUrl: true,
+              isVerified: true,
+              city: true,
+              state: true,
+            },
+          },
+          castingDirector: {
+            select: {
+              firstName: true,
+              lastName: true,
+              companyName: true,
+              profileImageUrl: true,
+              isVerified: true,
+            },
+          },
+          producer: {
+            select: {
+              firstName: true,
+              lastName: true,
+              productionHouse: true,
+              profileImageUrl: true,
+              isVerified: true,
+            },
+          },
+        },
+      });
+      
+      if (!user) {
+        throw new NotFoundError('User');
+      }
+      
+      if (!user.isActive) {
+        throw new AuthenticationError('Account access has been restricted');
+      }
+      
+      return user;
+    } catch (error) {
+      if (error instanceof AppError) {
+        throw error;
+      }
+      logger.error('Get current user error:', { userId, error });
+      throw new AuthenticationError('Failed to retrieve user information');
+    }
+  }
+  
+  /**
+   * Get user sessions for security management
+   */
+  async getUserSessions(userId: string): Promise<any[]> {
+    try {
+      const sessions = await prisma.session.findMany({
+        where: { 
+          userId,
+          expiresAt: { gt: new Date() }, // Only active sessions
+        },
+        select: {
+          id: true,
+          ipAddress: true,
+          userAgent: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+        orderBy: { updatedAt: 'desc' },
+      });
+      
+      return sessions;
+    } catch (error) {
+      logger.error('Get user sessions error:', { userId, error });
+      throw new AuthenticationError('Failed to retrieve user sessions');
+    }
+  }
+  
+  /**
+   * Terminate specific session
+   */
+  async terminateSession(userId: string, sessionId: string): Promise<void> {
+    try {
+      const session = await prisma.session.findUnique({
+        where: { id: sessionId },
+        select: { userId: true },
+      });
+      
+      if (!session || session.userId !== userId) {
+        throw new NotFoundError('Session');
+      }
+      
+      await this.logout(userId, sessionId);
+      logger.info(`Session terminated by user: ${userId}`, { sessionId });
+    } catch (error) {
+      if (error instanceof AppError) {
+        throw error;
+      }
+      logger.error('Terminate session error:', { userId, sessionId, error });
+      throw new AuthenticationError('Failed to terminate session');
+    }
+  }
+}

@@ -1,0 +1,288 @@
+# Prometheus Alert Rules for CastMatch
+
+groups:
+  # Application alerts
+  - name: application
+    interval: 30s
+    rules:
+      - alert: HighErrorRate
+        expr: |
+          sum(rate(http_requests_total{status=~"5.."}[5m])) by (service)
+          /
+          sum(rate(http_requests_total[5m])) by (service)
+          > 0.05
+        for: 5m
+        labels:
+          severity: critical
+          team: backend
+        annotations:
+          summary: "High error rate on {{ $labels.service }}"
+          description: "{{ $labels.service }} has error rate of {{ $value | humanizePercentage }} (> 5%)"
+
+      - alert: HighLatency
+        expr: |
+          histogram_quantile(0.95,
+            sum(rate(http_request_duration_seconds_bucket[5m])) by (service, le)
+          ) > 1
+        for: 5m
+        labels:
+          severity: warning
+          team: backend
+        annotations:
+          summary: "High latency on {{ $labels.service }}"
+          description: "95th percentile latency is {{ $value }}s (> 1s) for {{ $labels.service }}"
+
+      - alert: AuthenticationFailureSpike
+        expr: |
+          sum(rate(authentication_failures_total[5m])) > 10
+        for: 2m
+        labels:
+          severity: warning
+          team: security
+        annotations:
+          summary: "High authentication failure rate"
+          description: "Authentication failures: {{ $value | humanize }} per second"
+
+      - alert: EmailDeliveryFailure
+        expr: |
+          sum(rate(email_send_failures_total[5m])) > 5
+        for: 5m
+        labels:
+          severity: warning
+          team: backend
+        annotations:
+          summary: "Email delivery failures detected"
+          description: "Email delivery failing at {{ $value | humanize }} per second"
+
+  # Database alerts
+  - name: database
+    interval: 30s
+    rules:
+      - alert: PostgreSQLDown
+        expr: up{job="postgresql"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          team: database
+        annotations:
+          summary: "PostgreSQL is down"
+          description: "PostgreSQL instance {{ $labels.instance }} is down"
+
+      - alert: DatabaseConnectionPoolExhaustion
+        expr: |
+          pg_stat_database_numbackends{datname="castmatch_production"} 
+          / 
+          pg_settings_max_connections 
+          > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          team: database
+        annotations:
+          summary: "Database connection pool near exhaustion"
+          description: "{{ $value | humanizePercentage }} of max connections used"
+
+      - alert: DatabaseSlowQueries
+        expr: |
+          rate(pg_stat_statements_mean_exec_time_seconds[5m]) > 1
+        for: 10m
+        labels:
+          severity: warning
+          team: database
+        annotations:
+          summary: "Slow database queries detected"
+          description: "Average query execution time: {{ $value }}s"
+
+      - alert: DatabaseReplicationLag
+        expr: |
+          pg_replication_lag_seconds > 10
+        for: 5m
+        labels:
+          severity: warning
+          team: database
+        annotations:
+          summary: "Database replication lag high"
+          description: "Replication lag is {{ $value }}s (> 10s)"
+
+      - alert: DatabaseStorageNearFull
+        expr: |
+          pg_database_size_bytes / (1024^3) > 80
+        for: 10m
+        labels:
+          severity: warning
+          team: database
+        annotations:
+          summary: "Database storage approaching limit"
+          description: "Database size: {{ $value | humanize }}GB"
+
+  # Redis alerts
+  - name: redis
+    interval: 30s
+    rules:
+      - alert: RedisDown
+        expr: up{job="redis"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          team: backend
+        annotations:
+          summary: "Redis is down"
+          description: "Redis instance {{ $labels.instance }} is down"
+
+      - alert: RedisMemoryHigh
+        expr: |
+          redis_memory_used_bytes / redis_memory_max_bytes > 0.9
+        for: 5m
+        labels:
+          severity: warning
+          team: backend
+        annotations:
+          summary: "Redis memory usage high"
+          description: "Redis using {{ $value | humanizePercentage }} of max memory"
+
+      - alert: RedisEvictedKeys
+        expr: |
+          rate(redis_evicted_keys_total[5m]) > 0
+        for: 5m
+        labels:
+          severity: warning
+          team: backend
+        annotations:
+          summary: "Redis evicting keys"
+          description: "Redis evicting {{ $value | humanize }} keys/sec"
+
+  # Infrastructure alerts
+  - name: infrastructure
+    interval: 30s
+    rules:
+      - alert: HighCPUUsage
+        expr: |
+          100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 10m
+        labels:
+          severity: warning
+          team: infrastructure
+        annotations:
+          summary: "High CPU usage on {{ $labels.instance }}"
+          description: "CPU usage is {{ $value | humanize }}% (> 80%)"
+
+      - alert: HighMemoryUsage
+        expr: |
+          (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 90
+        for: 5m
+        labels:
+          severity: warning
+          team: infrastructure
+        annotations:
+          summary: "High memory usage on {{ $labels.instance }}"
+          description: "Memory usage is {{ $value | humanize }}% (> 90%)"
+
+      - alert: DiskSpaceLow
+        expr: |
+          (node_filesystem_avail_bytes{fstype!~"tmpfs|fuse.lxcfs|squashfs|vfat"} 
+          / node_filesystem_size_bytes) * 100 < 10
+        for: 5m
+        labels:
+          severity: critical
+          team: infrastructure
+        annotations:
+          summary: "Low disk space on {{ $labels.instance }}"
+          description: "Only {{ $value | humanize }}% disk space remaining on {{ $labels.device }}"
+
+      - alert: ServiceDown
+        expr: up == 0
+        for: 2m
+        labels:
+          severity: critical
+          team: infrastructure
+        annotations:
+          summary: "Service {{ $labels.job }} is down"
+          description: "{{ $labels.job }} on {{ $labels.instance }} is down"
+
+      - alert: ContainerRestarting
+        expr: |
+          rate(container_restart_count[5m]) > 0
+        for: 5m
+        labels:
+          severity: warning
+          team: infrastructure
+        annotations:
+          summary: "Container {{ $labels.container }} restarting"
+          description: "Container {{ $labels.container }} has restarted {{ $value }} times in 5 minutes"
+
+  # Security alerts
+  - name: security
+    interval: 30s
+    rules:
+      - alert: SSLCertificateExpiringSoon
+        expr: |
+          probe_ssl_earliest_cert_expiry - time() < 7 * 24 * 3600
+        for: 1h
+        labels:
+          severity: warning
+          team: security
+        annotations:
+          summary: "SSL certificate expiring soon"
+          description: "SSL certificate for {{ $labels.instance }} expires in {{ $value | humanizeDuration }}"
+
+      - alert: TooManyFailedLogins
+        expr: |
+          sum(rate(login_attempts_total{status="failed"}[5m])) by (ip) > 10
+        for: 2m
+        labels:
+          severity: warning
+          team: security
+        annotations:
+          summary: "Possible brute force attack from {{ $labels.ip }}"
+          description: "{{ $value | humanize }} failed login attempts per second from {{ $labels.ip }}"
+
+      - alert: UnauthorizedAPIAccess
+        expr: |
+          sum(rate(http_requests_total{status="403"}[5m])) > 50
+        for: 2m
+        labels:
+          severity: warning
+          team: security
+        annotations:
+          summary: "High rate of unauthorized API access"
+          description: "{{ $value | humanize }} unauthorized requests per second"
+
+  # Business metrics alerts
+  - name: business
+    interval: 60s
+    rules:
+      - alert: LowUserRegistrations
+        expr: |
+          sum(rate(user_registrations_total[1h])) < 1
+        for: 2h
+        labels:
+          severity: info
+          team: product
+        annotations:
+          summary: "Low user registration rate"
+          description: "Less than 1 registration per hour for 2 hours"
+
+      - alert: HighUserChurn
+        expr: |
+          sum(rate(user_deletions_total[24h])) 
+          / 
+          sum(rate(user_registrations_total[24h])) 
+          > 0.1
+        for: 1h
+        labels:
+          severity: warning
+          team: product
+        annotations:
+          summary: "High user churn rate"
+          description: "Churn rate is {{ $value | humanizePercentage }} (> 10%)"
+
+      - alert: PaymentProcessingFailure
+        expr: |
+          sum(rate(payment_failures_total[5m])) > 1
+        for: 5m
+        labels:
+          severity: critical
+          team: payments
+        annotations:
+          summary: "Payment processing failures"
+          description: "{{ $value | humanize }} payment failures per second"

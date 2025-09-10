@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CastMatch Dashboard - Desktop Wireframe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f8f9fa;
+            color: #212529;
+            line-height: 1.5;
+        }
+
+        /* Grid System - 12 column with 24px gutters */
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
+        }
+
+        /* Navigation Header */
+        .nav-header {
+            background: white;
+            border-bottom: 1px solid #dee2e6;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            height: 64px;
+        }
+
+        .nav-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 100%;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            width: 32px;
+            height: 32px;
+            background: #6366f1;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .nav-main {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-item {
+            padding: 8px 12px;
+            color: #6c757d;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .nav-item.active {
+            background: #e9ecef;
+            color: #212529;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .search-box {
+            width: 240px;
+            padding: 8px 12px;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border: 1px solid #dee2e6;
+            background: white;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background: #6366f1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 500;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            grid-column: span 2;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            height: calc(100vh - 104px);
+            overflow-y: auto;
+            position: sticky;
+            top: 88px;
+        }
+
+        .sidebar-section {
+            margin-bottom: 32px;
+        }
+
+        .sidebar-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #6c757d;
+            font-weight: 600;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 6px;
+            color: #495057;
+            text-decoration: none;
+            transition: all 0.2s;
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+
+        .sidebar-item:hover {
+            background: #f1f3f5;
+        }
+
+        .sidebar-item.active {
+            background: #e7f5ff;
+            color: #1c7ed6;
+        }
+
+        .sidebar-icon {
+            width: 20px;
+            height: 20px;
+            background: #dee2e6;
+            border-radius: 4px;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            grid-column: span 10;
+            padding: 24px 0;
+        }
+
+        /* Welcome Section */
+        .welcome-section {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .welcome-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 16px;
+        }
+
+        .welcome-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #212529;
+            margin-bottom: 4px;
+        }
+
+        .welcome-subtitle {
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #6366f1;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #495057;
+            border: 1px solid #dee2e6;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid #e9ecef;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #6c757d;
+            margin-bottom: 8px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 600;
+            color: #212529;
+            margin-bottom: 8px;
+        }
+
+        .stat-change {
+            font-size: 12px;
+            color: #10b981;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .stat-change.negative {
+            color: #ef4444;
+        }
+
+        /* Content Sections */
+        .content-row {
+            display: grid;
+            grid-template-columns: 7fr 5fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid #e9ecef;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #212529;
+        }
+
+        .card-action {
+            font-size: 12px;
+            color: #6366f1;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* Activity List */
+        .activity-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f3f5;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 36px;
+            height: 36px;
+            background: #f1f3f5;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-size: 14px;
+            color: #212529;
+            margin-bottom: 2px;
+        }
+
+        .activity-time {
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        /* Talent Grid */
+        .talent-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .talent-card {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .talent-card:hover {
+            border-color: #6366f1;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .talent-avatar {
+            width: 64px;
+            height: 64px;
+            background: #e9ecef;
+            border-radius: 50%;
+            margin: 0 auto 12px;
+        }
+
+        .talent-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .talent-role {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 8px;
+        }
+
+        .talent-tags {
+            display: flex;
+            gap: 4px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            padding: 2px 8px;
+            background: #f1f3f5;
+            border-radius: 12px;
+            font-size: 11px;
+            color: #495057;
+        }
+
+        /* Annotations */
+        .annotation {
+            position: absolute;
+            background: #ffd43b;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            z-index: 10;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Responsive breakpoints */
+        @media (max-width: 1200px) {
+            .sidebar {
+                grid-column: span 3;
+            }
+            .main-content {
+                grid-column: span 9;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            .main-content {
+                grid-column: span 12;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .content-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Header -->
+    <header class="nav-header">
+        <div class="container">
+            <div class="nav-content">
+                <div style="display: flex; gap: 48px; align-items: center;">
+                    <div class="logo-section">
+                        <div class="logo">CM</div>
+                        <span style="font-weight: 600; font-size: 18px;">CastMatch</span>
+                    </div>
+                    <nav class="nav-main">
+                        <a href="#" class="nav-item active">Dashboard</a>
+                        <a href="#" class="nav-item">Talents</a>
+                        <a href="#" class="nav-item">Projects</a>
+                        <a href="#" class="nav-item">Auditions</a>
+                        <a href="#" class="nav-item">Messages</a>
+                    </nav>
+                </div>
+                <div class="nav-actions">
+                    <input type="search" class="search-box" placeholder="Search talents, projects...">
+                    <button class="icon-btn" title="Notifications">🔔</button>
+                    <button class="icon-btn" title="AI Assistant">✨</button>
+                    <div class="avatar">AD</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="container">
+        <div class="row" style="margin-top: 24px;">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Main Menu</h3>
+                    <a href="#" class="sidebar-item active">
+                        <span class="sidebar-icon"></span>
+                        <span>Overview</span>
+                    </a>
+                    <a href="#" class="sidebar-item">
+                        <span class="sidebar-icon"></span>
+                        <span>Talent Search</span>
+                    </a>
+                    <a href="#" class="sidebar-item">
+                        <span class="sidebar-icon"></span>
+                        <span>My Projects</span>
+                    </a>
+                    <a href="#" class="sidebar-item">
+                        <span class="sidebar-icon"></span>
+                        <span>Auditions</span>
+                    </a>
+                    <a href="#" class="sidebar-item">
+                        <span class="sidebar-icon"></span>
+                        <span>Calendar</span>
+                    </a>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Quick Actions</h3>
+                    <a href="#" class="sidebar-item">
+                        <span class="sidebar-icon"></span>
+                        <span>Create Project</span>
+                    </a>
+                    <a href="#" class="sidebar-item">
+                        <span class="sidebar-icon"></span>
+                        <span>Schedule Audition</span>
+                    </a>
+                    <a href="#" class="sidebar-item">
+                        <span class="sidebar-icon"></span>
+                        <span>Import Talents</span>
+                    </a>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Mumbai Market</h3>
+                    <a href="#" class="sidebar-item">
+                        <span class="sidebar-icon"></span>
+                        <span>Bollywood Talents</span>
+                    </a>
+                    <a href="#" class="sidebar-item">
+                        <span class="sidebar-icon"></span>
+                        <span>Regional Cinema</span>
+                    </a>
+                    <a href="#" class="sidebar-item">
+                        <span class="sidebar-icon"></span>
+                        <span>TV & Web Series</span>
+                    </a>
+                    <a href="#" class="sidebar-item">
+                        <span class="sidebar-icon"></span>
+                        <span>Theatre Artists</span>
+                    </a>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Welcome Section -->
+                <section class="welcome-section">
+                    <div class="welcome-header">
+                        <div>
+                            <h1 class="welcome-title">Welcome back, Casting Director</h1>
+                            <p class="welcome-subtitle">You have 3 auditions scheduled today and 12 new talent applications</p>
+                        </div>
+                        <div class="quick-actions">
+                            <button class="btn btn-secondary">View Schedule</button>
+                            <button class="btn btn-primary">+ New Audition</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Active Projects</div>
+                        <div class="stat-value">8</div>
+                        <div class="stat-change">↑ 2 from last month</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Total Talents</div>
+                        <div class="stat-value">2,847</div>
+                        <div class="stat-change">↑ 12% increase</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Auditions This Week</div>
+                        <div class="stat-value">24</div>
+                        <div class="stat-change">↑ 6 more scheduled</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Success Rate</div>
+                        <div class="stat-value">87%</div>
+                        <div class="stat-change">↑ 3% improvement</div>
+                    </div>
+                </div>
+
+                <!-- Content Row -->
+                <div class="content-row">
+                    <!-- Recent Activity -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Recent Activity</h2>
+                            <a href="#" class="card-action">View All →</a>
+                        </div>
+                        <div class="activity-list">
+                            <div class="activity-item">
+                                <div class="activity-icon"></div>
+                                <div class="activity-content">
+                                    <div class="activity-title">New talent application from Arjun Kapoor</div>
+                                    <div class="activity-time">2 minutes ago</div>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon"></div>
+                                <div class="activity-content">
+                                    <div class="activity-title">Audition scheduled: Lead Role - Web Series</div>
+                                    <div class="activity-time">1 hour ago</div>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon"></div>
+                                <div class="activity-content">
+                                    <div class="activity-title">Priya Sharma confirmed for callback</div>
+                                    <div class="activity-time">3 hours ago</div>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon"></div>
+                                <div class="activity-content">
+                                    <div class="activity-title">Project "Mumbai Dreams" casting complete</div>
+                                    <div class="activity-time">5 hours ago</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Upcoming Auditions -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Today's Auditions</h2>
+                            <a href="#" class="card-action">Manage →</a>
+                        </div>
+                        <div class="activity-list">
+                            <div class="activity-item">
+                                <div class="activity-icon"></div>
+                                <div class="activity-content">
+                                    <div class="activity-title">10:00 AM - Rahul Verma</div>
+                                    <div class="activity-time">Lead Role - Feature Film</div>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon"></div>
+                                <div class="activity-content">
+                                    <div class="activity-title">2:00 PM - Group Audition</div>
+                                    <div class="activity-time">Supporting Roles - TV Commercial</div>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon"></div>
+                                <div class="activity-content">
+                                    <div class="activity-title">4:30 PM - Callback Session</div>
+                                    <div class="activity-time">Final Selection - Web Series</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recommended Talents -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Recommended Talents</h2>
+                        <a href="#" class="card-action">Explore All →</a>
+                    </div>
+                    <div class="talent-grid">
+                        <div class="talent-card">
+                            <div class="talent-avatar"></div>
+                            <div class="talent-name">Ananya Sharma</div>
+                            <div class="talent-role">Lead Actress</div>
+                            <div class="talent-tags">
+                                <span class="tag">Hindi</span>
+                                <span class="tag">Dance</span>
+                                <span class="tag">Drama</span>
+                            </div>
+                        </div>
+                        <div class="talent-card">
+                            <div class="talent-avatar"></div>
+                            <div class="talent-name">Vikram Singh</div>
+                            <div class="talent-role">Character Actor</div>
+                            <div class="talent-tags">
+                                <span class="tag">Theatre</span>
+                                <span class="tag">Action</span>
+                            </div>
+                        </div>
+                        <div class="talent-card">
+                            <div class="talent-avatar"></div>
+                            <div class="talent-name">Meera Patel</div>
+                            <div class="talent-role">Supporting Actress</div>
+                            <div class="talent-tags">
+                                <span class="tag">Comedy</span>
+                                <span class="tag">Gujarati</span>
+                            </div>
+                        </div>
+                        <div class="talent-card">
+                            <div class="talent-avatar"></div>
+                            <div class="talent-name">Rohit Khanna</div>
+                            <div class="talent-role">Lead Actor</div>
+                            <div class="talent-tags">
+                                <span class="tag">Romance</span>
+                                <span class="tag">Singing</span>
+                            </div>
+                        </div>
+                        <div class="talent-card">
+                            <div class="talent-avatar"></div>
+                            <div class="talent-name">Priya Desai</div>
+                            <div class="talent-role">Child Artist</div>
+                            <div class="talent-tags">
+                                <span class="tag">TV</span>
+                                <span class="tag">Ads</span>
+                            </div>
+                        </div>
+                        <div class="talent-card">
+                            <div class="talent-avatar"></div>
+                            <div class="talent-name">Arjun Malhotra</div>
+                            <div class="talent-role">Villain</div>
+                            <div class="talent-tags">
+                                <span class="tag">Action</span>
+                                <span class="tag">Intense</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Annotations (visible in wireframe mode) -->
+    <div class="annotation" style="top: 80px; left: 100px;">Primary Navigation - Max 5 items</div>
+    <div class="annotation" style="top: 200px; left: 50px;">Contextual Sidebar - Sticky positioning</div>
+    <div class="annotation" style="top: 300px; right: 100px;">Key Metrics - Above the fold</div>
+    <div class="annotation" style="bottom: 200px; left: 400px;">Progressive Disclosure - Show 6, Load more on scroll</div>
+</body>
+</html>

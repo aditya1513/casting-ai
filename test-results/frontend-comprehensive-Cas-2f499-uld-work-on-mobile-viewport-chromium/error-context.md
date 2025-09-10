@@ -1,0 +1,87 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e5]:
+      - heading "Mumbai's Premier Casting Platform" [level=1] [ref=e6]
+      - paragraph [ref=e7]: Connecting talent with opportunity in the OTT revolution
+      - generic [ref=e8]:
+        - link "Get Started" [ref=e9] [cursor=pointer]:
+          - /url: /signup
+        - link "Explore Talent" [ref=e10] [cursor=pointer]:
+          - /url: /explore
+    - generic [ref=e13]:
+      - generic [ref=e14]:
+        - img [ref=e16]
+        - paragraph [ref=e21]: 10,000+
+        - paragraph [ref=e22]: Active Actors
+      - generic [ref=e23]:
+        - img [ref=e25]
+        - paragraph [ref=e27]: 500+
+        - paragraph [ref=e28]: Projects Posted
+      - generic [ref=e29]:
+        - img [ref=e31]
+        - paragraph [ref=e33]: 1,200+
+        - paragraph [ref=e34]: Auditions This Month
+      - generic [ref=e35]:
+        - img [ref=e37]
+        - paragraph [ref=e40]: 85%
+        - paragraph [ref=e41]: Success Rate
+    - generic [ref=e44]:
+      - heading "Your Gateway to Entertainment Industry" [level=2] [ref=e45]
+      - paragraph [ref=e46]: Whether you're casting or auditioning, we make the process seamless
+    - generic [ref=e52]:
+      - heading "Ready to Transform Your Casting Experience?" [level=2] [ref=e53]
+      - paragraph [ref=e54]: Join thousands of industry professionals already using CastMatch
+      - link "Start Your Free Trial" [ref=e55] [cursor=pointer]:
+        - /url: /signup
+    - contentinfo [ref=e56]:
+      - generic [ref=e57]:
+        - generic [ref=e58]:
+          - generic [ref=e59]:
+            - heading "CastMatch" [level=3] [ref=e60]
+            - paragraph [ref=e61]: Mumbai's trusted platform for casting and talent discovery in the OTT era.
+          - generic [ref=e62]:
+            - heading "Platform" [level=4] [ref=e63]
+            - list [ref=e64]:
+              - listitem [ref=e65]:
+                - link "For Actors" [ref=e66] [cursor=pointer]:
+                  - /url: /actors
+              - listitem [ref=e67]:
+                - link "For Casting Directors" [ref=e68] [cursor=pointer]:
+                  - /url: /casting-directors
+              - listitem [ref=e69]:
+                - link "For Producers" [ref=e70] [cursor=pointer]:
+                  - /url: /producers
+          - generic [ref=e71]:
+            - heading "Company" [level=4] [ref=e72]
+            - list [ref=e73]:
+              - listitem [ref=e74]:
+                - link "About Us" [ref=e75] [cursor=pointer]:
+                  - /url: /about
+              - listitem [ref=e76]:
+                - link "Contact" [ref=e77] [cursor=pointer]:
+                  - /url: /contact
+              - listitem [ref=e78]:
+                - link "Careers" [ref=e79] [cursor=pointer]:
+                  - /url: /careers
+          - generic [ref=e80]:
+            - heading "Legal" [level=4] [ref=e81]
+            - list [ref=e82]:
+              - listitem [ref=e83]:
+                - link "Privacy Policy" [ref=e84] [cursor=pointer]:
+                  - /url: /privacy
+              - listitem [ref=e85]:
+                - link "Terms of Service" [ref=e86] [cursor=pointer]:
+                  - /url: /terms
+        - paragraph [ref=e88]: © 2025 CastMatch. All rights reserved.
+  - region "Notifications alt+T"
+  - generic [ref=e89]:
+    - img [ref=e91]
+    - button "Open Tanstack query devtools" [ref=e139] [cursor=pointer]:
+      - img [ref=e140] [cursor=pointer]
+  - button "Open Next.js Dev Tools" [ref=e193] [cursor=pointer]:
+    - img [ref=e194] [cursor=pointer]
+  - alert [ref=e197]
+```

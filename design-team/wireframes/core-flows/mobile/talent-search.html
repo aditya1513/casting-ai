@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CastMatch - Talent Search (Mobile)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            width: 375px;
+            margin: 0 auto;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: #1e293b;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: #64748b;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #f1f5f9;
+        }
+
+        /* Search Bar */
+        .search-container {
+            padding: 16px;
+            background: #0f172a;
+            border-bottom: 1px solid #334155;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 12px 16px;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            color: #f1f5f9;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .search-bar:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .search-bar::placeholder {
+            color: #64748b;
+        }
+
+        /* Filter Tags */
+        .filter-section {
+            padding: 16px;
+            background: #0f172a;
+        }
+
+        .filter-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #94a3b8;
+            margin-bottom: 12px;
+        }
+
+        .filter-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .filter-tag {
+            padding: 8px 12px;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 16px;
+            color: #f1f5f9;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-tag.active {
+            background: #3b82f6;
+            border-color: #3b82f6;
+            color: white;
+        }
+
+        .filter-tag:hover {
+            background: #334155;
+        }
+
+        /* Sort & Filter Controls */
+        .controls {
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #0f172a;
+            border-bottom: 1px solid #334155;
+        }
+
+        .results-count {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .control-btn {
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #f1f5f9;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Talent Grid */
+        .talent-grid {
+            padding: 16px;
+            display: grid;
+            gap: 16px;
+        }
+
+        .talent-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .talent-card:hover {
+            border-color: #3b82f6;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .talent-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #334155, #475569);
+            position: relative;
+        }
+
+        .talent-image::after {
+            content: "📸";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            opacity: 0.5;
+        }
+
+        .talent-info {
+            padding: 16px;
+        }
+
+        .talent-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 4px;
+        }
+
+        .talent-type {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+
+        .talent-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #94a3b8;
+            margin-bottom: 8px;
+        }
+
+        .talent-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .talent-tag {
+            padding: 4px 8px;
+            background: #334155;
+            color: #94a3b8;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+
+        /* Loading State */
+        .loading {
+            padding: 32px;
+            text-align: center;
+            color: #64748b;
+        }
+
+        .loading-spinner {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #334155;
+            border-top: 2px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 375px;
+            background: #1e293b;
+            border-top: 1px solid #334155;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            padding: 4px 8px;
+            color: #64748b;
+            transition: color 0.2s;
+        }
+
+        .nav-item.active {
+            color: #3b82f6;
+        }
+
+        .nav-item:hover {
+            color: #f1f5f9;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+        }
+
+        .nav-label {
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        /* Annotation Overlay */
+        .annotation {
+            position: absolute;
+            background: #fbbf24;
+            color: #000;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        .annotation::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-top: 4px solid #fbbf24;
+        }
+
+        #ann1 { top: 70px; left: 20px; }
+        #ann2 { top: 150px; left: 20px; }
+        #ann3 { top: 250px; left: 200px; }
+        #ann4 { top: 350px; left: 20px; }
+    </style>
+</head>
+<body>
+    <!-- Annotations -->
+    <div class="annotation" id="ann1">1. Search Interface</div>
+    <div class="annotation" id="ann2">2. Active Filters</div>
+    <div class="annotation" id="ann3">3. Sort Controls</div>
+    <div class="annotation" id="ann4">4. Talent Cards</div>
+
+    <!-- Header -->
+    <header class="header">
+        <button class="back-btn">←</button>
+        <h1 class="header-title">Find Talent</h1>
+    </header>
+
+    <!-- Search Container -->
+    <div class="search-container">
+        <input 
+            type="search" 
+            class="search-bar" 
+            placeholder="Search actors, models, musicians..."
+            value="actor mumbai"
+        >
+    </div>
+
+    <!-- Filter Section -->
+    <div class="filter-section">
+        <div class="filter-title">Quick Filters</div>
+        <div class="filter-tags">
+            <span class="filter-tag active">Acting</span>
+            <span class="filter-tag active">Mumbai</span>
+            <span class="filter-tag">Available</span>
+            <span class="filter-tag">Male</span>
+            <span class="filter-tag">20-30</span>
+            <span class="filter-tag">Hindi</span>
+        </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+        <div class="results-count">247 results</div>
+        <div style="display: flex; gap: 8px;">
+            <button class="control-btn">
+                <span>📊</span>
+                <span>Sort</span>
+            </button>
+            <button class="control-btn">
+                <span>⚙️</span>
+                <span>Filter</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Talent Grid -->
+    <div class="talent-grid">
+        <!-- Talent Card 1 -->
+        <div class="talent-card">
+            <div class="talent-image"></div>
+            <div class="talent-info">
+                <div class="talent-name">Raj Kumar</div>
+                <div class="talent-type">Film Actor</div>
+                <div class="talent-details">
+                    <span>📍 Mumbai</span>
+                    <span>⭐ 4.8</span>
+                    <span>💼 Available</span>
+                </div>
+                <div class="talent-tags">
+                    <span class="talent-tag">Drama</span>
+                    <span class="talent-tag">Action</span>
+                    <span class="talent-tag">Hindi</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Talent Card 2 -->
+        <div class="talent-card">
+            <div class="talent-image"></div>
+            <div class="talent-info">
+                <div class="talent-name">Priya Singh</div>
+                <div class="talent-type">Theater Artist</div>
+                <div class="talent-details">
+                    <span>📍 Mumbai</span>
+                    <span>⭐ 4.9</span>
+                    <span>🟢 Online</span>
+                </div>
+                <div class="talent-tags">
+                    <span class="talent-tag">Theater</span>
+                    <span class="talent-tag">Comedy</span>
+                    <span class="talent-tag">Hindi</span>
+                    <span class="talent-tag">English</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Talent Card 3 -->
+        <div class="talent-card">
+            <div class="talent-image"></div>
+            <div class="talent-info">
+                <div class="talent-name">Arjun Mehta</div>
+                <div class="talent-type">Model & Actor</div>
+                <div class="talent-details">
+                    <span>📍 Mumbai</span>
+                    <span>⭐ 4.7</span>
+                    <span>📅 Next week</span>
+                </div>
+                <div class="talent-tags">
+                    <span class="talent-tag">Fashion</span>
+                    <span class="talent-tag">Commercial</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading">
+        <div class="loading-spinner"></div>
+        <div>Loading more talents...</div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-item">
+            <div class="nav-icon">🏠</div>
+            <div class="nav-label">Home</div>
+        </div>
+        <div class="nav-item active">
+            <div class="nav-icon">🔍</div>
+            <div class="nav-label">Search</div>
+        </div>
+        <div class="nav-item">
+            <div class="nav-icon">📅</div>
+            <div class="nav-label">Calendar</div>
+        </div>
+        <div class="nav-item">
+            <div class="nav-icon">💬</div>
+            <div class="nav-label">Messages</div>
+        </div>
+        <div class="nav-item">
+            <div class="nav-icon">👤</div>
+            <div class="nav-label">Profile</div>
+        </div>
+    </nav>
+
+    <script>
+        // Interactive functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Search functionality
+            const searchBar = document.querySelector('.search-bar');
+            const filterTags = document.querySelectorAll('.filter-tag');
+            const talentCards = document.querySelectorAll('.talent-card');
+
+            // Filter tag interaction
+            filterTags.forEach(tag => {
+                tag.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    updateResultsCount();
+                });
+            });
+
+            // Talent card interaction
+            talentCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    // Simulate navigation to talent profile
+                    this.style.transform = 'scale(0.98)';
+                    setTimeout(() => {
+                        this.style.transform = 'translateY(-2px)';
+                        alert('Navigate to talent profile');
+                    }, 100);
+                });
+            });
+
+            // Search input interaction
+            searchBar.addEventListener('input', function() {
+                // Simulate real-time search
+                debounce(performSearch, 300)();
+            });
+
+            function updateResultsCount() {
+                const activeFilters = document.querySelectorAll('.filter-tag.active').length;
+                const resultsCount = document.querySelector('.results-count');
+                const newCount = Math.max(1, 247 - (activeFilters * 20));
+                resultsCount.textContent = `${newCount} results`;
+            }
+
+            function performSearch() {
+                // Simulate search loading
+                const loading = document.querySelector('.loading');
+                loading.style.display = 'block';
+                
+                setTimeout(() => {
+                    loading.style.display = 'none';
+                    updateResultsCount();
+                }, 800);
+            }
+
+            function debounce(func, wait) {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            }
+
+            // Hide annotations after 3 seconds
+            setTimeout(() => {
+                document.querySelectorAll('.annotation').forEach(ann => {
+                    ann.style.opacity = '0';
+                    ann.style.transition = 'opacity 0.5s';
+                });
+            }, 3000);
+        });
+    </script>
+</body>
+</html>

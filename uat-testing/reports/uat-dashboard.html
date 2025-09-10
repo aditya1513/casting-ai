@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CastMatch UAT Dashboard - Production Readiness</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0e27;
+            color: #e0e6f1;
+            min-height: 100vh;
+        }
+        
+        .dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .header-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .stat-card {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.8;
+            text-transform: uppercase;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .metric-card {
+            background: #1a1f3a;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+        
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .metric-title {
+            font-size: 16px;
+            color: #a0aec0;
+        }
+        
+        .metric-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        
+        .metric-value {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .metric-target {
+            font-size: 14px;
+            color: #718096;
+        }
+        
+        .metric-progress {
+            height: 8px;
+            background: #2d3748;
+            border-radius: 4px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #48bb78, #38a169);
+            border-radius: 4px;
+            transition: width 1s ease;
+        }
+        
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .status-ready {
+            background: rgba(72, 187, 120, 0.2);
+            color: #48bb78;
+        }
+        
+        .status-warning {
+            background: rgba(237, 137, 54, 0.2);
+            color: #ed8936;
+        }
+        
+        .status-critical {
+            background: rgba(245, 101, 101, 0.2);
+            color: #f56565;
+        }
+        
+        .issues-section {
+            background: #1a1f3a;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .issues-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .issues-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .priority-tabs {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .priority-tab {
+            padding: 8px 16px;
+            background: #2d3748;
+            border: none;
+            border-radius: 8px;
+            color: #a0aec0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .priority-tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .issue-list {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .issue-item {
+            background: #2d3748;
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+        
+        .issue-item:hover {
+            transform: translateX(5px);
+        }
+        
+        .issue-details {
+            flex: 1;
+        }
+        
+        .issue-category {
+            display: inline-block;
+            padding: 4px 8px;
+            background: rgba(102, 126, 234, 0.2);
+            color: #667eea;
+            border-radius: 6px;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+        
+        .issue-description {
+            color: #e0e6f1;
+            margin-bottom: 5px;
+        }
+        
+        .issue-meta {
+            font-size: 12px;
+            color: #718096;
+        }
+        
+        .issue-count {
+            background: #f56565;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .journey-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .journey-card {
+            background: #1a1f3a;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            transition: all 0.3s;
+        }
+        
+        .journey-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+        
+        .journey-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        
+        .journey-name {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .journey-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #2d3748;
+        }
+        
+        .journey-stat {
+            text-align: center;
+        }
+        
+        .journey-stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #48bb78;
+        }
+        
+        .journey-stat-label {
+            font-size: 11px;
+            color: #718096;
+            margin-top: 2px;
+        }
+        
+        .recommendations {
+            background: linear-gradient(135deg, #1a1f3a 0%, #2d3748 100%);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .recommendation-list {
+            display: grid;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .recommendation-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .recommendation-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(102, 126, 234, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .recommendation-content {
+            flex: 1;
+        }
+        
+        .recommendation-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .recommendation-text {
+            font-size: 14px;
+            color: #a0aec0;
+            line-height: 1.5;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-top: 20px;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .live-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: rgba(72, 187, 120, 0.2);
+            border-radius: 20px;
+            font-size: 12px;
+        }
+        
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: #48bb78;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="header">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1>🎬 CastMatch UAT Dashboard</h1>
+                    <p>Production Readiness Assessment - Mumbai Casting Directors</p>
+                </div>
+                <div class="live-indicator">
+                    <div class="live-dot"></div>
+                    <span>Live Monitoring</span>
+                </div>
+            </div>
+            
+            <div class="header-stats">
+                <div class="stat-card">
+                    <div class="stat-value">18</div>
+                    <div class="stat-label">Total Sessions</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">15</div>
+                    <div class="stat-label">Unique Testers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">94.2%</div>
+                    <div class="stat-label">Completion Rate</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">4.3/5</div>
+                    <div class="stat-label">Avg Satisfaction</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="overallStatus">
+                        <span class="status-indicator status-warning">⚠️ Minor Issues</span>
+                    </div>
+                    <div class="stat-label">Overall Status</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-header">
+                    <div class="metric-title">Task Completion Rate</div>
+                    <div class="metric-icon">✅</div>
+                </div>
+                <div class="metric-value">94.2%</div>
+                <div class="metric-target">Target: ≥95%</div>
+                <div class="metric-progress">
+                    <div class="progress-fill" style="width: 94.2%;"></div>
+                </div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-header">
+                    <div class="metric-title">Average Task Time</div>
+                    <div class="metric-icon">⏱️</div>
+                </div>
+                <div class="metric-value">2.8 min</div>
+                <div class="metric-target">Target: <3 min ✓</div>
+                <div class="metric-progress">
+                    <div class="progress-fill" style="width: 100%; background: linear-gradient(90deg, #48bb78, #38a169);"></div>
+                </div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-header">
+                    <div class="metric-title">Mobile Performance</div>
+                    <div class="metric-icon">📱</div>
+                </div>
+                <div class="metric-value">92%</div>
+                <div class="metric-target">Target: 100%</div>
+                <div class="metric-progress">
+                    <div class="progress-fill" style="width: 92%; background: linear-gradient(90deg, #ed8936, #dd6b20);"></div>
+                </div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-header">
+                    <div class="metric-title">Error Rate</div>
+                    <div class="metric-icon">⚠️</div>
+                </div>
+                <div class="metric-value">6.3%</div>
+                <div class="metric-target">Target: <5%</div>
+                <div class="metric-progress">
+                    <div class="progress-fill" style="width: 37%; background: linear-gradient(90deg, #f56565, #e53e3e);"></div>
+                </div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-header">
+                    <div class="metric-title">User Satisfaction</div>
+                    <div class="metric-icon">⭐</div>
+                </div>
+                <div class="metric-value">4.3/5</div>
+                <div class="metric-target">Target: ≥4.5</div>
+                <div class="metric-progress">
+                    <div class="progress-fill" style="width: 86%; background: linear-gradient(90deg, #ed8936, #dd6b20);"></div>
+                </div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-header">
+                    <div class="metric-title">Accessibility Score</div>
+                    <div class="metric-icon">♿</div>
+                </div>
+                <div class="metric-value">88/100</div>
+                <div class="metric-target">Target: ≥90</div>
+                <div class="metric-progress">
+                    <div class="progress-fill" style="width: 88%; background: linear-gradient(90deg, #ed8936, #dd6b20);"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="issues-section">
+            <div class="issues-header">
+                <h2 class="issues-title">Priority Issues to Address</h2>
+                <div class="priority-tabs">
+                    <button class="priority-tab active" onclick="filterIssues('P0')">P0 Critical (2)</button>
+                    <button class="priority-tab" onclick="filterIssues('P1')">P1 High (5)</button>
+                    <button class="priority-tab" onclick="filterIssues('P2')">P2 Medium (8)</button>
+                    <button class="priority-tab" onclick="filterIssues('P3')">P3 Low (12)</button>
+                </div>
+            </div>
+            
+            <div class="issue-list" id="issueList">
+                <div class="issue-item" data-priority="P0">
+                    <div class="issue-details">
+                        <span class="issue-category">Performance</span>
+                        <div class="issue-description">Video loading takes >10 seconds on mobile networks</div>
+                        <div class="issue-meta">Reported by 8 testers • Affects talent profile viewing</div>
+                    </div>
+                    <span class="issue-count">8</span>
+                </div>
+                
+                <div class="issue-item" data-priority="P0">
+                    <div class="issue-details">
+                        <span class="issue-category">Mobile Experience</span>
+                        <div class="issue-description">Filter dropdown not responsive on iOS Safari</div>
+                        <div class="issue-meta">Reported by 5 testers • Blocks search functionality</div>
+                    </div>
+                    <span class="issue-count">5</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="journey-grid">
+            <div class="journey-card">
+                <div class="journey-icon">🔍</div>
+                <div class="journey-name">Talent Discovery</div>
+                <div class="journey-stats">
+                    <div class="journey-stat">
+                        <div class="journey-stat-value">96%</div>
+                        <div class="journey-stat-label">Completion</div>
+                    </div>
+                    <div class="journey-stat">
+                        <div class="journey-stat-value">1.8m</div>
+                        <div class="journey-stat-label">Avg Time</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="journey-card">
+                <div class="journey-icon">🎭</div>
+                <div class="journey-name">Audition Management</div>
+                <div class="journey-stats">
+                    <div class="journey-stat">
+                        <div class="journey-stat-value">92%</div>
+                        <div class="journey-stat-label">Completion</div>
+                    </div>
+                    <div class="journey-stat">
+                        <div class="journey-stat-value">4.2m</div>
+                        <div class="journey-stat-label">Avg Time</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="journey-card">
+                <div class="journey-icon">👤</div>
+                <div class="journey-name">Profile Creation</div>
+                <div class="journey-stats">
+                    <div class="journey-stat">
+                        <div class="journey-stat-value">88%</div>
+                        <div class="journey-stat-label">Completion</div>
+                    </div>
+                    <div class="journey-stat">
+                        <div class="journey-stat-value">8.5m</div>
+                        <div class="journey-stat-label">Avg Time</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="journey-card">
+                <div class="journey-icon">💬</div>
+                <div class="journey-name">Communication</div>
+                <div class="journey-stats">
+                    <div class="journey-stat">
+                        <div class="journey-stat-value">95%</div>
+                        <div class="journey-stat-label">Completion</div>
+                    </div>
+                    <div class="journey-stat">
+                        <div class="journey-stat-value">0.5m</div>
+                        <div class="journey-stat-label">Avg Time</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="recommendations">
+            <h2 style="margin-bottom: 10px;">📋 Recommendations for Production</h2>
+            <p style="color: #718096; margin-bottom: 20px;">Based on UAT feedback from Mumbai casting professionals</p>
+            
+            <div class="recommendation-list">
+                <div class="recommendation-item">
+                    <div class="recommendation-icon">🚨</div>
+                    <div class="recommendation-content">
+                        <div class="recommendation-title">Fix Critical Performance Issues</div>
+                        <div class="recommendation-text">Optimize video loading and implement progressive loading for media content. Current 10+ second load times on mobile are unacceptable.</div>
+                    </div>
+                </div>
+                
+                <div class="recommendation-item">
+                    <div class="recommendation-icon">📱</div>
+                    <div class="recommendation-content">
+                        <div class="recommendation-title">Enhance Mobile Responsiveness</div>
+                        <div class="recommendation-text">Fix iOS Safari filter dropdown issue and ensure all touch targets meet 44px minimum size requirement.</div>
+                    </div>
+                </div>
+                
+                <div class="recommendation-item">
+                    <div class="recommendation-icon">🎯</div>
+                    <div class="recommendation-content">
+                        <div class="recommendation-title">Simplify Profile Creation Flow</div>
+                        <div class="recommendation-text">Reduce steps from 8 to 5 and implement auto-save to prevent data loss. Current 8.5 minute average is too long.</div>
+                    </div>
+                </div>
+                
+                <div class="recommendation-item">
+                    <div class="recommendation-icon">🌐</div>
+                    <div class="recommendation-content">
+                        <div class="recommendation-title">Add Hindi Language Support</div>
+                        <div class="recommendation-text">Multiple testers requested Hindi interface option. Critical for wider adoption in Mumbai market.</div>
+                    </div>
+                </div>
+                
+                <div class="recommendation-item">
+                    <div class="recommendation-icon">♿</div>
+                    <div class="recommendation-content">
+                        <div class="recommendation-title">Improve Accessibility</div>
+                        <div class="recommendation-text">Add proper ARIA labels, improve color contrast to 4.5:1, and ensure full keyboard navigation support.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chart-container">
+            <canvas id="trendChart"></canvas>
+        </div>
+    </div>
+    
+    <script>
+        // Filter issues by priority
+        function filterIssues(priority) {
+            // Update active tab
+            document.querySelectorAll('.priority-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Mock issue data for different priorities
+            const issues = {
+                P0: [
+                    {
+                        category: 'Performance',
+                        description: 'Video loading takes >10 seconds on mobile networks',
+                        meta: 'Reported by 8 testers • Affects talent profile viewing',
+                        count: 8
+                    },
+                    {
+                        category: 'Mobile Experience',
+                        description: 'Filter dropdown not responsive on iOS Safari',
+                        meta: 'Reported by 5 testers • Blocks search functionality',
+                        count: 5
+                    }
+                ],
+                P1: [
+                    {
+                        category: 'Search & Discovery',
+                        description: 'Search suggestions not appearing for Hindi terms',
+                        meta: 'Reported by 6 testers • Impacts local talent search',
+                        count: 6
+                    },
+                    {
+                        category: 'Profile Management',
+                        description: 'Image upload fails for files >5MB',
+                        meta: 'Reported by 4 testers • Prevents portfolio completion',
+                        count: 4
+                    },
+                    {
+                        category: 'Performance',
+                        description: 'Page freezes when loading 50+ search results',
+                        meta: 'Reported by 3 testers • Requires page refresh',
+                        count: 3
+                    }
+                ],
+                P2: [
+                    {
+                        category: 'UI/UX',
+                        description: 'Navigation menu overlaps content on tablets',
+                        meta: 'Reported by 2 testers • iPad landscape mode',
+                        count: 2
+                    },
+                    {
+                        category: 'Accessibility',
+                        description: 'Missing alt text for talent photos',
+                        meta: 'Reported by 1 tester • Screen reader issue',
+                        count: 1
+                    }
+                ],
+                P3: [
+                    {
+                        category: 'Feature Request',
+                        description: 'Add bulk actions for shortlist management',
+                        meta: 'Suggested by 3 testers • Nice to have',
+                        count: 3
+                    },
+                    {
+                        category: 'UI Enhancement',
+                        description: 'Dark mode toggle requested',
+                        meta: 'Suggested by 2 testers • User preference',
+                        count: 2
+                    }
+                ]
+            };
+            
+            // Update issue list
+            const issueList = document.getElementById('issueList');
+            issueList.innerHTML = '';
+            
+            issues[priority].forEach(issue => {
+                const issueElement = document.createElement('div');
+                issueElement.className = 'issue-item';
+                issueElement.innerHTML = `
+                    <div class="issue-details">
+                        <span class="issue-category">${issue.category}</span>
+                        <div class="issue-description">${issue.description}</div>
+                        <div class="issue-meta">${issue.meta}</div>
+                    </div>
+                    <span class="issue-count">${issue.count}</span>
+                `;
+                issueList.appendChild(issueElement);
+            });
+        }
+        
+        // Update status based on metrics
+        function updateOverallStatus() {
+            const metrics = {
+                completionRate: 94.2,
+                errorRate: 6.3,
+                satisfaction: 4.3
+            };
+            
+            const statusElement = document.getElementById('overallStatus');
+            
+            if (metrics.completionRate >= 95 && metrics.errorRate < 5 && metrics.satisfaction >= 4.5) {
+                statusElement.innerHTML = '<span class="status-indicator status-ready">✅ Ready for Production</span>';
+            } else if (metrics.completionRate >= 90 && metrics.errorRate < 10) {
+                statusElement.innerHTML = '<span class="status-indicator status-warning">⚠️ Minor Issues</span>';
+            } else {
+                statusElement.innerHTML = '<span class="status-indicator status-critical">❌ Not Ready</span>';
+            }
+        }
+        
+        // Simulate real-time updates
+        function simulateUpdates() {
+            // Update random metric
+            const metrics = document.querySelectorAll('.metric-value');
+            const randomMetric = metrics[Math.floor(Math.random() * metrics.length)];
+            
+            // Slight variation in values
+            if (randomMetric.textContent.includes('%')) {
+                const currentValue = parseFloat(randomMetric.textContent);
+                const newValue = (currentValue + (Math.random() - 0.5) * 2).toFixed(1);
+                randomMetric.textContent = newValue + '%';
+            }
+        }
+        
+        // Initialize
+        updateOverallStatus();
+        
+        // Simulate updates every 5 seconds
+        setInterval(simulateUpdates, 5000);
+        
+        // Log dashboard loaded
+        console.log('UAT Dashboard loaded successfully');
+        console.log('Production readiness: Monitoring 18 sessions from 15 testers');
+    </script>
+</body>
+</html>

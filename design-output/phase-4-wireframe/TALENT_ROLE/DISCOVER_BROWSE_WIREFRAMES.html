@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CastMatch - Discovery & Browse System Wireframes</title>
+    <style>
+        /* Design System - Grayscale Foundation */
+        :root {
+            /* Grayscale Palette */
+            --gray-0: #FFFFFF;
+            --gray-50: #F8F9FA;
+            --gray-100: #F1F3F4;
+            --gray-200: #E8EAED;
+            --gray-300: #DADCE0;
+            --gray-400: #BDC1C6;
+            --gray-500: #9AA0A6;
+            --gray-600: #80868B;
+            --gray-700: #5F6368;
+            --gray-800: #3C4043;
+            --gray-900: #202124;
+            --black: #000000;
+            
+            /* Semantic Colors */
+            --surface: var(--gray-0);
+            --surface-variant: var(--gray-50);
+            --background: var(--gray-100);
+            --border: var(--gray-300);
+            --border-light: var(--gray-200);
+            --text-primary: var(--gray-900);
+            --text-secondary: var(--gray-700);
+            --text-tertiary: var(--gray-600);
+            --text-disabled: var(--gray-500);
+            
+            /* Interactive States */
+            --hover-bg: var(--gray-100);
+            --active-bg: var(--gray-200);
+            --focus-ring: var(--gray-800);
+            
+            /* Layout Tokens */
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --spacing-2xl: 48px;
+            --spacing-3xl: 64px;
+            
+            /* Typography Scale */
+            --font-xs: 12px;
+            --font-sm: 14px;
+            --font-base: 16px;
+            --font-lg: 18px;
+            --font-xl: 20px;
+            --font-2xl: 24px;
+            --font-3xl: 32px;
+            --font-4xl: 40px;
+            
+            /* Border Radius */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-full: 9999px;
+            
+            /* Shadows */
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.07);
+            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+            --shadow-xl: 0 20px 25px rgba(0,0,0,0.15);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--gray-50);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        
+        /* Container System */
+        .wireframe-container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: var(--spacing-2xl);
+        }
+        
+        .wireframe-header {
+            text-align: center;
+            padding: var(--spacing-3xl) 0;
+            border-bottom: 2px solid var(--border);
+            margin-bottom: var(--spacing-3xl);
+        }
+        
+        .wireframe-title {
+            font-size: var(--font-4xl);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .wireframe-subtitle {
+            font-size: var(--font-lg);
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Screen Section */
+        .screen-section {
+            margin-bottom: var(--spacing-3xl);
+            padding: var(--spacing-2xl);
+            background: var(--surface);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .screen-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-xl);
+            padding-bottom: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .screen-title {
+            font-size: var(--font-2xl);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .screen-meta {
+            display: flex;
+            gap: var(--spacing-lg);
+            font-size: var(--font-sm);
+            color: var(--text-tertiary);
+        }
+        
+        /* Navigation Bar */
+        .nav-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-md) var(--spacing-xl);
+            background: var(--surface);
+            border-bottom: 1px solid var(--border-light);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .nav-logo {
+            font-size: var(--font-xl);
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .nav-menu {
+            display: flex;
+            gap: var(--spacing-xl);
+        }
+        
+        .nav-link {
+            font-size: var(--font-base);
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--radius-md);
+            transition: background 0.2s;
+        }
+        
+        .nav-link:hover {
+            background: var(--hover-bg);
+        }
+        
+        .nav-link.active {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        
+        .nav-actions {
+            display: flex;
+            gap: var(--spacing-md);
+        }
+        
+        /* Search Bar Component */
+        .search-container {
+            padding: var(--spacing-xl);
+            background: var(--surface-variant);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .search-bar {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .search-input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: var(--spacing-md);
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            background: var(--gray-500);
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: var(--spacing-md) var(--spacing-md) var(--spacing-md) var(--spacing-2xl);
+            font-size: var(--font-base);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--surface);
+        }
+        
+        .search-btn {
+            padding: var(--spacing-md) var(--spacing-xl);
+            background: var(--gray-800);
+            color: var(--gray-0);
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: var(--font-base);
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        /* Filter System */
+        .filter-bar {
+            display: flex;
+            gap: var(--spacing-md);
+            flex-wrap: wrap;
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .filter-label {
+            font-size: var(--font-sm);
+            color: var(--text-tertiary);
+        }
+        
+        .filter-dropdown {
+            padding: var(--spacing-sm) var(--spacing-md);
+            font-size: var(--font-sm);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--surface);
+            min-width: 120px;
+        }
+        
+        .filter-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--gray-100);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-full);
+            font-size: var(--font-sm);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .filter-chip:hover {
+            background: var(--gray-200);
+        }
+        
+        .filter-chip.active {
+            background: var(--gray-800);
+            color: var(--gray-0);
+            border-color: var(--gray-800);
+        }
+        
+        .filter-chip-close {
+            width: 16px;
+            height: 16px;
+            background: var(--gray-500);
+            border-radius: 50%;
+        }
+        
+        /* Results Header */
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-md) 0;
+            margin-bottom: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .results-count {
+            font-size: var(--font-lg);
+            color: var(--text-primary);
+        }
+        
+        .results-controls {
+            display: flex;
+            gap: var(--spacing-lg);
+            align-items: center;
+        }
+        
+        .view-toggle {
+            display: flex;
+            gap: var(--spacing-xs);
+            padding: var(--spacing-xs);
+            background: var(--gray-100);
+            border-radius: var(--radius-md);
+        }
+        
+        .view-btn {
+            padding: var(--spacing-sm);
+            background: transparent;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+        }
+        
+        .view-btn.active {
+            background: var(--surface);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .sort-dropdown {
+            padding: var(--spacing-sm) var(--spacing-md);
+            font-size: var(--font-sm);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--surface);
+        }
+        
+        /* Talent Grid */
+        .talent-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-2xl);
+        }
+        
+        .talent-card {
+            background: var(--surface);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .talent-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+        
+        .talent-image {
+            width: 100%;
+            height: 320px;
+            background: linear-gradient(135deg, var(--gray-200) 0%, var(--gray-300) 100%);
+            position: relative;
+        }
+        
+        .talent-badge {
+            position: absolute;
+            top: var(--spacing-md);
+            right: var(--spacing-md);
+            padding: var(--spacing-xs) var(--spacing-sm);
+            background: var(--gray-800);
+            color: var(--gray-0);
+            border-radius: var(--radius-full);
+            font-size: var(--font-xs);
+            font-weight: 600;
+        }
+        
+        .talent-actions {
+            position: absolute;
+            bottom: var(--spacing-md);
+            left: var(--spacing-md);
+            right: var(--spacing-md);
+            display: flex;
+            gap: var(--spacing-sm);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .talent-card:hover .talent-actions {
+            opacity: 1;
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: var(--spacing-sm);
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            font-size: var(--font-sm);
+            text-align: center;
+            cursor: pointer;
+        }
+        
+        .talent-info {
+            padding: var(--spacing-md);
+        }
+        
+        .talent-name {
+            font-size: var(--font-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .talent-role {
+            font-size: var(--font-sm);
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .talent-meta {
+            display: flex;
+            gap: var(--spacing-md);
+            font-size: var(--font-sm);
+            color: var(--text-tertiary);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .talent-stats {
+            display: flex;
+            justify-content: space-between;
+            padding-top: var(--spacing-sm);
+            border-top: 1px solid var(--border-light);
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: var(--font-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .stat-label {
+            font-size: var(--font-xs);
+            color: var(--text-tertiary);
+        }
+        
+        /* Categories Section */
+        .categories-section {
+            padding: var(--spacing-2xl);
+            background: var(--surface-variant);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-2xl);
+        }
+        
+        .categories-header {
+            font-size: var(--font-xl);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+        }
+        
+        .category-card {
+            padding: var(--spacing-lg);
+            background: var(--surface);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .category-card:hover {
+            background: var(--gray-100);
+            border-color: var(--gray-400);
+        }
+        
+        .category-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--gray-300);
+            border-radius: var(--radius-md);
+            margin: 0 auto var(--spacing-md);
+        }
+        
+        .category-name {
+            font-size: var(--font-base);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .category-count {
+            font-size: var(--font-sm);
+            color: var(--text-tertiary);
+        }
+        
+        /* Featured Profiles */
+        .featured-section {
+            margin-bottom: var(--spacing-2xl);
+        }
+        
+        .featured-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .featured-title {
+            font-size: var(--font-xl);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .featured-carousel {
+            display: flex;
+            gap: var(--spacing-lg);
+            overflow-x: auto;
+            padding-bottom: var(--spacing-md);
+        }
+        
+        .featured-card {
+            min-width: 300px;
+            background: var(--surface);
+            border: 2px solid var(--gray-800);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+        
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-2xl);
+        }
+        
+        .page-btn {
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            font-size: var(--font-sm);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .page-btn:hover {
+            background: var(--gray-100);
+        }
+        
+        .page-btn.active {
+            background: var(--gray-800);
+            color: var(--gray-0);
+            border-color: var(--gray-800);
+        }
+        
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Annotations */
+        .annotation {
+            position: absolute;
+            background: var(--gray-900);
+            color: var(--gray-0);
+            padding: var(--spacing-sm);
+            border-radius: var(--radius-md);
+            font-size: var(--font-xs);
+            white-space: nowrap;
+            z-index: 100;
+            pointer-events: none;
+        }
+        
+        .annotation::before {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--gray-900);
+            transform: rotate(45deg);
+        }
+        
+        .annotation.top::before {
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%) rotate(45deg);
+        }
+        
+        .annotation.right::before {
+            left: -4px;
+            top: 50%;
+            transform: translateY(-50%) rotate(45deg);
+        }
+        
+        /* Mobile List View */
+        .talent-list {
+            display: none;
+        }
+        
+        .list-view .talent-list {
+            display: block;
+        }
+        
+        .list-view .talent-grid {
+            display: none;
+        }
+        
+        .talent-list-item {
+            display: flex;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+            background: var(--surface);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-md);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .talent-list-item:hover {
+            background: var(--gray-50);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .list-image {
+            width: 120px;
+            height: 120px;
+            background: var(--gray-200);
+            border-radius: var(--radius-md);
+            flex-shrink: 0;
+        }
+        
+        .list-content {
+            flex: 1;
+        }
+        
+        .list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .list-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+        
+        .list-action-btn {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            font-size: var(--font-sm);
+            cursor: pointer;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .talent-grid {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            }
+            
+            .categories-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .wireframe-container {
+                padding: var(--spacing-lg);
+            }
+            
+            .nav-menu {
+                display: none;
+            }
+            
+            .filter-bar {
+                flex-direction: column;
+            }
+            
+            .talent-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: var(--spacing-md);
+            }
+            
+            .talent-image {
+                height: 240px;
+            }
+            
+            .results-header {
+                flex-direction: column;
+                align-items: start;
+                gap: var(--spacing-md);
+            }
+            
+            .featured-carousel {
+                scroll-snap-type: x mandatory;
+            }
+            
+            .featured-card {
+                scroll-snap-align: start;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .talent-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: var(--spacing-sm);
+            }
+            
+            .categories-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .search-bar {
+                flex-direction: column;
+            }
+            
+            .pagination {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wireframe-container">
+        <!-- Header -->
+        <div class="wireframe-header">
+            <h1 class="wireframe-title">Discovery & Browse System</h1>
+            <p class="wireframe-subtitle">Comprehensive wireframes for talent discovery, search, filtering, categories, and featured profiles with detailed interaction patterns</p>
+        </div>
+        
+        <!-- Screen 1: Main Discovery Page -->
+        <div class="screen-section">
+            <div class="screen-header">
+                <h2 class="screen-title">Screen 1: Main Discovery Interface</h2>
+                <div class="screen-meta">
+                    <span>Desktop View</span>
+                    <span>Primary Flow</span>
+                    <span>All Users</span>
+                </div>
+            </div>
+            
+            <!-- Navigation -->
+            <div class="nav-bar">
+                <div class="nav-logo">CastMatch</div>
+                <nav class="nav-menu">
+                    <a href="#" class="nav-link">Home</a>
+                    <a href="#" class="nav-link active">Discover</a>
+                    <a href="#" class="nav-link">For Talent</a>
+                    <a href="#" class="nav-link">For Casting</a>
+                    <a href="#" class="nav-link">Pricing</a>
+                </nav>
+                <div class="nav-actions">
+                    <button class="search-btn" style="padding: 8px 16px; font-size: 14px;">Sign In</button>
+                    <button class="search-btn">Get Started</button>
+                </div>
+            </div>
+            
+            <!-- Search Container -->
+            <div class="search-container">
+                <div class="search-bar">
+                    <div class="search-input-wrapper">
+                        <div class="search-icon"></div>
+                        <input type="text" class="search-input" placeholder="Search by name, role, skills, or keywords...">
+                    </div>
+                    <button class="search-btn">Search Talent</button>
+                </div>
+                
+                <!-- Quick Filters -->
+                <div class="filter-bar">
+                    <div class="filter-chip active">All Talent</div>
+                    <div class="filter-chip">Actors</div>
+                    <div class="filter-chip">Models</div>
+                    <div class="filter-chip">Dancers</div>
+                    <div class="filter-chip">Musicians</div>
+                    <div class="filter-chip">Voice Artists</div>
+                    <div class="filter-chip">Available Now</div>
+                    <div class="filter-chip">Verified Only</div>
+                </div>
+            </div>
+            
+            <!-- Categories Section -->
+            <div class="categories-section">
+                <h3 class="categories-header">Browse by Category</h3>
+                <div class="categories-grid">
+                    <div class="category-card">
+                        <div class="category-icon"></div>
+                        <div class="category-name">Film & TV</div>
+                        <div class="category-count">2,450 talents</div>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-icon"></div>
+                        <div class="category-name">Theatre</div>
+                        <div class="category-count">856 talents</div>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-icon"></div>
+                        <div class="category-name">Commercial</div>
+                        <div class="category-count">1,234 talents</div>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-icon"></div>
+                        <div class="category-name">Fashion</div>
+                        <div class="category-count">967 talents</div>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-icon"></div>
+                        <div class="category-name">Music Video</div>
+                        <div class="category-count">543 talents</div>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-icon"></div>
+                        <div class="category-name">Voice Over</div>
+                        <div class="category-count">321 talents</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Featured Profiles -->
+            <div class="featured-section">
+                <div class="featured-header">
+                    <h3 class="featured-title">Featured Talents</h3>
+                    <button class="page-btn">View All Featured</button>
+                </div>
+                <div class="featured-carousel">
+                    <div class="featured-card">
+                        <div class="talent-image">
+                            <div class="talent-badge">Featured</div>
+                        </div>
+                        <div class="talent-info">
+                            <div class="talent-name">Priya Sharma</div>
+                            <div class="talent-role">Lead Actress • Mumbai</div>
+                            <div class="talent-meta">
+                                <span>5+ years</span>
+                                <span>•</span>
+                                <span>Hindi, English</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="featured-card">
+                        <div class="talent-image">
+                            <div class="talent-badge">Featured</div>
+                        </div>
+                        <div class="talent-info">
+                            <div class="talent-name">Arjun Patel</div>
+                            <div class="talent-role">Character Actor • Delhi</div>
+                            <div class="talent-meta">
+                                <span>10+ years</span>
+                                <span>•</span>
+                                <span>Hindi, Punjabi</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="featured-card">
+                        <div class="talent-image">
+                            <div class="talent-badge">Featured</div>
+                        </div>
+                        <div class="talent-info">
+                            <div class="talent-name">Ananya Rao</div>
+                            <div class="talent-role">Model • Bangalore</div>
+                            <div class="talent-meta">
+                                <span>3+ years</span>
+                                <span>•</span>
+                                <span>English, Kannada</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Screen 2: Search Results with Filters -->
+        <div class="screen-section">
+            <div class="screen-header">
+                <h2 class="screen-title">Screen 2: Search Results & Advanced Filtering</h2>
+                <div class="screen-meta">
+                    <span>Grid View</span>
+                    <span>Filtered State</span>
+                    <span>Logged In User</span>
+                </div>
+            </div>
+            
+            <!-- Advanced Filter Bar -->
+            <div class="search-container">
+                <div class="filter-bar">
+                    <div class="filter-group">
+                        <span class="filter-label">Location:</span>
+                        <select class="filter-dropdown">
+                            <option>Mumbai</option>
+                            <option>Delhi</option>
+                            <option>Bangalore</option>
+                            <option>Chennai</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <span class="filter-label">Age:</span>
+                        <select class="filter-dropdown">
+                            <option>18-25</option>
+                            <option>26-35</option>
+                            <option>36-45</option>
+                            <option>46+</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <span class="filter-label">Experience:</span>
+                        <select class="filter-dropdown">
+                            <option>0-2 years</option>
+                            <option>3-5 years</option>
+                            <option>6-10 years</option>
+                            <option>10+ years</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <span class="filter-label">Budget:</span>
+                        <select class="filter-dropdown">
+                            <option>₹10K-25K</option>
+                            <option>₹25K-50K</option>
+                            <option>₹50K-1L</option>
+                            <option>₹1L+</option>
+                        </select>
+                    </div>
+                    <button class="filter-chip">More Filters</button>
+                </div>
+                
+                <!-- Active Filters -->
+                <div class="filter-bar">
+                    <span class="filter-label">Active Filters:</span>
+                    <div class="filter-chip active">
+                        Mumbai
+                        <span class="filter-chip-close"></span>
+                    </div>
+                    <div class="filter-chip active">
+                        26-35 years
+                        <span class="filter-chip-close"></span>
+                    </div>
+                    <div class="filter-chip active">
+                        3-5 years exp
+                        <span class="filter-chip-close"></span>
+                    </div>
+                    <button class="filter-chip" style="background: transparent; border: none; color: var(--text-secondary);">Clear All</button>
+                </div>
+            </div>
+            
+            <!-- Results Header -->
+            <div class="results-header">
+                <div class="results-count">Showing 247 talents</div>
+                <div class="results-controls">
+                    <div class="view-toggle">
+                        <button class="view-btn active">⊞</button>
+                        <button class="view-btn">☰</button>
+                    </div>
+                    <select class="sort-dropdown">
+                        <option>Most Relevant</option>
+                        <option>Recently Active</option>
+                        <option>Experience (High to Low)</option>
+                        <option>Experience (Low to High)</option>
+                        <option>Rating</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Talent Grid -->
+            <div class="talent-grid">
+                <!-- Talent Card 1 -->
+                <div class="talent-card">
+                    <div class="talent-image">
+                        <div class="talent-badge">Verified</div>
+                        <div class="talent-actions">
+                            <button class="action-btn">Quick View</button>
+                            <button class="action-btn">Shortlist</button>
+                        </div>
+                    </div>
+                    <div class="talent-info">
+                        <div class="talent-name">Rahul Mehta</div>
+                        <div class="talent-role">Lead Actor</div>
+                        <div class="talent-meta">
+                            <span>Mumbai</span>
+                            <span>•</span>
+                            <span>28 years</span>
+                        </div>
+                        <div class="talent-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">4.8</div>
+                                <div class="stat-label">Rating</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">12</div>
+                                <div class="stat-label">Projects</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">5y</div>
+                                <div class="stat-label">Experience</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Talent Card 2 -->
+                <div class="talent-card">
+                    <div class="talent-image">
+                        <div class="talent-badge">Available</div>
+                        <div class="talent-actions">
+                            <button class="action-btn">Quick View</button>
+                            <button class="action-btn">Shortlist</button>
+                        </div>
+                    </div>
+                    <div class="talent-info">
+                        <div class="talent-name">Kavya Singh</div>
+                        <div class="talent-role">Supporting Actress</div>
+                        <div class="talent-meta">
+                            <span>Mumbai</span>
+                            <span>•</span>
+                            <span>26 years</span>
+                        </div>
+                        <div class="talent-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">4.6</div>
+                                <div class="stat-label">Rating</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">8</div>
+                                <div class="stat-label">Projects</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">3y</div>
+                                <div class="stat-label">Experience</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Talent Card 3 -->
+                <div class="talent-card">
+                    <div class="talent-image">
+                        <div class="talent-badge">New</div>
+                        <div class="talent-actions">
+                            <button class="action-btn">Quick View</button>
+                            <button class="action-btn">Shortlist</button>
+                        </div>
+                    </div>
+                    <div class="talent-info">
+                        <div class="talent-name">Aditya Verma</div>
+                        <div class="talent-role">Character Actor</div>
+                        <div class="talent-meta">
+                            <span>Mumbai</span>
+                            <span>•</span>
+                            <span>32 years</span>
+                        </div>
+                        <div class="talent-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">4.9</div>
+                                <div class="stat-label">Rating</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">15</div>
+                                <div class="stat-label">Projects</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">4y</div>
+                                <div class="stat-label">Experience</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Talent Card 4 -->
+                <div class="talent-card">
+                    <div class="talent-image">
+                        <div class="talent-badge">Premium</div>
+                        <div class="talent-actions">
+                            <button class="action-btn">Quick View</button>
+                            <button class="action-btn">Shortlist</button>
+                        </div>
+                    </div>
+                    <div class="talent-info">
+                        <div class="talent-name">Meera Joshi</div>
+                        <div class="talent-role">Lead Dancer</div>
+                        <div class="talent-meta">
+                            <span>Mumbai</span>
+                            <span>•</span>
+                            <span>24 years</span>
+                        </div>
+                        <div class="talent-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">4.7</div>
+                                <div class="stat-label">Rating</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">20</div>
+                                <div class="stat-label">Projects</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">6y</div>
+                                <div class="stat-label">Experience</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- More talent cards... -->
+                <div class="talent-card">
+                    <div class="talent-image">
+                        <div class="talent-actions">
+                            <button class="action-btn">Quick View</button>
+                            <button class="action-btn">Shortlist</button>
+                        </div>
+                    </div>
+                    <div class="talent-info">
+                        <div class="talent-name">Vikram Shah</div>
+                        <div class="talent-role">Model</div>
+                        <div class="talent-meta">
+                            <span>Mumbai</span>
+                            <span>•</span>
+                            <span>29 years</span>
+                        </div>
+                        <div class="talent-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">4.5</div>
+                                <div class="stat-label">Rating</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">10</div>
+                                <div class="stat-label">Projects</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">4y</div>
+                                <div class="stat-label">Experience</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="talent-card">
+                    <div class="talent-image">
+                        <div class="talent-actions">
+                            <button class="action-btn">Quick View</button>
+                            <button class="action-btn">Shortlist</button>
+                        </div>
+                    </div>
+                    <div class="talent-info">
+                        <div class="talent-name">Sneha Reddy</div>
+                        <div class="talent-role">Voice Artist</div>
+                        <div class="talent-meta">
+                            <span>Mumbai</span>
+                            <span>•</span>
+                            <span>31 years</span>
+                        </div>
+                        <div class="talent-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">4.9</div>
+                                <div class="stat-label">Rating</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">25</div>
+                                <div class="stat-label">Projects</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">7y</div>
+                                <div class="stat-label">Experience</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pagination -->
+            <div class="pagination">
+                <button class="page-btn" disabled>Previous</button>
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">3</button>
+                <button class="page-btn">4</button>
+                <button class="page-btn">5</button>
+                <span style="color: var(--text-tertiary);">...</span>
+                <button class="page-btn">12</button>
+                <button class="page-btn">Next</button>
+            </div>
+        </div>
+        
+        <!-- Screen 3: List View (Mobile Optimized) -->
+        <div class="screen-section list-view">
+            <div class="screen-header">
+                <h2 class="screen-title">Screen 3: List View Layout</h2>
+                <div class="screen-meta">
+                    <span>List View</span>
+                    <span>Mobile Optimized</span>
+                    <span>Compact Display</span>
+                </div>
+            </div>
+            
+            <!-- List View Results -->
+            <div class="talent-list">
+                <div class="talent-list-item">
+                    <div class="list-image"></div>
+                    <div class="list-content">
+                        <div class="list-header">
+                            <div>
+                                <div class="talent-name">Rahul Mehta</div>
+                                <div class="talent-role">Lead Actor • Mumbai</div>
+                                <div class="talent-meta">
+                                    <span>28 years</span>
+                                    <span>•</span>
+                                    <span>5 years exp</span>
+                                    <span>•</span>
+                                    <span>⭐ 4.8</span>
+                                </div>
+                            </div>
+                            <div class="list-actions">
+                                <button class="list-action-btn">View</button>
+                                <button class="list-action-btn">Save</button>
+                            </div>
+                        </div>
+                        <p style="font-size: 14px; color: var(--text-secondary); margin-top: 8px;">
+                            Experienced lead actor with strong background in drama and action roles. Fluent in Hindi and English.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="talent-list-item">
+                    <div class="list-image"></div>
+                    <div class="list-content">
+                        <div class="list-header">
+                            <div>
+                                <div class="talent-name">Kavya Singh</div>
+                                <div class="talent-role">Supporting Actress • Mumbai</div>
+                                <div class="talent-meta">
+                                    <span>26 years</span>
+                                    <span>•</span>
+                                    <span>3 years exp</span>
+                                    <span>•</span>
+                                    <span>⭐ 4.6</span>
+                                </div>
+                            </div>
+                            <div class="list-actions">
+                                <button class="list-action-btn">View</button>
+                                <button class="list-action-btn">Save</button>
+                            </div>
+                        </div>
+                        <p style="font-size: 14px; color: var(--text-secondary); margin-top: 8px;">
+                            Versatile actress specializing in emotional and comedic roles. Theatre background with film experience.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="talent-list-item">
+                    <div class="list-image"></div>
+                    <div class="list-content">
+                        <div class="list-header">
+                            <div>
+                                <div class="talent-name">Aditya Verma</div>
+                                <div class="talent-role">Character Actor • Mumbai</div>
+                                <div class="talent-meta">
+                                    <span>32 years</span>
+                                    <span>•</span>
+                                    <span>4 years exp</span>
+                                    <span>•</span>
+                                    <span>⭐ 4.9</span>
+                                </div>
+                            </div>
+                            <div class="list-actions">
+                                <button class="list-action-btn">View</button>
+                                <button class="list-action-btn">Save</button>
+                            </div>
+                        </div>
+                        <p style="font-size: 14px; color: var(--text-secondary); margin-top: 8px;">
+                            Specialized in character roles with excellent dialect work. Strong presence in web series and films.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Interaction Specifications -->
+        <div class="screen-section">
+            <div class="screen-header">
+                <h2 class="screen-title">Interaction Specifications</h2>
+                <div class="screen-meta">
+                    <span>Behavior Documentation</span>
+                </div>
+            </div>
+            
+            <div style="padding: 24px;">
+                <h3 style="margin-bottom: 16px;">Search & Filter Interactions</h3>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin-bottom: 12px;">• <strong>Search Input:</strong> Real-time suggestions after 3 characters, debounced at 300ms</li>
+                    <li style="margin-bottom: 12px;">• <strong>Filter Application:</strong> Instant results update with loading state</li>
+                    <li style="margin-bottom: 12px;">• <strong>Category Selection:</strong> Smooth scroll to filtered results</li>
+                    <li style="margin-bottom: 12px;">• <strong>Quick Filters:</strong> Single tap to toggle, visual feedback on selection</li>
+                </ul>
+                
+                <h3 style="margin: 24px 0 16px;">Card Interactions</h3>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin-bottom: 12px;">• <strong>Hover State:</strong> Elevation change + action buttons reveal</li>
+                    <li style="margin-bottom: 12px;">• <strong>Click Action:</strong> Opens detailed profile view</li>
+                    <li style="margin-bottom: 12px;">• <strong>Quick Actions:</strong> Shortlist/Message without leaving page</li>
+                    <li style="margin-bottom: 12px;">• <strong>Image Loading:</strong> Progressive with blur-up effect</li>
+                </ul>
+                
+                <h3 style="margin: 24px 0 16px;">Mobile Gestures</h3>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin-bottom: 12px;">• <strong>Swipe Left:</strong> Add to shortlist</li>
+                    <li style="margin-bottom: 12px;">• <strong>Swipe Right:</strong> Pass/Remove</li>
+                    <li style="margin-bottom: 12px;">• <strong>Long Press:</strong> Quick preview modal</li>
+                    <li style="margin-bottom: 12px;">• <strong>Pull to Refresh:</strong> Update search results</li>
+                </ul>
+                
+                <h3 style="margin: 24px 0 16px;">Performance Metrics</h3>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin-bottom: 12px;">• <strong>Initial Load:</strong> < 2 seconds</li>
+                    <li style="margin-bottom: 12px;">• <strong>Search Response:</strong> < 500ms</li>
+                    <li style="margin-bottom: 12px;">• <strong>Filter Update:</strong> < 300ms</li>
+                    <li style="margin-bottom: 12px;">• <strong>Infinite Scroll:</strong> Load next batch at 80% scroll</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
