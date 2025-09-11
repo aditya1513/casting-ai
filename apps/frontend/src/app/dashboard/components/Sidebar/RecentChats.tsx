@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { ChatBubbleLeftRightIcon } from "@heroicons/react/24/outline";
-import CollapsibleSection from "./CollapsibleSection";
+import { ChatBubbleLeftRightIcon } from '@heroicons/react/24/outline';
+import CollapsibleSection from './CollapsibleSection';
 
 interface ChatItem {
   id: string;
@@ -17,35 +17,32 @@ interface RecentChatsProps {
 
 const mockChats: ChatItem[] = [
   {
-    id: "1",
-    title: "Lead Actor Search",
-    timestamp: "2024-09-09T13:00:00Z",
-    timeAgo: "2h"
+    id: '1',
+    title: 'Lead Actor Search',
+    timestamp: '2024-09-09T13:00:00Z',
+    timeAgo: '2h',
   },
   {
-    id: "2",
-    title: "Character Analysis Discussion",
-    timestamp: "2024-09-08T15:30:00Z",
-    timeAgo: "1d"
+    id: '2',
+    title: 'Character Analysis Discussion',
+    timestamp: '2024-09-08T15:30:00Z',
+    timeAgo: '1d',
   },
   {
-    id: "3",
-    title: "Budget Planning Session",
-    timestamp: "2024-09-06T10:15:00Z",
-    timeAgo: "3d"
+    id: '3',
+    title: 'Budget Planning Session',
+    timestamp: '2024-09-06T10:15:00Z',
+    timeAgo: '3d',
   },
   {
-    id: "4",
-    title: "Supporting Cast Requirements",
-    timestamp: "2024-09-05T14:45:00Z",
-    timeAgo: "4d"
-  }
+    id: '4',
+    title: 'Supporting Cast Requirements',
+    timestamp: '2024-09-05T14:45:00Z',
+    timeAgo: '4d',
+  },
 ];
 
-export default function RecentChats({ 
-  chats = mockChats, 
-  onChatSelect 
-}: RecentChatsProps) {
+export default function RecentChats({ chats = mockChats, onChatSelect }: RecentChatsProps) {
   return (
     <CollapsibleSection
       title="Recent Chats"
@@ -53,7 +50,7 @@ export default function RecentChats({
       defaultExpanded={true}
     >
       <div className="space-y-1">
-        {chats.map((chat) => (
+        {chats.map(chat => (
           <button
             key={chat.id}
             onClick={() => onChatSelect(chat.id)}
@@ -65,9 +62,7 @@ export default function RecentChats({
                   {chat.title}
                 </p>
               </div>
-              <span className="text-xs text-gray-400 ml-2 flex-shrink-0">
-                {chat.timeAgo}
-              </span>
+              <span className="text-xs text-gray-400 ml-2 flex-shrink-0">{chat.timeAgo}</span>
             </div>
           </button>
         ))}

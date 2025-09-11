@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { FilmIcon } from "@heroicons/react/24/outline";
+import { FilmIcon } from '@heroicons/react/24/outline';
 
 export default function BrandHeader() {
   return (
@@ -9,9 +9,7 @@ export default function BrandHeader() {
         <div className="w-9 h-9 bg-gradient-to-br from-teal-600 to-teal-700 rounded-xl flex items-center justify-center shadow-md">
           <FilmIcon className="w-5 h-5 text-white" />
         </div>
-        <span className="font-semibold text-gray-900 text-lg tracking-tight">
-          CastMatch
-        </span>
+        <span className="font-semibold text-gray-900 text-lg tracking-tight">CastMatch</span>
       </div>
     </div>
   );

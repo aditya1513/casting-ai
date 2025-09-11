@@ -2,10 +2,10 @@ import { handleAuth, handleLogin, handleCallback, handleLogout } from '@auth0/ne
 
 export const GET = handleAuth({
   login: handleLogin({
-    returnTo: '/dashboard'
+    returnTo: '/dashboard',
   }),
   logout: handleLogout({
-    returnTo: '/'
+    returnTo: '/',
   }),
-  callback: handleCallback()
+  callback: handleCallback(),
 });

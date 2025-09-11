@@ -8,11 +8,11 @@ import usePerformanceMonitoring from '@/hooks/usePerformanceMonitoring';
 // Dynamic imports for code splitting demonstration
 const VirtualTalentList = dynamic(() => import('@/components/VirtualTalentList'), {
   loading: () => <div className="animate-pulse bg-gray-200 h-96 rounded-lg" />,
-  ssr: false
+  ssr: false,
 });
 
 const LazyImage = dynamic(() => import('@/components/LazyImage'), {
-  loading: () => <div className="animate-pulse bg-gray-200 h-32 w-32 rounded-lg" />
+  loading: () => <div className="animate-pulse bg-gray-200 h-32 w-32 rounded-lg" />,
 });
 
 // Generate mock talent data
@@ -23,10 +23,16 @@ const generateMockTalents = (count: number) => {
     photo: `https://picsum.photos/64/64?random=${i}`,
     age: 20 + Math.floor(Math.random() * 40),
     location: ['Mumbai', 'Delhi', 'Bangalore', 'Chennai', 'Kolkata'][Math.floor(Math.random() * 5)],
-    skills: ['Acting', 'Dancing', 'Singing', 'Modeling', 'Voice Acting', 'Comedy'].slice(0, 2 + Math.floor(Math.random() * 3)),
+    skills: ['Acting', 'Dancing', 'Singing', 'Modeling', 'Voice Acting', 'Comedy'].slice(
+      0,
+      2 + Math.floor(Math.random() * 3)
+    ),
     experience: `${1 + Math.floor(Math.random() * 10)} years`,
     rating: 3 + Math.random() * 2,
-    availability: ['available', 'busy', 'booked'][Math.floor(Math.random() * 3)] as 'available' | 'busy' | 'booked'
+    availability: ['available', 'busy', 'booked'][Math.floor(Math.random() * 3)] as
+      | 'available'
+      | 'busy'
+      | 'booked',
   }));
 };
 
@@ -36,45 +42,41 @@ const PerformanceDemoPage: React.FC = () => {
   const [itemCount, setItemCount] = useState(1000);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { 
-    reportMetric, 
-    measureComponentRender,
-    measureAsyncOperation,
-    metrics 
-  } = usePerformanceMonitoring({
-    reportWebVitals: true,
-    logToConsole: true
-  });
+  const { reportMetric, measureComponentRender, measureAsyncOperation, metrics } =
+    usePerformanceMonitoring({
+      reportWebVitals: true,
+      logToConsole: true,
+    });
 
   useEffect(() => {
     const endRender = measureComponentRender('PerformanceDemoPage');
-    
+
     const loadTalents = async () => {
       setIsLoading(true);
-      
+
       await measureAsyncOperation('loadTalentData', async () => {
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 100));
         setTalents(generateMockTalents(itemCount));
       });
-      
+
       setIsLoading(false);
     };
 
     loadTalents();
-    
+
     return endRender;
   }, [itemCount, measureComponentRender, measureAsyncOperation]);
 
   const handleItemCountChange = (newCount: number) => {
     const startTime = performance.now();
     setItemCount(newCount);
-    
+
     requestAnimationFrame(() => {
       const endTime = performance.now();
       reportMetric('ui_update_time', endTime - startTime, {
         operation: 'itemCountChange',
-        newCount
+        newCount,
       });
     });
   };
@@ -93,8 +95,8 @@ const PerformanceDemoPage: React.FC = () => {
             CastMatch Performance Demo
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-            Demonstrating our frontend optimization features: virtual scrolling, 
-            lazy loading, code splitting, and performance monitoring.
+            Demonstrating our frontend optimization features: virtual scrolling, lazy loading, code
+            splitting, and performance monitoring.
           </p>
         </motion.div>
 
@@ -109,15 +111,16 @@ const PerformanceDemoPage: React.FC = () => {
             { label: 'FCP', value: metrics.fcp ? `${metrics.fcp.toFixed(0)}ms` : 'Measuring...' },
             { label: 'LCP', value: metrics.lcp ? `${metrics.lcp.toFixed(0)}ms` : 'Measuring...' },
             { label: 'CLS', value: metrics.cls ? metrics.cls.toFixed(3) : 'Measuring...' },
-            { label: 'TTFB', value: metrics.ttfb ? `${metrics.ttfb.toFixed(0)}ms` : 'Measuring...' }
+            {
+              label: 'TTFB',
+              value: metrics.ttfb ? `${metrics.ttfb.toFixed(0)}ms` : 'Measuring...',
+            },
           ].map((metric, index) => (
             <div key={metric.label} className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
               <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
                 {metric.label}
               </h3>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                {metric.value}
-              </p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">{metric.value}</p>
             </div>
           ))}
         </motion.div>
@@ -138,7 +141,7 @@ const PerformanceDemoPage: React.FC = () => {
               <input
                 type="text"
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 placeholder="Search by name, location, or skills..."
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm 
                          focus:outline-none focus:ring-purple-500 focus:border-purple-500
@@ -158,14 +161,15 @@ const PerformanceDemoPage: React.FC = () => {
                     onClick={() => handleItemCountChange(count)}
                     disabled={isLoading}
                     className={`px-3 py-2 text-sm rounded-md font-medium transition-colors
-                      ${itemCount === count 
-                        ? 'bg-purple-600 text-white' 
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
+                      ${
+                        itemCount === count
+                          ? 'bg-purple-600 text-white'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
                       }
                       ${isLoading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
                     `}
                   >
-                    {count >= 1000 ? `${count/1000}K` : count}
+                    {count >= 1000 ? `${count / 1000}K` : count}
                   </button>
                 ))}
               </div>
@@ -223,8 +227,8 @@ const PerformanceDemoPage: React.FC = () => {
               Virtual Scrolling Demo - High Performance List
             </h2>
             <p className="text-gray-600 dark:text-gray-400 mt-2">
-              Efficiently rendering {itemCount.toLocaleString()} items with virtual scrolling.
-              Only visible items are rendered in the DOM.
+              Efficiently rendering {itemCount.toLocaleString()} items with virtual scrolling. Only
+              visible items are rendered in the DOM.
             </p>
           </div>
 
@@ -238,10 +242,10 @@ const PerformanceDemoPage: React.FC = () => {
               searchTerm={searchTerm}
               containerHeight={600}
               itemHeight={120}
-              onTalentClick={(talent) => {
+              onTalentClick={talent => {
                 reportMetric('talent_click', 1, {
                   talentId: talent.id,
-                  talentName: talent.name
+                  talentName: talent.name,
                 });
                 console.log('Clicked talent:', talent.name);
               }}
@@ -262,7 +266,8 @@ const PerformanceDemoPage: React.FC = () => {
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
               <div>
-                <strong>Bundle Splitting:</strong> Route-based code splitting reduces initial load time
+                <strong>Bundle Splitting:</strong> Route-based code splitting reduces initial load
+                time
               </div>
               <div>
                 <strong>Virtual Scrolling:</strong> Efficiently handles thousands of list items

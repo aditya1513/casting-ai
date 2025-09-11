@@ -1,7 +1,16 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Button, Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle, NavbarMenu, NavbarMenuItem } from '@heroui/react';
+import {
+  Button,
+  Navbar,
+  NavbarBrand,
+  NavbarContent,
+  NavbarItem,
+  NavbarMenuToggle,
+  NavbarMenu,
+  NavbarMenuItem,
+} from '@heroui/react';
 import { FilmIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
@@ -14,7 +23,7 @@ export default function LandingHeader() {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
-    
+
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -32,9 +41,7 @@ export default function LandingHeader() {
       animate={{ y: 0 }}
       transition={{ duration: 0.6 }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? 'bg-black/80 backdrop-blur-lg border-b border-white/10'
-          : 'bg-transparent'
+        isScrolled ? 'bg-black/80 backdrop-blur-lg border-b border-white/10' : 'bg-transparent'
       }`}
     >
       <Navbar
@@ -45,7 +52,10 @@ export default function LandingHeader() {
       >
         {/* Brand */}
         <NavbarBrand>
-          <Link href="/" className="flex items-center gap-3 text-white hover:text-teal-400 transition-colors">
+          <Link
+            href="/"
+            className="flex items-center gap-3 text-white hover:text-teal-400 transition-colors"
+          >
             <div className="relative">
               <FilmIcon className="h-8 w-8" />
               <div className="absolute -top-1 -right-1 w-3 h-3 bg-teal-500 rounded-full animate-pulse" />
@@ -56,7 +66,7 @@ export default function LandingHeader() {
 
         {/* Desktop Navigation */}
         <NavbarContent className="hidden md:flex gap-8" justify="center">
-          {navItems.map((item) => (
+          {navItems.map(item => (
             <NavbarItem key={item.name}>
               <Link
                 href={item.href}
@@ -116,7 +126,7 @@ export default function LandingHeader() {
               </motion.div>
             </NavbarMenuItem>
           ))}
-          
+
           <div className="pt-4 space-y-3">
             <Button
               as={Link}

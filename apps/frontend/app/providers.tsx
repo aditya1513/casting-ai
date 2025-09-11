@@ -1,10 +1,10 @@
-'use client'
+'use client';
 
-import { ReactNode, useState } from 'react'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactNode, useState } from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 interface ProvidersProps {
-  children: ReactNode
+  children: ReactNode;
 }
 
 // React Query configuration for CastMatch
@@ -19,7 +19,7 @@ function createQueryClient() {
         // Retry failed requests 3 times
         retry: 3,
         // Retry with exponential backoff
-        retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+        retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
         // Refetch on window focus for real-time data
         refetchOnWindowFocus: true,
         // Background refetching for fresh data
@@ -29,25 +29,21 @@ function createQueryClient() {
         // Retry mutations once on failure
         retry: 1,
         // Show loading states
-        onError: (error) => {
-          console.error('Mutation error:', error)
+        onError: error => {
+          console.error('Mutation error:', error);
           // Here we can add toast notifications
         },
       },
     },
-  })
+  });
 }
 
 export function Providers({ children }: ProvidersProps) {
   // Create Query Client with optimized settings
-  const [queryClient] = useState(() => createQueryClient())
+  const [queryClient] = useState(() => createQueryClient());
 
-  return (
-    <QueryClientProvider client={queryClient}>
-      {children}
-    </QueryClientProvider>
-  )
+  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 }
 
 // Export query client for use in server actions if needed
-export { createQueryClient }
+export { createQueryClient };

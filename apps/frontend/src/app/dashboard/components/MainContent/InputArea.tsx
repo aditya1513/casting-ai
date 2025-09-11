@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useState, useRef, useEffect } from "react";
-import { Button, Textarea } from "@heroui/react";
-import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
+import { useState, useRef, useEffect } from 'react';
+import { Button, Textarea } from '@heroui/react';
+import { PaperAirplaneIcon } from '@heroicons/react/24/outline';
 
 interface InputAreaProps {
   value: string;
@@ -12,17 +12,17 @@ interface InputAreaProps {
   placeholder?: string;
 }
 
-export default function InputArea({ 
-  value, 
-  onChange, 
-  onSend, 
+export default function InputArea({
+  value,
+  onChange,
+  onSend,
   isLoading = false,
-  placeholder = "Ask about talents, schedule auditions, analyze scripts..."
+  placeholder = 'Ask about talents, schedule auditions, analyze scripts...',
 }: InputAreaProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+    if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       if (value.trim() && !isLoading) {
         onSend();
@@ -33,7 +33,7 @@ export default function InputArea({
   const adjustTextareaHeight = () => {
     const textarea = textareaRef.current;
     if (textarea) {
-      textarea.style.height = "auto";
+      textarea.style.height = 'auto';
       const newHeight = Math.min(textarea.scrollHeight, 120); // Max 120px
       textarea.style.height = `${newHeight}px`;
     }
@@ -51,14 +51,14 @@ export default function InputArea({
             <textarea
               ref={textareaRef}
               value={value}
-              onChange={(e) => onChange(e.target.value)}
+              onChange={e => onChange(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder={placeholder}
               className="w-full px-6 py-4 pr-14 bg-transparent border-none outline-none resize-none text-sm placeholder:text-gray-500 min-h-[48px] max-h-[120px]"
-              style={{ minHeight: "48px" }}
+              style={{ minHeight: '48px' }}
               disabled={isLoading}
             />
-            
+
             {/* Send Button */}
             <div className="absolute right-3 bottom-3">
               <Button
@@ -74,7 +74,7 @@ export default function InputArea({
               </Button>
             </div>
           </div>
-          
+
           {/* Character Count */}
           {value.length > 500 && (
             <div className="flex justify-end mt-2">

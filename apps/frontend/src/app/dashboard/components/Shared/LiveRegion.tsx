@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useEffect, useRef } from 'react';
 
@@ -8,10 +8,10 @@ interface LiveRegionProps {
   clear?: boolean;
 }
 
-export default function LiveRegion({ 
-  message, 
+export default function LiveRegion({
+  message,
   priority = 'polite',
-  clear = false 
+  clear = false,
 }: LiveRegionProps) {
   const regionRef = useRef<HTMLDivElement>(null);
 

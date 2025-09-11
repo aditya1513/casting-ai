@@ -2,7 +2,14 @@ import React, { useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createTRPCClient, httpBatchLink } from '@trpc/client';
 import { createTRPCReact } from '@trpc/react-query';
-import { ClerkProvider, SignedIn, SignedOut, SignInButton, UserButton, useUser } from '@clerk/react';
+import {
+  ClerkProvider,
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  UserButton,
+  useUser,
+} from '@clerk/react';
 import type { AppRouter } from './types/trpc';
 
 // Create tRPC React hooks
@@ -25,26 +32,32 @@ const createTRPCClientWithAuth = (getToken?: () => Promise<string | null>) => {
 
 function DashboardContent() {
   const { user } = useUser();
-  
+
   // Test the dashboard stats endpoint (protected)
-  const { data: dashboardData, isLoading: dashboardLoading, error: dashboardError } = trpc.dashboard.getStats.useQuery();
-  
+  const {
+    data: dashboardData,
+    isLoading: dashboardLoading,
+    error: dashboardError,
+  } = trpc.dashboard.getStats.useQuery();
+
   // Test the talents endpoint (public)
-  const { data: talentsData, isLoading: talentsLoading, error: talentsError } = trpc.talents.list.useQuery({
+  const {
+    data: talentsData,
+    isLoading: talentsLoading,
+    error: talentsError,
+  } = trpc.talents.list.useQuery({
     page: 1,
-    limit: 3
+    limit: 3,
   });
 
   return (
     <div className="min-h-screen bg-slate-900 p-8">
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold text-white">
-            🎬 CastMatch Dashboard
-          </h1>
+          <h1 className="text-4xl font-bold text-white">🎬 CastMatch Dashboard</h1>
           <UserButton />
         </div>
-        
+
         <div className="bg-slate-800 p-6 rounded-lg mb-6">
           <h2 className="text-2xl font-bold text-white mb-4">Welcome, {user?.firstName}!</h2>
           <p className="text-gray-300">Email: {user?.primaryEmailAddress?.emailAddress}</p>
@@ -53,25 +66,35 @@ function DashboardContent() {
 
         {/* Dashboard Stats (Protected) */}
         <div className="bg-slate-800 p-6 rounded-lg mb-6">
-          <h3 className="text-xl font-bold text-white mb-4">📊 Dashboard Stats (Protected Route)</h3>
+          <h3 className="text-xl font-bold text-white mb-4">
+            📊 Dashboard Stats (Protected Route)
+          </h3>
           {dashboardLoading && <p className="text-gray-400">Loading dashboard stats...</p>}
           {dashboardError && <p className="text-red-400">❌ Error: {dashboardError.message}</p>}
           {dashboardData?.data && (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="text-center">
-                <div className="text-2xl font-bold text-blue-400">{dashboardData.data.totalTalents}</div>
+                <div className="text-2xl font-bold text-blue-400">
+                  {dashboardData.data.totalTalents}
+                </div>
                 <div className="text-sm text-gray-400">Total Talents</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-green-400">{dashboardData.data.activeProjects}</div>
+                <div className="text-2xl font-bold text-green-400">
+                  {dashboardData.data.activeProjects}
+                </div>
                 <div className="text-sm text-gray-400">Active Projects</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-yellow-400">{dashboardData.data.pendingApplications}</div>
+                <div className="text-2xl font-bold text-yellow-400">
+                  {dashboardData.data.pendingApplications}
+                </div>
                 <div className="text-sm text-gray-400">Pending Applications</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-purple-400">{dashboardData.data.responseRate}%</div>
+                <div className="text-2xl font-bold text-purple-400">
+                  {dashboardData.data.responseRate}%
+                </div>
                 <div className="text-sm text-gray-400">Response Rate</div>
               </div>
             </div>
@@ -89,7 +112,9 @@ function DashboardContent() {
                 <div>
                   <h4 className="text-lg font-semibold text-blue-400">{talent.name}</h4>
                   <p className="text-gray-300">📍 {talent.location}</p>
-                  <p className="text-gray-300">⭐ {talent.rating}/5 | 🎯 {talent.experience}</p>
+                  <p className="text-gray-300">
+                    ⭐ {talent.rating}/5 | 🎯 {talent.experience}
+                  </p>
                 </div>
                 <div className="text-right">
                   <p className="text-sm text-gray-400">Languages: {talent.languages?.join(', ')}</p>
@@ -105,18 +130,23 @@ function DashboardContent() {
 }
 
 function AuthApp() {
-  const [queryClient] = useState(() => new QueryClient({
-    defaultOptions: {
-      queries: {
-        staleTime: 5 * 1000,
-        refetchOnWindowFocus: false,
-      },
-    },
-  }));
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            staleTime: 5 * 1000,
+            refetchOnWindowFocus: false,
+          },
+        },
+      })
+  );
 
   const [trpcClient] = useState(() => createTRPCClientWithAuth());
 
-  const clerkPublishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || 'pk_test_Y29oZXJlbnQtc3RhbGxpb24tNjYuY2xlcmsuYWNjb3VudHMuZGV2JA';
+  const clerkPublishableKey =
+    import.meta.env.VITE_CLERK_PUBLISHABLE_KEY ||
+    'pk_test_Y29oZXJlbnQtc3RhbGxpb24tNjYuY2xlcmsuYWNjb3VudHMuZGV2JA';
 
   return (
     <ClerkProvider publishableKey={clerkPublishableKey}>

@@ -1,44 +1,53 @@
-"use client"
+'use client';
 
-import { Film, Users, Calendar, TrendingUp, Star, Award } from "lucide-react"
-import Link from "next/link"
-import dynamic from "next/dynamic"
-import { Suspense } from "react"
-import { SkeletonCard } from "@/components/performance/skeleton-card"
+import { Film, Users, Calendar, TrendingUp, Star, Award } from 'lucide-react';
+import Link from 'next/link';
+import dynamic from 'next/dynamic';
+import { Suspense } from 'react';
+import { SkeletonCard } from '@/components/performance/skeleton-card';
 
 // Dynamic imports for better performance
-const LazyFeatureCard = dynamic(() => import("@/components/performance/lazy-feature-card").then(mod => ({ default: mod.LazyFeatureCard })), {
-  loading: () => <SkeletonCard />
-})
+const LazyFeatureCard = dynamic(
+  () =>
+    import('@/components/performance/lazy-feature-card').then(mod => ({
+      default: mod.LazyFeatureCard,
+    })),
+  {
+    loading: () => <SkeletonCard />,
+  }
+);
 
 export default function Home() {
   const stats = [
-    { label: "Active Actors", value: "10,000+", icon: Users },
-    { label: "Projects Posted", value: "500+", icon: Film },
-    { label: "Auditions This Month", value: "1,200+", icon: Calendar },
-    { label: "Success Rate", value: "85%", icon: TrendingUp },
-  ]
+    { label: 'Active Actors', value: '10,000+', icon: Users },
+    { label: 'Projects Posted', value: '500+', icon: Film },
+    { label: 'Auditions This Month', value: '1,200+', icon: Calendar },
+    { label: 'Success Rate', value: '85%', icon: TrendingUp },
+  ];
 
   const features = [
     {
-      title: "For Casting Directors",
-      description: "Find the perfect talent for your OTT projects with our advanced search and filtering system.",
+      title: 'For Casting Directors',
+      description:
+        'Find the perfect talent for your OTT projects with our advanced search and filtering system.',
       icon: Star,
-      link: "/casting-directors",
+      link: '/casting-directors',
     },
     {
-      title: "For Actors",
-      description: "Build your portfolio, find auditions, and connect with top casting directors in Mumbai.",
+      title: 'For Actors',
+      description:
+        'Build your portfolio, find auditions, and connect with top casting directors in Mumbai.',
       icon: Award,
-      link: "/actors",
+      link: '/actors',
     },
     {
-      title: "For Producers",
-      description: "Manage your productions, track casting progress, and collaborate with your team seamlessly.",
+      title: 'For Producers',
+      description:
+        'Manage your productions, track casting progress, and collaborate with your team seamlessly.',
       icon: Film,
-      link: "/producers",
+      link: '/producers',
     },
-  ]
+  ];
 
   return (
     <div className="min-h-screen">
@@ -76,17 +85,19 @@ export default function Home() {
       <section className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="stats-container grid grid-cols-2 gap-5 md:grid-cols-4">
-            {stats.map((stat) => {
-              const Icon = stat.icon
+            {stats.map(stat => {
+              const Icon = stat.icon;
               return (
                 <div key={stat.label} className="text-center">
                   <div className="flex justify-center mb-2 h-8">
                     <Icon className="h-8 w-8 text-indigo-600" />
                   </div>
-                  <p className="text-3xl font-bold text-gray-900 h-12 flex items-center justify-center">{stat.value}</p>
+                  <p className="text-3xl font-bold text-gray-900 h-12 flex items-center justify-center">
+                    {stat.value}
+                  </p>
                   <p className="text-sm text-gray-600 h-5">{stat.label}</p>
                 </div>
-              )
+              );
             })}
           </div>
         </div>
@@ -104,14 +115,16 @@ export default function Home() {
             </p>
           </div>
           <div className="feature-cards-grid grid grid-cols-1 gap-8 md:grid-cols-3">
-            <Suspense fallback={
-              <>
-                <SkeletonCard />
-                <SkeletonCard />
-                <SkeletonCard />
-              </>
-            }>
-              {features.map((feature) => (
+            <Suspense
+              fallback={
+                <>
+                  <SkeletonCard />
+                  <SkeletonCard />
+                  <SkeletonCard />
+                </>
+              }
+            >
+              {features.map(feature => (
                 <LazyFeatureCard
                   key={feature.title}
                   title={feature.title}
@@ -158,9 +171,21 @@ export default function Home() {
                 Platform
               </h4>
               <ul className="space-y-2 text-sm">
-                <li><Link href="/actors" className="hover:text-white">For Actors</Link></li>
-                <li><Link href="/casting-directors" className="hover:text-white">For Casting Directors</Link></li>
-                <li><Link href="/producers" className="hover:text-white">For Producers</Link></li>
+                <li>
+                  <Link href="/actors" className="hover:text-white">
+                    For Actors
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/casting-directors" className="hover:text-white">
+                    For Casting Directors
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/producers" className="hover:text-white">
+                    For Producers
+                  </Link>
+                </li>
               </ul>
             </div>
             <div>
@@ -168,9 +193,21 @@ export default function Home() {
                 Company
               </h4>
               <ul className="space-y-2 text-sm">
-                <li><Link href="/about" className="hover:text-white">About Us</Link></li>
-                <li><Link href="/contact" className="hover:text-white">Contact</Link></li>
-                <li><Link href="/careers" className="hover:text-white">Careers</Link></li>
+                <li>
+                  <Link href="/about" className="hover:text-white">
+                    About Us
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/contact" className="hover:text-white">
+                    Contact
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/careers" className="hover:text-white">
+                    Careers
+                  </Link>
+                </li>
               </ul>
             </div>
             <div>
@@ -178,8 +215,16 @@ export default function Home() {
                 Legal
               </h4>
               <ul className="space-y-2 text-sm">
-                <li><Link href="/privacy" className="hover:text-white">Privacy Policy</Link></li>
-                <li><Link href="/terms" className="hover:text-white">Terms of Service</Link></li>
+                <li>
+                  <Link href="/privacy" className="hover:text-white">
+                    Privacy Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/terms" className="hover:text-white">
+                    Terms of Service
+                  </Link>
+                </li>
               </ul>
             </div>
           </div>
@@ -189,5 +234,5 @@ export default function Home() {
         </div>
       </footer>
     </div>
-  )
+  );
 }

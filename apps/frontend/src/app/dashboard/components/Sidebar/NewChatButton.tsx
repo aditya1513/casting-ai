@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { Button } from "@heroui/react";
-import { PlusIcon } from "@heroicons/react/24/outline";
+import { Button } from '@heroui/react';
+import { PlusIcon } from '@heroicons/react/24/outline';
 
 interface NewChatButtonProps {
   onClick: () => void;
@@ -18,7 +18,7 @@ export default function NewChatButton({ onClick }: NewChatButtonProps) {
         radius="lg"
         startContent={<PlusIcon className="h-4 w-4" />}
         style={{
-          background: "linear-gradient(135deg, #FF6B5A 0%, #FF5722 100%)"
+          background: 'linear-gradient(135deg, #FF6B5A 0%, #FF5722 100%)',
         }}
       >
         New Chat

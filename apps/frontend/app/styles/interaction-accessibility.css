@@ -8,26 +8,26 @@
 
 :root {
   /* Touch Target Sizes (WCAG AAA Compliant) */
-  --touch-target-minimum: 44px;      /* WCAG AAA minimum */
-  --touch-target-comfortable: 48px;   /* Comfortable for most users */
-  --touch-target-large: 56px;        /* Large targets for critical actions */
-  --touch-target-extra-large: 64px;  /* Extra large for primary CTAs */
-  
+  --touch-target-minimum: 44px; /* WCAG AAA minimum */
+  --touch-target-comfortable: 48px; /* Comfortable for most users */
+  --touch-target-large: 56px; /* Large targets for critical actions */
+  --touch-target-extra-large: 64px; /* Extra large for primary CTAs */
+
   /* Touch Spacing */
-  --touch-spacing-minimum: 8px;      /* Minimum space between targets */
+  --touch-spacing-minimum: 8px; /* Minimum space between targets */
   --touch-spacing-comfortable: 12px; /* Comfortable spacing */
-  --touch-spacing-large: 16px;       /* Large spacing for clarity */
-  
+  --touch-spacing-large: 16px; /* Large spacing for clarity */
+
   /* Touch Feedback */
   --touch-feedback-scale: 0.98;
   --touch-feedback-duration: 150ms;
   --touch-feedback-opacity: 0.8;
-  
+
   /* Mobile Breakpoints */
-  --mobile-small: 320px;             /* Very small phones */
-  --mobile-medium: 375px;            /* Standard phones */
-  --mobile-large: 414px;             /* Large phones */
-  --tablet-small: 768px;             /* Small tablets */
+  --mobile-small: 320px; /* Very small phones */
+  --mobile-medium: 375px; /* Standard phones */
+  --mobile-large: 414px; /* Large phones */
+  --tablet-small: 768px; /* Small tablets */
 }
 
 /* === UNIVERSAL TOUCH TARGET COMPLIANCE === */
@@ -55,9 +55,9 @@ a,
 }
 
 /* Exception for Text Links in Paragraphs */
-p a, 
-li a, 
-span a, 
+p a,
+li a,
+span a,
 .inline-link {
   min-width: auto;
   min-height: auto;
@@ -406,7 +406,9 @@ input[type="radio"]:checked::after {
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.3);
   transform: translate(-50%, -50%);
-  transition: width 0.6s ease-out, height 0.6s ease-out;
+  transition:
+    width 0.6s ease-out,
+    height 0.6s ease-out;
   pointer-events: none;
 }
 
@@ -421,9 +423,15 @@ input[type="radio"]:checked::after {
 }
 
 @keyframes hapticPulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(0.95); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 /* === RESPONSIVE TOUCH TARGETS === */
@@ -431,10 +439,10 @@ input[type="radio"]:checked::after {
 /* Small Mobile Devices (320px+) */
 @media (max-width: 375px) {
   :root {
-    --touch-target-minimum: 48px;      /* Larger on small screens */
-    --touch-spacing-minimum: 12px;     /* More spacing */
+    --touch-target-minimum: 48px; /* Larger on small screens */
+    --touch-spacing-minimum: 12px; /* More spacing */
   }
-  
+
   .btn-primary,
   .button-primary {
     min-width: var(--touch-target-extra-large);
@@ -442,7 +450,7 @@ input[type="radio"]:checked::after {
     font-size: 18px;
     padding: 16px 32px;
   }
-  
+
   .nav-link,
   .navigation-item {
     min-height: var(--touch-target-large);
@@ -516,12 +524,12 @@ input[type="radio"]:checked::after {
     border-width: 2px;
     border-style: solid;
   }
-  
+
   .btn-primary,
   .button-primary {
     border: 2px solid var(--text-inverse);
   }
-  
+
   .btn-secondary,
   .button-secondary {
     border: 2px solid var(--text-primary);
@@ -578,11 +586,11 @@ input[type="radio"]:checked::after {
 
 /* Material Design 3.0 Touch Target Specifications */
 .md-touch-target {
-  min-width: 48px;  /* Material Design minimum */
+  min-width: 48px; /* Material Design minimum */
   min-height: 48px;
-  margin: 4px;      /* Material Design spacing */
+  margin: 4px; /* Material Design spacing */
   border-radius: 12px; /* Material Design corner radius */
-  transition: all 200ms cubic-bezier(0.2, 0.0, 0.0, 1.0); /* Material easing */
+  transition: all 200ms cubic-bezier(0.2, 0, 0, 1); /* Material easing */
 }
 
 /* === TOUCH TARGET VALIDATION === */

@@ -88,14 +88,14 @@ export function useChat(options: UseChatOptions = {}): UseChatReturn {
     apiUrl = '/api/ai/chat',
     fallbackApiUrl = 'http://localhost:5002/api/ai/chat',
     maxRetries = 3,
-    retryDelay = 1000
+    retryDelay = 1000,
   } = options;
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<ChatError | null>(null);
   const [isConnected, setIsConnected] = useState(true);
-  
+
   const lastMessageRef = useRef<string>('');
   const retryCountRef = useRef(0);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -113,7 +113,7 @@ export function useChat(options: UseChatOptions = {}): UseChatReturn {
     setMessages(prev => {
       const lastIndex = prev.length - 1;
       if (lastIndex < 0) return prev;
-      
+
       const updatedMessages = [...prev];
       updatedMessages[lastIndex] = { ...updatedMessages[lastIndex], ...updates };
       return updatedMessages;
@@ -141,7 +141,7 @@ export function useChat(options: UseChatOptions = {}): UseChatReturn {
       }
 
       const data = await response.json();
-      
+
       if (!data.success) {
         throw new Error(data.message || 'API request failed');
       }
@@ -156,8 +156,8 @@ export function useChat(options: UseChatOptions = {}): UseChatReturn {
     try {
       // Build conversation history
       const conversationHistory = messages.map(msg => ({
-        role: msg.type === 'user' ? 'user' : 'assistant' as const,
-        content: msg.content
+        role: msg.type === 'user' ? 'user' : ('assistant' as const),
+        content: msg.content,
       }));
 
       const request: ChatRequest = {
@@ -173,7 +173,7 @@ export function useChat(options: UseChatOptions = {}): UseChatReturn {
       for (const endpoint of endpoints) {
         try {
           const response = await callApi(endpoint, request);
-          
+
           // Create AI response message with talents
           const aiMessage: ChatMessage = {
             id: `ai-${Date.now()}`,
@@ -190,7 +190,6 @@ export function useChat(options: UseChatOptions = {}): UseChatReturn {
           setIsConnected(true);
           retryCountRef.current = 0;
           return;
-
         } catch (apiError) {
           console.warn(`API call failed for ${endpoint}:`, apiError);
           lastError = apiError as Error;
@@ -200,25 +199,26 @@ export function useChat(options: UseChatOptions = {}): UseChatReturn {
 
       // If all endpoints failed, throw the last error
       throw lastError || new Error('All API endpoints failed');
-
     } catch (err) {
       console.error('Send message error:', err);
-      
+
       if (retryCount < maxRetries) {
         await sleep(retryDelay * Math.pow(2, retryCount)); // Exponential backoff
         return sendMessageWithRetry(messageContent, retryCount + 1);
       }
 
       // Max retries exceeded
-      const errorType: ChatError['type'] = 
-        err instanceof Error && err.message.includes('fetch') ? 'network' :
-        err instanceof Error && err.message.includes('HTTP') ? 'api' :
-        'unknown';
+      const errorType: ChatError['type'] =
+        err instanceof Error && err.message.includes('fetch')
+          ? 'network'
+          : err instanceof Error && err.message.includes('HTTP')
+            ? 'api'
+            : 'unknown';
 
       const chatError: ChatError = {
         message: err instanceof Error ? err.message : 'Unknown error occurred',
         type: errorType,
-        details: err
+        details: err,
       };
 
       setError(chatError);
@@ -227,70 +227,76 @@ export function useChat(options: UseChatOptions = {}): UseChatReturn {
       // Add error message to chat
       const errorMessage: ChatMessage = {
         id: `error-${Date.now()}`,
-        content: "I'm sorry, I'm having trouble connecting right now. Please check your connection and try again.",
+        content:
+          "I'm sorry, I'm having trouble connecting right now. Please check your connection and try again.",
         type: 'ai',
         timestamp: new Date(),
         suggestions: [
-          "Check your internet connection",
-          "Try rephrasing your question",
-          "Wait a moment and try again"
-        ]
+          'Check your internet connection',
+          'Try rephrasing your question',
+          'Wait a moment and try again',
+        ],
       };
 
       addMessage(errorMessage);
     }
   };
 
-  const sendMessage = useCallback(async (messageContent: string) => {
-    if (!messageContent.trim() || isLoading) return;
+  const sendMessage = useCallback(
+    async (messageContent: string) => {
+      if (!messageContent.trim() || isLoading) return;
 
-    // Cancel any ongoing request
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-    }
+      // Cancel any ongoing request
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
 
-    const trimmedMessage = messageContent.trim();
-    lastMessageRef.current = trimmedMessage;
+      const trimmedMessage = messageContent.trim();
+      lastMessageRef.current = trimmedMessage;
 
-    // Add user message
-    const userMessage: ChatMessage = {
-      id: `user-${Date.now()}`,
-      content: trimmedMessage,
-      type: 'user',
-      timestamp: new Date(),
-      userName: 'You'
-    };
+      // Add user message
+      const userMessage: ChatMessage = {
+        id: `user-${Date.now()}`,
+        content: trimmedMessage,
+        type: 'user',
+        timestamp: new Date(),
+        userName: 'You',
+      };
 
-    addMessage(userMessage);
-    setIsLoading(true);
-    setError(null);
+      addMessage(userMessage);
+      setIsLoading(true);
+      setError(null);
 
-    // Add typing indicator
-    const typingMessage: ChatMessage = {
-      id: `typing-${Date.now()}`,
-      content: '',
-      type: 'ai',
-      timestamp: new Date(),
-      isTyping: true
-    };
+      // Add typing indicator
+      const typingMessage: ChatMessage = {
+        id: `typing-${Date.now()}`,
+        content: '',
+        type: 'ai',
+        timestamp: new Date(),
+        isTyping: true,
+      };
 
-    addMessage(typingMessage);
+      addMessage(typingMessage);
 
-    try {
-      await sendMessageWithRetry(trimmedMessage);
-    } finally {
-      setIsLoading(false);
-      // Remove typing indicator
-      setMessages(prev => prev.filter(msg => !msg.isTyping));
-    }
-  }, [isLoading, messages, apiUrl, fallbackApiUrl, maxRetries, retryDelay]);
+      try {
+        await sendMessageWithRetry(trimmedMessage);
+      } finally {
+        setIsLoading(false);
+        // Remove typing indicator
+        setMessages(prev => prev.filter(msg => !msg.isTyping));
+      }
+    },
+    [isLoading, messages, apiUrl, fallbackApiUrl, maxRetries, retryDelay]
+  );
 
   const retryLastMessage = useCallback(async () => {
     if (!lastMessageRef.current || isLoading) return;
-    
+
     // Remove the last error message if it exists
     setMessages(prev => {
-      const filtered = prev.filter(msg => msg.type !== 'ai' || !msg.content.includes('trouble connecting'));
+      const filtered = prev.filter(
+        msg => msg.type !== 'ai' || !msg.content.includes('trouble connecting')
+      );
       return filtered;
     });
 
@@ -304,7 +310,7 @@ export function useChat(options: UseChatOptions = {}): UseChatReturn {
     sendMessage,
     clearMessages,
     retryLastMessage,
-    isConnected
+    isConnected,
   };
 }
 

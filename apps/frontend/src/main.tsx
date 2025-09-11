@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import CastingDirectorApp from './CastingDirectorDashboard.tsx';
+import ProjectManagementApp from './ProjectManagementApp.tsx';
 import AIChatApp from './AIChatApp.tsx';
-import { MessageCircle, LayoutDashboard, Settings, LogOut } from 'lucide-react';
+import { MessageCircle, LayoutDashboard, Film, Settings, LogOut } from 'lucide-react';
 import '../app/globals.css';
 
 function MainApp() {
-  const [activeView, setActiveView] = useState<'dashboard' | 'chat' | 'auth'>('dashboard');
+  const [activeView, setActiveView] = useState<'dashboard' | 'projects' | 'chat' | 'auth'>(
+    'dashboard'
+  );
 
   const navigation = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, component: CastingDirectorApp },
+    { id: 'projects', label: 'Projects', icon: Film, component: ProjectManagementApp },
     { id: 'chat', label: 'AI Assistant', icon: MessageCircle, component: AIChatApp },
   ];
 
@@ -17,7 +21,8 @@ function MainApp() {
     return <AIChatApp />;
   }
 
-  const ActiveComponent = navigation.find(nav => nav.id === activeView)?.component || CastingDirectorApp;
+  const ActiveComponent =
+    navigation.find(nav => nav.id === activeView)?.component || CastingDirectorApp;
 
   return (
     <div className="min-h-screen bg-slate-900">
@@ -28,12 +33,12 @@ function MainApp() {
             <div className="flex items-center space-x-8">
               <div className="text-2xl font-bold text-blue-400">🎬 CastMatch</div>
               <div className="flex space-x-4">
-                {navigation.map((nav) => {
+                {navigation.map(nav => {
                   const Icon = nav.icon;
                   return (
                     <button
                       key={nav.id}
-                      onClick={() => setActiveView(nav.id as 'dashboard' | 'chat')}
+                      onClick={() => setActiveView(nav.id as 'dashboard' | 'projects' | 'chat')}
                       className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                         activeView === nav.id
                           ? 'bg-slate-700 text-white'
@@ -50,7 +55,9 @@ function MainApp() {
             <div className="flex items-center space-x-4">
               <button className="relative p-2 text-slate-400 hover:text-white">
                 <MessageCircle className="h-6 w-6" />
-                <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">3</span>
+                <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
+                  3
+                </span>
               </button>
               <div className="h-8 w-8 bg-blue-600 rounded-full flex items-center justify-center">
                 <span className="text-white text-sm font-semibold">RK</span>
@@ -69,5 +76,5 @@ function MainApp() {
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <MainApp />
-  </React.StrictMode>,
+  </React.StrictMode>
 );

@@ -86,8 +86,8 @@ export default function Pricing() {
             Simple, Transparent Pricing
           </h2>
           <p className="text-xl text-gray-400 max-w-3xl mx-auto mb-8">
-            Choose the perfect plan for your casting needs. 
-            All plans include our core AI features with no hidden fees.
+            Choose the perfect plan for your casting needs. All plans include our core AI features
+            with no hidden fees.
           </p>
 
           {/* Billing Toggle */}
@@ -99,7 +99,7 @@ export default function Pricing() {
               isSelected={isYearly}
               onValueChange={setIsYearly}
               classNames={{
-                wrapper: "bg-gray-700 group-data-[selected=true]:bg-teal-600",
+                wrapper: 'bg-gray-700 group-data-[selected=true]:bg-teal-600',
               }}
             />
             <span className={`text-sm font-medium ${isYearly ? 'text-white' : 'text-gray-400'}`}>
@@ -133,24 +133,22 @@ export default function Pricing() {
                 </div>
               )}
 
-              <Card className={`h-full relative overflow-hidden ${
-                plan.popular 
-                  ? 'bg-gradient-to-br from-teal-900/20 to-gray-900/50 border-2 border-teal-500/50' 
-                  : 'bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50'
-              } backdrop-blur-sm hover:border-gray-600/50 transition-all duration-300`}>
+              <Card
+                className={`h-full relative overflow-hidden ${
+                  plan.popular
+                    ? 'bg-gradient-to-br from-teal-900/20 to-gray-900/50 border-2 border-teal-500/50'
+                    : 'bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700/50'
+                } backdrop-blur-sm hover:border-gray-600/50 transition-all duration-300`}
+              >
                 {plan.popular && (
                   <div className="absolute inset-0 bg-gradient-to-r from-teal-500/10 to-transparent pointer-events-none" />
                 )}
-                
+
                 <CardBody className="p-8 relative z-10">
                   {/* Plan Header */}
                   <div className="text-center mb-8">
-                    <h3 className="text-2xl font-bold text-white mb-2">
-                      {plan.name}
-                    </h3>
-                    <p className="text-gray-400 text-sm mb-6">
-                      {plan.description}
-                    </p>
+                    <h3 className="text-2xl font-bold text-white mb-2">{plan.name}</h3>
+                    <p className="text-gray-400 text-sm mb-6">{plan.description}</p>
 
                     {/* Price */}
                     <div className="space-y-2">
@@ -181,14 +179,14 @@ export default function Pricing() {
                         viewport={{ once: true }}
                         className="flex items-center gap-3"
                       >
-                        <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${
-                          plan.popular ? 'bg-teal-500' : 'bg-gray-600'
-                        }`}>
+                        <div
+                          className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${
+                            plan.popular ? 'bg-teal-500' : 'bg-gray-600'
+                          }`}
+                        >
                           <CheckIcon className="w-3 h-3 text-white" />
                         </div>
-                        <span className="text-gray-300 text-sm">
-                          {feature}
-                        </span>
+                        <span className="text-gray-300 text-sm">{feature}</span>
                       </motion.div>
                     ))}
                   </div>
@@ -222,27 +220,25 @@ export default function Pricing() {
           viewport={{ once: true }}
           className="mt-20 text-center"
         >
-          <h3 className="text-2xl font-bold text-white mb-6">
-            Frequently Asked Questions
-          </h3>
+          <h3 className="text-2xl font-bold text-white mb-6">Frequently Asked Questions</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
             {[
               {
-                q: "Can I change my plan anytime?",
-                a: "Yes, you can upgrade or downgrade your plan at any time. Changes take effect immediately."
+                q: 'Can I change my plan anytime?',
+                a: 'Yes, you can upgrade or downgrade your plan at any time. Changes take effect immediately.',
               },
               {
-                q: "Is there a free trial?",
-                a: "Yes! Professional and Enterprise plans come with a 14-day free trial. No credit card required."
+                q: 'Is there a free trial?',
+                a: 'Yes! Professional and Enterprise plans come with a 14-day free trial. No credit card required.',
               },
               {
-                q: "What payment methods do you accept?",
-                a: "We accept all major credit cards, PayPal, and bank transfers for Enterprise customers."
+                q: 'What payment methods do you accept?',
+                a: 'We accept all major credit cards, PayPal, and bank transfers for Enterprise customers.',
               },
               {
-                q: "Do you offer custom enterprise solutions?",
-                a: "Absolutely! Contact our sales team to discuss custom features and pricing for large organizations."
-              }
+                q: 'Do you offer custom enterprise solutions?',
+                a: 'Absolutely! Contact our sales team to discuss custom features and pricing for large organizations.',
+              },
             ].map((faq, index) => (
               <div key={index} className="text-left">
                 <h4 className="font-semibold text-white mb-2">{faq.q}</h4>

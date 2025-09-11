@@ -2,7 +2,12 @@
 
 import React, { useState } from 'react';
 import { Card, CardBody, Button, Input } from '@heroui/react';
-import { ArrowLeftIcon, EnvelopeIcon, CheckCircleIcon, FilmIcon } from '@heroicons/react/24/outline';
+import {
+  ArrowLeftIcon,
+  EnvelopeIcon,
+  CheckCircleIcon,
+  FilmIcon,
+} from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 
@@ -18,20 +23,20 @@ export default function ForgotPasswordPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!email) {
       setError('Email is required');
       return;
     }
-    
+
     if (!validateEmail(email)) {
       setError('Please enter a valid email address');
       return;
     }
-    
+
     setError('');
     setIsLoading(true);
-    
+
     try {
       // Simulate API call for password reset
       await new Promise(resolve => setTimeout(resolve, 2000));
@@ -87,10 +92,8 @@ export default function ForgotPasswordPage() {
                     </div>
                     <span className="font-bold text-2xl text-white">CastMatch</span>
                   </motion.div>
-                  
-                  <h1 className="text-2xl font-bold text-white mb-2">
-                    Forgot Password?
-                  </h1>
+
+                  <h1 className="text-2xl font-bold text-white mb-2">Forgot Password?</h1>
                   <p className="text-gray-400 text-sm">
                     No worries! Enter your email and we'll send you a reset link.
                   </p>
@@ -108,16 +111,15 @@ export default function ForgotPasswordPage() {
                     type="email"
                     label="Email Address"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={e => setEmail(e.target.value)}
                     isInvalid={!!error}
                     errorMessage={error}
-                    startContent={
-                      <EnvelopeIcon className="w-4 h-4 text-gray-400 flex-shrink-0" />
-                    }
+                    startContent={<EnvelopeIcon className="w-4 h-4 text-gray-400 flex-shrink-0" />}
                     classNames={{
-                      input: "text-white",
-                      inputWrapper: "bg-gray-700/50 border-gray-600 data-[hover=true]:border-gray-500 group-data-[focus=true]:border-teal-500",
-                      label: "text-gray-300",
+                      input: 'text-white',
+                      inputWrapper:
+                        'bg-gray-700/50 border-gray-600 data-[hover=true]:border-gray-500 group-data-[focus=true]:border-teal-500',
+                      label: 'text-gray-300',
                     }}
                   />
 
@@ -161,21 +163,17 @@ export default function ForgotPasswordPage() {
                       <CheckCircleIcon className="w-8 h-8 text-white" />
                     </div>
                   </motion.div>
-                  
+
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4, duration: 0.5 }}
                   >
-                    <h1 className="text-2xl font-bold text-white mb-2">
-                      Check Your Email
-                    </h1>
+                    <h1 className="text-2xl font-bold text-white mb-2">Check Your Email</h1>
                     <p className="text-gray-400 text-sm mb-6">
                       We've sent a password reset link to
                     </p>
-                    <p className="text-white font-medium mb-8">
-                      {email}
-                    </p>
+                    <p className="text-white font-medium mb-8">{email}</p>
                   </motion.div>
 
                   {/* Instructions */}
@@ -186,9 +184,7 @@ export default function ForgotPasswordPage() {
                     className="space-y-4 mb-8"
                   >
                     <div className="bg-gray-800/30 border border-gray-700/50 rounded-lg p-4">
-                      <h3 className="text-white font-medium mb-2 text-sm">
-                        What's next?
-                      </h3>
+                      <h3 className="text-white font-medium mb-2 text-sm">What's next?</h3>
                       <ul className="text-gray-400 text-xs space-y-1 text-left">
                         <li>• Check your email inbox</li>
                         <li>• Click the reset link in the email</li>

@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { Button } from "@heroui/react";
-import MessageBubble from "../Shared/MessageBubble";
-import TalentGrid from "./TalentGrid";
+import { Button } from '@heroui/react';
+import MessageBubble from '../Shared/MessageBubble';
+import TalentGrid from './TalentGrid';
 
 interface Message {
   id: string;
-  type: "user" | "ai";
+  type: 'user' | 'ai';
   content: string;
   timestamp?: string;
   talentCards?: any[];
@@ -19,23 +19,23 @@ interface ChatInterfaceProps {
 }
 
 const quickActions = [
-  { id: "find-male-lead", label: "Find Male Lead", icon: "👤" },
-  { id: "schedule-auditions", label: "Schedule Auditions", icon: "📅" },
-  { id: "analyze-script", label: "Analyze Script", icon: "📝" },
-  { id: "budget-planning", label: "Budget Planning", icon: "💰" }
+  { id: 'find-male-lead', label: 'Find Male Lead', icon: '👤' },
+  { id: 'schedule-auditions', label: 'Schedule Auditions', icon: '📅' },
+  { id: 'analyze-script', label: 'Analyze Script', icon: '📝' },
+  { id: 'budget-planning', label: 'Budget Planning', icon: '💰' },
 ];
 
-export default function ChatInterface({ 
-  messages, 
+export default function ChatInterface({
+  messages,
   isLoading = false,
-  onQuickAction 
+  onQuickAction,
 }: ChatInterfaceProps) {
   const handleViewPortfolio = (talentId: string) => {
-    console.log("View portfolio:", talentId);
+    console.log('View portfolio:', talentId);
   };
 
   const handleBookAudition = (talentId: string) => {
-    console.log("Book audition:", talentId);
+    console.log('Book audition:', talentId);
   };
 
   return (
@@ -47,19 +47,19 @@ export default function ChatInterface({
             <div className="w-20 h-20 bg-gradient-to-br from-gray-700 to-gray-900 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg">
               <span className="text-white font-bold text-2xl">AI</span>
             </div>
-            
+
             <h2 className="text-3xl font-semibold text-gray-900 mb-4">
               Welcome to your AI Casting Assistant
             </h2>
-            
+
             <p className="text-gray-600 text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
-              Find perfect talent for Mumbai Dreams. Ask about actors, schedule auditions, 
-              or analyze scripts. Your AI assistant is ready to help.
+              Find perfect talent for Mumbai Dreams. Ask about actors, schedule auditions, or
+              analyze scripts. Your AI assistant is ready to help.
             </p>
-            
+
             {/* Quick Action Buttons */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
-              {quickActions.map((action) => (
+              {quickActions.map(action => (
                 <Button
                   key={action.id}
                   variant="bordered"
@@ -68,9 +68,7 @@ export default function ChatInterface({
                   onClick={() => onQuickAction?.(action.id)}
                 >
                   <span className="text-2xl">{action.icon}</span>
-                  <span className="text-sm font-medium text-gray-700">
-                    {action.label}
-                  </span>
+                  <span className="text-sm font-medium text-gray-700">{action.label}</span>
                 </Button>
               ))}
             </div>
@@ -78,14 +76,14 @@ export default function ChatInterface({
         ) : (
           /* Messages */
           <div className="space-y-8">
-            {messages.map((message) => (
+            {messages.map(message => (
               <div key={message.id}>
                 <MessageBubble
                   type={message.type}
                   content={message.content}
                   timestamp={message.timestamp}
                 />
-                
+
                 {/* Talent Cards */}
                 {message.talentCards && message.talentCards.length > 0 && (
                   <div className="mt-6">
@@ -98,7 +96,7 @@ export default function ChatInterface({
                 )}
               </div>
             ))}
-            
+
             {/* Loading Indicator */}
             {isLoading && (
               <div className="flex justify-start">
@@ -108,9 +106,18 @@ export default function ChatInterface({
                   </div>
                   <div className="bg-white border border-gray-200 rounded-2xl px-4 py-3 shadow-sm">
                     <div className="flex items-center gap-1">
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                      <div
+                        className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                        style={{ animationDelay: '0ms' }}
+                      ></div>
+                      <div
+                        className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                        style={{ animationDelay: '150ms' }}
+                      ></div>
+                      <div
+                        className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                        style={{ animationDelay: '300ms' }}
+                      ></div>
                     </div>
                   </div>
                 </div>

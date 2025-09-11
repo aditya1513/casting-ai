@@ -37,7 +37,7 @@ export function useChatQuery({
   conversationId,
   enabled = true,
   onMessageReceived,
-  onStreamChunk
+  onStreamChunk,
 }: UseChatQueryOptions) {
   const queryClient = useQueryClient();
   const [isStreaming, setIsStreaming] = useState(false);
@@ -52,7 +52,7 @@ export function useChatQuery({
     isFetching,
     isFetchingNextPage,
     status,
-    refetch
+    refetch,
   } = useInfiniteQuery({
     queryKey: ['messages', conversationId],
     queryFn: async ({ pageParam = null }) => {
@@ -63,18 +63,18 @@ export function useChatQuery({
       const response = await fetch(
         `/api/conversations/${conversationId}/messages?${params.toString()}`
       );
-      
+
       if (!response.ok) {
         throw new Error('Failed to fetch messages');
       }
-      
+
       return response.json() as Promise<MessagesResponse>;
     },
-    getNextPageParam: (lastPage) => lastPage.nextCursor,
+    getNextPageParam: lastPage => lastPage.nextCursor,
     enabled: enabled && !!conversationId,
     staleTime: 1000 * 60 * 5, // 5 minutes
     gcTime: 1000 * 60 * 10, // 10 minutes
-    initialPageParam: null
+    initialPageParam: null,
   });
 
   // Flatten all pages of messages
@@ -88,7 +88,7 @@ export function useChatQuery({
         content,
         type: 'user',
         timestamp: new Date(),
-        userName: 'You'
+        userName: 'You',
       };
 
       const tempAiMessageId = `temp-ai-${Date.now()}`;
@@ -97,30 +97,26 @@ export function useChatQuery({
         content: '',
         type: 'ai',
         timestamp: new Date(),
-        isTyping: true
+        isTyping: true,
       };
 
       // Optimistically add messages
       queryClient.setQueryData(['messages', conversationId], (oldData: any) => {
         if (!oldData) return oldData;
-        
+
         const newPages = [...oldData.pages];
         const lastPageIndex = newPages.length - 1;
-        
+
         if (lastPageIndex >= 0) {
           newPages[lastPageIndex] = {
             ...newPages[lastPageIndex],
-            messages: [
-              ...newPages[lastPageIndex].messages,
-              tempUserMessage,
-              tempAiMessage
-            ]
+            messages: [...newPages[lastPageIndex].messages, tempUserMessage, tempAiMessage],
           };
         }
-        
+
         return {
           ...oldData,
-          pages: newPages
+          pages: newPages,
         };
       });
 
@@ -136,8 +132,8 @@ export function useChatQuery({
           body: JSON.stringify({
             message: content,
             conversationId,
-            stream: true
-          })
+            stream: true,
+          }),
         });
 
         if (!response.ok) {
@@ -156,14 +152,14 @@ export function useChatQuery({
 
             const chunk = decoder.decode(value, { stream: true });
             accumulatedContent += chunk;
-            
+
             // Update the AI message content
             queryClient.setQueryData(['messages', conversationId], (oldData: any) => {
               if (!oldData) return oldData;
-              
+
               const newPages = [...oldData.pages];
               const lastPageIndex = newPages.length - 1;
-              
+
               if (lastPageIndex >= 0) {
                 newPages[lastPageIndex] = {
                   ...newPages[lastPageIndex],
@@ -171,13 +167,13 @@ export function useChatQuery({
                     msg.id === tempAiMessageId
                       ? { ...msg, content: accumulatedContent, isTyping: false }
                       : msg
-                  )
+                  ),
                 };
               }
-              
+
               return {
                 ...oldData,
-                pages: newPages
+                pages: newPages,
               };
             });
 
@@ -187,14 +183,14 @@ export function useChatQuery({
           // Parse final response
           try {
             const finalResponse: ChatResponse = JSON.parse(accumulatedContent);
-            
+
             // Update with final structured data
             queryClient.setQueryData(['messages', conversationId], (oldData: any) => {
               if (!oldData) return oldData;
-              
+
               const newPages = [...oldData.pages];
               const lastPageIndex = newPages.length - 1;
-              
+
               if (lastPageIndex >= 0) {
                 newPages[lastPageIndex] = {
                   ...newPages[lastPageIndex],
@@ -206,16 +202,16 @@ export function useChatQuery({
                           talents: finalResponse.data.talents,
                           suggestions: finalResponse.data.suggestions,
                           action_type: finalResponse.data.action_type,
-                          isTyping: false
+                          isTyping: false,
                         }
                       : msg
-                  )
+                  ),
                 };
               }
-              
+
               return {
                 ...oldData,
-                pages: newPages
+                pages: newPages,
               };
             });
 
@@ -226,11 +222,11 @@ export function useChatQuery({
               timestamp: new Date(),
               talents: finalResponse.data.talents,
               suggestions: finalResponse.data.suggestions,
-              action_type: finalResponse.data.action_type as any
+              action_type: finalResponse.data.action_type as any,
             };
 
             onMessageReceived?.(finalMessage);
-            
+
             return finalResponse;
           } catch (e) {
             // If not JSON, treat as plain text response
@@ -238,14 +234,14 @@ export function useChatQuery({
               id: tempAiMessageId,
               content: accumulatedContent,
               type: 'ai',
-              timestamp: new Date()
+              timestamp: new Date(),
             };
 
             onMessageReceived?.(finalMessage);
-            
+
             return {
               success: true,
-              data: { message: accumulatedContent }
+              data: { message: accumulatedContent },
             };
           }
         }
@@ -256,40 +252,45 @@ export function useChatQuery({
         setStreamingMessageId(null);
       }
     },
-    onError: (error) => {
+    onError: error => {
       toast.error('Failed to send message. Please try again.');
       console.error('Send message error:', error);
-      
+
       // Revert optimistic update
       queryClient.invalidateQueries({ queryKey: ['messages', conversationId] });
-    }
+    },
   });
 
   // Clear messages
   const clearMessages = useCallback(() => {
     queryClient.setQueryData(['messages', conversationId], {
-      pages: [{
-        messages: [],
-        nextCursor: null,
-        hasMore: false,
-        total: 0
-      }],
-      pageParams: [null]
+      pages: [
+        {
+          messages: [],
+          nextCursor: null,
+          hasMore: false,
+          total: 0,
+        },
+      ],
+      pageParams: [null],
     });
   }, [conversationId, queryClient]);
 
   // Mark messages as read
-  const markAsRead = useCallback(async (messageIds: string[]) => {
-    try {
-      await fetch(`/api/conversations/${conversationId}/read`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messageIds })
-      });
-    } catch (error) {
-      console.error('Failed to mark messages as read:', error);
-    }
-  }, [conversationId]);
+  const markAsRead = useCallback(
+    async (messageIds: string[]) => {
+      try {
+        await fetch(`/api/conversations/${conversationId}/read`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messageIds }),
+        });
+      } catch (error) {
+        console.error('Failed to mark messages as read:', error);
+      }
+    },
+    [conversationId]
+  );
 
   // Listen for external message events (WebSocket)
   useEffect(() => {
@@ -297,23 +298,23 @@ export function useChatQuery({
       if (event.detail.conversationId === conversationId) {
         queryClient.setQueryData(['messages', conversationId], (oldData: any) => {
           if (!oldData) return oldData;
-          
+
           const newPages = [...oldData.pages];
           const lastPageIndex = newPages.length - 1;
-          
+
           if (lastPageIndex >= 0) {
             newPages[lastPageIndex] = {
               ...newPages[lastPageIndex],
-              messages: [...newPages[lastPageIndex].messages, event.detail]
+              messages: [...newPages[lastPageIndex].messages, event.detail],
             };
           }
-          
+
           return {
             ...oldData,
-            pages: newPages
+            pages: newPages,
           };
         });
-        
+
         onMessageReceived?.(event.detail);
       }
     };
@@ -336,7 +337,7 @@ export function useChatQuery({
     clearMessages,
     markAsRead,
     refetch,
-    isConnected: true // This could be connected to WebSocket status
+    isConnected: true, // This could be connected to WebSocket status
   };
 }
 

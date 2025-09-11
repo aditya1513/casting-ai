@@ -8,7 +8,7 @@ import {
   ChatContainer,
   ChatErrorBoundary,
   WebSocketProvider,
-  PerformanceDashboard
+  PerformanceDashboard,
 } from '@/app/components/chat/index.optimized';
 import { AuthProvider } from '@/lib/auth-context';
 
@@ -20,13 +20,13 @@ const queryClient = new QueryClient({
       gcTime: 1000 * 60 * 10, // 10 minutes
       refetchOnWindowFocus: false,
       retry: 3,
-      retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000)
+      retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
     },
     mutations: {
       retry: 2,
-      retryDelay: 1000
-    }
-  }
+      retryDelay: 1000,
+    },
+  },
 });
 
 export default function OptimizedChatPage() {
@@ -42,9 +42,9 @@ export default function OptimizedChatPage() {
     onAddToShortlist: (talentId: string) => {
       console.log('Add to shortlist:', talentId);
       // Add to shortlist
-    }
+    },
   };
-  
+
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
@@ -57,14 +57,12 @@ export default function OptimizedChatPage() {
           >
             <div className="chat-page">
               <div className="chat-page__header">
-                <h1 className="chat-page__title">
-                  CastMatch AI Chat - Optimized Version
-                </h1>
+                <h1 className="chat-page__title">CastMatch AI Chat - Optimized Version</h1>
                 <p className="chat-page__subtitle">
                   Experience blazing-fast chat with improved performance and reliability
                 </p>
               </div>
-              
+
               <div className="chat-page__container">
                 <ChatContainer
                   conversationId="optimized-chat"
@@ -74,23 +72,17 @@ export default function OptimizedChatPage() {
                   className="chat-page__chat"
                 />
               </div>
-              
+
               {/* Performance Dashboard - Only in development */}
               <PerformanceDashboard
                 show={process.env.NODE_ENV === 'development'}
                 position="bottom-right"
                 compact={false}
               />
-              
+
               {/* Toast notifications */}
-              <Toaster
-                position="top-center"
-                richColors
-                closeButton
-                duration={4000}
-                theme="dark"
-              />
-              
+              <Toaster position="top-center" richColors closeButton duration={4000} theme="dark" />
+
               {/* React Query Devtools - Only in development */}
               {process.env.NODE_ENV === 'development' && (
                 <ReactQueryDevtools initialIsOpen={false} position="bottom-left" />
@@ -99,7 +91,7 @@ export default function OptimizedChatPage() {
           </ChatErrorBoundary>
         </WebSocketProvider>
       </AuthProvider>
-      
+
       <style jsx>{`
         .chat-page {
           display: flex;

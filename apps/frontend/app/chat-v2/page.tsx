@@ -20,7 +20,7 @@ export default function ChatV2Page() {
     onAddToShortlist: (talentId: string) => {
       // Add to shortlist logic
       console.log('Adding to shortlist:', talentId);
-    }
+    },
   };
 
   return (
@@ -32,13 +32,20 @@ export default function ChatV2Page() {
           className="chat-v2-page__back-button"
           aria-label="Go back"
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
             <path d="M19 12H5M12 19l-7-7 7-7" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
-        
+
         <h1 className="chat-v2-page__mobile-title">CastMatch AI</h1>
-        
+
         <ThemeToggleCompact className="chat-v2-page__theme-toggle" />
       </div>
 
@@ -62,32 +69,60 @@ export default function ChatV2Page() {
 
         <nav className="chat-v2-page__nav">
           <h2 className="chat-v2-page__nav-title">Quick Actions</h2>
-          
+
           <button className="chat-v2-page__nav-item chat-v2-page__nav-item--active">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
               <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
             </svg>
             <span>AI Chat</span>
           </button>
-          
+
           <button className="chat-v2-page__nav-item" onClick={() => router.push('/talents')}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
               <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
               <circle cx="9" cy="7" r="4" />
               <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
             </svg>
             <span>Browse Talent</span>
           </button>
-          
+
           <button className="chat-v2-page__nav-item" onClick={() => router.push('/projects')}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
               <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z" />
             </svg>
             <span>My Projects</span>
           </button>
-          
+
           <button className="chat-v2-page__nav-item" onClick={() => router.push('/auditions')}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
               <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
               <line x1="16" y1="2" x2="16" y2="6" />
               <line x1="8" y1="2" x2="8" y2="6" />
@@ -128,24 +163,45 @@ export default function ChatV2Page() {
           </svg>
           <span>Chat</span>
         </button>
-        
+
         <button className="chat-v2-page__mobile-nav-item" onClick={() => router.push('/talents')}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
             <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
             <circle cx="9" cy="7" r="4" />
           </svg>
           <span>Talent</span>
         </button>
-        
+
         <button className="chat-v2-page__mobile-nav-item" onClick={() => router.push('/projects')}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
             <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z" />
           </svg>
           <span>Projects</span>
         </button>
-        
+
         <button className="chat-v2-page__mobile-nav-item" onClick={() => router.push('/profile')}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
             <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
             <circle cx="12" cy="7" r="4" />
           </svg>

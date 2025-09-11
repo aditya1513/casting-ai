@@ -28,7 +28,7 @@ export const trpcClient = trpc.createClient({
 // Hook to create authenticated tRPC client
 export function useTRPCClient() {
   const { getToken } = useAuth();
-  
+
   return trpc.createClient({
     links: [
       httpBatchLink({

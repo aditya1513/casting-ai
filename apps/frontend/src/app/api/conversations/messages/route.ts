@@ -17,9 +17,9 @@ async function tryBackendAgent(content: string, projectId: string, userId: strin
         content,
         conversationId: `demo-${Date.now()}`,
         userId,
-        projectContext: { projectId }
+        projectContext: { projectId },
       }),
-      signal: AbortSignal.timeout(10000) // 10 second timeout
+      signal: AbortSignal.timeout(10000), // 10 second timeout
     });
 
     if (response.ok) {
@@ -27,26 +27,26 @@ async function tryBackendAgent(content: string, projectId: string, userId: strin
       return {
         success: true,
         data,
-        source: 'backend_agents'
+        source: 'backend_agents',
       };
     }
   } catch (error) {
     console.log('Backend agents unavailable, falling back to mock responses');
   }
-  
+
   return { success: false };
 }
 
 // Enhanced Mock Casting Agent (mirrors backend agent capabilities)
 async function generateCastingAgentResponse(content: string, projectId: string) {
   const query = content.toLowerCase();
-  
+
   // Simulate realistic processing time
   await new Promise(resolve => setTimeout(resolve, 1500 + Math.random() * 2000));
-  
+
   // Detect agent intent (matching backend agent system)
   const agentResponse = detectAgentIntent(query, projectId);
-  
+
   return {
     content: agentResponse.response,
     talentCards: agentResponse.talentCards || [],
@@ -54,15 +54,20 @@ async function generateCastingAgentResponse(content: string, projectId: string) 
     metadata: {
       detectedIntent: agentResponse.agentType,
       processingTime: '2.3s',
-      confidence: agentResponse.confidence || 0.95
-    }
+      confidence: agentResponse.confidence || 0.95,
+    },
   };
 }
 
 // Agent Intent Detection (mirrors backend system)
 function detectAgentIntent(query: string, projectId: string = 'mumbai-dreams') {
   // Script Analysis Agent
-  if (query.includes('script') || query.includes('character') || query.includes('breakdown') || query.includes('analyze')) {
+  if (
+    query.includes('script') ||
+    query.includes('character') ||
+    query.includes('breakdown') ||
+    query.includes('analyze')
+  ) {
     return {
       agentType: 'script-analysis',
       confidence: 0.92,
@@ -85,12 +90,19 @@ Please share your script excerpt or character descriptions, and I'll provide:
 - Budget estimates for each role
 - Timeline for casting process
 
-Would you like to upload a script or describe specific characters you need to cast?`
+Would you like to upload a script or describe specific characters you need to cast?`,
     };
   }
 
   // Talent Discovery Agent
-  if (query.includes('find') || query.includes('search') || query.includes('talent') || query.includes('actor') || query.includes('male lead') || query.includes('female lead')) {
+  if (
+    query.includes('find') ||
+    query.includes('search') ||
+    query.includes('talent') ||
+    query.includes('actor') ||
+    query.includes('male lead') ||
+    query.includes('female lead')
+  ) {
     const talentCards = [];
     let responseText = '';
 
@@ -98,99 +110,99 @@ Would you like to upload a script or describe specific characters you need to ca
       responseText = `🎭 **Talent Discovery Agent - Male Lead Search**
 
 Based on your project requirements for **${projectId.replace('-', ' ').toUpperCase()}**, I've identified top male lead candidates:`;
-      
+
       talentCards.push(
         {
           id: 1,
-          name: "Arjun Malhotra",
+          name: 'Arjun Malhotra',
           age: 29,
-          experience: "7 years",
-          location: "Mumbai",
-          specialties: ["Method Acting", "Drama", "Romance", "Commercial"],
-          photo: "/api/placeholder/150/200",
+          experience: '7 years',
+          location: 'Mumbai',
+          specialties: ['Method Acting', 'Drama', 'Romance', 'Commercial'],
+          photo: '/api/placeholder/150/200',
           match: 96,
-          rate: "₹12-18L per project",
-          availability: "Available from next month",
-          languages: ["Hindi", "English", "Punjabi"],
-          training: "FTII Pune Graduate",
+          rate: '₹12-18L per project',
+          availability: 'Available from next month',
+          languages: ['Hindi', 'English', 'Punjabi'],
+          training: 'FTII Pune Graduate',
           recentWork: "Lead role in 'Mumbai Chronicles' (2023)",
-          strengths: ["Strong screen presence", "Versatile performer", "Method acting background"],
-          socialMedia: "2.1M Instagram followers"
+          strengths: ['Strong screen presence', 'Versatile performer', 'Method acting background'],
+          socialMedia: '2.1M Instagram followers',
         },
         {
           id: 2,
-          name: "Vikram Singh",
+          name: 'Vikram Singh',
           age: 32,
-          experience: "9 years", 
-          location: "Mumbai",
-          specialties: ["Drama", "Thriller", "Action", "Web Series"],
-          photo: "/api/placeholder/150/200",
+          experience: '9 years',
+          location: 'Mumbai',
+          specialties: ['Drama', 'Thriller', 'Action', 'Web Series'],
+          photo: '/api/placeholder/150/200',
           match: 91,
-          rate: "₹18-25L per project",
-          availability: "Available from March 2024",
-          languages: ["Hindi", "English", "Marathi", "Gujarati"],
-          training: "NSD New Delhi",
+          rate: '₹18-25L per project',
+          availability: 'Available from March 2024',
+          languages: ['Hindi', 'English', 'Marathi', 'Gujarati'],
+          training: 'NSD New Delhi',
           recentWork: "Critically acclaimed 'Dark Streets' (2023)",
-          strengths: ["Award-winning performances", "High commercial viability", "Strong fan base"],
-          socialMedia: "1.8M Instagram followers"
+          strengths: ['Award-winning performances', 'High commercial viability', 'Strong fan base'],
+          socialMedia: '1.8M Instagram followers',
         },
         {
           id: 3,
-          name: "Rohit Agarwal",
+          name: 'Rohit Agarwal',
           age: 26,
-          experience: "4 years",
-          location: "Mumbai", 
-          specialties: ["Romance", "Youth-oriented", "Commercial", "Comedy"],
-          photo: "/api/placeholder/150/200",
+          experience: '4 years',
+          location: 'Mumbai',
+          specialties: ['Romance', 'Youth-oriented', 'Commercial', 'Comedy'],
+          photo: '/api/placeholder/150/200',
           match: 87,
-          rate: "₹8-12L per project",
-          availability: "Available immediately",
-          languages: ["Hindi", "English", "Bengali"],
-          training: "Mumbai Theatre Workshop",
+          rate: '₹8-12L per project',
+          availability: 'Available immediately',
+          languages: ['Hindi', 'English', 'Bengali'],
+          training: 'Mumbai Theatre Workshop',
           recentWork: "Rising star in 'College Romance 2' (2023)",
-          strengths: ["Fresh face", "Strong youth appeal", "Cost-effective"],
-          socialMedia: "950K Instagram followers"
+          strengths: ['Fresh face', 'Strong youth appeal', 'Cost-effective'],
+          socialMedia: '950K Instagram followers',
         }
       );
     } else if (query.includes('female lead') || query.includes('heroine')) {
       responseText = `🎭 **Talent Discovery Agent - Female Lead Search**
 
 Perfect female lead candidates for **${projectId.replace('-', ' ').toUpperCase()}**:`;
-      
+
       talentCards.push(
         {
           id: 4,
-          name: "Priya Sharma",
+          name: 'Priya Sharma',
           age: 27,
-          experience: "6 years",
-          location: "Mumbai",
-          specialties: ["Drama", "Romance", "Independent Cinema", "Method Acting"],
-          photo: "/api/placeholder/150/200",
+          experience: '6 years',
+          location: 'Mumbai',
+          specialties: ['Drama', 'Romance', 'Independent Cinema', 'Method Acting'],
+          photo: '/api/placeholder/150/200',
           match: 94,
-          rate: "₹15-22L per project", 
-          availability: "Available",
-          languages: ["Hindi", "English", "Tamil", "Telugu"],
+          rate: '₹15-22L per project',
+          availability: 'Available',
+          languages: ['Hindi', 'English', 'Tamil', 'Telugu'],
           training: "Anupam Kher's Actor Prepares",
           recentWork: "National Award nominee 'Silent Voices' (2023)",
-          strengths: ["Critically acclaimed", "Multilingual", "Award-winning talent"],
-          socialMedia: "1.5M Instagram followers"
+          strengths: ['Critically acclaimed', 'Multilingual', 'Award-winning talent'],
+          socialMedia: '1.5M Instagram followers',
         },
         {
           id: 5,
-          name: "Ananya Kapoor",
+          name: 'Ananya Kapoor',
           age: 24,
-          experience: "5 years",
-          location: "Mumbai",
-          specialties: ["Commercial Cinema", "Romance", "Comedy", "Dance"],
-          photo: "/api/placeholder/150/200",
+          experience: '5 years',
+          location: 'Mumbai',
+          specialties: ['Commercial Cinema', 'Romance', 'Comedy', 'Dance'],
+          photo: '/api/placeholder/150/200',
           match: 89,
-          rate: "₹10-16L per project",
-          availability: "Available from February",
-          languages: ["Hindi", "English", "Punjabi"],
-          training: "Shiamak Davar Dance Academy + Acting",
+          rate: '₹10-16L per project',
+          availability: 'Available from February',
+          languages: ['Hindi', 'English', 'Punjabi'],
+          training: 'Shiamak Davar Dance Academy + Acting',
           recentWork: "Box office hit 'Love Actually' (2023)",
-          strengths: ["Commercial appeal", "Dance skills", "High energy performances"],
-          socialMedia: "2.8M Instagram followers"
+          strengths: ['Commercial appeal', 'Dance skills', 'High energy performances'],
+          socialMedia: '2.8M Instagram followers',
         }
       );
     } else {
@@ -219,12 +231,17 @@ What specific talent are you looking for today?`;
       agentType: 'talent-discovery',
       confidence: 0.95,
       response: responseText,
-      talentCards
+      talentCards,
     };
   }
 
   // Audition Scheduling Agent
-  if (query.includes('audition') || query.includes('schedule') || query.includes('appointment') || query.includes('calendar')) {
+  if (
+    query.includes('audition') ||
+    query.includes('schedule') ||
+    query.includes('appointment') ||
+    query.includes('calendar')
+  ) {
     return {
       agentType: 'audition-scheduling',
       confidence: 0.91,
@@ -257,15 +274,20 @@ I'll help optimize your audition scheduling for maximum efficiency:
 2. Specify audition location and requirements
 3. I'll create an optimized schedule with automated notifications
 
-Ready to schedule auditions? Share your talent list!`
+Ready to schedule auditions? Share your talent list!`,
     };
   }
 
-  // Budget Optimization Agent  
-  if (query.includes('budget') || query.includes('cost') || query.includes('pricing') || query.includes('rate')) {
+  // Budget Optimization Agent
+  if (
+    query.includes('budget') ||
+    query.includes('cost') ||
+    query.includes('pricing') ||
+    query.includes('rate')
+  ) {
     return {
-      agentType: 'budget-optimization', 
-      confidence: 0.90,
+      agentType: 'budget-optimization',
+      confidence: 0.9,
       response: `💰 **Budget Optimization Agent Activated**
 
 Here's a comprehensive casting budget analysis for your project:
@@ -296,12 +318,18 @@ Here's a comprehensive casting budget analysis for your project:
 • Consider profit-sharing for budget-conscious projects
 • Use local talent to reduce travel costs
 
-What's your target budget range? I can suggest optimal talent combinations!`
+What's your target budget range? I can suggest optimal talent combinations!`,
     };
   }
 
   // Communication Agent
-  if (query.includes('notify') || query.includes('email') || query.includes('message') || query.includes('contact') || query.includes('follow up')) {
+  if (
+    query.includes('notify') ||
+    query.includes('email') ||
+    query.includes('message') ||
+    query.includes('contact') ||
+    query.includes('follow up')
+  ) {
     return {
       agentType: 'communication',
       confidence: 0.88,
@@ -341,7 +369,7 @@ I'll handle all your casting communication needs efficiently:
 • "Thank you for auditioning, callback details..."
 • "Project update for stakeholders..."
 
-What communication do you need to send out today?`
+What communication do you need to send out today?`,
     };
   }
 
@@ -374,7 +402,7 @@ Hello! I'm your intelligent casting assistant with access to 14 specialized agen
 • "What's the budget for casting this project?"
 • "Send audition confirmations to selected actors"
 
-What aspect of casting can I help you with today? Just describe what you need and I'll activate the right specialist agent! 🎯`
+What aspect of casting can I help you with today? Just describe what you need and I'll activate the right specialist agent! 🎯`,
   };
 }
 
@@ -385,25 +413,21 @@ export async function POST(request: NextRequest) {
 
     // Try backend agents first
     const backendResult = await tryBackendAgent(content, projectId);
-    
+
     if (backendResult.success) {
       return NextResponse.json(backendResult.data);
     }
 
     // Fallback to enhanced mock casting agent
     const mockResponse = await generateCastingAgentResponse(content, projectId);
-    
+
     return NextResponse.json({
       ...mockResponse,
       source: 'mock_agent',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
-
   } catch (error) {
     console.error('Chat API error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

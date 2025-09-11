@@ -12,12 +12,17 @@ import { z } from 'zod';
 // Request validation schema
 const ChatRequestSchema = z.object({
   message: z.string().min(1, 'Message cannot be empty'),
-  conversation_history: z.array(z.object({
-    role: z.enum(['user', 'assistant', 'system']),
-    content: z.string()
-  })).optional().default([]),
+  conversation_history: z
+    .array(
+      z.object({
+        role: z.enum(['user', 'assistant', 'system']),
+        content: z.string(),
+      })
+    )
+    .optional()
+    .default([]),
   user_preferences: z.record(z.any()).optional().default({}),
-  project_id: z.string().optional()
+  project_id: z.string().optional(),
 });
 
 // Simple talent type for response
@@ -53,7 +58,7 @@ class MockAIChatService {
   async processMessage(message: string, context: any): Promise<ChatResponse> {
     // Parse intent from message
     const lowerMessage = message.toLowerCase();
-    
+
     // Mock talent data
     const mockTalents: TalentProfile[] = [
       {
@@ -65,7 +70,7 @@ class MockAIChatService {
         experience: '5 years',
         availability: true,
         headshot_url: 'https://example.com/headshot1.jpg',
-        match_score: 0.92
+        match_score: 0.92,
       },
       {
         id: 'talent_002',
@@ -76,7 +81,7 @@ class MockAIChatService {
         experience: '3 years',
         availability: true,
         headshot_url: 'https://example.com/headshot2.jpg',
-        match_score: 0.85
+        match_score: 0.85,
       },
       {
         id: 'talent_003',
@@ -87,8 +92,8 @@ class MockAIChatService {
         experience: '8 years',
         availability: false,
         headshot_url: 'https://example.com/headshot3.jpg',
-        match_score: 0.78
-      }
+        match_score: 0.78,
+      },
     ];
 
     // Filter based on query
@@ -101,7 +106,7 @@ class MockAIChatService {
     }
 
     if (lowerMessage.includes('dance') || lowerMessage.includes('dancing')) {
-      filteredTalents = filteredTalents.filter(t => 
+      filteredTalents = filteredTalents.filter(t =>
         t.skills.some(skill => skill.toLowerCase().includes('dance'))
       );
       appliedFilters.skills = ['Dancing'];
@@ -109,16 +114,14 @@ class MockAIChatService {
 
     if (lowerMessage.includes('male')) {
       // For demo, assume Rajesh and Arjun are male
-      filteredTalents = filteredTalents.filter(t => 
+      filteredTalents = filteredTalents.filter(t =>
         ['Rajesh Kumar', 'Arjun Patel'].includes(t.name)
       );
     }
 
     if (lowerMessage.includes('female') || lowerMessage.includes('actress')) {
       // For demo, assume Priya is female
-      filteredTalents = filteredTalents.filter(t => 
-        t.name === 'Priya Sharma'
-      );
+      filteredTalents = filteredTalents.filter(t => t.name === 'Priya Sharma');
     }
 
     // Age range parsing
@@ -148,7 +151,7 @@ class MockAIChatService {
       `Try: "Find actors aged 25-35 in Mumbai"`,
       `Or: "Show me available female leads with dance experience"`,
       `Or: "Who are the top comedy actors?"`,
-      `Click on any profile to see more details`
+      `Click on any profile to see more details`,
     ];
 
     return {
@@ -156,7 +159,7 @@ class MockAIChatService {
       talents: filteredTalents.slice(0, 5), // Top 5 results
       suggestions,
       filters_applied: appliedFilters,
-      action_type: actionType
+      action_type: actionType,
     };
   }
 }
@@ -169,7 +172,7 @@ const aiChatService = new MockAIChatService();
  */
 export async function POST(request: NextRequest) {
   const startTime = Date.now();
-  
+
   try {
     // Mock user for demo (in real app, you'd get this from auth)
     const userId = 'demo-user';
@@ -185,7 +188,7 @@ export async function POST(request: NextRequest) {
       userId,
       projectId: project_id,
       conversationHistory: conversation_history,
-      preferences: user_preferences
+      preferences: user_preferences,
     };
 
     // Process the message using Mock AI Chat Service
@@ -196,53 +199,59 @@ export async function POST(request: NextRequest) {
     const metadata = {
       response_time_ms: responseTime,
       talents_searched: chatResponse.talents.length,
-      query_intent: chatResponse.action_type
+      query_intent: chatResponse.action_type,
     };
 
     // Return response
     const response = {
       success: true,
       data: chatResponse,
-      metadata
+      metadata,
     };
 
     return NextResponse.json(response, { status: 200 });
-
   } catch (error) {
     console.error('AI Chat API Error:', error);
 
     // Handle validation errors
     if (error instanceof z.ZodError) {
-      return NextResponse.json({
-        success: false,
-        error: 'Invalid request format',
-        details: error.errors,
-        message: 'Please check your request format and try again'
-      }, { status: 400 });
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Invalid request format',
+          details: error.errors,
+          message: 'Please check your request format and try again',
+        },
+        { status: 400 }
+      );
     }
 
     // Handle other errors
     const responseTime = Date.now() - startTime;
-    return NextResponse.json({
-      success: false,
-      error: 'Internal server error',
-      message: 'I encountered an error processing your request. Please try again.',
-      data: {
-        message: "I'm temporarily unable to process your request. Please try rephrasing your query or try again in a moment.",
-        talents: [],
-        suggestions: [
-          "Try: 'Show me actors in Mumbai aged 25-35'",
-          "Or: 'Find female leads with dance experience'",
-          "Or: 'Who's available for shooting next month?'"
-        ],
-        action_type: 'general' as const
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Internal server error',
+        message: 'I encountered an error processing your request. Please try again.',
+        data: {
+          message:
+            "I'm temporarily unable to process your request. Please try rephrasing your query or try again in a moment.",
+          talents: [],
+          suggestions: [
+            "Try: 'Show me actors in Mumbai aged 25-35'",
+            "Or: 'Find female leads with dance experience'",
+            "Or: 'Who's available for shooting next month?'",
+          ],
+          action_type: 'general' as const,
+        },
+        metadata: {
+          response_time_ms: responseTime,
+          talents_searched: 0,
+          query_intent: 'error',
+        },
       },
-      metadata: {
-        response_time_ms: responseTime,
-        talents_searched: 0,
-        query_intent: 'error'
-      }
-    }, { status: 500 });
+      { status: 500 }
+    );
   }
 }
 
@@ -256,41 +265,39 @@ export async function GET(request: NextRequest) {
 
     if (healthCheck === 'true') {
       // Perform health check
-      const testQuery = "Find actors in Mumbai";
+      const testQuery = 'Find actors in Mumbai';
       const startTime = Date.now();
-      
+
       try {
         const testResponse = await aiChatService.processMessage(testQuery, {
           userId: 'health-check',
-          conversationHistory: []
+          conversationHistory: [],
         });
-        
+
         const responseTime = Date.now() - startTime;
-        
+
         return NextResponse.json({
           status: 'healthy',
           service: 'AI Chat API',
           version: '1.0.0',
-          capabilities: [
-            'talent_search',
-            'recommendations',
-            'script_analysis',
-            'general_queries'
-          ],
+          capabilities: ['talent_search', 'recommendations', 'script_analysis', 'general_queries'],
           health_check: {
             response_time_ms: responseTime,
             database_connected: true,
-            ai_service_available: true
+            ai_service_available: true,
           },
-          last_check: new Date().toISOString()
+          last_check: new Date().toISOString(),
         });
       } catch (healthError) {
-        return NextResponse.json({
-          status: 'unhealthy',
-          service: 'AI Chat API',
-          error: 'Health check failed',
-          details: healthError instanceof Error ? healthError.message : 'Unknown error'
-        }, { status: 503 });
+        return NextResponse.json(
+          {
+            status: 'unhealthy',
+            service: 'AI Chat API',
+            error: 'Health check failed',
+            details: healthError instanceof Error ? healthError.message : 'Unknown error',
+          },
+          { status: 503 }
+        );
       }
     }
 
@@ -301,31 +308,33 @@ export async function GET(request: NextRequest) {
       description: 'Intelligent talent discovery and recommendation service',
       endpoints: {
         'POST /api/ai/chat': 'Process chat messages and get talent recommendations',
-        'GET /api/ai/chat?health=true': 'Health check endpoint'
+        'GET /api/ai/chat?health=true': 'Health check endpoint',
       },
       capabilities: [
         'Natural language talent search',
         'Smart talent recommendations based on project requirements',
         'Script analysis and character-role matching',
         'Conversational interface for casting directors',
-        'Real-time database integration with 100K+ talent profiles'
+        'Real-time database integration with 100K+ talent profiles',
       ],
       supported_queries: [
-        "Find male actors aged 25-35 in Mumbai with dance experience",
-        "Show me available female leads for a romantic comedy",
-        "Who are the top-rated character actors in Bollywood?",
-        "Find talents similar to [specific actor name]",
-        "Analyze this script and suggest suitable cast"
-      ]
+        'Find male actors aged 25-35 in Mumbai with dance experience',
+        'Show me available female leads for a romantic comedy',
+        'Who are the top-rated character actors in Bollywood?',
+        'Find talents similar to [specific actor name]',
+        'Analyze this script and suggest suitable cast',
+      ],
     });
-
   } catch (error) {
     console.error('AI Chat GET API Error:', error);
-    return NextResponse.json({
-      success: false,
-      error: 'Failed to get service information',
-      message: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 });
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Failed to get service information',
+        message: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 500 }
+    );
   }
 }
 

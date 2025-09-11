@@ -12,57 +12,59 @@ async function protectedHandler(req: NextRequest) {
     // Get the access token from Auth0
     const { accessToken } = await getAccessToken(req);
 
-    console.log('Making authenticated request to backend with token:', accessToken ? 'Present' : 'Missing');
+    console.log(
+      'Making authenticated request to backend with token:',
+      accessToken ? 'Present' : 'Missing'
+    );
 
     // Call the backend's protected endpoint with Auth0 token
     const response = await fetch(`${BACKEND_URL}/ai/chat`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${accessToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify({
         message: content,
         projectId,
         preferences: {
-          useRealAgents: true
-        }
+          useRealAgents: true,
+        },
       }),
-      signal: AbortSignal.timeout(15000) // 15 second timeout
+      signal: AbortSignal.timeout(15000), // 15 second timeout
     });
 
     if (!response.ok) {
       console.error('Backend request failed:', response.status, response.statusText);
       const errorData = await response.text();
       console.error('Error response:', errorData);
-      
+
       return NextResponse.json(
-        { 
-          error: 'Backend service unavailable', 
+        {
+          error: 'Backend service unavailable',
           details: `Status: ${response.status}`,
-          fallback: true 
+          fallback: true,
         },
         { status: response.status }
       );
     }
 
     const data = await response.json();
-    
+
     return NextResponse.json({
       ...data,
       source: 'authenticated_backend_agents',
       authenticated: true,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
-
   } catch (error) {
     console.error('Protected chat API error:', error);
-    
+
     return NextResponse.json(
-      { 
+      {
         error: 'Authentication or service error',
         details: error instanceof Error ? error.message : 'Unknown error',
-        fallback: true 
+        fallback: true,
       },
       { status: 500 }
     );

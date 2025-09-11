@@ -1,23 +1,19 @@
-'use client'
+'use client';
 
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { useAuth } from '@/lib/auth-context'
-import { Loader2 } from 'lucide-react'
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/lib/auth-context';
+import { Loader2 } from 'lucide-react';
 
-export default function ProtectedLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
-  const { user, loading, isAuthenticated } = useAuth()
-  const router = useRouter()
+export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
+  const { user, loading, isAuthenticated } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
-      router.push('/login')
+      router.push('/login');
     }
-  }, [loading, isAuthenticated, router])
+  }, [loading, isAuthenticated, router]);
 
   if (loading) {
     return (
@@ -27,12 +23,12 @@ export default function ProtectedLayout({
           <p className="text-slate-400">Loading...</p>
         </div>
       </div>
-    )
+    );
   }
 
   if (!isAuthenticated) {
-    return null
+    return null;
   }
 
-  return <>{children}</>
+  return <>{children}</>;
 }

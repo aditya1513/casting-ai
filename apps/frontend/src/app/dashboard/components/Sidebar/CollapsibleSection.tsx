@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { ChevronDownIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+import { useState } from 'react';
+import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 
 interface CollapsibleSectionProps {
   title: string;
@@ -10,11 +10,11 @@ interface CollapsibleSectionProps {
   defaultExpanded?: boolean;
 }
 
-export default function CollapsibleSection({ 
-  title, 
-  icon, 
-  children, 
-  defaultExpanded = true 
+export default function CollapsibleSection({
+  title,
+  icon,
+  children,
+  defaultExpanded = true,
 }: CollapsibleSectionProps) {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
 
@@ -25,11 +25,7 @@ export default function CollapsibleSection({
         className="w-full flex items-center justify-between px-4 py-2 text-left hover:bg-gray-50 rounded-full transition-colors duration-200 group"
       >
         <div className="flex items-center gap-3">
-          {icon && (
-            <div className="text-gray-400 group-hover:text-gray-600">
-              {icon}
-            </div>
-          )}
+          {icon && <div className="text-gray-400 group-hover:text-gray-600">{icon}</div>}
           <span className="text-sm font-semibold text-gray-500 uppercase tracking-wide">
             {title}
           </span>
@@ -42,8 +38,8 @@ export default function CollapsibleSection({
           )}
         </div>
       </button>
-      
-      <div 
+
+      <div
         className={`overflow-hidden transition-all duration-300 ease-in-out ${
           isExpanded ? 'max-h-96 opacity-100 mt-2' : 'max-h-0 opacity-0'
         }`}

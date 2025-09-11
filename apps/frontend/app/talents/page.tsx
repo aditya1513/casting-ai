@@ -1,84 +1,108 @@
-'use client'
+'use client';
 
-import { useState, useCallback, useEffect } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { Search, SlidersHorizontal, Grid, List, Bookmark, TrendingUp, AlertCircle } from 'lucide-react'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Badge } from '@/components/ui/badge'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog'
-import { Label } from '@/components/ui/label'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { TalentCard } from '@/components/talent/TalentCard'
-import { SearchFilters } from '@/components/talent/SearchFilters'
-import { useTalentSearch, useAutocompleteSuggestions, useSaveSearch } from '@/hooks/use-talents'
-import { TalentSearchParams, Talent } from '@/lib/api-client'
-import { cn } from '@/lib/utils'
-import { useToast } from '@/components/ui/use-toast'
-import { Skeleton } from '@/components/ui/skeleton'
+import { useState, useCallback, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import {
+  Search,
+  SlidersHorizontal,
+  Grid,
+  List,
+  Bookmark,
+  TrendingUp,
+  AlertCircle,
+} from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { TalentCard } from '@/components/talent/TalentCard';
+import { SearchFilters } from '@/components/talent/SearchFilters';
+import { useTalentSearch, useAutocompleteSuggestions, useSaveSearch } from '@/hooks/use-talents';
+import { TalentSearchParams, Talent } from '@/lib/api-client';
+import { cn } from '@/lib/utils';
+import { useToast } from '@/components/ui/use-toast';
+import { Skeleton } from '@/components/ui/skeleton';
 
-type ViewMode = 'grid' | 'list'
-type SortBy = 'relevance' | 'rating' | 'experience' | 'recent'
+type ViewMode = 'grid' | 'list';
+type SortBy = 'relevance' | 'rating' | 'experience' | 'recent';
 
 export default function TalentsPage() {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const { toast } = useToast()
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { toast } = useToast();
 
   // State management
-  const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '')
+  const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
   const [filters, setFilters] = useState<TalentSearchParams>({
     query: searchParams.get('q') || '',
     page: parseInt(searchParams.get('page') || '1'),
     limit: 12,
     sortBy: (searchParams.get('sortBy') as SortBy) || 'relevance',
-  })
-  const [viewMode, setViewMode] = useState<ViewMode>('grid')
-  const [showSaveSearchDialog, setShowSaveSearchDialog] = useState(false)
-  const [saveSearchName, setSaveSearchName] = useState('')
-  const [selectedTalent, setSelectedTalent] = useState<Talent | null>(null)
-  const [showQuickView, setShowQuickView] = useState(false)
-  const [showAutoComplete, setShowAutoComplete] = useState(false)
+  });
+  const [viewMode, setViewMode] = useState<ViewMode>('grid');
+  const [showSaveSearchDialog, setShowSaveSearchDialog] = useState(false);
+  const [saveSearchName, setSaveSearchName] = useState('');
+  const [selectedTalent, setSelectedTalent] = useState<Talent | null>(null);
+  const [showQuickView, setShowQuickView] = useState(false);
+  const [showAutoComplete, setShowAutoComplete] = useState(false);
 
   // API hooks
-  const { data, isLoading, error, refetch } = useTalentSearch(filters)
-  const { data: suggestions } = useAutocompleteSuggestions(searchQuery, showAutoComplete)
-  const saveSearchMutation = useSaveSearch()
+  const { data, isLoading, error, refetch } = useTalentSearch(filters);
+  const { data: suggestions } = useAutocompleteSuggestions(searchQuery, showAutoComplete);
+  const saveSearchMutation = useSaveSearch();
 
   // Update URL with search params
   useEffect(() => {
-    const params = new URLSearchParams()
-    if (filters.query) params.set('q', filters.query)
-    if (filters.page && filters.page > 1) params.set('page', filters.page.toString())
-    if (filters.sortBy && filters.sortBy !== 'relevance') params.set('sortBy', filters.sortBy)
-    
-    const newUrl = params.toString() ? `?${params.toString()}` : ''
-    router.push(`/talents${newUrl}`, { scroll: false })
-  }, [filters, router])
+    const params = new URLSearchParams();
+    if (filters.query) params.set('q', filters.query);
+    if (filters.page && filters.page > 1) params.set('page', filters.page.toString());
+    if (filters.sortBy && filters.sortBy !== 'relevance') params.set('sortBy', filters.sortBy);
+
+    const newUrl = params.toString() ? `?${params.toString()}` : '';
+    router.push(`/talents${newUrl}`, { scroll: false });
+  }, [filters, router]);
 
   // Handle search
-  const handleSearch = useCallback((e: React.FormEvent) => {
-    e.preventDefault()
-    setFilters(prev => ({ ...prev, query: searchQuery, page: 1 }))
-    setShowAutoComplete(false)
-  }, [searchQuery])
+  const handleSearch = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      setFilters(prev => ({ ...prev, query: searchQuery, page: 1 }));
+      setShowAutoComplete(false);
+    },
+    [searchQuery]
+  );
 
   // Handle filter changes
   const handleFiltersChange = useCallback((newFilters: TalentSearchParams) => {
-    setFilters(prev => ({ ...prev, ...newFilters, page: 1 }))
-  }, [])
+    setFilters(prev => ({ ...prev, ...newFilters, page: 1 }));
+  }, []);
 
   // Handle sort change
   const handleSortChange = useCallback((sortBy: SortBy) => {
-    setFilters(prev => ({ ...prev, sortBy, page: 1 }))
-  }, [])
+    setFilters(prev => ({ ...prev, sortBy, page: 1 }));
+  }, []);
 
   // Handle pagination
   const handlePageChange = useCallback((page: number) => {
-    setFilters(prev => ({ ...prev, page }))
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }, [])
+    setFilters(prev => ({ ...prev, page }));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
 
   // Save search
   const handleSaveSearch = async () => {
@@ -87,35 +111,35 @@ export default function TalentsPage() {
         title: 'Error',
         description: 'Please enter a name for your saved search',
         variant: 'destructive',
-      })
-      return
+      });
+      return;
     }
 
     try {
       await saveSearchMutation.mutateAsync({
         name: saveSearchName,
         params: filters,
-      })
+      });
       toast({
         title: 'Success',
         description: 'Your search has been saved',
-      })
-      setShowSaveSearchDialog(false)
-      setSaveSearchName('')
+      });
+      setShowSaveSearchDialog(false);
+      setSaveSearchName('');
     } catch (error) {
       toast({
         title: 'Error',
         description: 'Failed to save search. Please try again.',
         variant: 'destructive',
-      })
+      });
     }
-  }
+  };
 
   // Quick view handler
   const handleQuickView = (talent: Talent) => {
-    setSelectedTalent(talent)
-    setShowQuickView(true)
-  }
+    setSelectedTalent(talent);
+    setShowQuickView(true);
+  };
 
   // Loading skeleton
   const LoadingSkeleton = () => (
@@ -128,7 +152,7 @@ export default function TalentsPage() {
         </div>
       ))}
     </div>
-  )
+  );
 
   // Empty state
   const EmptyState = () => (
@@ -142,15 +166,15 @@ export default function TalentsPage() {
       </p>
       <Button
         onClick={() => {
-          setFilters({ page: 1, limit: 12, sortBy: 'relevance' })
-          setSearchQuery('')
+          setFilters({ page: 1, limit: 12, sortBy: 'relevance' });
+          setSearchQuery('');
         }}
         className="mt-4"
       >
         Clear all filters
       </Button>
     </div>
-  )
+  );
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -170,9 +194,9 @@ export default function TalentsPage() {
                 type="text"
                 placeholder="Search by name, skills, or keywords..."
                 value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value)
-                  setShowAutoComplete(true)
+                onChange={e => {
+                  setSearchQuery(e.target.value);
+                  setShowAutoComplete(true);
                 }}
                 onFocus={() => setShowAutoComplete(true)}
                 className="pl-10 pr-24 py-6 text-lg bg-white text-gray-900"
@@ -191,9 +215,9 @@ export default function TalentsPage() {
                     type="button"
                     className="w-full text-left px-4 py-2 hover:bg-gray-50 text-gray-900"
                     onClick={() => {
-                      setSearchQuery(suggestion)
-                      setShowAutoComplete(false)
-                      setFilters(prev => ({ ...prev, query: suggestion, page: 1 }))
+                      setSearchQuery(suggestion);
+                      setShowAutoComplete(false);
+                      setFilters(prev => ({ ...prev, query: suggestion, page: 1 }));
                     }}
                   >
                     {suggestion}
@@ -224,10 +248,7 @@ export default function TalentsPage() {
         <div className="flex gap-6">
           {/* Sidebar Filters - Desktop */}
           <aside className="hidden lg:block w-80 flex-shrink-0">
-            <SearchFilters
-              filters={filters}
-              onFiltersChange={handleFiltersChange}
-            />
+            <SearchFilters filters={filters} onFiltersChange={handleFiltersChange} />
           </aside>
 
           {/* Results Section */}
@@ -249,7 +270,8 @@ export default function TalentsPage() {
                   {data && (
                     <p className="text-sm text-gray-600">
                       Showing {((filters.page || 1) - 1) * (filters.limit || 12) + 1}-
-                      {Math.min((filters.page || 1) * (filters.limit || 12), data.total)} of {data.total} results
+                      {Math.min((filters.page || 1) * (filters.limit || 12), data.total)} of{' '}
+                      {data.total} results
                     </p>
                   )}
                 </div>
@@ -307,9 +329,7 @@ export default function TalentsPage() {
               <Alert variant="destructive" className="mb-6">
                 <AlertCircle className="h-4 w-4" />
                 <AlertTitle>Error</AlertTitle>
-                <AlertDescription>
-                  Failed to load talents. Please try again later.
-                </AlertDescription>
+                <AlertDescription>Failed to load talents. Please try again later.</AlertDescription>
               </Alert>
             )}
 
@@ -318,17 +338,15 @@ export default function TalentsPage() {
               <LoadingSkeleton />
             ) : data?.talents && data.talents.length > 0 ? (
               <>
-                <div className={cn(
-                  viewMode === 'grid'
-                    ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
-                    : 'space-y-4'
-                )}>
-                  {data.talents.map((talent) => (
-                    <TalentCard
-                      key={talent.id}
-                      talent={talent}
-                      onQuickView={handleQuickView}
-                    />
+                <div
+                  className={cn(
+                    viewMode === 'grid'
+                      ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
+                      : 'space-y-4'
+                  )}
+                >
+                  {data.talents.map(talent => (
+                    <TalentCard key={talent.id} talent={talent} onQuickView={handleQuickView} />
                   ))}
                 </div>
 
@@ -343,9 +361,9 @@ export default function TalentsPage() {
                       >
                         Previous
                       </Button>
-                      
+
                       {[...Array(Math.min(5, data.totalPages))].map((_, i) => {
-                        const pageNum = i + 1
+                        const pageNum = i + 1;
                         return (
                           <Button
                             key={pageNum}
@@ -355,7 +373,7 @@ export default function TalentsPage() {
                           >
                             {pageNum}
                           </Button>
-                        )
+                        );
                       })}
 
                       {data.totalPages > 5 && (
@@ -405,7 +423,7 @@ export default function TalentsPage() {
                 id="search-name"
                 placeholder="e.g., Young actors in Mumbai"
                 value={saveSearchName}
-                onChange={(e) => setSaveSearchName(e.target.value)}
+                onChange={e => setSaveSearchName(e.target.value)}
               />
             </div>
           </div>
@@ -443,7 +461,9 @@ export default function TalentsPage() {
                 </div>
                 <div>
                   <Label>Rating</Label>
-                  <p>{selectedTalent.rating} ({selectedTalent.reviewCount} reviews)</p>
+                  <p>
+                    {selectedTalent.rating} ({selectedTalent.reviewCount} reviews)
+                  </p>
                 </div>
               </div>
               {selectedTalent.bio && (
@@ -455,7 +475,7 @@ export default function TalentsPage() {
               <div>
                 <Label>Skills</Label>
                 <div className="flex flex-wrap gap-2 mt-1">
-                  {selectedTalent.skills.map((skill) => (
+                  {selectedTalent.skills.map(skill => (
                     <Badge key={skill} variant="secondary">
                       {skill}
                     </Badge>
@@ -475,5 +495,5 @@ export default function TalentsPage() {
         </Dialog>
       )}
     </div>
-  )
+  );
 }

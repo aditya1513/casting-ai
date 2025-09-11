@@ -23,8 +23,9 @@
 *:focus-visible {
   outline: var(--focus-ring-width) solid var(--focus-ring-color);
   outline-offset: var(--focus-ring-offset);
-  box-shadow: 0 0 0 var(--focus-ring-offset) var(--bg-primary),
-              0 0 0 calc(var(--focus-ring-width) + var(--focus-ring-offset)) var(--focus-ring-color);
+  box-shadow:
+    0 0 0 var(--focus-ring-offset) var(--bg-primary),
+    0 0 0 calc(var(--focus-ring-width) + var(--focus-ring-offset)) var(--focus-ring-color);
   transition: var(--focus-transition);
 }
 
@@ -39,8 +40,9 @@ select:focus-visible,
 [tabindex]:focus-visible {
   outline: var(--focus-ring-width) solid var(--focus-ring-color);
   outline-offset: var(--focus-ring-offset);
-  box-shadow: 0 0 0 var(--focus-ring-offset) var(--bg-primary),
-              0 0 0 calc(var(--focus-ring-width) + var(--focus-ring-offset)) var(--focus-ring-color);
+  box-shadow:
+    0 0 0 var(--focus-ring-offset) var(--bg-primary),
+    0 0 0 calc(var(--focus-ring-width) + var(--focus-ring-offset)) var(--focus-ring-color);
   z-index: 1;
 }
 
@@ -97,7 +99,7 @@ select:focus-visible,
 
 /* Tab Navigation Indicators */
 .tab-boundary::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -214,7 +216,7 @@ select:focus-visible,
     align-items: center;
     justify-content: center;
   }
-  
+
   .nav-list {
     position: absolute;
     top: 100%;
@@ -229,16 +231,16 @@ select:focus-visible,
     overflow: hidden;
     transition: max-height 0.3s ease-in-out;
   }
-  
+
   .nav-list[aria-expanded="true"] {
     max-height: 400px;
   }
-  
+
   .nav-link {
     justify-content: flex-start;
     border-bottom: 1px solid var(--border-secondary);
   }
-  
+
   .nav-link:last-child {
     border-bottom: none;
   }
@@ -690,26 +692,26 @@ select:focus-visible,
     min-height: var(--touch-target-comfortable);
     padding: 16px 20px;
   }
-  
+
   .breadcrumb {
     flex-wrap: wrap;
     gap: 4px;
   }
-  
+
   .breadcrumb-link {
     min-height: var(--touch-target-comfortable);
     padding: 8px 12px;
   }
-  
+
   .search-input {
     font-size: 16px; /* Prevent iOS zoom */
   }
-  
+
   .pagination-item {
     min-width: var(--touch-target-comfortable);
     min-height: var(--touch-target-comfortable);
   }
-  
+
   .form-input,
   .form-textarea,
   .form-select {

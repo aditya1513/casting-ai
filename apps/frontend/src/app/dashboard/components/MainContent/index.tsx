@@ -1,8 +1,7 @@
-"use client";
+'use client';
 
-import TopBar from "./TopBar";
-import ChatInterface from "./ChatInterface";
-import InputArea from "./InputArea";
+import { useUser } from '@clerk/nextjs';
+import EnhancedChatInterface from './EnhancedChatInterface';
 
 interface MainContentProps {
   messages: any[];
@@ -10,7 +9,7 @@ interface MainContentProps {
   isLoading: boolean;
   currentProject: string;
   onInputChange: (value: string) => void;
-  onSendMessage: () => void;
+  onSendMessage: (message?: string) => Promise<void>;
   onProjectChange: (projectId: string) => void;
   onNotificationsClick: () => void;
   onSettingsClick: () => void;
@@ -27,23 +26,23 @@ export default function MainContent({
   onProjectChange,
   onNotificationsClick,
   onSettingsClick,
-  onQuickAction
+  onQuickAction,
 }: MainContentProps) {
+  const { user } = useUser();
+
+  const handleSendMessage = async (message: string) => {
+    await onSendMessage(message);
+  };
+
   return (
     <div className="flex-1 flex flex-col bg-gray-50 min-h-0">
-      {/* Chat Interface */}
-      <ChatInterface
+      {/* Enhanced Chat Interface */}
+      <EnhancedChatInterface 
         messages={messages}
         isLoading={isLoading}
         onQuickAction={onQuickAction}
-      />
-      
-      {/* Input Area */}
-      <InputArea
-        value={input}
-        onChange={onInputChange}
-        onSend={onSendMessage}
-        isLoading={isLoading}
+        onSendMessage={handleSendMessage}
+        userId={user?.id}
       />
     </div>
   );

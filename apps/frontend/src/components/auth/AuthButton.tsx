@@ -8,13 +8,7 @@ export default function AuthButton() {
   const { user, isLoading } = useUser();
 
   if (isLoading) {
-    return (
-      <Button
-        isLoading
-        variant="bordered"
-        className="border-primary-600 text-primary-600"
-      />
-    );
+    return <Button isLoading variant="bordered" className="border-primary-600 text-primary-600" />;
   }
 
   if (!user) {
@@ -35,10 +29,7 @@ export default function AuthButton() {
   return (
     <Dropdown placement="bottom-end">
       <DropdownTrigger>
-        <Button
-          variant="light"
-          className="p-0 h-auto data-[hover=true]:bg-transparent"
-        >
+        <Button variant="light" className="p-0 h-auto data-[hover=true]:bg-transparent">
           <User
             name={user.name}
             description={user.email}
@@ -46,29 +37,25 @@ export default function AuthButton() {
               src: user.picture || undefined,
               showFallback: true,
               fallback: <UserIcon className="h-4 w-4" />,
-              className: "h-8 w-8"
+              className: 'h-8 w-8',
             }}
             className="transition-opacity hover:opacity-80"
             classNames={{
-              name: "text-sm font-semibold text-white",
-              description: "text-xs text-slate-400"
+              name: 'text-sm font-semibold text-white',
+              description: 'text-xs text-slate-400',
             }}
           />
         </Button>
       </DropdownTrigger>
-      
-      <DropdownMenu 
+
+      <DropdownMenu
         aria-label="User menu"
         className="w-60"
         itemClasses={{
-          base: "gap-4",
+          base: 'gap-4',
         }}
       >
-        <DropdownItem
-          key="profile"
-          className="h-14 gap-2"
-          textValue={user.name || 'User Profile'}
-        >
+        <DropdownItem key="profile" className="h-14 gap-2" textValue={user.name || 'User Profile'}>
           <User
             name={user.name}
             description={user.email}
@@ -76,15 +63,15 @@ export default function AuthButton() {
               src: user.picture || undefined,
               showFallback: true,
               fallback: <UserIcon className="h-4 w-4" />,
-              className: "h-10 w-10"
+              className: 'h-10 w-10',
             }}
             classNames={{
-              name: "text-sm font-semibold",
-              description: "text-xs"
+              name: 'text-sm font-semibold',
+              description: 'text-xs',
             }}
           />
         </DropdownItem>
-        
+
         <DropdownItem
           key="settings"
           startContent={<CogIcon className="h-4 w-4" />}
@@ -92,14 +79,14 @@ export default function AuthButton() {
         >
           Settings
         </DropdownItem>
-        
+
         <DropdownItem
           key="logout"
           startContent={<ArrowRightOnRectangleIcon className="h-4 w-4" />}
           className="text-danger"
           color="danger"
           textValue="Sign Out"
-          onPress={() => window.location.href = '/api/auth/logout'}
+          onPress={() => (window.location.href = '/api/auth/logout')}
         >
           Sign Out
         </DropdownItem>

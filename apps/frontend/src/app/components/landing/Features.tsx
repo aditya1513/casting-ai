@@ -2,13 +2,13 @@
 
 import React from 'react';
 import { Card, CardBody } from '@heroui/react';
-import { 
-  MagnifyingGlassIcon, 
-  CalendarDaysIcon, 
-  ChartBarIcon, 
+import {
+  MagnifyingGlassIcon,
+  CalendarDaysIcon,
+  ChartBarIcon,
   UserGroupIcon,
   ClockIcon,
-  BoltIcon
+  BoltIcon,
 } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
 
@@ -16,32 +16,38 @@ const features = [
   {
     icon: MagnifyingGlassIcon,
     title: 'AI-Powered Talent Matching',
-    description: 'Advanced algorithms analyze scripts and find perfect talent matches based on character requirements, acting styles, and previous performances.',
+    description:
+      'Advanced algorithms analyze scripts and find perfect talent matches based on character requirements, acting styles, and previous performances.',
   },
   {
     icon: CalendarDaysIcon,
     title: 'Intelligent Scheduling',
-    description: 'Automated audition scheduling with conflict detection, preference matching, and real-time updates for all stakeholders.',
+    description:
+      'Automated audition scheduling with conflict detection, preference matching, and real-time updates for all stakeholders.',
   },
   {
     icon: ChartBarIcon,
     title: 'Analytics Dashboard',
-    description: 'Data-driven insights on casting decisions, talent performance, and project metrics to optimize your casting process.',
+    description:
+      'Data-driven insights on casting decisions, talent performance, and project metrics to optimize your casting process.',
   },
   {
     icon: UserGroupIcon,
     title: 'Collaborative Workspace',
-    description: 'Seamless collaboration between directors, producers, and casting teams with shared notes and real-time feedback.',
+    description:
+      'Seamless collaboration between directors, producers, and casting teams with shared notes and real-time feedback.',
   },
   {
     icon: ClockIcon,
     title: 'Time-Saving Automation',
-    description: 'Automate repetitive tasks like sending callback notifications, scheduling follow-ups, and managing talent databases.',
+    description:
+      'Automate repetitive tasks like sending callback notifications, scheduling follow-ups, and managing talent databases.',
   },
   {
     icon: BoltIcon,
     title: 'Fast Performance',
-    description: 'Lightning-fast search and matching capabilities powered by cloud infrastructure and optimized algorithms.',
+    description:
+      'Lightning-fast search and matching capabilities powered by cloud infrastructure and optimized algorithms.',
   },
 ];
 
@@ -68,8 +74,8 @@ export default function Features() {
             Modern Casting
           </h2>
           <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-            Streamline your casting process with cutting-edge AI technology, 
-            intelligent automation, and collaborative tools designed for Mumbai's entertainment industry.
+            Streamline your casting process with cutting-edge AI technology, intelligent automation,
+            and collaborative tools designed for Mumbai's entertainment industry.
           </p>
         </motion.div>
 
@@ -94,12 +100,8 @@ export default function Features() {
 
                   {/* Content */}
                   <div className="space-y-4">
-                    <h3 className="text-xl font-semibold text-white">
-                      {feature.title}
-                    </h3>
-                    <p className="text-gray-400 leading-relaxed">
-                      {feature.description}
-                    </p>
+                    <h3 className="text-xl font-semibold text-white">{feature.title}</h3>
+                    <p className="text-gray-400 leading-relaxed">{feature.description}</p>
                   </div>
                 </CardBody>
               </Card>
@@ -115,9 +117,7 @@ export default function Features() {
           viewport={{ once: true }}
           className="text-center mt-16"
         >
-          <p className="text-gray-400 mb-6">
-            Ready to revolutionize your casting process?
-          </p>
+          <p className="text-gray-400 mb-6">Ready to revolutionize your casting process?</p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <motion.button
               whileHover={{ scale: 1.05 }}

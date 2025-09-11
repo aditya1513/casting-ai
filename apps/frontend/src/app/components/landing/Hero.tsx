@@ -30,7 +30,7 @@ export default function Hero() {
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-teal-900" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
-        
+
         {/* Animated Background Particles */}
         {isMounted && (
           <div className="absolute inset-0 overflow-hidden">
@@ -88,16 +88,15 @@ export default function Hero() {
               <br />
               Create Better
             </motion.h1>
-            
+
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.8 }}
               className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed"
             >
-              Transform your casting process with AI-driven talent matching, 
-              intelligent scheduling, and data-powered decisions for 
-              Mumbai's entertainment industry.
+              Transform your casting process with AI-driven talent matching, intelligent scheduling,
+              and data-powered decisions for Mumbai's entertainment industry.
             </motion.p>
           </div>
 
@@ -118,7 +117,7 @@ export default function Hero() {
             >
               Start Free Trial
             </Button>
-            
+
             <Button
               size="lg"
               variant="bordered"
@@ -142,12 +141,8 @@ export default function Hero() {
               { number: '95%', label: 'Match Accuracy' },
             ].map((stat, index) => (
               <div key={index} className="text-center">
-                <div className="text-2xl md:text-3xl font-bold text-white mb-1">
-                  {stat.number}
-                </div>
-                <div className="text-sm text-gray-400">
-                  {stat.label}
-                </div>
+                <div className="text-2xl md:text-3xl font-bold text-white mb-1">{stat.number}</div>
+                <div className="text-sm text-gray-400">{stat.label}</div>
               </div>
             ))}
           </motion.div>

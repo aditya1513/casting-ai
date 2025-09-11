@@ -24,7 +24,7 @@ export function useTheme(): UseThemeReturn {
   // Apply theme to document
   const applyTheme = useCallback((theme: 'light' | 'dark') => {
     const root = document.documentElement;
-    
+
     if (theme === 'dark') {
       root.classList.add('dark');
       root.style.colorScheme = 'dark';
@@ -32,10 +32,10 @@ export function useTheme(): UseThemeReturn {
       root.classList.remove('dark');
       root.style.colorScheme = 'light';
     }
-    
+
     // Update CSS variables
     root.style.setProperty('--theme', theme);
-    
+
     // Update meta theme-color for mobile browsers
     const metaThemeColor = document.querySelector('meta[name="theme-color"]');
     if (metaThemeColor) {
@@ -47,10 +47,11 @@ export function useTheme(): UseThemeReturn {
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') as Theme | null;
     const initialTheme = savedTheme || 'system';
-    
+
     setThemeState(initialTheme);
-    
-    const resolved = initialTheme === 'system' ? getSystemTheme() : initialTheme as 'light' | 'dark';
+
+    const resolved =
+      initialTheme === 'system' ? getSystemTheme() : (initialTheme as 'light' | 'dark');
     setResolvedTheme(resolved);
     applyTheme(resolved);
   }, [getSystemTheme, applyTheme]);
@@ -60,7 +61,7 @@ export function useTheme(): UseThemeReturn {
     if (theme !== 'system') return;
 
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    
+
     const handleChange = (e: MediaQueryListEvent) => {
       const newTheme = e.matches ? 'dark' : 'light';
       setResolvedTheme(newTheme);
@@ -79,14 +80,17 @@ export function useTheme(): UseThemeReturn {
   }, [theme, applyTheme]);
 
   // Set theme and save to localStorage
-  const setTheme = useCallback((newTheme: Theme) => {
-    setThemeState(newTheme);
-    localStorage.setItem('theme', newTheme);
-    
-    const resolved = newTheme === 'system' ? getSystemTheme() : newTheme as 'light' | 'dark';
-    setResolvedTheme(resolved);
-    applyTheme(resolved);
-  }, [getSystemTheme, applyTheme]);
+  const setTheme = useCallback(
+    (newTheme: Theme) => {
+      setThemeState(newTheme);
+      localStorage.setItem('theme', newTheme);
+
+      const resolved = newTheme === 'system' ? getSystemTheme() : (newTheme as 'light' | 'dark');
+      setResolvedTheme(resolved);
+      applyTheme(resolved);
+    },
+    [getSystemTheme, applyTheme]
+  );
 
   // Toggle between light and dark (ignoring system)
   const toggleTheme = useCallback(() => {
@@ -98,7 +102,7 @@ export function useTheme(): UseThemeReturn {
     theme,
     resolvedTheme,
     setTheme,
-    toggleTheme
+    toggleTheme,
   };
 }
 

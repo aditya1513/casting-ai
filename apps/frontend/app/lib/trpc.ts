@@ -4,7 +4,7 @@
 
 import { createTRPCClient, httpBatchLink, loggerLink } from '@trpc/client';
 import { createTRPCReact } from '@trpc/react-query';
-import type { AppRouter } from '../../../src/trpc/router';
+import type { AppRouter } from '../../../backend/src/trpc/router';
 
 // Create tRPC React hooks
 export const trpc = createTRPCReact<AppRouter>();
@@ -14,7 +14,7 @@ export const trpcClient = createTRPCClient<AppRouter>({
   links: [
     // Logger link for development
     loggerLink({
-      enabled: (opts) =>
+      enabled: opts =>
         process.env.NODE_ENV === 'development' ||
         (opts.direction === 'down' && opts.result instanceof Error),
     }),
@@ -23,7 +23,7 @@ export const trpcClient = createTRPCClient<AppRouter>({
       url: 'http://localhost:3001/api/trpc',
       headers: () => {
         const headers: Record<string, string> = {};
-        
+
         // Add authorization header if available
         if (typeof window !== 'undefined') {
           const token = localStorage.getItem('auth_token');
@@ -31,7 +31,7 @@ export const trpcClient = createTRPCClient<AppRouter>({
             headers.Authorization = `Bearer ${token}`;
           }
         }
-        
+
         return headers;
       },
     }),

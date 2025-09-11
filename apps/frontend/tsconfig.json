@@ -15,12 +15,9 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "~/*": ["./app/*"]
     }
   },
-  "include": [
-    "src",
-    "app"
-  ],
+  "include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx", "**/.server/**/*.ts", "**/.server/**/*.tsx", "**/.client/**/*.ts", "**/.client/**/*.tsx"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

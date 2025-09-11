@@ -1,25 +1,21 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { 
-  Select, 
-  SelectItem, 
-  Badge, 
+import { useState } from 'react';
+import {
+  Select,
+  SelectItem,
+  Badge,
   Avatar,
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
-  DropdownItem
-} from "@heroui/react";
-import { 
-  BellIcon, 
-  Cog6ToothIcon,
-  ChevronDownIcon
-} from "@heroicons/react/24/outline";
+  DropdownItem,
+} from '@heroui/react';
+import { BellIcon, Cog6ToothIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
 
 interface TopBarProps {
   currentProject?: string;
-  projects?: Array<{ id: string; name: string; }>;
+  projects?: Array<{ id: string; name: string }>;
   notificationCount?: number;
   user?: {
     name: string;
@@ -31,23 +27,23 @@ interface TopBarProps {
 }
 
 const defaultProjects = [
-  { id: "mumbai-dreams", name: "Mumbai Dreams" },
-  { id: "bollywood-series", name: "Bollywood Series" },
-  { id: "commercial-ads", name: "Commercial Ads" }
+  { id: 'mumbai-dreams', name: 'Mumbai Dreams' },
+  { id: 'bollywood-series', name: 'Bollywood Series' },
+  { id: 'commercial-ads', name: 'Commercial Ads' },
 ];
 
 const defaultUser = {
-  name: "Aditya Sharma"
+  name: 'Aditya Sharma',
 };
 
 export default function TopBar({
-  currentProject = "mumbai-dreams",
+  currentProject = 'mumbai-dreams',
   projects = defaultProjects,
   notificationCount = 3,
   user = defaultUser,
   onProjectChange,
   onNotificationsClick,
-  onSettingsClick
+  onSettingsClick,
 }: TopBarProps) {
   return (
     <header className="h-14 bg-white border-b border-gray-200 flex items-center justify-between px-6 shadow-sm">
@@ -57,7 +53,7 @@ export default function TopBar({
           <span className="text-sm text-gray-500 font-medium">Project:</span>
           <Select
             selectedKeys={[currentProject]}
-            onSelectionChange={(keys) => {
+            onSelectionChange={keys => {
               const key = Array.from(keys)[0] as string;
               onProjectChange(key);
             }}
@@ -66,11 +62,11 @@ export default function TopBar({
             className="min-w-48"
             aria-label="Select project"
             classNames={{
-              trigger: "h-8 min-h-8 border-gray-300 hover:border-gray-400",
-              value: "text-sm font-medium text-gray-900",
-              popoverContent: "min-w-48"
+              trigger: 'h-8 min-h-8 border-gray-300 hover:border-gray-400',
+              value: 'text-sm font-medium text-gray-900',
+              popoverContent: 'min-w-48',
             }}
-            renderValue={(items) => {
+            renderValue={items => {
               const project = projects.find(p => p.id === currentProject);
               return (
                 <div className="flex items-center gap-2">
@@ -80,7 +76,7 @@ export default function TopBar({
               );
             }}
           >
-            {projects.map((project) => (
+            {projects.map(project => (
               <SelectItem key={project.id} value={project.id} textValue={project.name}>
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-green-500 rounded-full" />
@@ -127,13 +123,11 @@ export default function TopBar({
             name={user.name}
             size="sm"
             classNames={{
-              base: "bg-gradient-to-br from-teal-500 to-teal-600",
-              name: "text-white font-medium text-xs"
+              base: 'bg-gradient-to-br from-teal-500 to-teal-600',
+              name: 'text-white font-medium text-xs',
             }}
           />
-          <span className="text-sm font-medium text-gray-900 hidden sm:block">
-            {user.name}
-          </span>
+          <span className="text-sm font-medium text-gray-900 hidden sm:block">{user.name}</span>
         </div>
       </div>
     </header>

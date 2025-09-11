@@ -1,14 +1,22 @@
-"use client";
+'use client';
 
 // import { useUser } from '@auth0/nextjs-auth0/client';
-import { Avatar, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, Skeleton } from "@heroui/react";
-import { 
+import {
+  Avatar,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+  Button,
+  Skeleton,
+} from '@heroui/react';
+import {
   UserIcon,
   Cog6ToothIcon,
   QuestionMarkCircleIcon,
   ArrowRightOnRectangleIcon,
-  SparklesIcon
-} from "@heroicons/react/24/outline";
+  SparklesIcon,
+} from '@heroicons/react/24/outline';
 
 interface UserProfileProps {
   onSettingsClick?: () => void;
@@ -16,10 +24,10 @@ interface UserProfileProps {
   onUpgradeClick?: () => void;
 }
 
-export default function UserProfile({ 
+export default function UserProfile({
   onSettingsClick,
   onHelpClick,
-  onUpgradeClick
+  onUpgradeClick,
 }: UserProfileProps) {
   // const { user, isLoading } = useUser();
   const user = null; // Temporary for testing
@@ -33,8 +41,8 @@ export default function UserProfile({
             <div className="h-8 w-8 rounded-full bg-default-300"></div>
           </Skeleton>
           <div className="flex-1 space-y-2">
-            <Skeleton className="h-3 w-3/4 rounded-full"/>
-            <Skeleton className="h-2 w-1/2 rounded-full"/>
+            <Skeleton className="h-3 w-3/4 rounded-full" />
+            <Skeleton className="h-2 w-1/2 rounded-full" />
           </div>
         </div>
       </div>
@@ -63,7 +71,7 @@ export default function UserProfile({
     <div className="mt-auto border-t border-gray-200 bg-white p-4">
       <Dropdown placement="top-start" className="w-64">
         <DropdownTrigger>
-          <button 
+          <button
             className="w-full flex items-center gap-3 p-3 rounded-full hover:bg-gray-50 transition-colors duration-200 group"
             aria-label="User menu"
           >
@@ -73,29 +81,25 @@ export default function UserProfile({
               size="sm"
               className="flex-shrink-0"
               classNames={{
-                base: "bg-gradient-to-br from-teal-500 to-teal-600",
-                name: "text-white font-medium"
+                base: 'bg-gradient-to-br from-teal-500 to-teal-600',
+                name: 'text-white font-medium',
               }}
             />
             <div className="flex-1 text-left min-w-0">
-              <p className="font-medium text-gray-900 text-sm truncate">
-                {user.name || 'User'}
-              </p>
-              <p className="text-xs text-gray-500 truncate">
-                Pro Plan • Authenticated
-              </p>
+              <p className="font-medium text-gray-900 text-sm truncate">{user.name || 'User'}</p>
+              <p className="text-xs text-gray-500 truncate">Pro Plan • Authenticated</p>
             </div>
             <div className="text-gray-400 group-hover:text-gray-600 transition-colors">
               <Cog6ToothIcon className="h-4 w-4" />
             </div>
           </button>
         </DropdownTrigger>
-        
-        <DropdownMenu 
+
+        <DropdownMenu
           aria-label="User actions"
           className="p-2"
           itemClasses={{
-            base: "rounded-full p-3",
+            base: 'rounded-full p-3',
           }}
         >
           <DropdownItem
@@ -109,7 +113,7 @@ export default function UserProfile({
               <p className="text-xs text-gray-500">{user.email}</p>
             </div>
           </DropdownItem>
-          
+
           <DropdownItem
             key="settings"
             startContent={<Cog6ToothIcon className="h-4 w-4" />}
@@ -118,7 +122,7 @@ export default function UserProfile({
           >
             Settings
           </DropdownItem>
-          
+
           <DropdownItem
             key="help"
             startContent={<QuestionMarkCircleIcon className="h-4 w-4" />}
@@ -127,25 +131,25 @@ export default function UserProfile({
           >
             Help & Support
           </DropdownItem>
-          
+
           <DropdownItem
             key="upgrade"
             startContent={<SparklesIcon className="h-4 w-4" />}
             onPress={onUpgradeClick}
             className="text-amber-600"
             classNames={{
-              base: "bg-amber-50 hover:bg-amber-100",
-              content: "text-amber-700"
+              base: 'bg-amber-50 hover:bg-amber-100',
+              content: 'text-amber-700',
             }}
             textValue="Upgrade Plan"
           >
             Upgrade Plan
           </DropdownItem>
-          
+
           <DropdownItem
             key="logout"
             startContent={<ArrowRightOnRectangleIcon className="h-4 w-4" />}
-            onPress={() => window.location.href = '/api/auth/logout'}
+            onPress={() => (window.location.href = '/api/auth/logout')}
             className="text-red-600"
             color="danger"
             textValue="Sign Out"

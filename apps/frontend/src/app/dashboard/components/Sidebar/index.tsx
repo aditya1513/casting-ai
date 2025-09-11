@@ -1,13 +1,14 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useRef } from "react";
-import FocusTrap from "focus-trap-react";
-import BrandHeader from "./BrandHeader";
-import SearchBar from "./SearchBar";
-import NewChatButton from "./NewChatButton";
-import ProjectsList from "./ProjectsList";
-import RecentChats from "./RecentChats";
-import UserProfile from "./UserProfile";
+import { useState, useEffect, useRef } from 'react';
+import FocusTrap from 'focus-trap-react';
+import BrandHeader from './BrandHeader';
+import SearchBar from './SearchBar';
+import NewChatButton from './NewChatButton';
+import Navigation from './Navigation';
+import ProjectsList from './ProjectsList';
+import RecentChats from './RecentChats';
+import UserProfile from './UserProfile';
 
 interface SidebarProps {
   isOpen?: boolean;
@@ -28,9 +29,9 @@ export default function Sidebar({
   onChatSelect,
   onSettingsClick,
   onHelpClick,
-  onUpgradeClick
+  onUpgradeClick,
 }: SidebarProps) {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const sidebarRef = useRef<HTMLElement>(null);
 
   // Handle keyboard navigation for mobile
@@ -48,7 +49,7 @@ export default function Sidebar({
   }, [isOpen, onClose]);
 
   const sidebarContent = (
-    <aside 
+    <aside
       ref={sidebarRef}
       className={`w-80 bg-white border-r border-gray-200 flex flex-col h-full transition-transform duration-300 ease-in-out md:translate-x-0 ${
         isOpen ? 'translate-x-0' : '-translate-x-full'
@@ -64,34 +65,39 @@ export default function Sidebar({
           aria-label="Close sidebar"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
           </svg>
         </button>
       )}
-      
+
       {/* Brand Header */}
       <BrandHeader />
-      
+
       {/* Search Bar */}
-      <SearchBar 
-        value={searchQuery} 
-        onChange={setSearchQuery} 
-      />
-      
+      <SearchBar value={searchQuery} onChange={setSearchQuery} />
+
+      {/* Navigation */}
+      <Navigation />
+
       {/* New Chat Button */}
       <NewChatButton onClick={onNewChat} />
-      
+
       {/* Scrollable Content */}
       <div className="flex-1 overflow-y-auto">
         <div className="px-2">
           {/* Projects List */}
           <ProjectsList onProjectSelect={onProjectSelect} />
-          
+
           {/* Recent Chats */}
           <RecentChats onChatSelect={onChatSelect} />
         </div>
       </div>
-      
+
       {/* User Profile */}
       <UserProfile
         onSettingsClick={onSettingsClick}

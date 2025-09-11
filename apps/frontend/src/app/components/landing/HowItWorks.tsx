@@ -2,12 +2,12 @@
 
 import React from 'react';
 import { Card, CardBody } from '@heroui/react';
-import { 
-  DocumentTextIcon, 
-  MagnifyingGlassIcon, 
+import {
+  DocumentTextIcon,
+  MagnifyingGlassIcon,
   CalendarDaysIcon,
   CheckCircleIcon,
-  ArrowRightIcon
+  ArrowRightIcon,
 } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
 
@@ -16,35 +16,30 @@ const steps = [
     step: '01',
     icon: DocumentTextIcon,
     title: 'Upload Your Script',
-    description: 'Simply upload your script and let our AI analyze character requirements, mood, and casting needs.',
+    description:
+      'Simply upload your script and let our AI analyze character requirements, mood, and casting needs.',
     details: [
       'AI-powered script analysis',
       'Character requirement extraction',
-      'Mood and tone identification'
-    ]
+      'Mood and tone identification',
+    ],
   },
   {
     step: '02',
     icon: MagnifyingGlassIcon,
     title: 'AI Matches Talent',
-    description: 'Our intelligent system searches through thousands of profiles to find the perfect matches for each role.',
-    details: [
-      'Smart talent matching',
-      'Portfolio analysis',
-      'Previous work evaluation'
-    ]
+    description:
+      'Our intelligent system searches through thousands of profiles to find the perfect matches for each role.',
+    details: ['Smart talent matching', 'Portfolio analysis', 'Previous work evaluation'],
   },
   {
     step: '03',
     icon: CalendarDaysIcon,
     title: 'Schedule & Manage',
-    description: 'Seamlessly schedule auditions, manage callbacks, and collaborate with your team in real-time.',
-    details: [
-      'Automated scheduling',
-      'Real-time collaboration',
-      'Progress tracking'
-    ]
-  }
+    description:
+      'Seamlessly schedule auditions, manage callbacks, and collaborate with your team in real-time.',
+    details: ['Automated scheduling', 'Real-time collaboration', 'Progress tracking'],
+  },
 ];
 
 export default function HowItWorks() {
@@ -68,8 +63,8 @@ export default function HowItWorks() {
             How It Works
           </h2>
           <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-            From script to screen in three simple steps. 
-            Our AI-powered platform streamlines every aspect of the casting process.
+            From script to screen in three simple steps. Our AI-powered platform streamlines every
+            aspect of the casting process.
           </p>
         </motion.div>
 
@@ -84,25 +79,21 @@ export default function HowItWorks() {
               viewport={{ once: true }}
               className="relative"
             >
-              <div className={`grid grid-cols-1 lg:grid-cols-2 gap-12 items-center ${
-                index % 2 === 1 ? 'lg:flex-row-reverse' : ''
-              }`}>
+              <div
+                className={`grid grid-cols-1 lg:grid-cols-2 gap-12 items-center ${
+                  index % 2 === 1 ? 'lg:flex-row-reverse' : ''
+                }`}
+              >
                 {/* Content */}
                 <div className={`space-y-6 ${index % 2 === 1 ? 'lg:order-2' : ''}`}>
                   <div className="flex items-center gap-4 mb-6">
-                    <div className="text-6xl font-bold text-gray-800">
-                      {step.step}
-                    </div>
+                    <div className="text-6xl font-bold text-gray-800">{step.step}</div>
                     <div className="w-px h-16 bg-gradient-to-b from-teal-500 to-transparent" />
                   </div>
 
                   <div className="space-y-4">
-                    <h3 className="text-3xl font-bold text-white">
-                      {step.title}
-                    </h3>
-                    <p className="text-xl text-gray-400 leading-relaxed">
-                      {step.description}
-                    </p>
+                    <h3 className="text-3xl font-bold text-white">{step.title}</h3>
+                    <p className="text-xl text-gray-400 leading-relaxed">{step.description}</p>
                   </div>
 
                   <div className="space-y-3">
@@ -133,7 +124,7 @@ export default function HowItWorks() {
                         >
                           <step.icon className="w-16 h-16 text-white" />
                         </motion.div>
-                        
+
                         {/* Connecting Line */}
                         {index < steps.length - 1 && (
                           <div className="hidden lg:block absolute top-1/2 -right-24 w-16 h-px bg-gradient-to-r from-teal-500 to-transparent">
@@ -165,11 +156,10 @@ export default function HowItWorks() {
           className="text-center mt-20"
         >
           <div className="bg-gradient-to-r from-gray-800/50 to-gray-900/50 border border-gray-700/50 rounded-2xl p-8 backdrop-blur-sm">
-            <h3 className="text-2xl font-bold text-white mb-4">
-              Ready to Get Started?
-            </h3>
+            <h3 className="text-2xl font-bold text-white mb-4">Ready to Get Started?</h3>
             <p className="text-gray-400 mb-6 max-w-2xl mx-auto">
-              Join hundreds of casting directors who have already transformed their workflow with CastMatch.
+              Join hundreds of casting directors who have already transformed their workflow with
+              CastMatch.
             </p>
             <motion.button
               whileHover={{ scale: 1.05 }}

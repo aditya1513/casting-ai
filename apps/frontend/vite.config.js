@@ -1,22 +1,28 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
-import path from "path";
+import { defineConfig } from 'vite';
+import { vitePlugin as remix } from '@remix-run/dev';
+import { installGlobals } from '@remix-run/node';
+import tsconfigPaths from 'vite-tsconfig-paths';
+
+installGlobals();
 
 export default defineConfig({
-  plugins: [react()],
-  resolve: {
-    alias: {
-      "@": path.resolve(import.meta.dirname, "./src"),
-    },
-  },
+  plugins: [
+    remix({
+      future: {
+        v3_fetcherPersist: true,
+        v3_relativeSplatPath: true,
+        v3_throwAbortReason: true,
+        v3_singleFetch: true,
+        v3_lazyRouteDiscovery: true,
+      },
+    }),
+    tsconfigPaths(),
+  ],
   server: {
     port: 3000,
     host: true,
   },
-  build: {
-    target: "esnext",
-  },
   optimizeDeps: {
-    include: ["react", "react-dom", "@trpc/client", "@trpc/react-query"],
+    include: ['react', 'react-dom', '@trpc/client', '@trpc/react-query'],
   },
 });

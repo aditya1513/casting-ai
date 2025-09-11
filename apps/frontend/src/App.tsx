@@ -22,7 +22,7 @@ function TalentList() {
   // Test the talents.list endpoint
   const { data, isLoading, error } = trpc.talents.list.useQuery({
     page: 1,
-    limit: 5
+    limit: 5,
   });
 
   if (isLoading) return <div className="text-white">Loading talents...</div>;
@@ -42,7 +42,8 @@ function TalentList() {
         </div>
       ))}
       <div className="text-sm text-gray-400 mt-4">
-        Total: {data?.pagination?.total} | Page: {data?.pagination?.page} | Has Next: {data?.pagination?.hasNext ? 'Yes' : 'No'}
+        Total: {data?.pagination?.total} | Page: {data?.pagination?.page} | Has Next:{' '}
+        {data?.pagination?.hasNext ? 'Yes' : 'No'}
       </div>
     </div>
   );
@@ -50,7 +51,7 @@ function TalentList() {
 
 function HealthCheck() {
   const { data, isLoading, error } = trpc.health.check.useQuery();
-  
+
   if (isLoading) return <div className="text-white">Checking backend health...</div>;
   if (error) return <div className="text-red-400">Backend Error: {error.message}</div>;
 
@@ -65,14 +66,17 @@ function HealthCheck() {
 }
 
 function App() {
-  const [queryClient] = useState(() => new QueryClient({
-    defaultOptions: {
-      queries: {
-        staleTime: 5 * 1000,
-        refetchOnWindowFocus: false,
-      },
-    },
-  }));
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            staleTime: 5 * 1000,
+            refetchOnWindowFocus: false,
+          },
+        },
+      })
+  );
 
   return (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
@@ -82,12 +86,15 @@ function App() {
             <h1 className="text-4xl font-bold text-white mb-8">
               🎬 CastMatch - Backend Integration Test
             </h1>
-            
+
             <HealthCheck />
             <TalentList />
-            
+
             <div className="mt-8 text-sm text-gray-500">
-              <p>Testing tRPC connection between React frontend (port 3000) and Hono backend (port 3001)</p>
+              <p>
+                Testing tRPC connection between React frontend (port 3000) and Hono backend (port
+                3001)
+              </p>
             </div>
           </div>
         </div>

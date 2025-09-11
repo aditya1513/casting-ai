@@ -6,14 +6,7 @@ import { useOnboardingTour } from '@/hooks/useOnboardingTour';
 import { TourAnalyticsDashboard } from '@/components/onboarding/TourAnalyticsDashboard';
 import { UserRole } from '@/lib/onboarding/tour-config';
 import { motion } from 'framer-motion';
-import { 
-  PlayCircle, 
-  RotateCcw, 
-  BarChart, 
-  Users,
-  Sparkles,
-  Settings
-} from 'lucide-react';
+import { PlayCircle, RotateCcw, BarChart, Users, Sparkles, Settings } from 'lucide-react';
 
 export default function OnboardingDemoPage() {
   const [selectedRole, setSelectedRole] = useState<UserRole>('talent');
@@ -32,11 +25,11 @@ export default function OnboardingDemoPage() {
     restartTour,
     analytics,
     shouldShowTour,
-    hasCompletedTour
+    hasCompletedTour,
   } = useOnboardingTour({
     userId,
     userRole: selectedRole,
-    autoStart: false
+    autoStart: false,
   });
 
   return (
@@ -56,7 +49,7 @@ export default function OnboardingDemoPage() {
                 </p>
               </div>
             </div>
-            
+
             <button
               onClick={() => setShowAnalytics(!showAnalytics)}
               className="px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center gap-2 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
@@ -81,17 +74,18 @@ export default function OnboardingDemoPage() {
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
               Select User Role
             </h2>
-            
+
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {(['talent', 'casting_director', 'producer', 'agent'] as UserRole[]).map((role) => (
+              {(['talent', 'casting_director', 'producer', 'agent'] as UserRole[]).map(role => (
                 <button
                   key={role}
                   onClick={() => setSelectedRole(role)}
                   className={`
                     p-4 rounded-lg border-2 transition-all
-                    ${selectedRole === role
-                      ? 'border-cyan-500 bg-cyan-50 dark:bg-cyan-900/20'
-                      : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                    ${
+                      selectedRole === role
+                        ? 'border-cyan-500 bg-cyan-50 dark:bg-cyan-900/20'
+                        : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
                     }
                   `}
                 >
@@ -100,9 +94,7 @@ export default function OnboardingDemoPage() {
                     {role.replace('_', ' ')}
                   </p>
                   {hasCompletedTour(`${role}-onboarding-v1`) && (
-                    <p className="text-xs text-green-600 dark:text-green-400 mt-1">
-                      ✓ Completed
-                    </p>
+                    <p className="text-xs text-green-600 dark:text-green-400 mt-1">✓ Completed</p>
                   )}
                 </button>
               ))}
@@ -119,7 +111,7 @@ export default function OnboardingDemoPage() {
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
               Tour Controls
             </h2>
-            
+
             <div className="flex flex-wrap gap-4 mb-6">
               {!isActive ? (
                 <button
@@ -138,7 +130,7 @@ export default function OnboardingDemoPage() {
                   >
                     Pause Tour
                   </button>
-                  
+
                   <button
                     onClick={skipTour}
                     className="px-6 py-3 bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg font-medium hover:bg-red-200 dark:hover:bg-red-900/30 transition-colors"
@@ -147,7 +139,7 @@ export default function OnboardingDemoPage() {
                   </button>
                 </>
               )}
-              
+
               {!isActive && currentTour && (
                 <>
                   <button
@@ -156,7 +148,7 @@ export default function OnboardingDemoPage() {
                   >
                     Resume Tour
                   </button>
-                  
+
                   <button
                     onClick={restartTour}
                     className="px-6 py-3 bg-purple-100 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 rounded-lg font-medium flex items-center gap-2 hover:bg-purple-200 dark:hover:bg-purple-900/30 transition-colors"
@@ -174,29 +166,28 @@ export default function OnboardingDemoPage() {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                   <div>
                     <p className="text-gray-500 dark:text-gray-400">Tour Name</p>
-                    <p className="font-medium text-gray-900 dark:text-white">
-                      {currentTour.name}
-                    </p>
+                    <p className="font-medium text-gray-900 dark:text-white">{currentTour.name}</p>
                   </div>
-                  
+
                   <div>
                     <p className="text-gray-500 dark:text-gray-400">Progress</p>
                     <p className="font-medium text-gray-900 dark:text-white">
                       Step {currentStepIndex + 1} / {currentTour.steps.length}
                     </p>
                   </div>
-                  
+
                   <div>
                     <p className="text-gray-500 dark:text-gray-400">Completion</p>
                     <p className="font-medium text-gray-900 dark:text-white">
                       {analytics.completionPercentage}%
                     </p>
                   </div>
-                  
+
                   <div>
                     <p className="text-gray-500 dark:text-gray-400">Time Spent</p>
                     <p className="font-medium text-gray-900 dark:text-white">
-                      {Math.floor(analytics.totalTimeSpent / 60)}:{(analytics.totalTimeSpent % 60).toString().padStart(2, '0')}
+                      {Math.floor(analytics.totalTimeSpent / 60)}:
+                      {(analytics.totalTimeSpent % 60).toString().padStart(2, '0')}
                     </p>
                   </div>
                 </div>
@@ -214,51 +205,76 @@ export default function OnboardingDemoPage() {
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
               Demo Application Interface
             </h2>
-            
+
             <div className="space-y-4">
               {/* Mock navigation with tour targets */}
               <div className="flex gap-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                <button data-tour="profile-button" className="px-4 py-2 bg-white dark:bg-gray-700 rounded-lg shadow">
+                <button
+                  data-tour="profile-button"
+                  className="px-4 py-2 bg-white dark:bg-gray-700 rounded-lg shadow"
+                >
                   Profile
                 </button>
-                <button data-tour="search-auditions" className="px-4 py-2 bg-white dark:bg-gray-700 rounded-lg shadow">
+                <button
+                  data-tour="search-auditions"
+                  className="px-4 py-2 bg-white dark:bg-gray-700 rounded-lg shadow"
+                >
                   Search
                 </button>
-                <button data-tour="ai-chat" className="px-4 py-2 bg-white dark:bg-gray-700 rounded-lg shadow">
+                <button
+                  data-tour="ai-chat"
+                  className="px-4 py-2 bg-white dark:bg-gray-700 rounded-lg shadow"
+                >
                   AI Assistant
                 </button>
-                <button data-tour="calendar" className="px-4 py-2 bg-white dark:bg-gray-700 rounded-lg shadow">
+                <button
+                  data-tour="calendar"
+                  className="px-4 py-2 bg-white dark:bg-gray-700 rounded-lg shadow"
+                >
                   Calendar
                 </button>
-                <button data-tour="notifications" className="px-4 py-2 bg-white dark:bg-gray-700 rounded-lg shadow">
+                <button
+                  data-tour="notifications"
+                  className="px-4 py-2 bg-white dark:bg-gray-700 rounded-lg shadow"
+                >
                   Notifications
                 </button>
               </div>
 
               {/* Mock content areas */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div data-tour="self-tape-studio" className="p-6 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                <div
+                  data-tour="self-tape-studio"
+                  className="p-6 bg-gray-50 dark:bg-gray-700/50 rounded-lg"
+                >
                   <h3 className="font-medium mb-2">Self-Tape Studio</h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
                     Record and submit auditions
                   </p>
                 </div>
-                
-                <div data-tour="ai-matching" className="p-6 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+
+                <div
+                  data-tour="ai-matching"
+                  className="p-6 bg-gray-50 dark:bg-gray-700/50 rounded-lg"
+                >
                   <h3 className="font-medium mb-2">AI Matching</h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
                     Find perfect talent matches
                   </p>
                 </div>
-                
-                <div data-tour="talent-pool" className="p-6 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+
+                <div
+                  data-tour="talent-pool"
+                  className="p-6 bg-gray-50 dark:bg-gray-700/50 rounded-lg"
+                >
                   <h3 className="font-medium mb-2">Talent Database</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Browse verified talent
-                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Browse verified talent</p>
                 </div>
-                
-                <div data-tour="analytics" className="p-6 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+
+                <div
+                  data-tour="analytics"
+                  className="p-6 bg-gray-50 dark:bg-gray-700/50 rounded-lg"
+                >
                   <h3 className="font-medium mb-2">Analytics</h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
                     Track performance metrics
@@ -268,17 +284,26 @@ export default function OnboardingDemoPage() {
 
               {/* Additional mock elements for different roles */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div data-tour="create-project" className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg text-center">
+                <div
+                  data-tour="create-project"
+                  className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg text-center"
+                >
                   <Settings className="w-8 h-8 mx-auto mb-2 text-gray-400" />
                   <p className="text-sm">Create Project</p>
                 </div>
-                
-                <div data-tour="submissions" className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg text-center">
+
+                <div
+                  data-tour="submissions"
+                  className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg text-center"
+                >
                   <Users className="w-8 h-8 mx-auto mb-2 text-gray-400" />
                   <p className="text-sm">Submissions</p>
                 </div>
-                
-                <div data-tour="team-collaboration" className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg text-center">
+
+                <div
+                  data-tour="team-collaboration"
+                  className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg text-center"
+                >
                   <Users className="w-8 h-8 mx-auto mb-2 text-gray-400" />
                   <p className="text-sm">Team Collab</p>
                 </div>

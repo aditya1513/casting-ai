@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { Button } from "@heroui/react";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Button } from '@heroui/react';
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -28,10 +28,7 @@ export default function MobileMenu({ isOpen, onToggle }: MobileMenuProps) {
 
       {/* Mobile Backdrop */}
       {isOpen && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
-          onClick={onToggle}
-        />
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden" onClick={onToggle} />
       )}
     </>
   );

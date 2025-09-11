@@ -1,12 +1,7 @@
-"use client";
+'use client';
 
-import { Card, CardBody, Button, Avatar, Chip } from "@heroui/react";
-import { 
-  EyeIcon,
-  CalendarIcon,
-  StarIcon,
-  MapPinIcon
-} from "@heroicons/react/24/outline";
+import { Card, CardBody, Button, Avatar, Chip } from '@heroui/react';
+import { EyeIcon, CalendarIcon, StarIcon, MapPinIcon } from '@heroicons/react/24/outline';
 
 interface TalentCardProps {
   talent: {
@@ -38,9 +33,9 @@ export default function TalentCard({ talent, onViewPortfolio, onBookAudition }: 
       <CardBody className="p-0">
         {/* Image Section */}
         <div className="relative h-48 bg-gradient-to-br from-gray-100 to-gray-200 rounded-t-lg overflow-hidden">
-          {(talent.image || talent.photo) ? (
-            <img 
-              src={talent.image || talent.photo} 
+          {talent.image || talent.photo ? (
+            <img
+              src={talent.image || talent.photo}
               alt={talent.name}
               className="w-full h-full object-cover"
             />
@@ -50,13 +45,13 @@ export default function TalentCard({ talent, onViewPortfolio, onBookAudition }: 
                 name={talent.name}
                 size="lg"
                 classNames={{
-                  base: "w-20 h-20 bg-gradient-to-br from-teal-500 to-teal-600",
-                  name: "text-white font-semibold text-xl"
+                  base: 'w-20 h-20 bg-gradient-to-br from-teal-500 to-teal-600',
+                  name: 'text-white font-semibold text-xl',
                 }}
               />
             </div>
           )}
-          
+
           {/* Match Score Badge */}
           {talent.match && (
             <div className="absolute top-2 right-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-full px-2.5 py-1 flex items-center gap-1 shadow-lg backdrop-blur-sm">
@@ -64,7 +59,7 @@ export default function TalentCard({ talent, onViewPortfolio, onBookAudition }: 
               <span className="text-xs font-bold tracking-wide">{talent.match}%</span>
             </div>
           )}
-          
+
           {/* Age Badge */}
           {talent.age && (
             <div className="absolute top-2 left-2 bg-white/95 backdrop-blur-sm rounded-full px-2.5 py-1 shadow-sm border border-white/50">
@@ -72,24 +67,16 @@ export default function TalentCard({ talent, onViewPortfolio, onBookAudition }: 
             </div>
           )}
         </div>
-        
+
         {/* Content Section */}
         <div className="p-4 space-y-3">
           <div className="space-y-2">
-            <h3 className="font-semibold text-gray-900 text-lg leading-tight">
-              {talent.name}
-            </h3>
-            <p className="text-sm text-gray-600 font-medium">
-              {talent.experience}
-            </p>
-            
+            <h3 className="font-semibold text-gray-900 text-lg leading-tight">{talent.name}</h3>
+            <p className="text-sm text-gray-600 font-medium">{talent.experience}</p>
+
             {/* Rate */}
-            {talent.rate && (
-              <p className="text-sm font-semibold text-green-700">
-                {talent.rate}
-              </p>
-            )}
-            
+            {talent.rate && <p className="text-sm font-semibold text-green-700">{talent.rate}</p>}
+
             {/* Location */}
             {talent.location && (
               <div className="flex items-center gap-1 text-gray-500">
@@ -98,16 +85,14 @@ export default function TalentCard({ talent, onViewPortfolio, onBookAudition }: 
               </div>
             )}
           </div>
-          
+
           {/* Additional Info Section */}
           <div className="space-y-2">
             {/* Recent Work */}
             {talent.recentWork && (
-              <p className="text-xs text-gray-600 italic">
-                Recent: {talent.recentWork}
-              </p>
+              <p className="text-xs text-gray-600 italic">Recent: {talent.recentWork}</p>
             )}
-            
+
             {/* Languages */}
             {talent.languages && talent.languages.length > 0 && (
               <div>
@@ -119,30 +104,30 @@ export default function TalentCard({ talent, onViewPortfolio, onBookAudition }: 
               </div>
             )}
           </div>
-          
+
           {/* Specialties */}
           {talent.specialties && talent.specialties.length > 0 && (
             <div className="flex flex-wrap gap-1.5">
               {talent.specialties.slice(0, 2).map((specialty, index) => (
-                <Chip 
+                <Chip
                   key={index}
-                  size="sm" 
+                  size="sm"
                   variant="flat"
                   classNames={{
-                    base: "bg-teal-50 border border-teal-200",
-                    content: "text-teal-700 font-medium text-xs"
+                    base: 'bg-teal-50 border border-teal-200',
+                    content: 'text-teal-700 font-medium text-xs',
                   }}
                 >
                   {specialty}
                 </Chip>
               ))}
               {talent.specialties.length > 2 && (
-                <Chip 
-                  size="sm" 
+                <Chip
+                  size="sm"
                   variant="flat"
                   classNames={{
-                    base: "bg-gray-50 border border-gray-200",
-                    content: "text-gray-600 text-xs"
+                    base: 'bg-gray-50 border border-gray-200',
+                    content: 'text-gray-600 text-xs',
                   }}
                 >
                   +{talent.specialties.length - 2}
@@ -150,7 +135,7 @@ export default function TalentCard({ talent, onViewPortfolio, onBookAudition }: 
               )}
             </div>
           )}
-          
+
           {/* Actions */}
           <div className="flex gap-2">
             <Button
@@ -171,7 +156,7 @@ export default function TalentCard({ talent, onViewPortfolio, onBookAudition }: 
               Audition
             </Button>
           </div>
-          
+
           {/* Availability */}
           {talent.availability && (
             <p className="text-xs text-gray-500 mt-2 text-center">

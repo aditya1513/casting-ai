@@ -25,15 +25,11 @@ export default function OfflinePage() {
     if ('caches' in window) {
       caches.keys().then(cacheNames => {
         Promise.all(
-          cacheNames.map(cacheName => 
-            caches.open(cacheName).then(cache => cache.keys())
-          )
+          cacheNames.map(cacheName => caches.open(cacheName).then(cache => cache.keys()))
         ).then(responses => {
           const urls = responses.flat().map(req => new URL(req.url).pathname);
-          const uniqueUrls = [...new Set(urls)].filter(url => 
-            !url.includes('_next') && 
-            !url.includes('.') &&
-            url !== '/offline'
+          const uniqueUrls = [...new Set(urls)].filter(
+            url => !url.includes('_next') && !url.includes('.') && url !== '/offline'
           );
           setCachedPages(uniqueUrls);
         });
@@ -70,17 +66,17 @@ export default function OfflinePage() {
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            transition={{ delay: 0.2, type: "spring" }}
+            transition={{ delay: 0.2, type: 'spring' }}
             className="inline-flex items-center justify-center w-20 h-20 bg-red-500/20 rounded-full mb-6"
           >
             <WifiOff className="w-10 h-10 text-red-400" />
           </motion.div>
 
           <h1 className="text-3xl font-bold mb-4">You're Offline</h1>
-          
+
           <p className="text-gray-300 mb-8">
-            It looks like you've lost your internet connection. 
-            Don't worry, you can still access some cached content below.
+            It looks like you've lost your internet connection. Don't worry, you can still access
+            some cached content below.
           </p>
 
           <div className="space-y-3 mb-8">
@@ -114,7 +110,12 @@ export default function OfflinePage() {
                     href={page}
                     className="block text-sm text-purple-300 hover:text-purple-200 transition-colors"
                   >
-                    {page === '/' ? 'Home' : page.slice(1).replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                    {page === '/'
+                      ? 'Home'
+                      : page
+                          .slice(1)
+                          .replace(/-/g, ' ')
+                          .replace(/\b\w/g, l => l.toUpperCase())}
                   </Link>
                 ))}
               </div>
