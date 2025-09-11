@@ -8,6 +8,7 @@
     "build": "remix vite:build",
     "preview": "remix-serve build/server/index.js",
     "test": "vitest",
+    "test:bun": "bun test",
     "lint": "biome lint ./app",
     "lint:fix": "biome lint --write ./app",
     "format": "biome format ./app",
@@ -17,8 +18,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@clerk/nextjs": "^6.31.10",
-    "@clerk/remix": "^4.11.10",
+    "@headlessui/react": "2.2.7",
     "@radix-ui/react-avatar": "^1.1.10",
     "@radix-ui/react-scroll-area": "^1.2.10",
     "@radix-ui/react-slot": "^1.2.3",
@@ -28,7 +28,7 @@
     "@tanstack/react-query": "^5.87.1",
     "@trpc/client": "^11.5.1",
     "@trpc/react-query": "^11.5.1",
-    "class-variance-authority": "^0.7.1",
+    "class-variance-authority": "0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "focus-trap-react": "^11.0.4",

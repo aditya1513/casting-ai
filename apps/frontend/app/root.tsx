@@ -11,8 +11,9 @@ import {
 } from '@remix-run/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState } from 'react';
-import { ClerkApp, ClerkLoaded, ClerkLoading } from '@clerk/remix';
-import { rootAuthLoader } from '@clerk/remix/ssr.server';
+// Temporarily disabled Clerk imports until module is properly installed
+// import { ClerkApp, ClerkLoaded, ClerkLoading } from '@clerk/remix';
+// import { rootAuthLoader } from '@clerk/remix/ssr.server';
 import './globals.css';
 import { trpc, trpcClient } from '~/lib/trpc';
 
@@ -73,13 +74,12 @@ export const meta: MetaFunction = () => [
   { name: 'twitter:image', content: '/twitter-image.png' },
 ];
 
-export const loader = (args: LoaderFunctionArgs) => {
-  return rootAuthLoader(args, () => {
-    return json({
-      ENV: {
-        CLERK_PUBLISHABLE_KEY: process.env.CLERK_PUBLISHABLE_KEY,
-      },
-    });
+// Temporarily disabled Clerk loader
+export const loader = () => {
+  return json({
+    ENV: {
+      CLERK_PUBLISHABLE_KEY: process.env.CLERK_PUBLISHABLE_KEY,
+    },
   });
 };
 
@@ -92,7 +92,7 @@ function Document({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body className="font-geist antialiased bg-slate-900">
+      <body className="font-geist antialiased">
         {children}
         <ScrollRestoration />
         <Scripts />
@@ -132,4 +132,5 @@ function App() {
   );
 }
 
-export default ClerkApp(App);
+// Temporarily disabled ClerkApp wrapper
+export default App;
