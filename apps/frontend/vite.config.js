@@ -12,9 +12,6 @@ export default defineConfig({
         v3_fetcherPersist: true,
         v3_relativeSplatPath: true,
         v3_throwAbortReason: true,
-        // Temporarily disable these flags that may conflict with Clerk
-        // v3_singleFetch: true,
-        // v3_lazyRouteDiscovery: true,
       },
     }),
     tsconfigPaths(),
@@ -33,5 +30,13 @@ export default defineConfig({
       '@trpc/client', 
       '@trpc/react-query'
     ],
+  },
+  build: {
+    commonjsOptions: {
+      include: [/node_modules/],
+    },
+  },
+  esbuild: {
+    target: 'node14',
   },
 });
