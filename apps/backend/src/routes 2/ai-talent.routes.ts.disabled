@@ -1,0 +1,591 @@
+/**
+ * AI Talent Routes
+ * API endpoints for AI-powered talent search and matching
+ */
+
+import { Router } from 'express';
+import { body, query, param, validationResult } from 'express-validator';
+import { aiMatchingService, MatchCriteria, ScoringWeights } from '../services/ai-matching.service';
+import { vectorService } from '../services/vector.service';
+import { embeddingService } from '../services/embedding.service';
+import { authenticate } from '../middleware/auth.middleware';
+import { rateLimiter } from '../middleware/rateLimiter.middleware';
+import { checkRole } from '../middleware/rbac.middleware';
+import { asyncHandler } from '../utils/asyncHandler';
+import { AppError } from '../utils/errors';
+import { logger } from '../utils/logger';
+import { CacheManager } from '../config/redis';
+
+const router = Router();
+
+/**
+ * Validation middleware
+ */
+const validateRequest = (req: any, res: any, next: any) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      success: false,
+      errors: errors.array(),
+    });
+  }
+  next();
+};
+
+/**
+ * @route   POST /api/talents/ai-search
+ * @desc    Semantic search for talents using AI
+ * @access  Protected
+ */
+router.post(
+  '/ai-search',
+  authenticate,
+  rateLimiter({ windowMs: 60000, max: 30 }), // 30 requests per minute
+  [
+    body('query').notEmpty().trim().withMessage('Search query is required'),
+    body('roleDescription').optional().isString(),
+    body('requirements').optional().isArray(),
+    body('preferences').optional().isArray(),
+    body('filters').optional().isObject(),
+    body('filters.gender').optional().isIn(['MALE', 'FEMALE', 'OTHER', 'PREFER_NOT_TO_SAY']),
+    body('filters.location').optional().isString(),
+    body('filters.languages').optional().isArray(),
+    body('filters.skills').optional().isArray(),
+    body('filters.experienceLevel').optional().isIn(['FRESHER', 'INTERMEDIATE', 'EXPERIENCED', 'VETERAN']),
+    body('filters.minRating').optional().isFloat({ min: 0, max: 5 }),
+    body('filters.availability').optional().isIn(['IMMEDIATE', 'WITHIN_WEEK', 'WITHIN_MONTH', 'FLEXIBLE']),
+    body('filters.ageMin').optional().isInt({ min: 0 }),
+    body('filters.ageMax').optional().isInt({ min: 0 }),
+    body('filters.minExperience').optional().isInt({ min: 0 }),
+    body('filters.maxExperience').optional().isInt({ min: 0 }),
+    body('filters.verified').optional().isBoolean(),
+    body('weights').optional().isObject(),
+    body('limit').optional().isInt({ min: 1, max: 100 }).default(20),
+    body('offset').optional().isInt({ min: 0 }).default(0),
+  ],
+  validateRequest,
+  asyncHandler(async (req, res) => {
+    const criteria: MatchCriteria = {
+      query: req.body.query,
+      roleDescription: req.body.roleDescription,
+      requirements: req.body.requirements,
+      preferences: req.body.preferences,
+      filters: req.body.filters,
+      weights: req.body.weights,
+      limit: req.body.limit || 20,
+      offset: req.body.offset || 0,
+    };
+
+    // Log search request
+    logger.info('AI talent search request', {
+      userId: req.user?.id,
+      query: criteria.query,
+      filters: criteria.filters,
+    });
+
+    // Perform AI-powered search
+    const results = await aiMatchingService.findMatchingTalents(criteria);
+
+    // Track search analytics
+    if (req.user) {
+      await trackSearchAnalytics(req.user.id, criteria, results.total);
+    }
+
+    res.json({
+      success: true,
+      data: results.results,
+      meta: {
+        total: results.total,
+        limit: criteria.limit,
+        offset: criteria.offset,
+        processingTime: results.processingTime,
+      },
+    });
+  })
+);
+
+/**
+ * @route   POST /api/talents/ai-match
+ * @desc    Match talents to a specific role description
+ * @access  Protected (Casting Directors, Producers)
+ */
+router.post(
+  '/ai-match',
+  authenticate,
+  checkRole(['CASTING_DIRECTOR', 'PRODUCER', 'DIRECTOR']),
+  rateLimiter({ windowMs: 60000, max: 20 }), // 20 requests per minute
+  [
+    body('roleTitle').notEmpty().trim().withMessage('Role title is required'),
+    body('roleDescription').notEmpty().trim().withMessage('Role description is required'),
+    body('requirements').isArray().withMessage('Requirements must be an array'),
+    body('preferences').optional().isArray(),
+    body('projectType').optional().isIn([
+      'WEB_SERIES', 'FILM', 'SHORT_FILM', 'DOCUMENTARY', 
+      'AD_COMMERCIAL', 'MUSIC_VIDEO', 'THEATRE', 'VOICE_OVER'
+    ]),
+    body('budget').optional().isObject(),
+    body('shootingLocation').optional().isString(),
+    body('shootingDates').optional().isObject(),
+    body('filters').optional().isObject(),
+    body('scoringWeights').optional().isObject(),
+    body('limit').optional().isInt({ min: 1, max: 50 }).default(20),
+  ],
+  validateRequest,
+  asyncHandler(async (req, res) => {
+    const {
+      roleTitle,
+      roleDescription,
+      requirements,
+      preferences,
+      projectType,
+      budget,
+      shootingLocation,
+      shootingDates,
+      filters = {},
+      scoringWeights,
+      limit = 20,
+    } = req.body;
+
+    // Build comprehensive search query
+    const searchQuery = `${roleTitle} ${roleDescription} ${requirements.join(' ')}`;
+
+    // Add location preference if shooting location is specified
+    if (shootingLocation && !filters.location) {
+      filters.location = shootingLocation;
+    }
+
+    // Adjust scoring weights based on project type
+    const weights = scoringWeights || getDefaultWeightsForProjectType(projectType);
+
+    const criteria: MatchCriteria = {
+      query: searchQuery,
+      roleDescription,
+      requirements,
+      preferences,
+      filters,
+      weights,
+      limit,
+    };
+
+    logger.info('AI role matching request', {
+      userId: req.user?.id,
+      roleTitle,
+      projectType,
+      filters,
+    });
+
+    // Perform matching
+    const results = await aiMatchingService.findMatchingTalents(criteria);
+
+    // Save search for future reference
+    if (req.user) {
+      await saveRoleMatchingSearch(req.user.id, {
+        roleTitle,
+        roleDescription,
+        requirements,
+        preferences,
+        projectType,
+        results: results.results.map(r => r.talentId),
+      });
+    }
+
+    res.json({
+      success: true,
+      data: {
+        role: {
+          title: roleTitle,
+          description: roleDescription,
+          requirements,
+          preferences,
+          projectType,
+        },
+        matches: results.results,
+        meta: {
+          total: results.total,
+          limit,
+          processingTime: results.processingTime,
+          scoringWeights: weights,
+        },
+      },
+    });
+  })
+);
+
+/**
+ * @route   GET /api/talents/:id/similar-ai
+ * @desc    Find similar talents using AI
+ * @access  Protected
+ */
+router.get(
+  '/:id/similar-ai',
+  authenticate,
+  rateLimiter({ windowMs: 60000, max: 60 }), // 60 requests per minute
+  [
+    param('id').isUUID().withMessage('Invalid talent ID'),
+    query('limit').optional().isInt({ min: 1, max: 50 }).default(10),
+    query('includeOriginal').optional().isBoolean().default(false),
+    query('gender').optional().isIn(['MALE', 'FEMALE', 'OTHER', 'PREFER_NOT_TO_SAY']),
+    query('location').optional().isString(),
+    query('minRating').optional().isFloat({ min: 0, max: 5 }),
+  ],
+  validateRequest,
+  asyncHandler(async (req, res) => {
+    const talentId = req.params.id;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const includeOriginal = req.query.includeOriginal === 'true';
+
+    // Build filters from query params
+    const filters: Record<string, any> = {};
+    if (req.query.gender) filters.gender = req.query.gender;
+    if (req.query.location) filters.location = req.query.location;
+    if (req.query.minRating) filters.rating = { $gte: parseFloat(req.query.minRating as string) };
+
+    logger.info('Similar talents search', {
+      userId: req.user?.id,
+      talentId,
+      limit,
+      filters,
+    });
+
+    // Find similar talents
+    const similarTalents = await aiMatchingService.findSimilarTalents(talentId, {
+      limit,
+      includeOriginal,
+      filters,
+    });
+
+    res.json({
+      success: true,
+      data: similarTalents,
+      meta: {
+        originalTalentId: talentId,
+        count: similarTalents.length,
+        limit,
+      },
+    });
+  })
+);
+
+/**
+ * @route   POST /api/talents/embeddings/refresh
+ * @desc    Regenerate embeddings for all talents (Admin only)
+ * @access  Admin
+ */
+router.post(
+  '/embeddings/refresh',
+  authenticate,
+  checkRole(['ADMIN']),
+  rateLimiter({ windowMs: 3600000, max: 1 }), // 1 request per hour
+  [
+    body('batchSize').optional().isInt({ min: 10, max: 100 }).default(50),
+    body('force').optional().isBoolean().default(false),
+  ],
+  validateRequest,
+  asyncHandler(async (req, res) => {
+    const { batchSize = 50, force = false } = req.body;
+
+    logger.info('Embedding refresh requested', {
+      userId: req.user?.id,
+      batchSize,
+      force,
+    });
+
+    // Check if a refresh is already in progress
+    const refreshLock = await CacheManager.get('embeddings:refresh:lock');
+    if (refreshLock && !force) {
+      return res.status(409).json({
+        success: false,
+        message: 'Embedding refresh already in progress',
+      });
+    }
+
+    // Set lock
+    await CacheManager.set('embeddings:refresh:lock', 'true', 7200); // 2 hour lock
+
+    // Start refresh in background
+    aiMatchingService.updateAllTalentEmbeddings({
+      batchSize,
+      onProgress: async (processed, total) => {
+        await CacheManager.set(
+          'embeddings:refresh:progress',
+          JSON.stringify({ processed, total }),
+          300
+        );
+      },
+    })
+      .then(async (result) => {
+        await CacheManager.delete('embeddings:refresh:lock');
+        logger.info('Embedding refresh completed', result);
+      })
+      .catch(async (error) => {
+        await CacheManager.delete('embeddings:refresh:lock');
+        logger.error('Embedding refresh failed', error);
+      });
+
+    res.json({
+      success: true,
+      message: 'Embedding refresh started',
+      data: {
+        batchSize,
+        estimatedTime: 'Check progress endpoint for updates',
+      },
+    });
+  })
+);
+
+/**
+ * @route   GET /api/talents/embeddings/refresh/progress
+ * @desc    Get embedding refresh progress
+ * @access  Admin
+ */
+router.get(
+  '/embeddings/refresh/progress',
+  authenticate,
+  checkRole(['ADMIN']),
+  asyncHandler(async (req, res) => {
+    const progressData = await CacheManager.get('embeddings:refresh:progress');
+    const isLocked = await CacheManager.get('embeddings:refresh:lock');
+
+    if (!progressData && !isLocked) {
+      return res.json({
+        success: true,
+        data: {
+          status: 'idle',
+          message: 'No refresh in progress',
+        },
+      });
+    }
+
+    const progress = progressData ? JSON.parse(progressData) : null;
+
+    res.json({
+      success: true,
+      data: {
+        status: isLocked ? 'in_progress' : 'completed',
+        processed: progress?.processed || 0,
+        total: progress?.total || 0,
+        percentage: progress ? Math.round((progress.processed / progress.total) * 100) : 0,
+      },
+    });
+  })
+);
+
+/**
+ * @route   POST /api/talents/:id/embedding
+ * @desc    Update embedding for a specific talent
+ * @access  Protected (Talent owner or Admin)
+ */
+router.post(
+  '/:id/embedding',
+  authenticate,
+  [
+    param('id').isUUID().withMessage('Invalid talent ID'),
+  ],
+  validateRequest,
+  asyncHandler(async (req, res) => {
+    const talentId = req.params.id;
+
+    // Check permissions (owner or admin)
+    const talent = await prisma.talent.findUnique({
+      where: { id: talentId },
+      select: { userId: true },
+    });
+
+    if (!talent) {
+      throw new AppError('Talent not found', 404);
+    }
+
+    if (talent.userId !== req.user?.id && req.user?.role !== 'ADMIN') {
+      throw new AppError('Unauthorized to update this talent embedding', 403);
+    }
+
+    logger.info('Updating talent embedding', {
+      userId: req.user?.id,
+      talentId,
+    });
+
+    // Update embedding
+    await aiMatchingService.updateTalentEmbedding(talentId);
+
+    res.json({
+      success: true,
+      message: 'Talent embedding updated successfully',
+      data: {
+        talentId,
+      },
+    });
+  })
+);
+
+/**
+ * @route   GET /api/talents/ai-stats
+ * @desc    Get AI search and vector database statistics
+ * @access  Admin
+ */
+router.get(
+  '/ai-stats',
+  authenticate,
+  checkRole(['ADMIN']),
+  asyncHandler(async (req, res) => {
+    const stats = await vectorService.getIndexStats();
+
+    res.json({
+      success: true,
+      data: stats,
+    });
+  })
+);
+
+/**
+ * @route   POST /api/talents/ai-search/feedback
+ * @desc    Submit feedback on AI search results
+ * @access  Protected
+ */
+router.post(
+  '/ai-search/feedback',
+  authenticate,
+  [
+    body('searchId').optional().isUUID(),
+    body('talentId').isUUID().withMessage('Talent ID is required'),
+    body('feedback').isIn(['relevant', 'irrelevant', 'spam']).withMessage('Invalid feedback type'),
+    body('comments').optional().isString().isLength({ max: 500 }),
+  ],
+  validateRequest,
+  asyncHandler(async (req, res) => {
+    const { searchId, talentId, feedback, comments } = req.body;
+
+    logger.info('AI search feedback received', {
+      userId: req.user?.id,
+      talentId,
+      feedback,
+    });
+
+    // Store feedback for model improvement
+    await storeFeedback({
+      userId: req.user!.id,
+      searchId,
+      talentId,
+      feedback,
+      comments,
+    });
+
+    res.json({
+      success: true,
+      message: 'Feedback recorded successfully',
+    });
+  })
+);
+
+// Helper functions
+
+/**
+ * Get default scoring weights based on project type
+ */
+function getDefaultWeightsForProjectType(projectType?: string): ScoringWeights {
+  const weights: Record<string, ScoringWeights> = {
+    FILM: {
+      semanticSimilarity: 0.5,
+      experienceMatch: 0.3,
+      availability: 0.1,
+      ratingAndReviews: 0.1,
+    },
+    WEB_SERIES: {
+      semanticSimilarity: 0.6,
+      experienceMatch: 0.2,
+      availability: 0.15,
+      ratingAndReviews: 0.05,
+    },
+    AD_COMMERCIAL: {
+      semanticSimilarity: 0.7,
+      experienceMatch: 0.1,
+      availability: 0.15,
+      ratingAndReviews: 0.05,
+    },
+    THEATRE: {
+      semanticSimilarity: 0.4,
+      experienceMatch: 0.4,
+      availability: 0.1,
+      ratingAndReviews: 0.1,
+    },
+    DEFAULT: {
+      semanticSimilarity: 0.6,
+      experienceMatch: 0.2,
+      availability: 0.1,
+      ratingAndReviews: 0.1,
+    },
+  };
+
+  return weights[projectType || 'DEFAULT'] || weights.DEFAULT;
+}
+
+/**
+ * Track search analytics
+ */
+async function trackSearchAnalytics(
+  userId: string,
+  criteria: MatchCriteria,
+  resultCount: number
+): Promise<void> {
+  try {
+    // Store in analytics database or service
+    const analyticsData = {
+      userId,
+      searchType: 'ai_search',
+      query: criteria.query,
+      filters: criteria.filters,
+      resultCount,
+      timestamp: new Date(),
+    };
+
+    // You can store this in a separate analytics table or service
+    await CacheManager.set(
+      `analytics:search:${userId}:${Date.now()}`,
+      JSON.stringify(analyticsData),
+      86400 // 24 hours
+    );
+  } catch (error) {
+    logger.error('Failed to track search analytics:', error);
+  }
+}
+
+/**
+ * Save role matching search for future reference
+ */
+async function saveRoleMatchingSearch(
+  userId: string,
+  searchData: any
+): Promise<void> {
+  try {
+    await prisma.savedSearch.create({
+      data: {
+        userId,
+        name: `Role Match: ${searchData.roleTitle}`,
+        criteria: searchData,
+        lastRun: new Date(),
+      },
+    });
+  } catch (error) {
+    logger.error('Failed to save role matching search:', error);
+  }
+}
+
+/**
+ * Store user feedback for model improvement
+ */
+async function storeFeedback(feedbackData: any): Promise<void> {
+  try {
+    // Store feedback in database or analytics service
+    await CacheManager.set(
+      `feedback:ai:${feedbackData.userId}:${Date.now()}`,
+      JSON.stringify(feedbackData),
+      2592000 // 30 days
+    );
+  } catch (error) {
+    logger.error('Failed to store feedback:', error);
+  }
+}
+
+// Import prisma at the end to avoid circular dependencies
+import { prisma } from '../config/database';
+
+export default router;

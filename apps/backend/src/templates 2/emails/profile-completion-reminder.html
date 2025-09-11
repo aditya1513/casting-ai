@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Your CastMatch Profile</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #ff9f43 0%, #f39c12 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .progress-bar {
+            background: #ecf0f1;
+            height: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .progress-fill {
+            background: linear-gradient(135deg, #ff9f43 0%, #f39c12 100%);
+            height: 100%;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        .checklist {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 30px 0;
+        }
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        .checklist-item:last-child {
+            border-bottom: none;
+        }
+        .check-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .completed {
+            background: #00b894;
+            color: white;
+        }
+        .pending {
+            background: #ddd;
+            color: #666;
+        }
+        .benefit-card {
+            background: #e8f6f3;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #00b894;
+        }
+        .cta-button {
+            display: inline-block;
+            padding: 18px 40px;
+            background: linear-gradient(135deg, #ff9f43 0%, #f39c12 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(255, 159, 67, 0.4);
+        }
+        .footer {
+            background: #34495e;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Almost There!</h1>
+            <p>Complete your profile to unlock opportunities</p>
+        </div>
+        
+        <div class="content">
+            <div style="font-size: 24px; color: #2c3e50; margin-bottom: 20px;">Hi {{firstName}},</div>
+            
+            <p>Your CastMatch journey is off to a great start! You're <strong>{{completionPercentage}}% complete</strong> with your profile.</p>
+
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: {{completionPercentage}}%;">
+                    {{completionPercentage}}% Complete
+                </div>
+            </div>
+
+            <div style="background: #fff3cd; padding: 20px; border-radius: 10px; margin: 30px 0; text-align: center;">
+                <h3 style="color: #d35400; margin-top: 0;">📊 Complete profiles get 5x more visibility!</h3>
+                <p style="margin-bottom: 0;">Casting directors are 500% more likely to view complete profiles. Don't miss out on your next big opportunity!</p>
+            </div>
+
+            <div class="checklist">
+                <h3 style="color: #2c3e50; margin-top: 0;">✅ Your Profile Checklist</h3>
+                
+                {{#completedItems}}
+                <div class="checklist-item">
+                    <div class="check-icon completed">✓</div>
+                    <span>{{.}}</span>
+                </div>
+                {{/completedItems}}
+
+                {{#pendingItems}}
+                <div class="checklist-item">
+                    <div class="check-icon pending">⏳</div>
+                    <span><strong>{{.}}</strong></span>
+                </div>
+                {{/pendingItems}}
+            </div>
+
+            <div style="background: #e8f4fd; padding: 25px; border-radius: 10px; margin: 30px 0;">
+                <h3 style="color: #0ea5e9; margin-top: 0;">🎯 Quick Wins - 5 Minutes Each!</h3>
+                <div class="benefit-card">
+                    <strong>📸 Upload Professional Photos</strong><br>
+                    <small>High-quality headshots increase callback rates by 70%</small>
+                </div>
+                <div class="benefit-card">
+                    <strong>🎬 Add Your Showreel</strong><br>
+                    <small>Video content gets 10x more engagement than photos alone</small>
+                </div>
+                <div class="benefit-card">
+                    <strong>📝 Complete Bio & Experience</strong><br>
+                    <small>Detailed profiles rank higher in casting director searches</small>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin: 40px 0;">
+                <a href="{{profileUrl}}" class="cta-button">
+                    🔥 Complete My Profile Now
+                </a>
+            </div>
+
+            <div style="background: #f1f2f6; padding: 20px; border-radius: 10px; margin: 30px 0;">
+                <h4 style="color: #2c3e50; margin-top: 0;">💡 Pro Tips from Successful Actors</h4>
+                <ul style="margin: 0; padding-left: 20px; color: #57606f;">
+                    <li>Update your availability weekly for better opportunities</li>
+                    <li>Use professional, high-resolution photos only</li>
+                    <li>Write a compelling bio that tells your unique story</li>
+                    <li>List all your skills, even unconventional ones</li>
+                </ul>
+            </div>
+
+            <div style="border-top: 2px solid #ecf0f1; padding-top: 30px; margin-top: 40px;">
+                <p><strong>Need help?</strong> Our profile completion guide walks you through each step: <a href="{{guideUrl}}">Profile Guide</a></p>
+                <p>Questions? Reply to this email or contact us at <a href="mailto:support@castmatch.com">support@castmatch.com</a></p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>© {{currentYear}} CastMatch. All rights reserved.</p>
+            <p>You're receiving this because you have an incomplete profile. <a href="{{unsubscribeUrl}}" style="color: #ecf0f1;">Unsubscribe</a></p>
+        </div>
+    </div>
+</body>
+</html>

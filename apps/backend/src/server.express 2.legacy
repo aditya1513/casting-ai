@@ -1,0 +1,346 @@
+/**
+ * CastMatch Backend Server
+ * Main entry point for the Express application
+ */
+
+import express, { Express } from 'express';
+import 'express-async-errors';
+import cors from 'cors';
+import helmet from 'helmet';
+import compression from 'compression';
+import { connectionPoolMiddleware, poolHealthHandler } from './middleware/connectionPool';
+// import { advancedCompressionMiddleware, compressionHealthHandler } from './middleware/compression'; // Temporarily disabled
+import { initializeRealtimeServices } from './services/realtime.service';
+import { performanceMiddleware, performanceDashboardHandler, performanceBenchmarkHandler } from './middleware/performance';
+import { requestMonitoringMiddleware, healthCheckHandler, monitoringDashboardHandler } from './middleware/monitoringMiddleware';
+import morgan from 'morgan';
+import { config } from './config/config';
+import { logger } from './utils/logger';
+import { errorHandler } from './middleware/errorHandler';
+import { notFoundHandler } from './middleware/notFoundHandler';
+import { rateLimiter } from './middleware/rateLimiter'; // Dragonfly-based rate limiting
+import { requestLogger } from './middleware/requestLogger';
+import { redis } from './config/redis'; // Dragonfly Redis-compatible cache 
+// import { notificationService } from './services/notification.service'; // Temporarily disabled
+import { createServer } from 'http';
+import { initializeWebSocket } from './websocket/socketServer';
+import MemoryManager from './utils/memoryManager';
+
+// Import routes
+import healthRoutes from './routes/health.routes';
+import talentSimpleRoutes from './routes/talent-simple.routes'; // Simplified talent routes without Redis dependencies
+import chatRoutes from './routes/chat.routes'; // Chat API routes
+import clerkAuthRoutes from './routes/clerk-auth.routes'; // Clerk authentication routes
+// import vectorMigrationRoutes from './routes/vector-migration.routes'; // Temporarily disabled - missing hybrid-vector.service
+import conversationRoutes from './routes/conversation.routes'; // Re-enabled - syntax errors fixed
+import memoryRoutes from './routes/memory.routes'; // Re-enabled 
+import memorySimpleRoutes from './routes/memory-simple.routes'; // Simple memory routes without auth
+import aiMlSimpleRoutes from './routes/ai-ml-simple.routes'; // Simple AI/ML routes without auth
+import batchRoutes from './routes/batch.routes'; // Re-enabled after Prisma->Drizzle migration
+// import authRoutes from './routes/auth.routes'; // Replaced with Clerk auth
+import profileRoutes from './routes/profile.routes';
+import userRoutes from './routes/user.routes';
+import actorRoutes from './routes/actor.routes';
+// import talentDirectRoutes from './routes/talent-direct.routes'; // Direct SQL workaround - keep disabled for now
+import talentRoutes from './routes/talent.routes'; // Re-enabled after Prisma->Drizzle migration
+import projectRoutes from './routes/project.routes';
+import applicationRoutes from './routes/application.routes';
+import auditionRoutes from './routes/audition.routes'; // Re-enabling full audition routes
+// import pineconeHealthRoutes from './routes/pinecone-health.routes'; // Keep disabled - using Qdrant
+import aiMLRoutes from './routes/ai-ml.routes'; // Re-enabled after dependency fixes
+import aiRoutes from './routes/ai.routes'; // Re-enabled with simple services
+// import { monitoringRouter } from './routes/monitoring'; // Temporarily disabled due to TypeScript errors
+
+// Initialize Express app
+const app: Express = express(); // Restart trigger 2
+
+// Trust proxy - important for production deployments behind reverse proxies
+app.set('trust proxy', 1);
+
+// Security middleware
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      scriptSrc: ["'self'"],
+      imgSrc: ["'self'", "data:", "https:"],
+    },
+  },
+  crossOriginEmbedderPolicy: !config.isDevelopment,
+}));
+
+// CORS configuration
+app.use(cors({
+  origin: config.cors.origins,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-ID'],
+  exposedHeaders: ['X-Request-ID', 'X-RateLimit-Limit', 'X-RateLimit-Remaining'],
+}));
+
+// Performance monitoring middleware (must be early in the chain)
+app.use(performanceMiddleware);
+
+// Request monitoring middleware (must be early in the chain)
+app.use(requestMonitoringMiddleware);
+
+// Advanced compression middleware with production optimizations
+// app.use(advancedCompressionMiddleware); // Temporarily disabled due to minor syntax issue
+
+// Fallback: Use standard compression
+app.use(compression({
+  level: 6,
+  threshold: 1024,
+  filter: (req, res) => {
+    if (req.headers['x-no-compression']) {
+      return false;
+    }
+    return compression.filter(req, res);
+  },
+}));
+
+// Database connection pool monitoring middleware
+app.use(connectionPoolMiddleware);
+
+// Body parsing middleware
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Request logging
+if (config.isDevelopment) {
+  app.use(morgan('dev'));
+} else {
+  app.use(requestLogger);
+}
+
+// Clerk authentication middleware
+import { clerkAuth, optionalClerkAuth } from './middleware/clerk-auth';
+
+// API Routes (public routes first - no authentication required)
+app.use('/api/health', healthRoutes);
+app.use('/api/clerk', clerkAuthRoutes); // Clerk authentication and user management
+
+// Public routes with optional auth (can work with or without authentication)
+app.use('/api/memory-simple', memorySimpleRoutes); // Simple memory routes without auth for testing
+app.use('/api/ai-ml-simple', aiMlSimpleRoutes); // Simple AI/ML routes without auth for testing
+
+// Protected routes (require authentication)
+app.use('/api/conversations', clerkAuth, conversationRoutes); // Protected - syntax errors fixed
+app.use('/api/memory', clerkAuth, memoryRoutes); // Protected with Clerk auth
+app.use('/api/talents', optionalClerkAuth, talentSimpleRoutes); // Optional auth for talent browsing
+app.use('/api/batch', clerkAuth, batchRoutes); // Protected - batch operations
+app.use('/api', optionalClerkAuth, chatRoutes); // Chat API routes with optional auth
+// app.use('/api/vector-migration', vectorMigrationRoutes); // Temporarily disabled - missing hybrid-vector.service
+
+// Performance monitoring endpoints
+app.get('/api/metrics', performanceDashboardHandler); // Performance metrics
+app.get('/api/benchmark', performanceBenchmarkHandler); // Performance benchmarks
+
+// System monitoring endpoints
+app.get('/api/monitoring/health', healthCheckHandler); // Comprehensive health check
+app.get('/api/monitoring/dashboard', monitoringDashboardHandler); // Detailed monitoring dashboard
+// User and talent management routes (protected)
+app.use('/api/users', clerkAuth, userRoutes); // Protected user management
+app.use('/api/talents-full', clerkAuth, talentRoutes); // Protected full talent management
+app.use('/api/ai-ml', clerkAuth, aiMLRoutes); // Protected AI/ML services
+app.use('/api/ai', optionalClerkAuth, aiRoutes); // AI routes with optional auth
+
+// Core application routes (protected)
+app.use('/api/profile', clerkAuth, profileRoutes); // User profile management
+app.use('/api/actors', clerkAuth, actorRoutes); // Actor-specific routes
+app.use('/api/projects', clerkAuth, projectRoutes); // Project management
+app.use('/api/applications', clerkAuth, applicationRoutes); // Talent applications
+app.use('/api/auditions', clerkAuth, auditionRoutes); // Audition management
+
+// TODO: Re-enable when dependencies resolved
+// app.use('/api/talents-direct', talentDirectRoutes); // Direct SQL workaround
+// app.use('/api/pinecone', pineconeHealthRoutes); // Keep disabled - using Qdrant
+// app.use('/api/monitoring', monitoringRouter); // Re-enable after fixing TypeScript errors
+
+// 404 handler
+app.use(notFoundHandler);
+
+// JWT error handler removed - using Clerk
+
+// Global error handler (must be last)
+app.use(errorHandler);
+
+// Graceful shutdown handler
+const gracefulShutdown = async (signal: string) => {
+  logger.info(`Received ${signal}, starting graceful shutdown...`);
+  
+  // Stop accepting new connections
+  server.close(async () => {
+    logger.info('HTTP server closed');
+    
+    try {
+      // Close real-time services first
+      logger.info('Shutting down real-time services...');
+      const { realtimeService } = await import('./services/realtime.service');
+      if (realtimeService) {
+        await realtimeService.close();
+      }
+      
+      // Close database connection pool
+      logger.info('Closing database connections...');
+      const { dbPool } = await import('./middleware/connectionPool');
+      if (dbPool) {
+        await dbPool.close();
+      }
+      
+      // Clean up memory monitoring
+      if (memoryMonitoring) {
+        MemoryManager.clearInterval(memoryMonitoring);
+        memoryMonitoring = undefined;
+      }
+      
+      // Perform comprehensive memory cleanup
+      await MemoryManager.cleanup();
+      
+      // Close Dragonfly/Redis connection
+      await redis.quit();
+      logger.info('Dragonfly connection closed');
+      
+      // Force garbage collection before exit
+      if (global.gc) {
+        global.gc();
+      }
+      
+      logger.info('Graceful shutdown completed');
+      process.exit(0);
+    } catch (error) {
+      logger.error('Error during graceful shutdown:', error);
+      process.exit(1);
+    }
+  });
+  
+  // Force shutdown after 15 seconds (reduced from 30)
+  setTimeout(() => {
+    logger.error('Forced shutdown after timeout');
+    process.exit(1);
+  }, 15000);
+};
+
+// Create HTTP server
+const server = createServer(app);
+
+// Increase max listeners to prevent EventEmitter memory leak warnings
+server.setMaxListeners(20);
+
+// Initialize WebSocket server (legacy)
+const socketServer = initializeWebSocket(server);
+
+// Initialize enhanced real-time services
+initializeRealtimeServices(server);
+
+// Memory monitoring setup using MemoryManager
+let memoryMonitoring: NodeJS.Timeout | undefined;
+
+if (config.isDevelopment || process.env.ENABLE_MEMORY_MONITORING === 'true') {
+  memoryMonitoring = MemoryManager.startMonitoring(30000); // Check every 30 seconds
+  MemoryManager.logMemoryUsage('server-startup');
+}
+
+// Start server (force restart trigger)
+server.listen(config.port, () => {
+  logger.info(`
+    🚀 CastMatch Backend Server Started
+    ====================================
+    Environment: ${config.env}
+    Port: ${config.port}
+    API URL: http://localhost:${config.port}/api
+    Health Check: http://localhost:${config.port}/api/health
+    WebSocket: ws://localhost:${config.port}
+    ====================================
+    
+    Available Endpoints:
+    - POST /api/auth/register
+    - POST /api/auth/login
+    - POST /api/auth/refresh
+    - GET  /api/auth/me
+    - POST /api/conversations/create
+    - GET  /api/conversations
+    - POST /api/conversations/:id/messages
+    - POST /api/conversations/:id/messages/ai (Claude AI)
+    - GET  /api/conversations/:id/history
+    - GET  /api/conversations/:id/summary (AI Summary)
+    - GET  /api/conversations/ai/health
+    - GET  /api/conversations/ai/rate-limit
+    - POST /api/batch/talents (Create talents in bulk)
+    - POST /api/batch/memories (Create memories in bulk)
+    - POST /api/batch/conversations (Create conversations in bulk)
+    - PATCH /api/batch/update (Update multiple records)
+    - DELETE /api/batch/delete (Delete multiple records - Admin only)
+    - GET  /api/batch/stats (Get batch operation statistics)
+    - POST /api/batch/search/talents (Bulk search talents)
+    - POST /api/batch/export (Export data in bulk)
+    
+    Performance Monitoring:
+    - GET  /api/metrics (Performance statistics)
+    - GET  /api/metrics?format=prometheus (Prometheus metrics)
+    - GET  /api/benchmark (Performance benchmarks)
+    - GET  /api/health/db-pool (Database pool health)
+    - GET  /api/health/compression (Compression health)
+    
+    WebSocket Events:
+    - conversation:join
+    - message:send
+    - message:send:ai
+    - typing:start/stop
+    - ai:typing
+    - ai:stream
+    - Enhanced real-time features:
+    - message:send/receive
+    - typing:start/stop
+    - presence:update
+    - subscribe/unsubscribe to channels
+    ====================================
+  `);
+});
+
+// Handle shutdown signals
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+
+// Handle uncaught errors
+process.on('uncaughtException', (error: Error) => {
+  logger.error('Uncaught Exception:', error);
+  gracefulShutdown('uncaughtException');
+});
+
+process.on('unhandledRejection', (reason: any, promise: Promise<any>) => {
+  // Properly handle error logging
+  const errorMessage = reason instanceof Error ? reason.message : 
+                      typeof reason === 'string' ? reason : 
+                      typeof reason === 'object' ? JSON.stringify(reason) : 
+                      'Unknown reason';
+  
+  const errorStack = reason instanceof Error ? reason.stack : 'No stack trace available';
+  
+  logger.error('Unhandled Rejection at:', { 
+    promise: promise.toString(), 
+    reason: errorMessage,
+    stack: errorStack,
+    reasonType: typeof reason
+  });
+  
+  // Skip Redis rate limiter initialization errors - they're not critical for core functionality
+  if (errorMessage.includes('this.sendCommand is not a function') || 
+      errorMessage.includes('rate-limit-redis')) {
+    logger.warn('Redis rate limiter initialization failed, continuing without distributed rate limiting...');
+    return;
+  }
+  
+  // Log the error but don't shut down the server for unhandled rejections
+  // Only shut down for critical system errors
+  if (reason?.code === 'ECONNREFUSED' || errorMessage?.includes('ENOTFOUND')) {
+    logger.warn('Critical connection error detected, initiating graceful shutdown...');
+    gracefulShutdown('unhandledRejection');
+  } else {
+    logger.info('Non-critical unhandled rejection, continuing server operation...');
+  }
+});
+
+export { app, server };// Trigger restart
+ 

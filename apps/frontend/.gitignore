@@ -1,0 +1,14 @@
+node_modules
+.react-router
+build
+.env
+.env.local
+.env.production
+.env.staging
+.DS_Store
+dist
+*.log
+.vscode
+.idea
+coverage
+*.tsbuildinfo

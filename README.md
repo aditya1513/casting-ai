@@ -1,88 +1,84 @@
-# CastMatch - Mumbai's Premier Casting Platform
+# Casting AI Platform
 
-A modern casting platform with **Express.js backend** and **Remix frontend**, featuring **Clerk** authentication, designed for Mumbai's OTT entertainment industry.
+> AI-powered casting platform built with a modern monorepo architecture
 
-## Architecture
+## 🚀 Quick Start
 
-- **Backend**: Express.js API server (port 3001)
-- **Frontend**: Remix application (port 3000)  
-- **Authentication**: Clerk (integrated across both layers)
-- **Database**: PostgreSQL + Drizzle ORM
-- **Vector Search**: Qdrant
-- **Cache/Sessions**: Redis/Dragonfly
+```bash
+# Install dependencies
+bun install
 
-## Tech Stack
+# Start development environment
+bun run dev
 
-### Backend
-- **Framework**: Express.js + TypeScript
-- **Database**: PostgreSQL with Drizzle ORM
-- **Vector Database**: Qdrant (migrated from Pinecone)
-- **Cache**: Redis/Dragonfly
-- **Authentication**: Clerk integration
-- **AI Services**: Anthropic Claude, OpenAI
-
-### Frontend  
-- **Framework**: Remix (React-based)
-- **Authentication**: Clerk
-- **Styling**: Tailwind CSS + HeroUI
-- **Build Tool**: Vite
-- **Package Manager**: Bun
-
-## Quick Start
-
-1. **Install dependencies** (both backend and frontend):
-   ```bash
-   bun install
-   cd frontend && bun install
-   ```
-
-2. **Set up environment variables**:
-   ```bash
-   cp .env.example .env
-   # Add your Clerk keys, database URL, and API keys
-   ```
-
-3. **Start services**:
-   ```bash
-   # Start backend (port 3001)
-   bun run dev
-   
-   # Start frontend (port 3000) - in separate terminal
-   cd frontend && bun run dev
-   
-   # Or start both with Docker Compose
-   docker-compose up -d
-   ```
-
-## Project Structure
-
-```
-├── src/                     # Backend Express.js application
-│   ├── config/             # Database, Redis, app configuration
-│   ├── routes/             # API route handlers
-│   ├── services/           # Business logic and AI services
-│   ├── middleware/         # Auth, validation, error handling
-│   └── server.ts          # Express server entry point
-├── frontend/               # Remix frontend application
-│   ├── app/               # Remix app directory
-│   │   ├── components/    # React components
-│   │   ├── routes/        # Frontend routes
-│   │   └── root.tsx      # Root layout with Clerk
-│   └── package.json      # Frontend dependencies
-├── docker-compose.yml     # Services orchestration
-└── package.json          # Backend dependencies
+# Start with Docker
+bun run docker:up
 ```
 
-## Services
+## 📁 Project Structure
 
-- **Backend API**: `http://localhost:3001`
-- **Frontend**: `http://localhost:3000` 
-- **Database**: PostgreSQL on port 5432
-- **Redis**: Dragonfly on port 6379
-- **Qdrant**: Vector database on port 6333
+This is a **monorepo** containing all services, applications, and shared libraries. For detailed architecture documentation, see [MONOREPO.md](./MONOREPO.md).
 
-## Recent Migrations
+### Core Directories
 
-- **Next.js → Remix**: Frontend migrated for better SSR and performance
-- **Auth0 → Clerk**: Authentication system modernized
-- **Pinecone → Qdrant**: Vector database migration for better performance and cost
+- **`apps/`** - Applications & Services (frontend, backend, ai-agents)
+- **`libs/`** - Internal shared libraries
+- **`packages/`** - Publishable npm packages
+- **`tools/`** - Build tools and shared configurations
+- **`config/`** - Environment and deployment configurations
+- **`shared/`** - Shared types, constants, and schemas
+
+### Supporting Directories
+
+- **`documentation/`** - Documentation and guides
+- **`design-101/`** - Design system and UI assets
+- **`infrastructure/`** - Infrastructure as Code
+- **`scripts/`** - Build and deployment scripts
+- **`tests/`** - Repository-wide testing
+
+## 📖 Documentation
+
+- [📋 Monorepo Architecture](./MONOREPO.md) - Detailed structure and patterns
+- [🏗️ Architecture Guide](./documentation/architecture/) - System architecture
+- [🚀 Deployment Guide](./documentation/deployment/) - Deployment instructions
+- [🎨 Design System](./design-101/) - UI components and design tokens
+
+## 🛠️ Development
+
+```bash
+# Development
+bun run dev:frontend    # Frontend only
+bun run dev:backend     # Backend only
+
+# Building
+bun run build           # Build all apps
+bun run build:frontend  # Build frontend only
+
+# Testing
+bun run test            # Run all tests
+bun run lint            # Lint all code
+
+# Database
+bun run db:push         # Push schema changes
+bun run db:studio       # Open database studio
+```
+
+## 🐳 Docker
+
+```bash
+bun run docker:up      # Start all services
+bun run docker:down    # Stop all services
+```
+
+All Docker configurations are in [`config/docker/`](./config/docker/).
+
+## 🤝 Contributing
+
+1. Follow the [monorepo structure](./MONOREPO.md#-development-workflow)
+2. Use shared configurations from `tools/`
+3. Add new apps to `apps/`, libraries to `libs/`
+4. Document changes and update relevant README files
+
+## 📄 License
+
+[Your License Here]

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Your CastMatch Email</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 32px;
+            font-weight: 700;
+        }
+        .header p {
+            margin: 0;
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .greeting {
+            font-size: 24px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        .verify-button {
+            display: inline-block;
+            padding: 18px 40px;
+            background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 184, 148, 0.4);
+            font-size: 16px;
+        }
+        .verify-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 184, 148, 0.6);
+        }
+        .verify-link {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+            border-left: 4px solid #00b894;
+            word-break: break-all;
+        }
+        .benefits {
+            background: #e8f6f3;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 30px 0;
+        }
+        .benefits h3 {
+            color: #00b894;
+            margin-top: 0;
+        }
+        .benefits ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .benefits li {
+            margin: 8px 0;
+        }
+        .urgency-notice {
+            background: #fff3cd;
+            border: 2px solid #ffeaa7;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        .footer {
+            background: #34495e;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .footer p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+            }
+            .header,
+            .content {
+                padding: 20px;
+            }
+            .header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📧 Verify Your Email</h1>
+            <p>One click away from joining CastMatch!</p>
+        </div>
+        
+        <div class="content">
+            <div class="greeting">Hello {{firstName}},</div>
+            
+            <p>Thank you for joining CastMatch! To complete your registration and unlock all the amazing features waiting for you, please verify your email address.</p>
+
+            <div style="text-align: center; margin: 40px 0;">
+                <a href="{{verificationUrl}}" class="verify-button">
+                    ✅ Verify My Email
+                </a>
+            </div>
+
+            <p style="text-align: center; color: #7f8c8d; font-size: 14px; margin: 20px 0;">
+                Button not working? Copy and paste this link into your browser:
+            </p>
+
+            <div class="verify-link">
+                <strong>Verification Link:</strong><br>
+                <span style="color: #00b894;">{{verificationUrl}}</span>
+            </div>
+
+            <div class="benefits">
+                <h3>🚀 What happens after verification?</h3>
+                <ul>
+                    <li><strong>Full Profile Access:</strong> Complete your professional portfolio</li>
+                    <li><strong>Apply to Castings:</strong> Browse and apply for exclusive opportunities</li>
+                    <li><strong>AI Recommendations:</strong> Get personalized role suggestions</li>
+                    <li><strong>Direct Messaging:</strong> Connect with casting directors and producers</li>
+                    <li><strong>Audition Tracking:</strong> Monitor your application progress</li>
+                    <li><strong>Industry Insights:</strong> Access market trends and analytics</li>
+                </ul>
+            </div>
+
+            <div class="urgency-notice">
+                <h3>⏰ Verify Within 24 Hours</h3>
+                <p><strong>This verification link expires in 24 hours</strong> for security reasons. Don't miss out on opportunities - verify now!</p>
+            </div>
+
+            <div style="background: #f1f2f6; padding: 20px; border-radius: 8px; margin: 30px 0;">
+                <h4 style="color: #2c3e50; margin-top: 0;">Why do we verify emails?</h4>
+                <ul style="margin: 0; padding-left: 20px; color: #57606f;">
+                    <li>Ensures you receive important casting notifications</li>
+                    <li>Protects your account from unauthorized access</li>
+                    <li>Helps maintain quality within our community</li>
+                    <li>Enables password reset functionality</li>
+                </ul>
+            </div>
+
+            <div style="border-top: 2px solid #ecf0f1; padding-top: 30px; margin-top: 40px;">
+                <h4 style="color: #2c3e50;">Having trouble?</h4>
+                <p>If you're unable to verify your email, please:</p>
+                <ol>
+                    <li>Check your spam/junk folder</li>
+                    <li>Ensure this email address is correct: <strong>{{email}}</strong></li>
+                    <li>Contact our support team at <a href="mailto:support@castmatch.com">support@castmatch.com</a></li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>© {{currentYear}} CastMatch. All rights reserved.</p>
+            <p>Mumbai's Premier AI-Powered Casting Platform</p>
+            <p>Support: <a href="mailto:support@castmatch.com" style="color: #ecf0f1;">support@castmatch.com</a></p>
+        </div>
+    </div>
+</body>
+</html>

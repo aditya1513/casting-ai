@@ -1,0 +1,56 @@
+WELCOME TO CASTMATCH!
+Your journey in Mumbai's OTT industry starts here
+
+Hello {{firstName}},
+
+Welcome to CastMatch, the AI-powered casting platform that's revolutionizing how talent connects with opportunities in Mumbai's thriving OTT industry!
+
+{{#verificationRequired}}
+IMPORTANT: Please verify your email address to unlock all features.
+Verify here: {{verificationUrl}}
+{{/verificationRequired}}
+
+As a {{role}}, you can:
+
+{{#isActor}}
+✓ Create a stunning professional portfolio
+✓ Apply for exclusive casting calls  
+✓ Get AI-powered role recommendations
+✓ Track your audition progress
+✓ Connect directly with casting directors
+{{/isActor}}
+
+{{#isCastingDirector}}
+✓ Post casting calls and find perfect matches
+✓ Use AI to discover hidden talent
+✓ Manage auditions and callbacks efficiently
+✓ Collaborate with production teams
+✓ Access detailed talent analytics
+{{/isCastingDirector}}
+
+{{#isProducer}}
+✓ Oversee casting for multiple projects
+✓ Access comprehensive talent insights
+✓ Manage production budgets and schedules
+✓ Connect with verified industry professionals
+✓ Monitor project progress in real-time
+{{/isProducer}}
+
+GET STARTED IN 4 SIMPLE STEPS:
+1. Complete your profile with professional details
+2. Upload high-quality photos and showreels
+3. Set your availability and preferences
+4. Start exploring opportunities and connections!
+
+Launch Your Dashboard: {{dashboardUrl}}
+
+PRO TIPS:
+• Complete profiles get 5x more visibility
+• Upload multiple photos to showcase your range
+• Keep your availability updated for better opportunities
+• Respond quickly to casting invitations
+
+Need help? Contact us at support@castmatch.com
+
+© {{currentYear}} CastMatch. All rights reserved.
+Mumbai's Premier AI-Powered Casting Platform

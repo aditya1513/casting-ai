@@ -5,7 +5,9 @@
   "private": true,
   "workspaces": [
     "apps/*",
-    "packages/*"
+    "packages/*",
+    "libs/*",
+    "tools/*"
   ],
   "packageManager": "bun@1.2.21",
   "scripts": {
@@ -22,8 +24,8 @@
     "lint:backend": "cd apps/backend && bun run lint",
     "lint:frontend": "cd apps/frontend && bun run lint",
     "clean": "rm -rf apps/*/dist apps/*/build apps/*/.turbo packages/*/dist packages/*/.turbo node_modules apps/*/node_modules packages/*/node_modules",
-    "docker:up": "docker-compose up -d",
-    "docker:down": "docker-compose down",
+    "docker:up": "docker-compose -f config/docker/docker-compose.yml up -d",
+    "docker:down": "docker-compose -f config/docker/docker-compose.yml down",
     "db:push": "cd apps/backend && bun run db:push",
     "db:studio": "cd apps/backend && bun run db:studio",
     "db:seed": "bun run scripts/seed-database.ts"
