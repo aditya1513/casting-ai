@@ -12,17 +12,26 @@ export default defineConfig({
         v3_fetcherPersist: true,
         v3_relativeSplatPath: true,
         v3_throwAbortReason: true,
-        v3_singleFetch: true,
-        v3_lazyRouteDiscovery: true,
+        // Temporarily disable these flags that may conflict with Clerk
+        // v3_singleFetch: true,
+        // v3_lazyRouteDiscovery: true,
       },
     }),
     tsconfigPaths(),
   ],
+  css: {
+    postcss: './postcss.config.js',
+  },
   server: {
     port: 3000,
     host: true,
   },
   optimizeDeps: {
-    include: ['react', 'react-dom', '@trpc/client', '@trpc/react-query'],
+    include: [
+      'react', 
+      'react-dom', 
+      '@trpc/client', 
+      '@trpc/react-query'
+    ],
   },
 });
